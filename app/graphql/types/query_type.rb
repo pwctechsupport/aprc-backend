@@ -11,5 +11,6 @@ module Types
     def me(demo: false)
       context[:current_user]
     end
+
   end
 end

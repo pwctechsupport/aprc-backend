@@ -1,5 +1,7 @@
 class AddPhoneToUsers < ActiveRecord::Migration[5.2]
   def change
-    add_column :users, :phone, :string
+    unless column_exists? :users, :phone
+      add_column :users, :phone, :string
+    end
   end
 end
