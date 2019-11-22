@@ -44,6 +44,9 @@ gem 'bcrypt'                                # Use ActiveModel has_secure_passwor
 gem 'graphql'
 gem 'graphql-errors'
 gem 'rack-cors'
+gem 'graphql-pagination'
+gem 'kaminari-activerecord'
+gem 'ransack', github: 'activerecord-hackery/ransack'
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
