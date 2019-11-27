@@ -8,7 +8,9 @@ module Mutations
     argument :title, String, required: false
     argument :description, String, required: false
     argument :policy_category_id, ID, required: false
-
+    argument :it_system_ids, [ID], required: false
+    argument :resource_ids, [ID], required: false
+    argument :business_process_ids, [ID], required: false
 
     field :policy, Types::PolicyType, null: false
 

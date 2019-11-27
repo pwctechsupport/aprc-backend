@@ -10,7 +10,19 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_11_19_120110) do
+ActiveRecord::Schema.define(version: 2019_11_26_050347) do
+
+  create_table "business_processes", options: "ENGINE=InnoDB DEFAULT CHARSET=latin1", force: :cascade do |t|
+    t.string "name"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "it_systems", options: "ENGINE=InnoDB DEFAULT CHARSET=latin1", force: :cascade do |t|
+    t.string "name"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
 
   create_table "policies", options: "ENGINE=InnoDB DEFAULT CHARSET=latin1", force: :cascade do |t|
     t.string "title"
@@ -23,7 +35,40 @@ ActiveRecord::Schema.define(version: 2019_11_19_120110) do
     t.index ["user_id"], name: "index_policies_on_user_id"
   end
 
+  create_table "policy_business_processes", options: "ENGINE=InnoDB DEFAULT CHARSET=latin1", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "policy_id"
+    t.bigint "business_process_id"
+    t.index ["business_process_id"], name: "index_policy_business_processes_on_business_process_id"
+    t.index ["policy_id"], name: "index_policy_business_processes_on_policy_id"
+  end
+
   create_table "policy_categories", options: "ENGINE=InnoDB DEFAULT CHARSET=latin1", force: :cascade do |t|
+    t.string "name"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "policy_it_systems", options: "ENGINE=InnoDB DEFAULT CHARSET=latin1", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "policy_id"
+    t.bigint "it_system_id"
+    t.index ["it_system_id"], name: "index_policy_it_systems_on_it_system_id"
+    t.index ["policy_id"], name: "index_policy_it_systems_on_policy_id"
+  end
+
+  create_table "policy_resources", options: "ENGINE=InnoDB DEFAULT CHARSET=latin1", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "policy_id"
+    t.bigint "resource_id"
+    t.index ["policy_id"], name: "index_policy_resources_on_policy_id"
+    t.index ["resource_id"], name: "index_policy_resources_on_resource_id"
+  end
+
+  create_table "resources", options: "ENGINE=InnoDB DEFAULT CHARSET=latin1", force: :cascade do |t|
     t.string "name"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -61,4 +106,10 @@ ActiveRecord::Schema.define(version: 2019_11_19_120110) do
 
   add_foreign_key "policies", "policy_categories"
   add_foreign_key "policies", "users"
+  add_foreign_key "policy_business_processes", "business_processes"
+  add_foreign_key "policy_business_processes", "policies"
+  add_foreign_key "policy_it_systems", "it_systems"
+  add_foreign_key "policy_it_systems", "policies"
+  add_foreign_key "policy_resources", "policies"
+  add_foreign_key "policy_resources", "resources"
 end
