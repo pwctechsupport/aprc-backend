@@ -11,5 +11,8 @@ module Types
     field :resources, [Types::ResourceType], null: true
     field :business_processes, [Types::BusinessProcessType], null: true
     field :it_systems, [Types::ItSystemType], null: true
+    # field :references, [Types::PolicyType], null: true
+
+
   end
 end
