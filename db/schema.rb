@@ -10,12 +10,14 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_11_26_050347) do
+ActiveRecord::Schema.define(version: 2019_11_27_091353) do
 
   create_table "business_processes", options: "ENGINE=InnoDB DEFAULT CHARSET=latin1", force: :cascade do |t|
     t.string "name"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "ancestry"
+    t.index ["ancestry"], name: "index_business_processes_on_ancestry"
   end
 
   create_table "it_systems", options: "ENGINE=InnoDB DEFAULT CHARSET=latin1", force: :cascade do |t|

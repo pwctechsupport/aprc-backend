@@ -47,6 +47,7 @@ gem 'rack-cors'
 gem 'graphql-pagination'
 gem 'kaminari-activerecord'
 gem 'ransack', github: 'activerecord-hackery/ransack'
+gem 'ancestry'
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console

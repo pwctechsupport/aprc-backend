@@ -25,6 +25,8 @@ module Types
     field :destroy_resource, mutation: Mutations::DestroyResource
     field :destroy_it_system, mutation: Mutations::DestroyItSystem
     field :destroy_business_process, mutation: Mutations::DestroyBusinessProcess
+    field :create_sub_business_process, mutation: Mutations::CreateSubBusinessProcess
+
 
 
     def login(email:, password:)

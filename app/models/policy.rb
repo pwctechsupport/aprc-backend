@@ -7,4 +7,5 @@ class Policy < ApplicationRecord
   has_many :resources, through: :policy_resources
   has_many :it_systems, through: :policy_it_systems
   has_many :business_processes, through: :policy_business_processes
+  has_ancestry
 end
