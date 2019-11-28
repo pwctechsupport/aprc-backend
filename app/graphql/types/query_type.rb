@@ -42,6 +42,7 @@ module Types
     field :resources, resolver: Resolvers::QueryType::ResourcesResolver
     field :it_systems, resolver: Resolvers::QueryType::ItSystemsResolver
     field :business_processes, resolver: Resolvers::QueryType::BusinessProcessesResolver
+    field :references, resolver: Resolvers::QueryType::ReferencesResolver
 
 
 

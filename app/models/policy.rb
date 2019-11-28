@@ -1,5 +1,5 @@
 class Policy < ApplicationRecord
-  belongs_to :policy_category
+  belongs_to :policy_category, optional: true
   belongs_to :user, optional: true
   has_many :policy_resources
   has_many :policy_business_processes
@@ -8,4 +8,6 @@ class Policy < ApplicationRecord
   has_many :it_systems, through: :policy_it_systems
   has_many :business_processes, through: :policy_business_processes
   has_ancestry
+  has_many :policy_references
+  has_many :references, through: :policy_references
 end

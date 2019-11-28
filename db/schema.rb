@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_11_27_091353) do
+ActiveRecord::Schema.define(version: 2019_11_28_053054) do
 
   create_table "business_processes", options: "ENGINE=InnoDB DEFAULT CHARSET=latin1", force: :cascade do |t|
     t.string "name"
@@ -33,6 +33,8 @@ ActiveRecord::Schema.define(version: 2019_11_27_091353) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.bigint "user_id"
+    t.string "ancestry"
+    t.index ["ancestry"], name: "index_policies_on_ancestry"
     t.index ["policy_category_id"], name: "index_policies_on_policy_category_id"
     t.index ["user_id"], name: "index_policies_on_user_id"
   end
@@ -61,6 +63,15 @@ ActiveRecord::Schema.define(version: 2019_11_27_091353) do
     t.index ["policy_id"], name: "index_policy_it_systems_on_policy_id"
   end
 
+  create_table "policy_references", options: "ENGINE=InnoDB DEFAULT CHARSET=latin1", force: :cascade do |t|
+    t.bigint "policy_id"
+    t.bigint "reference_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["policy_id"], name: "index_policy_references_on_policy_id"
+    t.index ["reference_id"], name: "index_policy_references_on_reference_id"
+  end
+
   create_table "policy_resources", options: "ENGINE=InnoDB DEFAULT CHARSET=latin1", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -68,6 +79,12 @@ ActiveRecord::Schema.define(version: 2019_11_27_091353) do
     t.bigint "resource_id"
     t.index ["policy_id"], name: "index_policy_resources_on_policy_id"
     t.index ["resource_id"], name: "index_policy_resources_on_resource_id"
+  end
+
+  create_table "references", options: "ENGINE=InnoDB DEFAULT CHARSET=latin1", force: :cascade do |t|
+    t.string "name"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "resources", options: "ENGINE=InnoDB DEFAULT CHARSET=latin1", force: :cascade do |t|
@@ -112,6 +129,8 @@ ActiveRecord::Schema.define(version: 2019_11_27_091353) do
   add_foreign_key "policy_business_processes", "policies"
   add_foreign_key "policy_it_systems", "it_systems"
   add_foreign_key "policy_it_systems", "policies"
+  add_foreign_key "policy_references", "policies"
+  add_foreign_key "policy_references", "references"
   add_foreign_key "policy_resources", "policies"
   add_foreign_key "policy_resources", "resources"
 end
