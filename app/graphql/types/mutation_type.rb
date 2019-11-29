@@ -16,7 +16,19 @@ module Types
     field :update_policy_category, mutation: Mutations::UpdatePolicyCategory
     field :create_sub_policy, mutation: Mutations::CreateSubPolicy
     field :update_policy_reference, mutation: Mutations::UpdatePolicyReference
-    
+    field :create_policy, mutation: Mutations::CreatePolicy
+    field :create_policy_category, mutation: Mutations::CreatePolicyCategory   
+    field :create_control, mutation: Mutations::CreateControl
+    field :update_control, mutation: Mutations::UpdateControl
+    field :destroy_control, mutation: Mutations::DestroyControl
+    field :create_risk, mutation: Mutations::CreateRisk
+    field :update_risk, mutation: Mutations::UpdateRisk
+    field :destroy_risk, mutation: Mutations::DestroyRisk
+    field :create_description, mutation: Mutations::CreateDescription
+    field :update_description, mutation: Mutations::UpdateDescription
+    field :destroy_description, mutation: Mutations::DestroyDescription
+
+
     # Attributes CRUD
     field :create_resource, mutation: Mutations::CreateResource
     field :create_it_system, mutation: Mutations::CreateItSystem
@@ -47,8 +59,6 @@ module Types
       return is_valid_for_auth ? user : nil
     end
 
-    field :create_policy, mutation: Mutations::CreatePolicy
-    
-    field :create_policy_category, mutation: Mutations::CreatePolicyCategory
+
   end
 end

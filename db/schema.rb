@@ -10,18 +10,63 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_11_28_053054) do
+ActiveRecord::Schema.define(version: 2019_11_29_102050) do
 
   create_table "business_processes", options: "ENGINE=InnoDB DEFAULT CHARSET=latin1", force: :cascade do |t|
-    t.string "name"
+    t.text "name"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "ancestry"
     t.index ["ancestry"], name: "index_business_processes_on_ancestry"
   end
 
+  create_table "control_business_processes", options: "ENGINE=InnoDB DEFAULT CHARSET=latin1", force: :cascade do |t|
+    t.bigint "control_id"
+    t.bigint "business_process_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["business_process_id"], name: "index_control_business_processes_on_business_process_id"
+    t.index ["control_id"], name: "index_control_business_processes_on_control_id"
+  end
+
+  create_table "control_descriptions", options: "ENGINE=InnoDB DEFAULT CHARSET=latin1", force: :cascade do |t|
+    t.bigint "control_id"
+    t.bigint "description_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["control_id"], name: "index_control_descriptions_on_control_id"
+    t.index ["description_id"], name: "index_control_descriptions_on_description_id"
+  end
+
+  create_table "control_risks", options: "ENGINE=InnoDB DEFAULT CHARSET=latin1", force: :cascade do |t|
+    t.bigint "control_id"
+    t.bigint "risk_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["control_id"], name: "index_control_risks_on_control_id"
+    t.index ["risk_id"], name: "index_control_risks_on_risk_id"
+  end
+
+  create_table "controls", options: "ENGINE=InnoDB DEFAULT CHARSET=latin1", force: :cascade do |t|
+    t.text "type_of_control"
+    t.text "frequency"
+    t.text "nature"
+    t.text "assertion"
+    t.text "ipo"
+    t.text "control_owner"
+    t.integer "fte_estimate"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "descriptions", options: "ENGINE=InnoDB DEFAULT CHARSET=latin1", force: :cascade do |t|
+    t.text "name"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "it_systems", options: "ENGINE=InnoDB DEFAULT CHARSET=latin1", force: :cascade do |t|
-    t.string "name"
+    t.text "name"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
@@ -88,7 +133,13 @@ ActiveRecord::Schema.define(version: 2019_11_28_053054) do
   end
 
   create_table "resources", options: "ENGINE=InnoDB DEFAULT CHARSET=latin1", force: :cascade do |t|
-    t.string "name"
+    t.text "name"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "risks", options: "ENGINE=InnoDB DEFAULT CHARSET=latin1", force: :cascade do |t|
+    t.text "name"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
@@ -123,6 +174,12 @@ ActiveRecord::Schema.define(version: 2019_11_28_053054) do
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
 
+  add_foreign_key "control_business_processes", "business_processes"
+  add_foreign_key "control_business_processes", "controls"
+  add_foreign_key "control_descriptions", "controls"
+  add_foreign_key "control_descriptions", "descriptions"
+  add_foreign_key "control_risks", "controls"
+  add_foreign_key "control_risks", "risks"
   add_foreign_key "policies", "policy_categories"
   add_foreign_key "policies", "users"
   add_foreign_key "policy_business_processes", "business_processes"

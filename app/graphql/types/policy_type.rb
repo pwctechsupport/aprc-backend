@@ -14,7 +14,6 @@ module Types
     field :ancestry, ID, null: true
     field :reference_ids, [Types::ReferenceType], null: true
     field :references, [Types::ReferenceType], null: true
-
-
+    field :policy_category, Types::PolicyCategoryType, null: true
   end
 end

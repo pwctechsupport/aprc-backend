@@ -11,6 +11,7 @@ module Types
     field :policy_category, Types::PolicyCategoryType, null: true do
       argument :id, ID, required: true
     end
+
     def policies
       current_user = context[:current_user]
       current_user.policies
@@ -29,5 +30,6 @@ module Types
       current_user =context[:current_user]
       current_user.policies.find_by(id:id)
     end
+
   end
 end

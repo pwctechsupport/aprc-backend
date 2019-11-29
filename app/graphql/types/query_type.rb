@@ -20,6 +20,14 @@ module Types
       description 'Returns IT Systems Attributes'
     end
 
+    field :ref, [Types::ReferenceType], null: true do
+      description 'Returns References from SubPolicy'
+    end
+
+    field :control, [Types::ControlType], null: true do
+      description 'Returns Master Control Data '
+    end
+
     def me(demo: false)
       context[:current_user]
     end
@@ -36,6 +44,14 @@ module Types
       ItSystem.all
     end
 
+    def ref(demo:false)
+      Reference.all
+    end
+
+    def control(demo: false)
+      Control.all
+    end
+
     field :users, resolver: Resolvers::QueryType::UsersResolver
     field :policies, resolver: Resolvers::QueryType::PoliciesResolver
     field :policy_categories, resolver: Resolvers::QueryType::PolicyCategoriesResolver
@@ -43,6 +59,7 @@ module Types
     field :it_systems, resolver: Resolvers::QueryType::ItSystemsResolver
     field :business_processes, resolver: Resolvers::QueryType::BusinessProcessesResolver
     field :references, resolver: Resolvers::QueryType::ReferencesResolver
+    field :controls, resolver: Resolvers::QueryType::ControlsResolver
 
 
 
