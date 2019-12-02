@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_11_29_102050) do
+ActiveRecord::Schema.define(version: 2019_12_02_070050) do
 
   create_table "business_processes", options: "ENGINE=InnoDB DEFAULT CHARSET=latin1", force: :cascade do |t|
     t.text "name"
@@ -132,10 +132,23 @@ ActiveRecord::Schema.define(version: 2019_11_29_102050) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "resource_controls", options: "ENGINE=InnoDB DEFAULT CHARSET=latin1", force: :cascade do |t|
+    t.bigint "resource_id"
+    t.bigint "control_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["control_id"], name: "index_resource_controls_on_control_id"
+    t.index ["resource_id"], name: "index_resource_controls_on_resource_id"
+  end
+
   create_table "resources", options: "ENGINE=InnoDB DEFAULT CHARSET=latin1", force: :cascade do |t|
     t.text "name"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "resupload_file_name"
+    t.string "resupload_content_type"
+    t.bigint "resupload_file_size"
+    t.datetime "resupload_updated_at"
   end
 
   create_table "risks", options: "ENGINE=InnoDB DEFAULT CHARSET=latin1", force: :cascade do |t|
@@ -190,4 +203,6 @@ ActiveRecord::Schema.define(version: 2019_11_29_102050) do
   add_foreign_key "policy_references", "references"
   add_foreign_key "policy_resources", "policies"
   add_foreign_key "policy_resources", "resources"
+  add_foreign_key "resource_controls", "controls"
+  add_foreign_key "resource_controls", "resources"
 end

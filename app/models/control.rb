@@ -5,4 +5,6 @@ class Control < ApplicationRecord
   has_many :descriptions, through: :control_descriptions, dependent: :destroy
   has_many :control_risks, class_name: "ControlRisk", foreign_key: "control_id", dependent: :destroy
   has_many :risks, through: :control_risks, dependent: :destroy
+  has_many :resource_controls
+  has_many :resources, through: :resource_controls
 end

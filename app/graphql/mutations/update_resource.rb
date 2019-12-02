@@ -6,6 +6,8 @@ module Mutations
 
     argument :id, ID, required: true
     argument :name, String, required: false
+    argument :resuploadBase64, String, as: :resupload, required: false
+    argument :resuploadFileName, String, as: :resupload_file_name, default_value: 'resupload', required: false  
 
 
     field :resource, Types::ResourceType, null: false
