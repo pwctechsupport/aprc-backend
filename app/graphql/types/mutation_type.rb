@@ -28,6 +28,10 @@ module Types
     field :update_description, mutation: Mutations::UpdateDescription
     field :destroy_description, mutation: Mutations::DestroyDescription
 
+    field :create_category, mutation: Mutations::CreateCategory
+    field :update_category, mutation: Mutations::UpdateCategory
+    field :destroy_category, mutation: Mutations::DestroyCategory
+
 
     # Attributes CRUD
     field :create_resource, mutation: Mutations::CreateResource

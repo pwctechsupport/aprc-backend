@@ -4,6 +4,10 @@ module Mutations
     argument :name, String, required: true
     argument :resuploadBase64, String, as: :resupload, required: false
     argument :resuploadFileName, String, as: :resupload_file_name, default_value: 'resupload', required: false
+    argument :category_id, ID, required: false 
+    argument :policy_id, ID, required: false 
+    argument :control_id, ID, required: false 
+    argument :business_process_id, ID, required: false 
 
 
     # return type from the mutation
