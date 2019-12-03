@@ -1,4 +1,4 @@
 class PolicyBusinessProcess < ApplicationRecord
-  belongs_to :policy
-  belongs_to :business_process
+  belongs_to :policy, optional: true
+  belongs_to :business_process, optional: true
 end

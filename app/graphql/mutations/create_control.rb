@@ -13,6 +13,9 @@ module Mutations
     argument :nature, Types::Enums::Nature, required: true 
     argument :assertion, Types::Enums::Assertion, required: true
     argument :ipo, Types::Enums::Ipo, required: true
+    argument :business_process_ids, [ID], required: false
+    argument :description_ids, [ID], required: false
+    argument :risk_ids, [ID], required: false
 
     # return type from the mutation
     field :control, Types::ControlType, null: true
