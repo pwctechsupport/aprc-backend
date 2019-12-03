@@ -28,6 +28,19 @@ module Types
       description 'Returns Master Control Data '
     end
 
+    field :policy, Types::PolicyType, null: true do
+      argument :id, ID, required: true
+    end
+
+    field :policy_category, Types::PolicyCategoryType, null: true do
+      argument :id, ID, required: true
+    end
+
+    field :risk, [Types::RiskType], null: true do
+      description ' Returns Risk Master Data'
+    end
+
+
     def me(demo: false)
       context[:current_user]
     end
@@ -52,6 +65,18 @@ module Types
       Control.all
     end
 
+    def policy(id:)
+      Policy.find_by(id:id)
+    end
+
+    def risk(demo: false)
+      Risk.all
+    end
+
+    def policy_category(id:)
+      PolicyCategory.find_by(id:id)
+    end
+
     field :users, resolver: Resolvers::QueryType::UsersResolver
     field :policies, resolver: Resolvers::QueryType::PoliciesResolver
     field :policy_categories, resolver: Resolvers::QueryType::PolicyCategoriesResolver
@@ -60,8 +85,5 @@ module Types
     field :business_processes, resolver: Resolvers::QueryType::BusinessProcessesResolver
     field :references, resolver: Resolvers::QueryType::ReferencesResolver
     field :controls, resolver: Resolvers::QueryType::ControlsResolver
-
-
-
   end
 end

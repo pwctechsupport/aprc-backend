@@ -14,6 +14,5 @@ module Types
     field :risk_ids, [Types::RiskType], null: true
     field :descriptions, [Types::DescriptionType], null: true
     field :description_ids, [Types::DescriptionType], null: true
-    
   end
 end
