@@ -4,10 +4,10 @@ class Policy < ApplicationRecord
   has_many :policy_resources, dependent: :destroy
   has_many :policy_business_processes, dependent: :destroy
   has_many :policy_it_systems, class_name: "PolicyItSystem", foreign_key: "policy_id", dependent: :destroy
-  has_many :resources, through: :policy_resources, dependent: :destroy
-  has_many :it_systems, through: :policy_it_systems, dependent: :destroy
-  has_many :business_processes, through: :policy_business_processes, dependent: :destroy
+  has_many :resources, through: :policy_resources
+  has_many :it_systems, through: :policy_it_systems
+  has_many :business_processes, through: :policy_business_processes
   has_ancestry
   has_many :policy_references, dependent: :destroy
-  has_many :references, through: :policy_references, dependent: :destroy
+  has_many :references, through: :policy_references
 end

@@ -4,6 +4,9 @@ module Mutations
     argument :title, String, required: true
     argument :description, String, required: true
     argument :policy_category_id, ID, required: false 
+    argument :it_system_ids, [ID], required: false
+    argument :resource_ids, [ID], required: false
+    argument :business_process_ids, [ID], required: false
 
     # return type from the mutation
     field :policy, Types::PolicyType, null: true

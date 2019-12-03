@@ -5,13 +5,13 @@ module Mutations
     graphql_name "UpdateControl"
 
     argument :id, ID, required: true
-    argument :control_description, String, required: false
-    argument :assertion_risk, String, required: false
-    argument :type_of_control, String, required: false
-    argument :frequency, String, required: false
-    argument :nature, String, required: false 
-    argument :assertion, String, required: false
-    argument :ipo, String, required: false
+    # argument :control_description, String, required: false
+    # argument :assertion_risk, String, required: false
+    argument :type_of_control, Types::Enums::TypeOfControl, required: true
+    argument :frequency, Types::Enums::Frequency, required: true
+    argument :nature, Types::Enums::Nature, required: true 
+    argument :assertion, Types::Enums::Assertion, required: true
+    argument :ipo, Types::Enums::Ipo, required: true
     argument :control_owner, String, required: false
     argument :fte_estimate, String, required: false 
     argument :business_process_ids, [ID], required: false

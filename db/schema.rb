@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_12_02_101451) do
+ActiveRecord::Schema.define(version: 2019_12_03_064732) do
 
   create_table "business_processes", options: "ENGINE=InnoDB DEFAULT CHARSET=latin1", force: :cascade do |t|
     t.text "name"
@@ -18,12 +18,6 @@ ActiveRecord::Schema.define(version: 2019_12_02_101451) do
     t.datetime "updated_at", null: false
     t.string "ancestry"
     t.index ["ancestry"], name: "index_business_processes_on_ancestry"
-  end
-
-  create_table "categories", options: "ENGINE=InnoDB DEFAULT CHARSET=latin1", force: :cascade do |t|
-    t.string "name"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
   end
 
   create_table "control_business_processes", options: "ENGINE=InnoDB DEFAULT CHARSET=latin1", force: :cascade do |t|
@@ -156,11 +150,10 @@ ActiveRecord::Schema.define(version: 2019_12_02_101451) do
     t.bigint "resupload_file_size"
     t.datetime "resupload_updated_at"
     t.bigint "policy_id"
-    t.bigint "category_id"
     t.bigint "control_id"
     t.bigint "business_process_id"
+    t.string "category"
     t.index ["business_process_id"], name: "index_resources_on_business_process_id"
-    t.index ["category_id"], name: "index_resources_on_category_id"
     t.index ["control_id"], name: "index_resources_on_control_id"
     t.index ["policy_id"], name: "index_resources_on_policy_id"
   end
@@ -220,7 +213,6 @@ ActiveRecord::Schema.define(version: 2019_12_02_101451) do
   add_foreign_key "resource_controls", "controls"
   add_foreign_key "resource_controls", "resources"
   add_foreign_key "resources", "business_processes"
-  add_foreign_key "resources", "categories"
   add_foreign_key "resources", "controls"
   add_foreign_key "resources", "policies"
 end
