@@ -3,7 +3,7 @@ module Mutations
     # arguments passed to the `resolved` method
     argument :title, String, required: true
     argument :description, String, required: true
-    argument :policy_category_id, ID, required: true 
+    argument :policy_category_id, ID, required: false 
 
     # return type from the mutation
     field :policy, Types::PolicyType, null: true

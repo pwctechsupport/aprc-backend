@@ -11,8 +11,9 @@ module Types
     field :resources, [Types::ResourceType], null: true
     field :business_processes, [Types::BusinessProcessType], null: true
     field :it_systems, [Types::ItSystemType], null: true
-    # field :references, [Types::PolicyType], null: true
-
-
+    field :ancestry, ID, null: true
+    field :reference_ids, [Types::ReferenceType], null: true
+    field :references, [Types::ReferenceType], null: true
+    field :policy_category, Types::PolicyCategoryType, null: true
   end
 end

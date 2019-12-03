@@ -1,0 +1,19 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  type_of_control: 1
+  frequency: 1
+  nature: 1
+  assertion: 1
+  ipo: 1
+  control_owner: 1
+  fte_estimate: 1
+
+two:
+  type_of_control: 1
+  frequency: 1
+  nature: 1
+  assertion: 1
+  ipo: 1
+  control_owner: 1
+  fte_estimate: 1
