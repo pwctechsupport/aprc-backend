@@ -8,73 +8,140 @@ module Types
       description 'Returns the current user'
     end
 
-    field :res, [Types::ResourceType], null: true do
-      description 'Returns Resources Attributes'
-    end
+    # field :res, [Types::ResourceType], null: true do
+    #   description 'Returns Resources Attributes'
+    # end
     
-    field :bus, [Types::BusinessProcessType], null: true do
-      description 'Returns Business Processes Attributes'
-    end
+    # field :bus, [Types::BusinessProcessType], null: true do
+    #   description 'Returns Business Processes Attributes'
+    # end
     
-    field :it, [Types::ItSystemType], null: true do
-      description 'Returns IT Systems Attributes'
-    end
+    # field :it, [Types::ItSystemType], null: true do
+    #   description 'Returns IT Systems Attributes'
+    # end
 
-    field :ref, [Types::ReferenceType], null: true do
-      description 'Returns References from SubPolicy'
-    end
+    # field :ref, [Types::ReferenceType], null: true do
+    #   description 'Returns References from SubPolicy'
+    # end
 
-    field :control, [Types::ControlType], null: true do
-      description 'Returns Master Control Data '
-    end
+    # field :control, [Types::ControlType], null: true do
+    #   description 'Returns Master Control Data '
+    # end
 
     field :policy, Types::PolicyType, null: true do
       argument :id, ID, required: true
+      description 'Returns Policy By ID'
     end
 
     field :policy_category, Types::PolicyCategoryType, null: true do
       argument :id, ID, required: true
+      description 'Returns Policy Category By ID'
     end
 
-    field :risk, [Types::RiskType], null: true do
-      description ' Returns Risk Master Data'
+    field :resource, Types::ResourceType, null: true do
+      argument :id, ID, required: true
+      description 'Returns Resource By ID'
     end
+
+    field :user, Types::UserType, null: true do
+      argument :id, ID, required: true
+      description 'Returns User By ID'
+    end
+
+    field :reference, Types::ReferenceType, null: true do
+      argument :id, ID, required: true
+      description 'Returns Reference By ID'
+    end
+
+    field :business_process, Types::BusinessProcessType, null: true do
+      argument :id, ID, required: true
+      description 'Returns Business Process By ID'
+    end
+
+    field :it_system, Types::ItSystemType, null: true do
+      argument :id, ID, required: true
+      description 'Returns IT System By ID'
+    end
+
+    field :control, Types::ControlType, null: true do
+      argument :id, ID, required: true
+      description 'Returns Control By ID'
+    end
+
+    field :description, Types::DescriptionType, null: true do
+      argument :id, ID, required: true
+      description 'Returns Description By ID'
+    end
+
+    field :risk, Types::RiskType, null: true do
+      argument :id, ID, required: true
+      description 'Returns Risk By ID'
+    end
+    
 
 
     def me(demo: false)
       context[:current_user]
     end
 
-    def res(demo: false)
-      Resource.all
-    end
+    # def res(demo: false)
+    #   Resource.all
+    # end
 
-    def bus(demo: false)
-      BusinessProcess.all
-    end
+    # def bus(demo: false)
+    #   BusinessProcess.all
+    # end
 
-    def it(demo:false)
-      ItSystem.all
-    end
+    # def it(demo:false)
+    #   ItSystem.all
+    # end
 
-    def ref(demo:false)
-      Reference.all
-    end
+    # def ref(demo:false)
+    #   Reference.all
+    # end
 
-    def control(demo: false)
-      Control.all
-    end
+    # def control(demo: false)
+    #   Control.all
+    # end
 
     def policy(id:)
       Policy.find_by(id:id)
     end
 
-    def risk(demo: false)
-      Risk.all
+    def risk(id:)
+      Risk.find_by(id:id)
     end
 
     def policy_category(id:)
       PolicyCategory.find_by(id:id)
+    end
+
+    def resource(id:)
+      Resource.find_by(id:id)
+    end
+
+    def control(id:)
+      Control.find_by(id:id)
+    end
+
+    def it_system(id:)
+      ItSystem.find_by(id:id)
+    end
+
+    def business_process(id:)
+      BusinessProcess.find_by(id:id)
+    end
+
+    def description(id:)
+      Description.find_by(id:id)
+    end
+
+    def reference(id:)
+      Reference.find_by(id:id)
+    end
+
+    def user(id:)
+      User.find_by(id:id)
     end
 
     field :users, resolver: Resolvers::QueryType::UsersResolver
@@ -85,5 +152,6 @@ module Types
     field :business_processes, resolver: Resolvers::QueryType::BusinessProcessesResolver
     field :references, resolver: Resolvers::QueryType::ReferencesResolver
     field :controls, resolver: Resolvers::QueryType::ControlsResolver
+    field :risks, resolver: Resolvers::QueryType::RisksResolver
   end
 end
