@@ -18,7 +18,16 @@ module Mutations
         user_id: context[:current_user].id,
         reference_ids: reference_ids
       )
-      {policy: policy}
+      MutationResult.call(
+          obj: { policy: policy },
+          success: policy.persisted?,
+          errors: policy.errors
+        )
+    rescue ActiveRecord::RecordInvalid => invalid
+      GraphQL::ExecutionError.new(
+        "Invalid Attributes for #{invalid.record.class.name}: " \
+        "#{invalid.record.errors.full_messages.join(', ')}"
+      )
     end
   end
 end

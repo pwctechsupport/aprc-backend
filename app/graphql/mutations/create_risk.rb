@@ -11,7 +11,16 @@ module Mutations
       risk = Risk.create!(
         name: name
       )
-      {risk: risk}
+      MutationResult.call(
+          obj: { risk: risk },
+          success: risk.persisted?,
+          errors: risk.errors
+        )
+    rescue ActiveRecord::RecordInvalid => invalid
+      GraphQL::ExecutionError.new(
+        "Invalid Attributes for #{invalid.record.class.name}: " \
+        "#{invalid.record.errors.full_messages.join(', ')}"
+      )
     end
   end
 end

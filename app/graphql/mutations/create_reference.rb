@@ -11,7 +11,16 @@ module Mutations
       reference = Reference.create!(
         name: name
       )
-      {reference: reference}
+      MutationResult.call(
+          obj: { reference: reference },
+          success: reference.persisted?,
+          errors: reference.errors
+        )
+    rescue ActiveRecord::RecordInvalid => invalid
+      GraphQL::ExecutionError.new(
+        "Invalid Attributes for #{invalid.record.class.name}: " \
+        "#{invalid.record.errors.full_messages.join(', ')}"
+      )
     end
   end
 end

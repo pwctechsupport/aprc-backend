@@ -11,7 +11,16 @@ module Mutations
       policy_category = PolicyCategory.create!(
         name: name
       )
-      {policy_category: policy_category}
+      MutationResult.call(
+          obj: { policy_category: policy_category },
+          success: policy_category.persisted?,
+          errors: policy_category.errors
+        )
+    rescue ActiveRecord::RecordInvalid => invalid
+      GraphQL::ExecutionError.new(
+        "Invalid Attributes for #{invalid.record.class.name}: " \
+        "#{invalid.record.errors.full_messages.join(', ')}"
+      )
     end
   end
 end
