@@ -13,7 +13,16 @@ module Mutations
         name: name,
         parent: BusinessProcess.find(parent_id)
       )
-      {business_process: business_process}
+      MutationResult.call(
+          obj: { business_process: business_process },
+          success: business_process.persisted?,
+          errors: business_process.errors
+        )
+    rescue ActiveRecord::RecordInvalid => invalid
+      GraphQL::ExecutionError.new(
+        "Invalid Attributes for #{invalid.record.class.name}: " \
+        "#{invalid.record.errors.full_messages.join(', ')}"
+      )
     end
   end
 end

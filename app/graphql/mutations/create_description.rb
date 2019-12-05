@@ -11,7 +11,16 @@ module Mutations
       description = Description.create!(
         name: name
       )
-      {description: description}
+      MutationResult.call(
+          obj: { description: description },
+          success: description.persisted?,
+          errors: description.errors
+        )
+    rescue ActiveRecord::RecordInvalid => invalid
+      GraphQL::ExecutionError.new(
+        "Invalid Attributes for #{invalid.record.class.name}: " \
+        "#{invalid.record.errors.full_messages.join(', ')}"
+      )
     end
   end
 end
