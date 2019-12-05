@@ -7,6 +7,7 @@ module Mutations
     # argument :assertion, String, required: false
     # argument :ipo, String, required: false
     argument :control_owner, String, required: false
+    argument :description, String, required: false
     argument :fte_estimate, Int, required: false 
     argument :type_of_control, Types::Enums::TypeOfControl, required: true
     argument :frequency, Types::Enums::Frequency, required: true
@@ -14,7 +15,6 @@ module Mutations
     argument :assertion, Types::Enums::Assertion, required: true
     argument :ipo, Types::Enums::Ipo, required: true
     argument :business_process_ids, [ID], required: false
-    argument :description_ids, [ID], required: false
     argument :risk_ids, [ID], required: false
 
     # return type from the mutation

@@ -13,9 +13,9 @@ module Mutations
     argument :assertion, Types::Enums::Assertion, required: true
     argument :ipo, Types::Enums::Ipo, required: true
     argument :control_owner, String, required: false
+    argument :description, String, required: false
     argument :fte_estimate, String, required: false 
     argument :business_process_ids, [ID], required: false
-    argument :description_ids, [ID], required: false
     argument :risk_ids, [ID], required: false
 
     field :control, Types::ControlType, null: true
