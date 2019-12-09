@@ -1,4 +1,4 @@
 class PolicyReference < ApplicationRecord
-  belongs_to :policy
-  belongs_to :reference
+  belongs_to :policy, optional: true
+  belongs_to :reference, optional: true
 end

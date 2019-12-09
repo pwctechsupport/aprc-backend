@@ -11,6 +11,8 @@ module Mutations
     argument :it_system_ids, [ID], required: false
     argument :resource_ids, [ID], required: false
     argument :business_process_ids, [ID], required: false
+    argument :parent_id, ID, required: false
+    argument :reference_ids, [ID], required: false
 
     field :policy, Types::PolicyType, null: false
 
