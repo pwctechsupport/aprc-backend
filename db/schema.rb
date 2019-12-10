@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_12_10_092011) do
+ActiveRecord::Schema.define(version: 2019_12_10_113810) do
 
   create_table "business_processes", options: "ENGINE=InnoDB DEFAULT CHARSET=latin1", force: :cascade do |t|
     t.text "name"
@@ -142,6 +142,16 @@ ActiveRecord::Schema.define(version: 2019_12_10_092011) do
     t.index ["resource_id"], name: "index_resource_controls_on_resource_id"
   end
 
+  create_table "resource_ratings", options: "ENGINE=InnoDB DEFAULT CHARSET=latin1", force: :cascade do |t|
+    t.bigint "resource_id"
+    t.float "rating"
+    t.bigint "user_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["resource_id"], name: "index_resource_ratings_on_resource_id"
+    t.index ["user_id"], name: "index_resource_ratings_on_user_id"
+  end
+
   create_table "resources", options: "ENGINE=InnoDB DEFAULT CHARSET=latin1", force: :cascade do |t|
     t.text "name"
     t.datetime "created_at", null: false
@@ -215,6 +225,8 @@ ActiveRecord::Schema.define(version: 2019_12_10_092011) do
   add_foreign_key "policy_resources", "resources"
   add_foreign_key "resource_controls", "controls"
   add_foreign_key "resource_controls", "resources"
+  add_foreign_key "resource_ratings", "resources"
+  add_foreign_key "resource_ratings", "users"
   add_foreign_key "resources", "business_processes"
   add_foreign_key "resources", "controls"
   add_foreign_key "resources", "policies"
