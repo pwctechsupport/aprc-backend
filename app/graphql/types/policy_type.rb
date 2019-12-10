@@ -16,5 +16,7 @@ module Types
     field :reference_ids, [Types::ReferenceType], null: true
     field :references, [Types::ReferenceType], null: true
     field :policy_category, Types::PolicyCategoryType, null: true
+    field :status, String, null: true
+
   end
 end

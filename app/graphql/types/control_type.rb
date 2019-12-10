@@ -13,6 +13,7 @@ module Types
     field :risks, [Types::RiskType], null: true
     field :risk_ids, [Types::RiskType], null: true
     field :descriptions, [Types::DescriptionType], null: true
+    field :status, String, null: true
     field :description_ids, [Types::DescriptionType], null: true
   end
 end

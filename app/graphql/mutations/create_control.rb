@@ -15,6 +15,7 @@ module Mutations
     argument :ipo, Types::Enums::Ipo, required: true
     argument :business_process_ids, [ID], required: false
     argument :description_ids, [ID], required: false
+    argument :status, Types::Enums::Status, required: true
     argument :risk_ids, [ID], required: false
 
     # return type from the mutation
