@@ -8,4 +8,5 @@ class Resource < ApplicationRecord
   # belongs_to :policy, optional: true, class_name: "Policy", foreign_key: "policy_id"
   # belongs_to :control, optional: true, class_name: "Control", foreign_key: "control_id"
   belongs_to :business_process, optional: true, class_name: "BusinessProcess", foreign_key: "business_process_id"
+  has_many :resource_ratings
 end

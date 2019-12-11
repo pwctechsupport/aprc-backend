@@ -28,6 +28,12 @@ module Types
     field :update_description, mutation: Mutations::UpdateDescription
     field :destroy_description, mutation: Mutations::DestroyDescription
 
+    field :create_resource_rating, mutation: Mutations::CreateResourceRating
+    field :update_resource_rating, mutation: Mutations::UpdateResourceRating
+    field :destroy_resource_rating, mutation: Mutations::DestroyResourceRating
+
+
+
   
 
 
