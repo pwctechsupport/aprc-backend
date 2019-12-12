@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_12_10_113810) do
+ActiveRecord::Schema.define(version: 2019_12_12_071136) do
 
   create_table "business_processes", options: "ENGINE=InnoDB DEFAULT CHARSET=latin1", force: :cascade do |t|
     t.text "name"
@@ -80,6 +80,7 @@ ActiveRecord::Schema.define(version: 2019_12_10_113810) do
     t.bigint "user_id"
     t.string "ancestry"
     t.text "status"
+    t.integer "visit", default: 0
     t.index ["ancestry"], name: "index_policies_on_ancestry"
     t.index ["policy_category_id"], name: "index_policies_on_policy_category_id"
     t.index ["user_id"], name: "index_policies_on_user_id"
@@ -98,6 +99,15 @@ ActiveRecord::Schema.define(version: 2019_12_10_113810) do
     t.string "name"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+  end
+
+  create_table "policy_controls", options: "ENGINE=InnoDB DEFAULT CHARSET=latin1", force: :cascade do |t|
+    t.bigint "policy_id"
+    t.bigint "control_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["control_id"], name: "index_policy_controls_on_control_id"
+    t.index ["policy_id"], name: "index_policy_controls_on_policy_id"
   end
 
   create_table "policy_it_systems", options: "ENGINE=InnoDB DEFAULT CHARSET=latin1", force: :cascade do |t|
@@ -125,6 +135,15 @@ ActiveRecord::Schema.define(version: 2019_12_10_113810) do
     t.bigint "resource_id"
     t.index ["policy_id"], name: "index_policy_resources_on_policy_id"
     t.index ["resource_id"], name: "index_policy_resources_on_resource_id"
+  end
+
+  create_table "policy_risks", options: "ENGINE=InnoDB DEFAULT CHARSET=latin1", force: :cascade do |t|
+    t.bigint "policy_id"
+    t.bigint "risk_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["policy_id"], name: "index_policy_risks_on_policy_id"
+    t.index ["risk_id"], name: "index_policy_risks_on_risk_id"
   end
 
   create_table "references", options: "ENGINE=InnoDB DEFAULT CHARSET=latin1", force: :cascade do |t|
@@ -164,6 +183,7 @@ ActiveRecord::Schema.define(version: 2019_12_10_113810) do
     t.bigint "control_id"
     t.bigint "business_process_id"
     t.string "category"
+    t.integer "visit", default: 0
     t.index ["business_process_id"], name: "index_resources_on_business_process_id"
     t.index ["control_id"], name: "index_resources_on_control_id"
     t.index ["policy_id"], name: "index_resources_on_policy_id"
@@ -175,6 +195,8 @@ ActiveRecord::Schema.define(version: 2019_12_10_113810) do
     t.datetime "updated_at", null: false
     t.text "level_of_risk"
     t.text "status"
+    t.bigint "business_process_id"
+    t.index ["business_process_id"], name: "index_risks_on_business_process_id"
   end
 
   create_table "users", options: "ENGINE=InnoDB DEFAULT CHARSET=latin1", force: :cascade do |t|
@@ -217,12 +239,16 @@ ActiveRecord::Schema.define(version: 2019_12_10_113810) do
   add_foreign_key "policies", "users"
   add_foreign_key "policy_business_processes", "business_processes"
   add_foreign_key "policy_business_processes", "policies"
+  add_foreign_key "policy_controls", "controls"
+  add_foreign_key "policy_controls", "policies"
   add_foreign_key "policy_it_systems", "it_systems"
   add_foreign_key "policy_it_systems", "policies"
   add_foreign_key "policy_references", "policies"
   add_foreign_key "policy_references", "references"
   add_foreign_key "policy_resources", "policies"
   add_foreign_key "policy_resources", "resources"
+  add_foreign_key "policy_risks", "policies"
+  add_foreign_key "policy_risks", "risks"
   add_foreign_key "resource_controls", "controls"
   add_foreign_key "resource_controls", "resources"
   add_foreign_key "resource_ratings", "resources"
@@ -230,4 +256,5 @@ ActiveRecord::Schema.define(version: 2019_12_10_113810) do
   add_foreign_key "resources", "business_processes"
   add_foreign_key "resources", "controls"
   add_foreign_key "resources", "policies"
+  add_foreign_key "risks", "business_processes"
 end

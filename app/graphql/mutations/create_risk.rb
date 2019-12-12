@@ -4,6 +4,7 @@ module Mutations
     argument :name, String, required: true
     argument :level_of_risk, Types::Enums::LevelOfRisk, required: true
     argument :status, Types::Enums::Status, required: true
+    argument :business_process_id, ID, required: false
 
     # return type from the mutation
     field :risk, Types::RiskType, null: true

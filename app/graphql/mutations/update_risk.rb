@@ -8,6 +8,8 @@ module Mutations
     argument :name, String, required: false
     argument :status, Types::Enums::Status, required: false
     argument :level_of_risk, Types::Enums::LevelOfRisk, required: false
+    argument :business_process_id, ID, required: false
+
 
 
 

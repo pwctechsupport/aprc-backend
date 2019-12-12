@@ -12,6 +12,8 @@ module Types
     field :business_process, Types::BusinessProcessType, null: true
     field :rating, Float, null: true
     field :total_rating, Int, null: true
+    field :visit,Int, null: false
+    
     def  resupload_url
       attachment = object.resupload.url
     end

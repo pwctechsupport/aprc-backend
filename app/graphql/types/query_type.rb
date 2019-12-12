@@ -109,7 +109,10 @@ module Types
     # end
 
     def policy(id:)
-      Policy.find_by(id:id)
+      pol = Policy.find_by(id:id)
+      vieu = pol.visit +=1
+      pol.update(visit: vieu)
+      pol
     end
 
     def risk(id:)
@@ -121,7 +124,10 @@ module Types
     end
 
     def resource(id:)
-      Resource.find_by(id:id)
+      res = Resource.find_by(id:id)
+      view = res.visit += 1
+      res.update(visit: view)
+      res
     end
 
     def control(id:)
