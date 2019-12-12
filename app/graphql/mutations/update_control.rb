@@ -14,10 +14,10 @@ module Mutations
     argument :ipo, Types::Enums::Ipo, required: false
     argument :control_owner, String, required: false
     argument :fte_estimate, String, required: false 
-    argument :business_process_ids, [ID], required: false
-    argument :description_ids, [ID], required: false
-    argument :status, Types::Enums::Status, required: false
-    argument :risk_ids, [ID], required: false
+    argument :business_process_id, ID, required: false
+    argument :description, String, required: false
+    argument :status, Types::Enums::Status, required: true
+    argument :risk_id, ID, required: false
 
     field :control, Types::ControlType, null: true
 
