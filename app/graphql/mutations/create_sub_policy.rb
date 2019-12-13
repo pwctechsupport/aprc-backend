@@ -6,9 +6,6 @@ module Mutations
     argument :parent_id, ID, required: true
     argument :reference_ids, [ID], required: false
     argument :status, Types::Enums::Status, required: true
-    argument :business_process_ids, [ID], required: false
-    argument :control_ids, [ID], required: false
-    argument :risk_ids, [ID], required: false
 
 
 
