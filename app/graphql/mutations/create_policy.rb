@@ -15,6 +15,8 @@ module Mutations
     field :policy, Types::PolicyType, null: true
 
     def resolve(args)
+      # current_user = context[:current_user]
+      # policy = current_user.policies.create!(args.to_h)
       policy = Policy.create!(args.to_h)
       MutationResult.call(
           obj: { policy: policy },

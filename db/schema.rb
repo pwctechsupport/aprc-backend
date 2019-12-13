@@ -20,6 +20,12 @@ ActiveRecord::Schema.define(version: 2019_12_12_071136) do
     t.index ["ancestry"], name: "index_business_processes_on_ancestry"
   end
 
+  create_table "categories", options: "ENGINE=InnoDB DEFAULT CHARSET=latin1", force: :cascade do |t|
+    t.string "name"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "control_business_processes", options: "ENGINE=InnoDB DEFAULT CHARSET=latin1", force: :cascade do |t|
     t.bigint "control_id"
     t.bigint "business_process_id"
@@ -182,11 +188,15 @@ ActiveRecord::Schema.define(version: 2019_12_12_071136) do
     t.bigint "policy_id"
     t.bigint "control_id"
     t.bigint "business_process_id"
+    t.bigint "policy_id_id_id"
+    t.bigint "policy_id_id"
     t.string "category"
     t.integer "visit", default: 0
     t.index ["business_process_id"], name: "index_resources_on_business_process_id"
     t.index ["control_id"], name: "index_resources_on_control_id"
     t.index ["policy_id"], name: "index_resources_on_policy_id"
+    t.index ["policy_id_id"], name: "index_resources_on_policy_id_id"
+    t.index ["policy_id_id_id"], name: "index_resources_on_policy_id_id_id"
   end
 
   create_table "risks", options: "ENGINE=InnoDB DEFAULT CHARSET=latin1", force: :cascade do |t|
