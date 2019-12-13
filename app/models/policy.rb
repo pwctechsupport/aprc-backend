@@ -10,4 +10,8 @@ class Policy < ApplicationRecord
   has_ancestry
   has_many :policy_references, dependent: :destroy
   has_many :references, through: :policy_references
+  has_many :policy_controls, dependent: :destroy
+  has_many :controls, through: :policy_controls
+  has_many :policy_risks, dependent: :destroy
+  has_many :risks, through: :policy_risks
 end

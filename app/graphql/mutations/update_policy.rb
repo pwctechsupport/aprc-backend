@@ -12,8 +12,12 @@ module Mutations
     argument :resource_ids, [ID], required: false
     argument :business_process_ids, [ID], required: false
     argument :parent_id, ID, required: false
+    argument :status, Types::Enums::Status, required: false
     argument :reference_ids, [ID], required: false
+    argument :risk_ids, [ID], required: false
+    argument :control_ids, [ID], required: false
 
+    
     field :policy, Types::PolicyType, null: false
 
     def resolve(id:, **args)

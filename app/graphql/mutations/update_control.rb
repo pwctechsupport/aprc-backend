@@ -7,15 +7,17 @@ module Mutations
     argument :id, ID, required: true
     # argument :control_description, String, required: false
     # argument :assertion_risk, String, required: false
-    argument :type_of_control, Types::Enums::TypeOfControl, required: true
-    argument :frequency, Types::Enums::Frequency, required: true
-    argument :nature, Types::Enums::Nature, required: true 
-    argument :assertion, Types::Enums::Assertion, required: true
-    argument :ipo, Types::Enums::Ipo, required: true
+    argument :type_of_control, Types::Enums::TypeOfControl, required: false
+    argument :frequency, Types::Enums::Frequency, required: false
+    argument :nature, Types::Enums::Nature, required: false 
+    argument :assertion, Types::Enums::Assertion, required: false
+    argument :ipo, Types::Enums::Ipo, required: false
     argument :control_owner, String, required: false
     argument :description, String, required: false
     argument :fte_estimate, String, required: false 
     argument :business_process_ids, [ID], required: false
+    argument :description_ids, [ID], required: false
+    argument :status, Types::Enums::Status, required: false
     argument :risk_ids, [ID], required: false
 
     field :control, Types::ControlType, null: true

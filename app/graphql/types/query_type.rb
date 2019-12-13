@@ -77,6 +77,10 @@ module Types
       argument :id, ID, required: true
       description 'Returns Risk By ID'
     end
+
+    field :resource_rating, Types::ResourceRatingType, null: true do
+      description 'Returns the Current Resource Rating and Rating Calculation'
+    end
     
 
 
@@ -105,7 +109,10 @@ module Types
     # end
 
     def policy(id:)
-      Policy.find_by(id:id)
+      pol = Policy.find_by(id:id)
+      vieu = pol.visit +=1
+      pol.update(visit: vieu)
+      pol
     end
 
     def risk(id:)
@@ -117,7 +124,10 @@ module Types
     end
 
     def resource(id:)
-      Resource.find_by(id:id)
+      res = Resource.find_by(id:id)
+      view = res.visit += 1
+      res.update(visit: view)
+      res
     end
 
     def control(id:)
@@ -144,6 +154,11 @@ module Types
       User.find_by(id:id)
     end
 
+    def resource_rating(demo: false)
+      ResourceRating.all
+    end
+
+
     field :users, resolver: Resolvers::QueryType::UsersResolver
     field :policies, resolver: Resolvers::QueryType::PoliciesResolver
     field :policy_categories, resolver: Resolvers::QueryType::PolicyCategoriesResolver
@@ -153,5 +168,6 @@ module Types
     field :references, resolver: Resolvers::QueryType::ReferencesResolver
     field :controls, resolver: Resolvers::QueryType::ControlsResolver
     field :risks, resolver: Resolvers::QueryType::RisksResolver
+    field :resource_ratings, resolver: Resolvers::QueryType::ResourceRatingsResolver
   end
 end
