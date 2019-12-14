@@ -7,5 +7,7 @@ module Types
     field :parent, Types::BusinessProcessType, null: true
     field :children, [Types::BusinessProcessType], null: true
     field :ancestors, [Types::BusinessProcessType], null: true
+    field :created_at, GraphQL::Types::ISO8601DateTime, null: false
+    field :updated_at, GraphQL::Types::ISO8601DateTime, null: false
   end
 end

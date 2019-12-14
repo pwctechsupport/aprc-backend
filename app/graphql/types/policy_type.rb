@@ -26,5 +26,8 @@ module Types
     field :ancestors, [Types::PolicyType], null: true
     field :status, String, null: true
     field :visit, Int, null: false
+    field :created_at, GraphQL::Types::ISO8601DateTime, null: false
+    field :updated_at, GraphQL::Types::ISO8601DateTime, null: false
+
   end
 end
