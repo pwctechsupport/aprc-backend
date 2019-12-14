@@ -11,6 +11,8 @@ module Types
     field :policy_category, Types::PolicyCategoryType, null: true do
       argument :id, ID, required: true
     end
+    field :created_at, GraphQL::Types::ISO8601DateTime, null: false
+    field :updated_at, GraphQL::Types::ISO8601DateTime, null: false
     # field :controls, [Types::ControlType], null: true
     # field :risks, [Types::RiskType], null: true
     # field :references, [Types::ReferenceType], null: true

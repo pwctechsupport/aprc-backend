@@ -13,6 +13,8 @@ module Types
     field :rating, Float, null: true
     field :total_rating, Int, null: true
     field :visit,Int, null: false
+    field :created_at, GraphQL::Types::ISO8601DateTime, null: false
+    field :updated_at, GraphQL::Types::ISO8601DateTime, null: false
     
     def  resupload_url
       attachment = object.resupload.url
