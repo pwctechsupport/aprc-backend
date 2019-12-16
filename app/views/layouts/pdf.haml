@@ -1,0 +1,14 @@
+!!!
+%html
+  %head
+    %meta{:content => "text/html; charset=UTF-8", "http-equiv" => "Content-Type"}/
+    %title Print Policy
+    -# = stylesheet_link_tag "https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
+    = wicked_pdf_stylesheet_link_tag "pdf"
+    = javascript_include_tag wicked_pdf_asset_base64("pdf.js")
+    = javascript_include_tag "//www.google.com/jsapi"
+  %body{:onload => "number_pages"}
+    #header{:style => "width:100px;"}
+      / = wicked_pdf_image_tag @sales_order.vendor.store.icon
+    #content
+      = yield
