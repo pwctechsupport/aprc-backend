@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_12_12_071136) do
+ActiveRecord::Schema.define(version: 2019_12_16_105057) do
 
   create_table "business_processes", options: "ENGINE=InnoDB DEFAULT CHARSET=latin1", force: :cascade do |t|
     t.text "name"
@@ -85,7 +85,7 @@ ActiveRecord::Schema.define(version: 2019_12_12_071136) do
     t.datetime "updated_at", null: false
     t.bigint "user_id"
     t.string "ancestry"
-    t.text "status"
+    t.string "status", default: "draft"
     t.integer "visit", default: 0
     t.index ["ancestry"], name: "index_policies_on_ancestry"
     t.index ["policy_category_id"], name: "index_policies_on_policy_category_id"
