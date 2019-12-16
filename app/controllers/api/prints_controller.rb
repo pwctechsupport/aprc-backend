@@ -1,7 +1,7 @@
 module Api
   class PrintsController < ApiController
 
-    def show
+    def index
       @policy = Policy.find(params[:id])
       respond_to do |format|
         format.json
