@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_12_16_105057) do
+ActiveRecord::Schema.define(version: 2019_12_16_110647) do
 
   create_table "business_processes", options: "ENGINE=InnoDB DEFAULT CHARSET=latin1", force: :cascade do |t|
     t.text "name"
@@ -62,7 +62,7 @@ ActiveRecord::Schema.define(version: 2019_12_16_105057) do
     t.text "control_owner"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.text "status"
+    t.string "status", default: "draft"
   end
 
   create_table "descriptions", options: "ENGINE=InnoDB DEFAULT CHARSET=latin1", force: :cascade do |t|
@@ -204,7 +204,7 @@ ActiveRecord::Schema.define(version: 2019_12_16_105057) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.text "level_of_risk"
-    t.text "status"
+    t.string "status", default: "draft"
     t.bigint "business_process_id"
     t.index ["business_process_id"], name: "index_risks_on_business_process_id"
   end

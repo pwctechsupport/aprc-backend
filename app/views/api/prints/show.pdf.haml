@@ -1,30 +1,16 @@
-%table{:style => "margin-top: 0; margin-bottom: 15px;border:none;"}
-  %colgroup
-    %col{:style => "width: 20%"}/
-    %col{:style => "width: 55%"}/
-    %col{:style => "width: 25%"}/
-  %tbody{:style => "border:none;"}
-    %td.border-none 
-      -# %h1.text-center POLICY
-      -# %h3.text-center
-    %td.border-none 
-      %p.text-left{:style => "font-family: arial;font-size: 120%"} 
-        Jl. Tebet Raya No. 45 B
-        %br/
-        South Jakarta
-        %br/
-        Indonesia
-        %br/
-        %b> Phone
-        &nbsp;(021) 7993280
-        %br/
-        %b> Email
-        &nbsp;hello@transfez.com
--# %h3.text-center TRANSACTION DETAILS
--# %h2.text-center{style: "color: #49abb8"}= oke aja
-
-
-
-.container{style: "background-color: rgb(25, 110, 151); height: 100%"}
-  %h3{style: "color: white; padding-left: 1%; padding-top: 2%; font-family: arial; font-size: 120%"} BOB RECEIPT
-%br 
+!!!
+%html
+  %head
+    %meta{:content => "text/html; charset=UTF-8", "http-equiv" => "Content-Type"}/
+    %meta{:charset => "utf-8"}/
+    %meta{:content => "IE=edge", "http-equiv" => "X-UA-Compatible"}/
+    %title #{@policy.title}
+  %body
+    %h1 #{@policy.title}
+    %p #{@policy.description}
+    %ul
+      -@policy.children.each do |chil|
+        %li
+          %b=chil.title
+        %p= chil.description
+    
