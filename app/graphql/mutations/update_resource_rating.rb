@@ -2,14 +2,13 @@
 
 module Mutations
   class UpdateResourceRating < Mutations::BaseMutation
-    argument :id,ID, required: true
-    argument :resource_id, ID, required: false
+    argument :resource_id, ID, required: true
     argument :rating, Float, required: true
     argument :user_id, ID, required: true
 
     field :resource_rating, Types::ResourceRatingType, null: true
 
-    def resolve(id:, **args)
+    def resolve(resource_id:, **args)
       resource_rating = ResourceRating.find(id)
       byebug
       success = resource_rating.update_attributes(args.to_h)

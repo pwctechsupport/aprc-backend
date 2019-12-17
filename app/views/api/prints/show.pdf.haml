@@ -13,4 +13,23 @@
         %li
           %b=chil.title
         %p= chil.description
-    
+        %ul
+          -chil.children.each do |chilo|
+            %li
+              %b=chilo.title
+            %p= chilo.description
+            %ul
+              -chilo.children.each do |chili|
+                %li
+                  %b=chili.title
+                %p= chili.description
+                %ul
+                  -chili.children.each do |chilu|
+                    %li
+                      %b=chilu.title
+                    %p= chilu.description
+                    %ul
+                      -chilu.children.each do |chile|
+                        %li
+                          %b=chile.title
+                        %p= chile.description
