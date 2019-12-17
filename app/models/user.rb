@@ -6,6 +6,7 @@ class User < ApplicationRecord
   has_many :policies
   has_many  :policy_category, through: :policies
   has_many :resource_ratings
+  has_many :bookmark_policies
   devise :database_authenticatable,
          :registerable,
          :recoverable, 
