@@ -19,12 +19,11 @@ module Types
     # field :references, [Types::ReferenceType], null: true
     # field :business_processes, [Types::BusinessProcessType], null: true
     # field :resources, [Types::ResourceType], null: true
-
+    
     def bookmark_policies
-      current_user = context[:current_user]
-      current_user.bookmark_policies
+      bookmark = object.bookmark_policies
     end
-      
+    
     def policies
       current_user = context[:current_user]
       current_user.policies
