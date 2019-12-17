@@ -5,7 +5,7 @@ module Mutations
     argument :description, String, required: true
     argument :parent_id, ID, required: true
     argument :reference_ids, [ID], required: false
-    argument :status, Types::Enums::Status, required: true
+    argument :status, Types::Enums::Status, required: false
 
 
 
