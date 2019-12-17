@@ -14,4 +14,5 @@ class Policy < ApplicationRecord
   has_many :controls, through: :policy_controls
   has_many :policy_risks, dependent: :destroy
   has_many :risks, through: :policy_risks
+  has_many :bookmark_policies
 end

@@ -26,7 +26,9 @@ gem 'jbuilder', '~> 2.5'
 gem 'mysql2'
 gem 'graphql_playground-rails'
 gem 'wicked_pdf'
-gem 'wkhtmltopdf-installer'
+gem 'wkhtmltopdf-binary-edge', '~> 0.12.5.1'
+
+gem 'haml'
 
 # Use Redis adapter to run Action Cable in production
 # gem 'redis', '~> 4.0'

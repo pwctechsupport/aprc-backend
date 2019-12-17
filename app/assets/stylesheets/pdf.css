@@ -1,0 +1,78 @@
+table {
+  width: 100%;
+  border: 1px solid #999999;
+}
+
+th,
+td {
+  padding: 7px 10px 10px 10px;
+  border-bottom: 1px solid black;
+}
+
+.border-none {
+  border: none;
+}
+
+.m-b-15 {
+  margin: 10px;
+}
+
+th {
+  border-bottom: 2px solid #111111;
+  border-top: 1px solid #999999;
+  font-size: 90%;
+  text-align: left;
+  text-transform: uppercase;
+}
+
+tr.even {
+  background-color: green;
+}
+
+tr.odd {
+  background-color: yellow;
+}
+
+.text-center {
+  text-align: center !important;
+}
+
+.graph td {
+  border-bottom: none;
+}
+
+.text-right {
+  text-align: right !important;
+}
+
+.bold {
+  font-weight: bolder;
+}
+
+div.alwaysbreak {
+  page-break-before: always;
+}
+
+div.nobreak:before {
+  clear: both;
+}
+
+div.nobreak {
+  page-break-inside: avoid;
+}
+
+thead {
+  display: table-row-group;
+}
+
+tfoot {
+  display: table-row-group;
+}
+
+tr {
+  page-break-inside: avoid;
+}
+
+
+
+

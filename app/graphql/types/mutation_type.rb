@@ -31,7 +31,8 @@ module Types
     field :create_resource_rating, mutation: Mutations::CreateResourceRating
     field :update_resource_rating, mutation: Mutations::UpdateResourceRating
     field :destroy_resource_rating, mutation: Mutations::DestroyResourceRating
-
+    field :create_bookmark_policy, mutation: Mutations::CreateBookmarkPolicy
+    field :destroy_bookmark_policy, mutation: Mutations::DestroyBookmarkPolicy
 
 
   

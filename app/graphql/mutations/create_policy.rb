@@ -6,7 +6,7 @@ module Mutations
     argument :policy_category_id, ID, required: false 
     argument :it_system_ids, [ID], required: false
     argument :resource_ids, [ID], required: false
-    argument :status, Types::Enums::Status, required: true
+    argument :status, Types::Enums::Status, required: false
     argument :business_process_ids, [ID], required: false
     argument :control_ids, [ID], required: false
     argument :risk_ids, [ID], required: false
@@ -15,9 +15,9 @@ module Mutations
     field :policy, Types::PolicyType, null: true
 
     def resolve(args)
-      # current_user = context[:current_user]
-      # policy = current_user.policies.create!(args.to_h)
-      policy = Policy.create!(args.to_h)
+      current_user = context[:current_user]
+      policy = current_user.policies.create!(args.to_h)
+      # policy = Policy.create!(args.to_h)
       MutationResult.call(
           obj: { policy: policy },
           success: policy.persisted?,

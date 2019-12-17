@@ -1,0 +1,35 @@
+!!!
+%html
+  %head
+    %meta{:content => "text/html; charset=UTF-8", "http-equiv" => "Content-Type"}/
+    %meta{:charset => "utf-8"}/
+    %meta{:content => "IE=edge", "http-equiv" => "X-UA-Compatible"}/
+    %title #{@policy.title}
+  %body
+    %h1 #{@policy.title}
+    %p #{@policy.description}
+    %ul
+      -@policy.children.each do |chil|
+        %li
+          %b=chil.title
+        %p= chil.description
+        %ul
+          -chil.children.each do |chilo|
+            %li
+              %b=chilo.title
+            %p= chilo.description
+            %ul
+              -chilo.children.each do |chili|
+                %li
+                  %b=chili.title
+                %p= chili.description
+                %ul
+                  -chili.children.each do |chilu|
+                    %li
+                      %b=chilu.title
+                    %p= chilu.description
+                    %ul
+                      -chilu.children.each do |chile|
+                        %li
+                          %b=chile.title
+                        %p= chile.description
