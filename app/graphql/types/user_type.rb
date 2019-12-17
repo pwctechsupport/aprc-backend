@@ -13,13 +13,18 @@ module Types
     end
     field :created_at, GraphQL::Types::ISO8601DateTime, null: false
     field :updated_at, GraphQL::Types::ISO8601DateTime, null: false
+    field :bookmark_policies, [Types::BookmarkPolicyType], null: false
     # field :controls, [Types::ControlType], null: true
     # field :risks, [Types::RiskType], null: true
     # field :references, [Types::ReferenceType], null: true
     # field :business_processes, [Types::BusinessProcessType], null: true
     # field :resources, [Types::ResourceType], null: true
 
-
+    def bookmark_policies
+      current_user = context[:current_user]
+      current_user.bookmark_policies
+    end
+      
     def policies
       current_user = context[:current_user]
       current_user.policies

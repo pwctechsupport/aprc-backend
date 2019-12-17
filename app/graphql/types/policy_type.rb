@@ -24,6 +24,7 @@ module Types
     field :visit, Int, null: false
     field :created_at, GraphQL::Types::ISO8601DateTime, null: false
     field :updated_at, GraphQL::Types::ISO8601DateTime, null: false
+    field :bookmark_policies, [Types::BookmarkPolicyType] , null: true
 
   end
 end
