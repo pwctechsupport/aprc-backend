@@ -9,7 +9,13 @@ module Mutations
     field :resource_rating, Types::ResourceRatingType, null: true
 
     def resolve(args)
-      resource_rating = ResourceRating.create!(args.to_h)
+      resource_rating = ResourceRating.where(user_id: args[:user_id], resource_id: args[:resource_id]).first
+      if resource_rating
+        resource_rating.update_attributes(args.to_h)
+      else
+        resource_rating = ResourceRating.create!(args.to_h)
+      end
+
       MutationResult.call(
         obj: {resource_rating: resource_rating},
         success: resource_rating.persisted?,

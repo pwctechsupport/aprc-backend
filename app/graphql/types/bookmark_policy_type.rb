@@ -5,6 +5,9 @@ module Types
     field :user_id, ID, null: false
     field :created_at, GraphQL::Types::ISO8601DateTime, null: false
     field :updated_at, GraphQL::Types::ISO8601DateTime, null: false
+
+
+    
     # field :rating_avg, ID, null: true do
     #   argument :resource_id, ID, required: true
     # end
