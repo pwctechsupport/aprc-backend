@@ -8,7 +8,15 @@ module Mutations
 
     def resolve(args)
       current_user = context[:current_user]
-      bookmark_policy = current_user.bookmark_policies.create!(args.to_h)
+
+      bookmark_policy = current_user.bookmark_policies.where(user_id: current_user.id, policy_id: args[:policy_id]).first
+      if bookmark_policy
+        bookmark_policy.update_attributes(args.to_h)
+      else
+        bookmark_policy = current_user.bookmark_policies.create!(args.to_h)
+      end
+
+      # bookmark_policy = current_user.bookmark_policies.create!(args.to_h)
       MutationResult.call(
         obj: {bookmark_policy: bookmark_policy},
         success: bookmark_policy.persisted?,
