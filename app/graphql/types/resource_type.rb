@@ -20,6 +20,7 @@ module Types
       attachment = object.resupload.url
     end
 
+
     def rating
       rating_total = object.resource_ratings.count
       rating_sum =  object.resource_ratings.sum(:rating)
