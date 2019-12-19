@@ -24,11 +24,10 @@ module Types
     field :visit, Int, null: false
     field :created_at, GraphQL::Types::ISO8601DateTime, null: false
     field :updated_at, GraphQL::Types::ISO8601DateTime, null: false
-    field :bookmark_policies, [Types::BookmarkPolicyType] , null: true
+    field :policies_bookmarked_by, [Types::BookmarkPolicyType] , null: true
     
-    def bookmark_policies
-      current_user = context[:current_user]
-      current_user.bookmark_policies
+    def policies_bookmarked_by
+      bookmark = object.bookmark_policies
     end
   end
 end
