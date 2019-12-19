@@ -8,19 +8,17 @@ module Types
     field :token, String, null: false
     field :phone, String, null: true
     field :policies, [Types::PolicyType], null: false
-    field :policy_category, Types::PolicyCategoryType, null: true do
-      argument :id, ID, required: true
-    end
+    field :policy_category, Types::PolicyCategoryType, null: true 
     field :created_at, GraphQL::Types::ISO8601DateTime, null: false
     field :updated_at, GraphQL::Types::ISO8601DateTime, null: false
-    field :bookmark_policies, [Types::BookmarkPolicyType], null: false
+    field :bookmark_policies_user, [Types::BookmarkPolicyType], null: false
     # field :controls, [Types::ControlType], null: true
     # field :risks, [Types::RiskType], null: true
     # field :references, [Types::ReferenceType], null: true
     # field :business_processes, [Types::BusinessProcessType], null: true
     # field :resources, [Types::ResourceType], null: true
     
-    def bookmark_policies
+    def bookmark_policies_user
       bookmark = object.bookmark_policies
     end
     
@@ -29,10 +27,6 @@ module Types
       current_user.policies
     end
 
-    def policy_category(id:)
-      current_user = context[:current_user]
-      current_user.policies.find_by(id:id).policy_category
-    end
 
     field :policy, Types::PolicyType, null: true do
       argument :id, ID, required: true
