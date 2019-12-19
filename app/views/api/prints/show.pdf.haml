@@ -6,30 +6,30 @@
     %meta{:content => "IE=edge", "http-equiv" => "X-UA-Compatible"}/
     %title #{@policy.title}
   %body
-    %h1 #{@policy.title}
-    %p #{@policy.description}
+    %h1 #{@policy.title.html_safe}
+    %p #{@policy.description.html_safe}
     %ul
       -@policy.children.each do |chil|
         %li
-          %b=chil.title
-        %p= chil.description
+          %b=chil.title.html_safe
+        %p= chil.description.html_safe
         %ul
           -chil.children.each do |chilo|
             %li
-              %b=chilo.title
-            %p= chilo.description
+              %b=chilo.title.html_safe
+            %p= chilo.description.html_safe
             %ul
               -chilo.children.each do |chili|
                 %li
-                  %b=chili.title
-                %p= chili.description
+                  %b=chili.title.html_safe
+                %p= chili.description.html_safe
                 %ul
                   -chili.children.each do |chilu|
                     %li
-                      %b=chilu.title
-                    %p= chilu.description
+                      %b=chilu.title.html_safe
+                    %p= chilu.description.html_safe
                     %ul
                       -chilu.children.each do |chile|
                         %li
-                          %b=chile.title
-                        %p= chile.description
+                          %b=chile.title.html_safe
+                        %p= chile.description.html_safe
