@@ -1,7 +1,7 @@
 class ApiController < ActionController::Base
   # attr_accessor :current_api_user
-  # before_action :authenticate_user!
-  # before_action :load_user
+  before_action :authenticate_user!
+  before_action :load_user
 
   private
 
