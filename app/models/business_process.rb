@@ -5,5 +5,5 @@ class BusinessProcess < ApplicationRecord
   has_many :controls, through: :control_business_processes
   has_ancestry
   has_many :resources, dependent: :destroy
-  has_many :risks
+  has_many :risks, dependent: :destroy
 end

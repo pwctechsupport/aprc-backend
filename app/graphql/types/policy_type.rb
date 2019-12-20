@@ -25,6 +25,7 @@ module Types
     field :created_at, GraphQL::Types::ISO8601DateTime, null: false
     field :updated_at, GraphQL::Types::ISO8601DateTime, null: false
     field :policies_bookmarked_by, [Types::BookmarkPolicyType] , null: true
+    field :user, Types::UserType, null:true
     
     def policies_bookmarked_by
       bookmark = object.bookmark_policies

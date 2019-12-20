@@ -6,5 +6,9 @@ module Types
     field :parent_id, ID, null: true
     field :created_at, GraphQL::Types::ISO8601DateTime, null: false
     field :updated_at, GraphQL::Types::ISO8601DateTime, null: false
+    field :policies, [Types::PolicyType], null: false
+    field :resources, [Types::ResourceType], null: false
+    field :controls, [Types::ControlType], null: false
+    field :risks, [Types::RiskType], null: false
   end
 end
