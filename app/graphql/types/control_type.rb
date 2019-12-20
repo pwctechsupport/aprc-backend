@@ -16,6 +16,8 @@ module Types
     field :descriptions, [Types::DescriptionType], null: true
     field :status, String, null: true
     field :description_ids, [Types::DescriptionType], null: true
+    field :policies, [Types::PolicyType], null: false
+    field :resources, [Types::ResourceType], null: false
     field :created_at, GraphQL::Types::ISO8601DateTime, null: false
     field :updated_at, GraphQL::Types::ISO8601DateTime, null: false
   end

@@ -12,6 +12,8 @@ module Types
     field :created_at, GraphQL::Types::ISO8601DateTime, null: false
     field :updated_at, GraphQL::Types::ISO8601DateTime, null: false
     field :bookmark_policies_user, [Types::BookmarkPolicyType], null: false
+    field :resource_ratings, [Types::ResourceRatingType], null: false
+
     # field :controls, [Types::ControlType], null: true
     # field :risks, [Types::RiskType], null: true
     # field :references, [Types::ReferenceType], null: true
