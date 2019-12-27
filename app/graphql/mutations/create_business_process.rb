@@ -2,15 +2,14 @@ module Mutations
   class CreateBusinessProcess < Mutations::BaseMutation
     # arguments passed to the `resolved` method
     argument :name, String, required: true
+    argument :status, Types::Enums::Status, required: false
 
 
     # return type from the mutation
     field :business_process, Types::BusinessProcessType, null: true
 
-    def resolve(name: nil)
-      business_process = BusinessProcess.create!(
-        name: name
-      )
+    def resolve(args)
+      business_process = BusinessProcess.create!(args.to_h)
 
       MutationResult.call(
           obj: { business_process: business_process },

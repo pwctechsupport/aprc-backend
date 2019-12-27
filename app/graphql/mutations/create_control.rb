@@ -8,11 +8,11 @@ module Mutations
     # argument :ipo, String, required: false
     argument :control_owner, String, required: false
     argument :fte_estimate, Int, required: false 
-    argument :type_of_control, Types::Enums::TypeOfControl, required: true
-    argument :frequency, Types::Enums::Frequency, required: true
-    argument :nature, Types::Enums::Nature, required: true 
-    argument :assertion, Types::Enums::Assertion, required: true
-    argument :ipo, Types::Enums::Ipo, required: true
+    argument :type_of_control, Types::Enums::TypeOfControl, required: false
+    argument :frequency, Types::Enums::Frequency, required: false
+    argument :nature, Types::Enums::Nature, required: false 
+    argument :assertion, [Types::Enums::Assertion], required: false
+    argument :ipo, [Types::Enums::Ipo], required: false
     argument :business_process_ids, [ID], required: false
     argument :description_ids, [ID], required: false
     argument :status, Types::Enums::Status, required: false

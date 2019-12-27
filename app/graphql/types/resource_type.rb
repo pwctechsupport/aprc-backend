@@ -13,6 +13,8 @@ module Types
     field :rating, Float, null: true
     field :total_rating, Int, null: true
     field :visit,Int, null: false
+    field :resource_file_type, String, null: false
+    field :status, String, null: true
     field :created_at, GraphQL::Types::ISO8601DateTime, null: false
     field :updated_at, GraphQL::Types::ISO8601DateTime, null: false
     
@@ -20,6 +22,9 @@ module Types
       attachment = object.resupload.url
     end
 
+    def resource_file_type
+      content = object.resupload_content_type
+    end
 
     def rating
       rating_total = object.resource_ratings.count

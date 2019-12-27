@@ -2,14 +2,17 @@ module Mutations
   class CreateReference < Mutations::BaseMutation
     # arguments passed to the `resolved` method
     argument :name, String, required: true
+    argument :status, Types::Enums::Status, required: false
+
 
 
     # return type from the mutation
     field :reference, Types::ReferenceType, null: true
 
-    def resolve(name: nil)
+    def resolve(name: nil, status: nil)
       reference = Reference.create!(
-        name: name
+        name: '#' << name,
+        status: status
       )
       MutationResult.call(
           obj: { reference: reference },

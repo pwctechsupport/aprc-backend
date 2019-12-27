@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_12_20_111035) do
+ActiveRecord::Schema.define(version: 2019_12_27_112242) do
 
   create_table "bookmark_policies", options: "ENGINE=InnoDB DEFAULT CHARSET=latin1", force: :cascade do |t|
     t.bigint "user_id"
@@ -26,6 +26,7 @@ ActiveRecord::Schema.define(version: 2019_12_20_111035) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "ancestry"
+    t.string "status"
     t.index ["ancestry"], name: "index_business_processes_on_ancestry"
   end
 
@@ -72,6 +73,7 @@ ActiveRecord::Schema.define(version: 2019_12_20_111035) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "status", default: "draft"
+    t.boolean "key_control", default: false, null: false
   end
 
   create_table "descriptions", options: "ENGINE=InnoDB DEFAULT CHARSET=latin1", force: :cascade do |t|
@@ -165,6 +167,7 @@ ActiveRecord::Schema.define(version: 2019_12_20_111035) do
     t.string "name"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "status"
   end
 
   create_table "resource_controls", options: "ENGINE=InnoDB DEFAULT CHARSET=latin1", force: :cascade do |t|
@@ -201,6 +204,7 @@ ActiveRecord::Schema.define(version: 2019_12_20_111035) do
     t.bigint "policy_id_id"
     t.string "category"
     t.integer "visit", default: 0
+    t.string "status"
     t.index ["business_process_id"], name: "index_resources_on_business_process_id"
     t.index ["control_id"], name: "index_resources_on_control_id"
     t.index ["policy_id"], name: "index_resources_on_policy_id"
