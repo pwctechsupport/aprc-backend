@@ -11,4 +11,6 @@ class Control < ApplicationRecord
   has_many :resources, through: :resource_controls
   has_many :policy_controls, dependent: :destroy
   has_many :policies, through: :policy_controls
+  has_many :bookmark_controls
+  has_many :users, through: :bookmark_controls
 end

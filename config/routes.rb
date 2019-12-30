@@ -8,6 +8,7 @@ Rails.application.routes.draw do
   namespace :api do
     resources :prints do
       member do
+        get :control
         get :risk
       end
     end

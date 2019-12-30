@@ -14,6 +14,10 @@ module Types
     field :bookmark_policies_user, [Types::BookmarkPolicyType], null: false
     field :resource_ratings, [Types::ResourceRatingType], null: false
 
+    field :risks, [Types::RiskType], null: false
+    field :bookmark_risks_user, [Types::BookmarkRiskType], null: false
+    field :controls, [Types::ControlType], null: false
+    field :bookmark_controls_user, [Types::BookmarkControlType], null: false
     # field :controls, [Types::ControlType], null: true
     # field :risks, [Types::RiskType], null: true
     # field :references, [Types::ReferenceType], null: true
@@ -23,7 +27,15 @@ module Types
     def bookmark_policies_user
       bookmark = object.bookmark_policies
     end
-    
+
+    def bookmark_risks_user
+      bookmark = object.bookmark_risks
+    end
+
+    def bookmark_controls_user
+      bookmark = object.bookmark_controls
+    end
+
     def policies
       current_user = context[:current_user]
       current_user.policies
