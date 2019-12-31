@@ -27,5 +27,19 @@
       -@policy.controls.each do |con|
         %li
           %p=con.control_owner.html_safe
-    
+  .col-md-12
+      %h1 Control Description
+      %ul
+      -@policy.controls.each do |con|
+        %li
+          -con.descriptions.each do |des|
+            %p=con.descriptions.name
+  .row.m-t-10
+    .col-md-12
+      %h1 Control Type
+      %ul
+      -@policy.controls.each do |con|
+        %li
+          %p=con.type_of_control.html_safe
+
     
