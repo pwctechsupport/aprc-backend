@@ -1,4 +1,5 @@
 class Control < ApplicationRecord
+  # validates :control_owner, uniqueness: true
   serialize :assertion, Array
   serialize :ipo, Array
   has_many :control_business_processes, dependent: :destroy

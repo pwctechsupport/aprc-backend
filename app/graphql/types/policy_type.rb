@@ -5,6 +5,7 @@ module Types
     field :description, String, null: true
     field :policy_category_id, ID, null: true
     field :user_id, ID, null: true
+    field :resource_id, ID, null: true
     field :it_system_ids, [Types::ItSystemType], null: true
     field :resource_ids, [Types::ResourceType], null: true
     field :business_process_ids, [Types::BusinessProcessType], null: true
