@@ -4,8 +4,8 @@ module Types
     field :type_of_control, String, null: true
     field :frequency, String, null: true
     field :nature, String, null: true 
-    field :assertion, String, null: true
-    field :ipo, String, null: true
+    field :assertion, [String], null: true
+    field :ipo, [String], null: true
     field :control_owner, String, null: true
     field :description, String, null: true
     field :fte_estimate, Int, null: true
