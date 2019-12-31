@@ -8,6 +8,7 @@ module Mutations
     # argument :ipo, String, required: false
     argument :control_owner, String, required: false
     argument :fte_estimate, Int, required: false 
+    argument :description, String, required: false
     argument :type_of_control, Types::Enums::TypeOfControl, required: false
     argument :frequency, Types::Enums::Frequency, required: false
     argument :nature, Types::Enums::Nature, required: false 
@@ -22,7 +23,12 @@ module Mutations
     field :control, Types::ControlType, null: true
 
     def resolve(args)
-      control = Control.create!(args.to_h)
+      control = Control.find_by(description: args[:description])
+      if control.present?
+        control.update_attributes(args.to_h)
+      else
+        control=Control.create!(args.to_h)
+      end
 
       MutationResult.call(
           obj: { control: control },
