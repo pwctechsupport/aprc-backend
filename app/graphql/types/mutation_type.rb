@@ -34,6 +34,11 @@ module Types
     field :create_bookmark_policy, mutation: Mutations::CreateBookmarkPolicy
     field :destroy_bookmark_policy, mutation: Mutations::DestroyBookmarkPolicy
 
+    field :create_bookmark_risk, mutation: Mutations::CreateBookmarkRisk
+    field :destroy_bookmark_risk, mutation: Mutations::DestroyBookmarkRisk
+    field :create_bookmark_control, mutation: Mutations::CreateBookmarkControl
+    field :destroy_bookmark_control, mutation: Mutations::DestroyBookmarkControl
+
 
   
 

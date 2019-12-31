@@ -7,6 +7,10 @@ class User < ApplicationRecord
   has_many  :policy_category, through: :policies
   has_many :resource_ratings
   has_many :bookmark_policies
+  has_many :risks
+  has_many :controls
+  has_many :bookmark_risks
+  has_many :bookmark_controls
   devise :database_authenticatable,
          :registerable,
          :recoverable, 

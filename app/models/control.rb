@@ -1,4 +1,6 @@
 class Control < ApplicationRecord
+  serialize :assertion, Array
+  serialize :ipo, Array
   has_many :control_business_processes, dependent: :destroy
   has_many :business_processes, through: :control_business_processes
   has_many :control_descriptions, class_name: "ControlDescription", foreign_key: "control_id", dependent: :destroy
@@ -9,4 +11,6 @@ class Control < ApplicationRecord
   has_many :resources, through: :resource_controls
   has_many :policy_controls, dependent: :destroy
   has_many :policies, through: :policy_controls
+  has_many :bookmark_controls
+  has_many :users, through: :bookmark_controls
 end

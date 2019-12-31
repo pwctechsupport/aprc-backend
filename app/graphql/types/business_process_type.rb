@@ -13,5 +13,6 @@ module Types
     field :resources, [Types::ResourceType], null: false
     field :controls, [Types::ControlType], null: false
     field :risks, [Types::RiskType], null: false
+    field :status, String, null: true
   end
 end

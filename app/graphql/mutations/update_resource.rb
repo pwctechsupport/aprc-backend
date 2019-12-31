@@ -12,6 +12,8 @@ module Mutations
     argument :policy_ids, [ID], required: false 
     argument :control_ids, [ID], required: false 
     argument :business_process_id, ID, required: false 
+    argument :status, Types::Enums::Status, required: false
+
 
 
     field :resource, Types::ResourceType, null: false

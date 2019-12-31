@@ -1,4 +1,4 @@
-# frozen_string_literal: true
+
 
 module Mutations
   class UpdateReference < Mutations::BaseMutation
@@ -6,13 +6,18 @@ module Mutations
 
     argument :id, ID, required: true
     argument :name, String, required: false
+    argument :status, Types::Enums::Status, required: false
+
 
 
     field :reference, Types::ReferenceType, null: false
 
-    def resolve(id:, **args)
+    def resolve(id:, name: nil, status: nil)
       reference = Reference.find(id)
-      success = reference.update_attributes(args.to_h)
+      reference_update = reference.update_attributes!(
+        name: '#' << name,
+        status: status
+      )
 
       MutationResult.call(
         obj: { reference: reference },

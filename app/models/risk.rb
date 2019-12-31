@@ -4,4 +4,7 @@ class Risk < ApplicationRecord
   has_many :policy_risks, dependent: :destroy
   has_many :policies, through: :policy_risks
   belongs_to :business_process, optional: true
+  has_many :bookmark_risks
+  has_many :users, through: :bookmark_risks
+
 end
