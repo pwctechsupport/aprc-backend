@@ -10,6 +10,8 @@ Rails.application.routes.draw do
       member do
         get :control
         get :risk
+        get 'report_policy', to: "prints#report_policy", as: :report_policy
+        get 'report', to: "prints#report", as: :report
       end
     end
   end
