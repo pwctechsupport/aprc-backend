@@ -1,5 +1,4 @@
 class Policy < ApplicationRecord
-  validates :title, uniqueness: true
   belongs_to :policy_category, optional: true
   belongs_to :user, optional: true
   has_many :policy_resources, dependent: :destroy
