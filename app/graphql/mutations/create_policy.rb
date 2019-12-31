@@ -17,8 +17,8 @@ module Mutations
 
     def resolve(args)
       current_user = context[:current_user]
-      policy = current_user.policies.where(title: args[:title]).first
-      if policy
+      policy = current_user.policies.find_by(title: args[:title])
+      if policy.present?
         policy.update_attributes(args.to_h)
       else
         policy = current_user.policies.create!(args.to_h)

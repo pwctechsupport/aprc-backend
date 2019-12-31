@@ -4,7 +4,9 @@ module Mutations
     argument :name, String, required: true
     argument :resuploadBase64, String, as: :resupload, required: false
     argument :resuploadFileName, String, as: :resupload_file_name, default_value: 'resupload', required: false
-    argument :category, Types::Enums::Category, required: true 
+    argument :category, Types::Enums::Category, required: true
+    argument :policy_id, ID, required: false
+    argument :control_id, ID, required: false
     argument :policy_ids, [ID], required: false 
     argument :control_ids, [ID], required: false 
     argument :business_process_id, ID, required: false 
@@ -17,11 +19,22 @@ module Mutations
     field :resource, Types::ResourceType, null: true
 
     def resolve(args)
-      resource = Resource.where(name: args[:name]).first
-      if resource
+      resource = Resource.find_by(name: args[:name])
+      if resource.present?
         resource.update_attributes(args.to_h)
       else
         resource=Resource.create!(args.to_h)
+        resource = Resource.find_by(name: args[:name])
+        if resource.category == "flowchart"
+          resource.update(policy_id: nil)
+          resource.update(policy_ids: nil)
+          resource.update(control_id: nil)
+          resource.update(control_ids: nil)
+          resource
+        else
+          resource.update(business_process_id: nil)
+          resource
+        end
       end
 
       MutationResult.call(
