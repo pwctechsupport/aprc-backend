@@ -35,8 +35,7 @@
   .col-md-12
     %h3 Control Description
     -@policy.controls.each do |con|
-      -con.descriptions.each do |des|
-        %p=con.descriptions.name
+      %p=con.description.html_safe
   .row.m-t-10
     .col-md-12
       %h3 Control Type
