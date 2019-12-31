@@ -17,7 +17,12 @@ module Mutations
     field :resource, Types::ResourceType, null: true
 
     def resolve(args)
-      resource = Resource.create(args.to_h)
+      resource = Resource.where(name: args[:name]).first
+      if resource
+        resource.update_attributes(args.to_h)
+      else
+        resource=Resource.create!(args.to_h)
+      end
 
       MutationResult.call(
         obj: { resource: resource },
