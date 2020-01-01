@@ -4,6 +4,8 @@ module Types
     field :name, String, null: false
     field :resuploadUrl, String, null: true
     field :category, String, null: true
+    field :policy, Types::PolicyType, null: true
+    field :control, Types::ControlType, null: true
     field :policy_ids, [Types::PolicyType], null: true
     field :policies, [Types::PolicyType], null: true
     field :control_ids, [Types::ControlType], null: true
