@@ -38,7 +38,8 @@ module Types
     field :destroy_bookmark_risk, mutation: Mutations::DestroyBookmarkRisk
     field :create_bookmark_control, mutation: Mutations::CreateBookmarkControl
     field :destroy_bookmark_control, mutation: Mutations::DestroyBookmarkControl
-
+    field :create_bookmark_business_process, mutation: Mutations::CreateBookmarkBusinessProcess
+    field :destroy_bookmark_business_process, mutation: Mutations::DestroyBookmarkBusinessProcess
 
   
 
