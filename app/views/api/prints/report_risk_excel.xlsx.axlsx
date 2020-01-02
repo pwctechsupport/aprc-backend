@@ -1,0 +1,12 @@
+wb = xlsx_package.workbook
+
+
+wb.add_worksheet(name: "Risks") do |sheet|
+  # Create the header row
+  sheet.add_row ["Risk", "Business Process","Control Owner","Description","Control Type"]
+  # Create entries for each item
+  @risks.each do |item| 
+    sheet.add_row [item.name,item.business_process.name,item.controls.pluck(:description).to_s.gsub(/"/,'').gsub(/"|\[|\]/, '')]
+
+  end
+end
