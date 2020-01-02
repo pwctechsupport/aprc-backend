@@ -5,8 +5,9 @@ wb.add_worksheet(name: "Risks") do |sheet|
   # Create the header row
   sheet.add_row ["Risk", "Business Process","Control Owner","Description","Control Type"]
   # Create entries for each item
-  @risks.each do |item| 
-    sheet.add_row [item.name,item.business_process.name,item.controls.pluck(:description).to_s.gsub(/"/,'').gsub(/"|\[|\]/, '')]
-
+  @risks.each do |item|
+    item.controls.each do |bis| 
+      sheet.add_row [item.name,item.business_process.name,bis.control_owner.to_s.gsub(/"/,'').gsub(/"|\[|\]/, ''),bis.description.to_s.gsub(/"/,'').gsub(/"|\[|\]/, ''),bis.type_of_control.to_s.gsub(/"/,'').gsub(/"|\[|\]/, '').titlecase]
+    end
   end
 end
