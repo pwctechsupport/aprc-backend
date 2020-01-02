@@ -10,14 +10,20 @@ module Mutations
     field :reference, Types::ReferenceType, null: true
 
     def resolve(name: nil, status: nil)
-      reference = Reference.create!(
-        name: '#' << name,
-        status: status
-      )
+      reference = Reference.find_by(name: '#' << "#{name}")
+      if reference.present?
+        reference.update_attributes(name: '#' << "#{name}")
+      else
+        reference = Reference.create!(
+          name: '#' << name,
+          status: status
+        )
+      end
+      
       MutationResult.call(
           obj: { reference: reference },
           success: reference.persisted?,
-          errors: reference.errors
+          errors: reference.errors  
         )
     rescue ActiveRecord::RecordInvalid => invalid
       GraphQL::ExecutionError.new(

@@ -170,5 +170,7 @@ module Types
     field :risks, resolver: Resolvers::QueryType::RisksResolver
     field :resource_ratings, resolver: Resolvers::QueryType::ResourceRatingsResolver
     field :bookmark_policies, resolver: Resolvers::QueryType::BookmarkPoliciesResolver
+    field :bookmark_risks, resolver: Resolvers::QueryType::BookmarkRisksResolver
+    field :bookmark_controls, resolver: Resolvers::QueryType::BookmarkControlsResolver
   end
 end

@@ -7,10 +7,13 @@ module Mutations
     # return type from the mutation
     field :description, Types::DescriptionType, null: true
 
-    def resolve(name: nil)
-      description = Description.create!(
-        name: name
-      )
+    def resolve(args)
+      description = Description.where(name: args[:name]).first
+      if description
+        description.update_attributes(args.to_h)
+      else
+        description=Description.create!(args.to_h)
+      end
       MutationResult.call(
           obj: { description: description },
           success: description.persisted?,

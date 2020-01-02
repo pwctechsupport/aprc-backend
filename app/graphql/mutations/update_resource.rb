@@ -11,6 +11,8 @@ module Mutations
     argument :category, Types::Enums::Category, required: false 
     argument :policy_ids, [ID], required: false 
     argument :control_ids, [ID], required: false 
+    argument :policy_id, ID, required: false
+    argument :control_id, ID, required: false
     argument :business_process_id, ID, required: false 
     argument :status, Types::Enums::Status, required: false
 

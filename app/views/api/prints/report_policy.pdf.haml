@@ -6,37 +6,39 @@
     %meta{:content => "IE=edge", "http-equiv" => "X-UA-Compatible"}/
     %title REPORT
   %body
+  .row.m-t-10.text-center
+    .col-md-12
+      %h1 #{@policy.title}
   .row.m-t-10
     .col-md-12
-      %h1 Risk
+      %h3 Risk
       %ul
-      -@policy.risks.each do |ris|
-        %li
-          %p=ris.name.html_safe
+      -@policy.controls.each do |cun|
+        -cun.risks.each do |ris|
+          %li
+            %p=ris.name.html_safe
   .row.m-t-10
     .col-md-12
-      %h1 Business Process
+      %h3 Business Process
       %ul
-      -@policy.business_processes.each do |bis|
-        %li
-          %p=bis.name.html_safe
+      -@policy.controls.each do |bis|
+        -bis.business_processes.each do |bas|
+          %li
+            %p=bas.name.html_safe
   .row.m-t-10
     .col-md-12
-      %h1 Control Owner
+      %h3 Control Owner
       %ul
       -@policy.controls.each do |con|
         %li
           %p=con.control_owner.html_safe
   .col-md-12
-      %h1 Control Description
-      %ul
-      -@policy.controls.each do |con|
-        %li
-          -con.descriptions.each do |des|
-            %p=con.descriptions.name
+    %h3 Control Description
+    -@policy.controls.each do |con|
+      %p=con.description.html_safe
   .row.m-t-10
     .col-md-12
-      %h1 Control Type
+      %h3 Control Type
       %ul
       -@policy.controls.each do |con|
         %li
