@@ -10,8 +10,8 @@ module Mutations
     argument :type_of_control, Types::Enums::TypeOfControl, required: false
     argument :frequency, Types::Enums::Frequency, required: false
     argument :nature, Types::Enums::Nature, required: false 
-    argument :assertion, Types::Enums::Assertion, required: false
-    argument :ipo, Types::Enums::Ipo, required: false
+    argument :assertion, [Types::Enums::Assertion], required: false
+    argument :ipo, [Types::Enums::Ipo], required: false
     argument :description, String, required: false
     argument :control_owner, String, required: false
     argument :description, String, required: false

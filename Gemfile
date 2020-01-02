@@ -30,6 +30,10 @@ gem 'wkhtmltopdf-binary-edge', '~> 0.12.5.1'
 
 gem 'haml'
 
+gem 'rubyzip'
+gem 'axlsx'
+gem 'axlsx_rails'
+
 # Use Redis adapter to run Action Cable in production
 # gem 'redis', '~> 4.0'
 # Use ActiveModel has_secure_password

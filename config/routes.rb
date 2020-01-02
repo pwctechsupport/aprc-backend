@@ -10,6 +10,8 @@ Rails.application.routes.draw do
         get :risk
         get 'report_policy', to: "prints#report_policy", as: :report_policy
         get 'report', to: "prints#report", as: :report
+        get 'test_excel', to: "prints#test_excel", as: :test_excel
+
       end
     end
   end
