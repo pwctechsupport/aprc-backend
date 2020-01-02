@@ -11,6 +11,7 @@ class User < ApplicationRecord
   has_many :controls
   has_many :bookmark_risks
   has_many :bookmark_controls
+  has_many :bookmark_business_processes
   devise :database_authenticatable,
          :registerable,
          :recoverable, 

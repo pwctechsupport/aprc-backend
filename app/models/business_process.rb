@@ -6,4 +6,6 @@ class BusinessProcess < ApplicationRecord
   has_ancestry
   has_many :resources, dependent: :destroy
   has_many :risks, dependent: :destroy
+  has_many :bookmark_business_processes
+  has_many :users, through: :bookmark_business_processes
 end

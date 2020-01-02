@@ -172,5 +172,6 @@ module Types
     field :bookmark_policies, resolver: Resolvers::QueryType::BookmarkPoliciesResolver
     field :bookmark_risks, resolver: Resolvers::QueryType::BookmarkRisksResolver
     field :bookmark_controls, resolver: Resolvers::QueryType::BookmarkControlsResolver
+    field :bookmark_business_processes, resolver: Resolvers::QueryType::BookmarkBusinessProcessesResolver
   end
 end
