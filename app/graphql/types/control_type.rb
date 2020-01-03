@@ -22,6 +22,7 @@ module Types
     field :updated_at, GraphQL::Types::ISO8601DateTime, null: false
     field :controls_bookmarked_by, [Types::BookmarkControlType] , null: true
     field :user, Types::UserType, null:true
+    field :key_control, Boolean, null:true
     
     def controls_bookmarked_by
       bookmark = object.bookmark_controls
