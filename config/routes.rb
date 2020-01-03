@@ -15,6 +15,7 @@ Rails.application.routes.draw do
         get :control
         get :risk
         get 'report', to: "prints#report", as: :report
+        get 'business_process', to: "prints#business_process", as: :business_process
       end
     end
   end

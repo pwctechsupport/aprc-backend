@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_01_02_070445) do
+ActiveRecord::Schema.define(version: 2020_01_03_044019) do
 
   create_table "bookmark_business_processes", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.bigint "user_id"
@@ -244,7 +244,7 @@ ActiveRecord::Schema.define(version: 2020_01_02_070445) do
     t.datetime "updated_at", null: false
     t.text "level_of_risk"
     t.string "status", default: "draft"
-    t.bigint "business_process_id"
+    t.bigint "business_process_id", default: 0
     t.string "type_of_risk"
     t.index ["business_process_id"], name: "index_risks_on_business_process_id"
   end
