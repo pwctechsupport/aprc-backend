@@ -19,6 +19,7 @@ module Mutations
     argument :description_ids, [ID], required: false
     argument :status, Types::Enums::Status, required: false
     argument :risk_ids, [ID], required: false
+    argument :key_control, Boolean, required: false
 
     field :control, Types::ControlType, null: true
 
@@ -37,7 +38,6 @@ module Mutations
         "#{invalid.record.errors.full_messages.join(', ')}"
       )
     end
-
     # def ready?(args)
     #   authorize_user
     # end
