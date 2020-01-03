@@ -18,6 +18,7 @@ module Mutations
     argument :description_ids, [ID], required: false
     argument :status, Types::Enums::Status, required: false
     argument :risk_ids, [ID], required: false
+    argument :key_control, Boolean, required: false
 
     # return type from the mutation
     field :control, Types::ControlType, null: true
