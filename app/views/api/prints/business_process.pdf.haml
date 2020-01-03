@@ -9,74 +9,89 @@
     :css
       input[type=checkbox]{
       \/* Double-sized Checkboxes */
-      \-ms-transform: scale(4); /* IE */
-      \-moz-transform: scale(4); /* FF */
-      \-webkit-transform: scale(4); /* Safari and Chrome */
-      \-o-transform: scale(4); /* Opera */
-      transform: scale(4);
-      padding: 10px;
-      display: inline;}
+      \-ms-transform: scale(3.5); /* IE */
+      \-moz-transform: scale(3.5); /* FF */
+      \-webkit-transform: scale(3.5); /* Safari and Chrome */
+      \-o-transform: scale(3.5); /* Opera */
+      transform: scale(3.5);
+      padding: 1px;}
     :css
       .table.table-borderless {border:0px !important;}
-      .fixed-table-container {border:5px !important;}
+      .fixed-table-container {border:2px !important;}
       .table.table-border {border:0px !important;}
       .table.table-border th, .table td {border: 0px !important;}
     :css
-      span {height:14px; width:24px; background:red; border-radius:2px; font-size:17px; color:white; font-family:Verdana; text-shadow: 1px 1px black;}
+      .apo{font-size:13px;}
+      th{font-size:14px;}
+      td{font-size:13px;}
+      .tab{ margin-left:40px;}
+    :css
+      span {height:10px; width:55px; background:#F32013; border-radius:3.5px; font-size:15px; color:white; font-family:Arial; text-shadow: 0.5px 0.5px black; padding:1px 5px 4px;}
 
     %center
       %h1= @business_process.name
     %br
-    
+    %h2.text-center Risk & Control List View
     -@business_process.risks.each_with_index do |ris, x|
       %ul
         %li
-        %h2 Risk
-        %li=ris.name
-        %h5 
-          Kecelakaan Lalu Lintas
-          %span.badge.badge-danger.mx-3 Medium
-          %span.badge.badge-danger Operational Risk
-
-      %table.table.table-border
-        %thead
-          %tr
-            %th{:scope => "col"} Risk Name
-            %th{:scope => "col"} Level of Risk
-            %th{:scope => "col"} Type of Risk
-            %th{:scope => "col"} Business Process
-        %tbody
-          %tr
-            %td #{ris.name}
-            %td #{ris.level_of_risk.to_s.gsub(/_/, ' ').titlecase}
-            %td #{ris.type_of_risk.to_s.gsub(/_/, ' ').titlecase}
-            %td #{ris.business_process.name.capitalize}
-      %br
+          %h3 
+            #{ris.name}
+            %span #{ris.level_of_risk.to_s.gsub(/_/, ' ').titlecase}
+            %span #{ris.type_of_risk.to_s.gsub(/_/, ' ').titlecase}
+      -# %table.table.table-border
+      -#   %thead
+      -#     %tr
+      -#       %th{:scope => "col"} Risk Name
+      -#       %th{:scope => "col"} Level of Risk
+      -#       %th{:scope => "col"} Type of Risk
+      -#       %th{:scope => "col"} Business Process
+      -#   %tbody
+      -#     %tr
+      -#       %td #{ris.name}
+      -#       %td #{ris.level_of_risk.to_s.gsub(/_/, ' ').titlecase}
+      -#       %td #{ris.type_of_risk.to_s.gsub(/_/, ' ').titlecase}
+      -#       %td #{ris.business_process.name.capitalize}
+      -# %br
       %table.table.table-borderless
         %thead
           %tr
-            %th{:scope => "col"} #
-            %th{:scope => "col"} Type of Control
-            %th{:scope => "col"} Control Owner
-            %th{:scope => "col"} Frequency
-            %th{:scope => "col"} Nature
-            %th{:scope => "col"} Assertion
-            %th{:scope => "col"} Ipo
-            %th{:scope => "col"} Status
-            %th{:scope => "col"} Key Control
+            %th.text-center{:scope => "col"} #
+            %th.text-center{:scope => "col"} Type of Control
+            %th.text-center{:scope => "col"} Control Owner
+            %th.text-center{:scope => "col"} Frequency
+            %th.text-center{:scope => "col"} Nature
+            %th.text-center{:scope => "col"} Assertion
+            %th.text-center{:scope => "col"} Ipo
+            %th.text-center{:scope => "col"} Status
+            %th.text-center{:scope => "col"} Key Control
         -ris.controls.each_with_index do |con,i|
           %tbody
             %tr
-              %td{:scope => "row"} #{i+1}
-              %td #{con.type_of_control.to_s.gsub(/[^0-9A-Za-z]/, ' ').titlecase}
-              %td #{con.control_owner.to_s.gsub(/[^0-9A-Za-z]/, ' ').titlecase}
-              %td #{con.frequency.to_s.gsub(/[^0-9A-Za-z]/, ' ').titlecase}
-              %td #{con.nature.to_s.gsub(/[^0-9A-Za-z]/, ' ').titlecase}
-              %td #{con.assertion.to_s.gsub(/[^0-9A-Za-z]/, ' ').titlecase}
-              %td #{con.ipo.to_s.gsub(/[^0-9A-Za-z]/, ' ').titlecase}
-              %td #{con.status.to_s.gsub(/[^0-9A-Za-z]/, ' ').titlecase}
-              %td 
-                -if con.key_control
+              %td.text-center{:scope => "row"} #{i+1}
+              %td.text-center #{con.type_of_control.to_s.gsub(/[^0-9A-Za-z]/, ' ').titlecase}
+              %td.text-center #{con.control_owner.to_s.gsub(/[^0-9A-Za-z]/, ' ').titlecase}
+              %td.text-center #{con.frequency.to_s.gsub(/[^0-9A-Za-z]/, ' ').titlecase}
+              %td.text-center #{con.nature.to_s.gsub(/[^0-9A-Za-z]/, ' ').titlecase}
+              %td
+                -if con.assertion.count > 1
+                  .apo  
+                    %ul
+                      -con.assertion.each do |cop|
+                        %li=cop.to_s.gsub(/[^0-9A-Za-z]/, ' ').titlecase
+                -else
+                  con.assertion.to_s.gsub(/[^0-9A-Za-z]/, ' ').titlecase
+              %td
+                -if con.ipo.count > 1
+                  .apo  
+                    %ul
+                      -con.ipo.each do |cop|
+                        %li=cop.to_s.gsub(/[^0-9A-Za-z]/, ' ').titlecase
+                -else
+                  con.ipo.to_s.gsub(/[^0-9A-Za-z]/, ' ').titlecase
+              %td.text-justify #{con.status.to_s.gsub(/[^0-9A-Za-z]/, ' ').titlecase}
+              %td.text-justify 
+                -if con.key_control == "true"
                   .risk
                     %input#coding{:checked => "checked", :name => "interest", :type => "checkbox", :value => "true"}/
                     %label{:for => "true"} True
@@ -90,7 +105,7 @@
                   .risk
                     %input#false{:checked => "checked", :name => "interest", :type => "checkbox", :value => "false"}/
                     %label{:for => "false"} False
-
+                %br
   
 
 
