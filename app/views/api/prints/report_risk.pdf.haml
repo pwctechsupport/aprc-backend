@@ -6,11 +6,9 @@
     %meta{:content => "IE=edge", "http-equiv" => "X-UA-Compatible"}/
     %title Report Risk
   %body
-  .row.m-t-10.text-center
-    .col-md-12
-      %h1 Report Risk
   -@risks.each do |ris|
     -ris.controls.each_with_index do |bis,i|
+      %h1 Report Risk #{i+1}
       %hr
       %center
         %h2=ris.name.html_safe 
