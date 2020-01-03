@@ -5,13 +5,15 @@ Rails.application.routes.draw do
   devise_for :users
   namespace :api do
     resources :prints do
+      collection do
+        get 'report_risk_excel', to: "prints#report_risk_excel", as: :report_risk_excel
+        get 'report_risk', to: "prints#report_risk", as: :report_risk
+      end
       member do
         get :control
         get :risk
-        get 'report_policy', to: "prints#report_policy", as: :report_policy
         get 'report', to: "prints#report", as: :report
-        get 'test_excel', to: "prints#test_excel", as: :test_excel
-
+        get 'business_process', to: "prints#business_process", as: :business_process
       end
     end
   end

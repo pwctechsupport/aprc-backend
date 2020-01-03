@@ -11,26 +11,34 @@ module Api
       end
     end
 
-    def test_excel
-      @policies = Policy.all
+    def report_risk_excel
+      @risks = Risk.all
       respond_to do |format|
         format.json
         format.pdf do
-          render pdf: 'test_excel', layout: 'layouts/pdf.haml', template: 'api/prints/show.pdf.haml', dpi: 300, show_as_html: params.key?('debug'), javascript_delay: 3000, margin: {top: 10, bottom: 20, left: 15, right: 15 }, outline: {outline: true, outline_depth: 10 }, footer: {html: {template:'shared/_pdf_footer'}}
+          render pdf: 'report_risk_excel', layout: 'layouts/pdf.haml', template: 'api/prints/show.pdf.haml', dpi: 300, show_as_html: params.key?('debug'), javascript_delay: 3000, margin: {top: 10, bottom: 20, left: 15, right: 15 }, outline: {outline: true, outline_depth: 10 }, footer: {html: {template:'shared/_pdf_footer'}}
         end
         format.html
-        format.xlsx
+        format.xlsx {
+          response.headers[
+            'Content-Disposition'
+          ] = "attachment; filename=report_risk.xlsx"
+        }
       end
     end
 
-    def report_policy
-      @policy = Policy.find(params[:id])
+    def report_risk
+      @risks = Risk.all
       respond_to do |format|
         format.json
         format.pdf do
-          render pdf: 'report_policy', layout: 'layouts/pdf.haml', template: 'api/prints/report_policy.pdf.haml', dpi: 300, show_as_html: params.key?('debug'), javascript_delay: 3000, margin: {top: 10, bottom: 20, left: 15, right: 15 }, outline: {outline: true, outline_depth: 10 }, footer: {html: {template:'shared/_pdf_footer'}}
+          render pdf: 'report_risk', layout: 'layouts/pdf.haml', template: 'api/prints/report_risk.pdf.haml', dpi: 300, show_as_html: params.key?('debug'), javascript_delay: 3000, margin: {top: 10, bottom: 20, left: 15, right: 15 }, outline: {outline: true, outline_depth: 10 }, footer: {html: {template:'shared/_pdf_footer'}}
         end
-        format.xlsx
+        format.xlsx {
+          response.headers[
+            'Content-Disposition'
+          ] = "attachment; filename=report_risk.xlsx"
+        }
       end
     end
 
@@ -44,16 +52,26 @@ module Api
       end
     end
 
-    def report
-      @policy = Policy.find(params[:id])
+    def business_process
+      @business_process = BusinessProcess.find(params[:id])
       respond_to do |format|
         format.json
         format.pdf do
-          render pdf: 'report', layout: 'layouts/pdf.haml', template: 'api/prints/report.pdf.haml', dpi: 300, show_as_html: params.key?('debug'), javascript_delay: 3000, margin: {top: 10, bottom: 20, left: 15, right: 15 }, outline: {outline: true, outline_depth: 10 }, footer: {html: {template:'shared/_pdf_footer'}}
+          render pdf: 'business_process', layout: 'layouts/pdf.haml', template: 'api/prints/business_process.pdf.haml', dpi: 300, show_as_html: params.key?('debug'), javascript_delay: 3000, margin: {top: 10, bottom: 20, left: 15, right: 15 }, outline: {outline: true, outline_depth: 10 }, footer: {html: {template:'shared/_pdf_footer'}}
         end
-        format.xlsx
       end
     end
+
+    # def report
+    #   @policy = Policy.find(params[:id])
+    #   respond_to do |format|
+    #     format.json
+    #     format.pdf do
+    #       render pdf: 'report', layout: 'layouts/pdf.haml', template: 'api/prints/report.pdf.haml', dpi: 300, show_as_html: params.key?('debug'), javascript_delay: 3000, margin: {top: 10, bottom: 20, left: 15, right: 15 }, outline: {outline: true, outline_depth: 10 }, footer: {html: {template:'shared/_pdf_footer'}}
+    #     end
+    #     format.xlsx
+    #   end
+    # end
 
     def control
       @control = Control.find(params[:id])

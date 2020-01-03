@@ -1,0 +1,101 @@
+!!!
+%html
+  %head
+    %meta{:content => "text/html; charset=UTF-8", "http-equiv" => "Content-Type"}/
+    %meta{:charset => "utf-8"}/
+    %meta{:content => "IE=edge", "http-equiv" => "X-UA-Compatible"}/
+    %title Business Process
+    :css
+      input[type=checkbox]{
+      \/* Double-sized Checkboxes */
+      \-ms-transform: scale(4); /* IE */
+      \-moz-transform: scale(4); /* FF */
+      \-webkit-transform: scale(4); /* Safari and Chrome */
+      \-o-transform: scale(4); /* Opera */
+      transform: scale(4);
+      padding: 10px;
+      display: inline;}
+    ,\.page-break { display:block; clear:both; page-break-before:always;
+}
+
+  -@business_process.risks.each do |ris|
+    -ris.controls.each do |con|
+      %body
+      .row.m-t-10.text-center
+        .col-md-12
+          %h1 #{con.description}
+      %ul   
+        .row.m-t-10
+          .col-md-12
+            %li 
+              %h3 Type of Control       : #{con.type_of_control.to_s.gsub(/[^0-9A-Za-z]/, ' ').titlecase}
+        .row.m-t-10
+          .col-md-12
+            %li 
+              %h3 Control Owner       : #{con.control_owner.to_s.gsub(/[^0-9A-Za-z]/, ' ').titlecase}
+        .row.m-t-10
+          .col-md-12
+            %li  
+              %h3 Frequency           : #{con.frequency.to_s.gsub(/[^0-9A-Za-z]/, ' ').titlecase}
+        .row.m-t-10
+          .col-md-12
+            %li
+              %h3 Nature         : #{con.nature.to_s.gsub(/[^0-9A-Za-z]/, ' ').titlecase}
+        .row.m-t-10
+          .col-md-12
+            %li
+              %h3 Assertion : #{con.assertion.to_s.gsub(/[^0-9A-Za-z]/, ' ').titlecase}
+        .row.m-t-10
+          .col-md-12
+            %li
+              %h3 Ipo : #{con.ipo.to_s.gsub(/[^0-9A-Za-z]/, ' ').titlecase}
+        .row.m-t-10
+          .col-md-12
+            %li
+              %h3 Status : #{con.status.to_s.gsub(/[^0-9A-Za-z]/, ' ').titlecase}
+        .row.m-t-10
+          .col-md-12
+            %li
+              %h3 Key Control : 
+              %div
+                -if con.key_control
+                  .risk
+                    %input#coding{:checked => "checked", :name => "interest", :type => "checkbox", :value => "true"}/
+                    %label{:for => "true"} True
+                  .risk
+                    %input#false{:name => "interest", :type => "checkbox", :value => "false"}/
+                    %label{:for => "false"} False
+                -else
+                  .risk
+                    %input#true{:name => "interest", :type => "checkbox", :value => "true"}/
+                    %label{:for => "true"} True
+                  .risk
+                    %input#false{:checked => "checked", :name => "interest", :type => "checkbox", :value => "false"}/
+                    %label{:for => "false"} False
+      %hr
+
+      %body
+      .row.m-t-10.text-center
+        .col-md-12
+          %h1 #{ris.name}
+          
+      %ul   
+        .row.m-t-10
+          .col-md-12
+            %li 
+              %h3 #{"Level of Risk       :"} #{ris.level_of_risk.to_s.gsub(/_/, ' ').titlecase}
+        .row.m-t-10
+          .col-md-12
+            %li  
+              %h3 Risk Status           : #{ris.status.to_s.gsub(/_/, ' ').titlecase}
+        .row.m-t-10
+          .col-md-12
+            %li
+              %h3 Type of Risk         : #{ris.type_of_risk.to_s.gsub(/_/, ' ').titlecase}
+        .row.m-t-10
+          .col-md-12
+            %li
+              %h3 Business Process : #{ris.business_process.name.capitalize}
+      %hr
+    
+    

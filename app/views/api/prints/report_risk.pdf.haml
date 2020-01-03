@@ -1,0 +1,28 @@
+!!!
+%html
+  %head
+    %meta{:content => "text/html; charset=UTF-8", "http-equiv" => "Content-Type"}/
+    %meta{:charset => "utf-8"}/
+    %meta{:content => "IE=edge", "http-equiv" => "X-UA-Compatible"}/
+    %title Report Risk
+  %body
+  .row.m-t-10.text-center
+    .col-md-12
+      %h1 Report Risk
+  -@risks.each do |ris|
+    -ris.controls.each_with_index do |bis,i|
+      %hr
+      %center
+        %h2=ris.name.html_safe 
+      %hr 
+      %h3 Business Process #{i+1}
+      %p=ris.business_process.name
+      %h3 Control Owner #{i+1}             
+      %p=bis.control_owner.html_safe
+      %h3 Control Description #{i+1}
+      %p=bis.description 
+      %h3 Control Type #{i+1}
+      %p=bis.type_of_control.html_safe
+
+
+    

@@ -19,12 +19,12 @@
             %p=ris.name.html_safe
   .row.m-t-10
     .col-md-12
-      %h3 Business Process
-      %ul
       -@policy.controls.each do |bis|
-        %li
-          -bis.business_processes.each do |bas|
-            %p=bas.name.html_safe
+        -bis.business_processes.each do |bas|
+          %h3 Business Process #{bas.name}
+          %ul
+            %li
+              %p=bas.name.html_safe
   .row.m-t-10
     .col-md-12
       %h3 Control Owner
