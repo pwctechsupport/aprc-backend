@@ -18,6 +18,13 @@ module Mutations
         name: '#' << name,
         status: status
       )
+      lovar= reference.name.count "#"
+
+      if lovar > 1
+        refa= reference.name.gsub('#','')
+        refu = '#' << refa 
+        reference.update_attributes!(name: refu)
+      end
 
       MutationResult.call(
         obj: { reference: reference },
