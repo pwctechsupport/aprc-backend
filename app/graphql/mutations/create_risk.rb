@@ -11,12 +11,7 @@ module Mutations
     field :risk, Types::RiskType, null: true
 
     def resolve(args)
-      risk = Risk.find_by(name: args[:name])
-      if risk.present?
-        risk.update_attributes(args.to_h)
-      else
-        risk=Risk.create!(args.to_h)
-      end
+      risk=Risk.create!(args.to_h)
       
       MutationResult.call(
           obj: { risk: risk },

@@ -1,4 +1,5 @@
 class BusinessProcess < ApplicationRecord
+  validates :name, uniqueness: true
   has_many :policy_business_processes, dependent: :destroy
   has_many :policies, through: :policy_business_processes
   has_many :control_business_processes, dependent: :destroy

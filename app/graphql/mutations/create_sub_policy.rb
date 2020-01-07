@@ -14,13 +14,8 @@ module Mutations
 
     def resolve(args)
       current_user = context[:current_user]
-      policy = current_user.policies.find_by(title: args[:title])
+      policy = current_user.policies.create!(args.to_h)
       
-      if policy.present?
-        policy.update_attributes(args.to_h)
-      else
-        policy = current_user.policies.create!(args.to_h)
-      end
       # policy = Policy.create!(args.to_h)
       MutationResult.call(
           obj: { policy: policy },

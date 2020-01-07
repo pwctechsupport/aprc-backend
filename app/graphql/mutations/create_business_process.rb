@@ -9,12 +9,7 @@ module Mutations
     field :business_process, Types::BusinessProcessType, null: true
 
     def resolve(args)
-      business_process = BusinessProcess.find_by(name: args[:name])
-      if business_process.present?
-        business_process.update_attributes(args.to_h)
-      else
-        business_process=BusinessProcess.create!(args.to_h)
-      end
+      business_process=BusinessProcess.create!(args.to_h)
 
       MutationResult.call(
           obj: { business_process: business_process },

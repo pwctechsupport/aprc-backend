@@ -10,15 +10,11 @@ module Mutations
     field :business_process, Types::BusinessProcessType, null: true
 
     def resolve(parent_id:, name: nil, status: nil)
-      business_process = BusinessProcess.find_by(name: name)
-      if business_process.present?
-        business_process.update_attributes( name: name, status: status,parent: BusinessProcess.find(parent_id))
-      else
-        business_process = BusinessProcess.create(
-          name: name,
-          status: status,
-          parent: BusinessProcess.find(parent_id))
-      end
+      business_process = BusinessProcess.create(
+        name: name,
+        status: status,
+        parent: BusinessProcess.find(parent_id))
+        
       MutationResult.call(
           obj: { business_process: business_process },
           success: business_process.persisted?,
