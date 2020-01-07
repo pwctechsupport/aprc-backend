@@ -3,15 +3,15 @@
 module Mutations
   class UpdateReference < Mutations::BaseMutation
     graphql_name "UpdateReference"
-
+    
     argument :id, ID, required: true
     argument :name, String, required: false
     argument :status, Types::Enums::Status, required: false
-
-
-
+    
+    
+    
     field :reference, Types::ReferenceType, null: false
-
+    
     def resolve(id:, name: nil, status: nil)
       reference = Reference.find(id)
       reference_update = reference.update_attributes!(
@@ -19,7 +19,7 @@ module Mutations
         status: status
       )
       lovar= reference.name.count "#"
-
+      
       if lovar > 1
         refa= reference.name.gsub('#','')
         refu = '#' << refa 

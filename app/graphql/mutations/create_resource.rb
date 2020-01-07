@@ -19,27 +19,17 @@ module Mutations
     field :resource, Types::ResourceType, null: true
 
     def resolve(args)
+      resource=Resource.create!(args.to_h)
       resource = Resource.find_by(name: args[:name], category: args[:category])
-      if resource.present? && resource.category == "flowchart"
-        resource.update_attributes(args.to_h)
+      if resource.category == "flowchart"
         resource.update(policy_id: nil)
+        resource.update(policy_ids: nil)
         resource.update(control_id: nil)
-      elsif resource.present? && resource.category != "flowchart"
-        resource.update_attributes(args.to_h)
-        resource.update(business_process_id: nil)
+        resource.update(control_ids: nil)
+        resource
       else
-        resource=Resource.create!(args.to_h)
-        resource = Resource.find_by(name: args[:name], category: args[:category])
-        if resource.category == "flowchart"
-          resource.update(policy_id: nil)
-          resource.update(policy_ids: nil)
-          resource.update(control_id: nil)
-          resource.update(control_ids: nil)
-          resource
-        else
-          resource.update(business_process_id: nil)
-          resource
-        end
+        resource.update(business_process_id: nil)
+        resource
       end
 
       MutationResult.call(

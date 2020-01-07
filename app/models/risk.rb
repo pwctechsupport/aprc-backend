@@ -1,4 +1,5 @@
 class Risk < ApplicationRecord
+  validates :name, uniqueness: true
   has_many :control_risks, class_name: "ControlRisk", foreign_key: "risk_id", dependent: :destroy
   has_many :controls, through: :control_risks
   has_many :policy_risks, dependent: :destroy

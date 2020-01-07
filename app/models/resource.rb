@@ -1,4 +1,7 @@
 class Resource < ApplicationRecord
+  validates :name, uniqueness: true
+  belongs_to :policy, optional: true
+  belongs_to :control, optional: true
   has_many :policy_resources, dependent: :destroy
   has_many :policies, through: :policy_resources
   has_many :resource_controls, dependent: :destroy

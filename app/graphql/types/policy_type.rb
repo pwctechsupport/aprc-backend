@@ -35,5 +35,6 @@ module Types
     def policies_bookmarked_by
       bookmark = object.bookmark_policies
     end
+
   end
 end

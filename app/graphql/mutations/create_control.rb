@@ -25,12 +25,7 @@ module Mutations
     field :control, Types::ControlType, null: true
 
     def resolve(args)
-      control = Control.find_by(description: args[:description])
-      if control.present?
-        control.update_attributes(args.to_h)
-      else
-        control=Control.create!(args.to_h)
-      end
+      control=Control.create!(args.to_h)
 
       MutationResult.call(
           obj: { control: control },

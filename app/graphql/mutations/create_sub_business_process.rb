@@ -2,23 +2,16 @@ module Mutations
   class CreateSubBusinessProcess < Mutations::BaseMutation
     # arguments passed to the `resolved` method
     argument :name, String, required: true
-    argument :status, Types::Enums::Status, required: false
     argument :parent_id, ID, required: true
+    argument :status, Types::Enums::Status, required: false
 
 
     # return type from the mutation
     field :business_process, Types::BusinessProcessType, null: true
 
-    def resolve(parent_id:, name: nil, status: nil)
-      business_process = BusinessProcess.find_by(name: name)
-      if business_process.present?
-        business_process.update_attributes( name: name, status: status,parent: BusinessProcess.find(parent_id))
-      else
-        business_process = BusinessProcess.create(
-          name: name,
-          status: status,
-          parent: BusinessProcess.find(parent_id))
-      end
+    def resolve(args)
+      business_process = BusinessProcess.create!(args.to_h)
+
       MutationResult.call(
           obj: { business_process: business_process },
           success: business_process.persisted?,
