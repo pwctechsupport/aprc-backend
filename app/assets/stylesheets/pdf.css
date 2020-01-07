@@ -2,13 +2,14 @@ table {
   width: 100%;
   border: 1px solid #999999;
   border-collapse: collapse;
+  table-layout: auto;
 }
 
 th,
 td {
   padding: 7px 10px 10px 10px;
   border-bottom: 1px solid black;
-  white-space: nowrap;
+  width: 50%;
 }
 
 .border-none {
@@ -26,7 +27,6 @@ th {
   text-align: left;
   text-transform: uppercase;
   page-break-inside: avoid;
-  white-space: nowrap;
 }
 
 tr.even {
@@ -68,18 +68,15 @@ div.nobreak {
 thead {
   display: table-row-group;
   page-break-inside: avoid;
-  white-space: nowrap;
 }
 
 tfoot {
   display: table-row-group;
   page-break-inside: avoid;
-  white-space: nowrap;
 }
 
 tr {
   page-break-inside: avoid;
-  white-space: nowrap;
 }
 
 input[type="checkbox"].css-checkbox {
