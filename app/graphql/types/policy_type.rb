@@ -31,10 +31,61 @@ module Types
     field :updated_at, GraphQL::Types::ISO8601DateTime, null: false
     field :policies_bookmarked_by, [Types::BookmarkPolicyType] , null: true
     field :user, Types::UserType, null:true
+    field :sub_count, Types::BaseScalar, null: true
+    field :control_count, Types::BaseScalar, null: true
+    field :risk_count, Types::BaseScalar, null: true
+
+
     
     def policies_bookmarked_by
       bookmark = object.bookmark_policies
     end
+
+
+
+    def control_count
+      data = object.controls
+      {
+        total: data.count,
+        draft: data.where(status: "draft").count,
+        waiting_for_approval: data.where(status: "waiting_for_approval").count,
+        release: data.where(status: "release").count,
+        ready_for_edit: data.where(status: "ready_for_edit").count,
+        waiting_for_review: data.where(status: "waiting_for_review").count  
+      }
+    end
+
+    def risk_count
+      data = object.risks
+      {
+        total: data.count,
+        draft: data.where(status: "draft").count,
+        waiting_for_approval: data.where(status: "waiting_for_approval").count,
+        release: data.where(status: "release").count,
+        ready_for_edit: data.where(status: "ready_for_edit").count,
+        waiting_for_review: data.where(status: "waiting_for_review").count  
+      }
+    end
+
+
+    def sub_count
+      data = object.descendants
+      {
+        total: data.count,
+        draft: data.where(status: "draft").count,
+        waiting_for_approval: data.where(status: "waiting_for_approval").count,
+        release: data.where(status: "release").count,
+        ready_for_edit: data.where(status: "ready_for_edit").count,
+        waiting_for_review: data.where(status: "waiting_for_review").count
+      }
+    end
+
+
+
+    def policy_risks_count
+      policy_risks = object.risks.count
+    end
+
 
   end
 end
