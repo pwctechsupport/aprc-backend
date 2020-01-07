@@ -28,14 +28,14 @@
       th{font-size:14px;}
       td{font-size:13px;}
       .tab{ margin-left:40px;}
-      .ape{font-size:36px; text-align:left;}
+      .ape{%font-size:24px; text-align:left;}
       .aps{font-size:36px;}
 
     :css
       span {height:10px; width:55px; background:#F32013; border-radius:6px; font-size:15px; color:white; font-family:Arial; text-shadow: 0.5px 0.5px black; padding:1px 5px 4px;}
 
-    %h2.text-center.aps Risk & Control List View
-    %h1.ape= @business_process.name.titlecase
+    %h1.text-center.aps Risk & Control List View
+    %h2.ape= @business_process.name.titlecase
     
 
     %hr.new5
@@ -47,7 +47,7 @@
         %ul
           %li
             %h3 
-              #{ris.name}
+              #{ris.name.titlecase}
               %span #{ris.level_of_risk.to_s.gsub(/_/, ' ').titlecase}
               %span #{ris.type_of_risk.to_s.gsub(/_/, ' ').titlecase}
         -# %table.table.table-border
@@ -68,6 +68,7 @@
           %thead
             %tr
               %th.text-center{:scope => "col"} #
+              %th.text-center{:scope => "col"} Description
               %th.text-center{:scope => "col"} Type of Control
               %th.text-center{:scope => "col"} Control Owner
               %th.text-center{:scope => "col"} Frequency
@@ -80,10 +81,11 @@
             %tbody
               %tr
                 %td.text-center{:scope => "row"} #{i+1}
-                %td.text-center #{con.type_of_control.to_s.gsub(/[^0-9A-Za-z]/, ' ').titlecase}
-                %td.text-center #{con.control_owner.to_s.gsub(/[^0-9A-Za-z]/, ' ').titlecase}
-                %td.text-center #{con.frequency.to_s.gsub(/[^0-9A-Za-z]/, ' ').titlecase}
-                %td.text-center #{con.nature.to_s.gsub(/[^0-9A-Za-z]/, ' ').titlecase}
+                %td.text-center #{con.description.to_s.gsub(/[^0-9A-Za-z]/, ' ').titlecase.html_safe}
+                %td.text-center #{con.type_of_control.to_s.gsub(/[^0-9A-Za-z]/, ' ').titlecase.html_safe}
+                %td.text-center #{con.control_owner.to_s.gsub(/[^0-9A-Za-z]/, ' ').titlecase.html_safe}
+                %td.text-center #{con.frequency.to_s.gsub(/[^0-9A-Za-z]/, ' ').titlecase.html_safe}
+                %td.text-center #{con.nature.to_s.gsub(/[^0-9A-Za-z]/, ' ').titlecase.html_safe}
                 %td
                   -if con.assertion.count > 1
                     .apo  
@@ -112,7 +114,9 @@
                     .risk.text-center
                       %input#checkboxG4.css-checkbox{:name => "checkboxG4", :type => "checkbox"}/
                       %label.css-label{:for => "checkboxG4"}
-                  %br
+        %br
+        %br
+
   
 
 

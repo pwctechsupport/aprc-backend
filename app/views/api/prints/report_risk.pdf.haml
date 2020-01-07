@@ -5,22 +5,33 @@
     %meta{:charset => "utf-8"}/
     %meta{:content => "IE=edge", "http-equiv" => "X-UA-Compatible"}/
     %title Report Risk
+    :css
+      .table.table-borderless {border:10px !important;}
   %body
   -@risks.each do |ris|
-    -ris.controls.each_with_index do |bis,i|
-      %h1 Report Risk #{i+1}
-      %hr
+    -if ris.controls.present? == false
+      
+    -else 
       %center
-        %h2=ris.name.html_safe 
-      %hr 
-      %h3 Business Process #{i+1}
-      %p=ris.business_process.name
-      %h3 Control Owner #{i+1}             
-      %p=bis.control_owner.html_safe
-      %h3 Control Description #{i+1}
-      %p=bis.description 
-      %h3 Control Type #{i+1}
-      %p=bis.type_of_control.html_safe
+        %h2=ris.name.titlecase.html_safe  
+      %table.table.table-borderless
+        %thead
+          %tr
+            %th.text-center{:scope => "col"} #
+            %th.text-center{:scope => "col"} Business Process
+            %th.text-center{:scope => "col"} Control Owner
+            %th.text-center{:scope => "col"} Type of Control
+            %th.text-center{:scope => "col"} Description
+        -ris.controls.each_with_index do |bis,i|
+          %tbody
+            %tr
+              %td.text-center{:scope => "row"} #{i+1}
+              %td.text-center #{ris.business_process.name}
+              %td.text-center #{bis.control_owner.to_s.gsub(/[^0-9A-Za-z]/, ' ').titlecase.html_safe}
+              %td.text-center #{bis.type_of_control.to_s.gsub(/[^0-9A-Za-z]/, ' ').titlecase.html_safe}
+              %td.text-center #{bis.description.to_s.gsub(/[^0-9A-Za-z]/, ' ').titlecase.html_safe}
+      %p{:style => "page-break-after:always;"}
+      %p{:style => "page-break-after:auto;"}
 
 
     
