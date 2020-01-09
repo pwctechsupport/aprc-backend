@@ -26,11 +26,11 @@ module Mutations
 
     def resolve(id:, **args)
       control = Control.find(id)
-      success = control.update_attributes(args.to_h)
+      control.update_attributes!(args.to_h)
 
       MutationResult.call(
         obj: { control: control },
-        success: success,
+        success: control.persisted?,
         errors: control.errors
       )
     rescue ActiveRecord::RecordInvalid => invalid

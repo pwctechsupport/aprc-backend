@@ -22,11 +22,11 @@ module Mutations
 
     def resolve(id:, **args)
       policy = Policy.find(id)
-      success = policy.update_attributes(args.to_h)
+      policy.update_attributes!(args.to_h)
 
       MutationResult.call(
         obj: { policy: policy },
-        success: success,
+        success: policy.persisted?,
         errors: policy.errors
       )
     rescue ActiveRecord::RecordInvalid => invalid

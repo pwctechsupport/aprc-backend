@@ -18,7 +18,7 @@ module Mutations
 
     def resolve(id:, **args)
       risk = Risk.find(id)
-      success = risk.update_attributes(args.to_h)
+      risk.update_attributes!(args.to_h)
 
       MutationResult.call(
         obj: { risk: risk },

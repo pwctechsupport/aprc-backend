@@ -14,11 +14,11 @@ module Mutations
 
     def resolve(id:, **args)
       business_process = BusinessProcess.find(id)
-      success = business_process.update_attributes(args.to_h)
+      business_process.update_attributes!(args.to_h)
 
       MutationResult.call(
         obj: { business_process: business_process },
-        success: success,
+        success: business_process.persisted?,
         errors: business_process.errors
       )
     rescue ActiveRecord::RecordInvalid => invalid
