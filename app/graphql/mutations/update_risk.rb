@@ -22,7 +22,7 @@ module Mutations
 
       MutationResult.call(
         obj: { risk: risk },
-        success: risk.persisted?,
+        success: success,
         errors: risk.errors
       )
     rescue ActiveRecord::RecordInvalid => invalid

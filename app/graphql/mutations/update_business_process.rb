@@ -18,7 +18,7 @@ module Mutations
 
       MutationResult.call(
         obj: { business_process: business_process },
-        success: business_process.persisted?,
+        success: success,
         errors: business_process.errors
       )
     rescue ActiveRecord::RecordInvalid => invalid
