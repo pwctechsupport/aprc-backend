@@ -11,10 +11,10 @@ module Mutations
     def resolve(resource_id:, **args)
       resource_rating = ResourceRating.find(id)
       byebug
-      success = resource_rating.update_attributes(args.to_h)
+      resource_rating.update_attributes(args.to_h)
       MutationResult.call(
         obj: {resource_rating: resource_rating},
-        success: success,
+        success: resource_rating.persisted?,
         errors: resource_rating.errors
       )
     rescue ActiveRecord::RecordInvalid => invalid

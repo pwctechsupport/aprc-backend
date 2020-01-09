@@ -12,11 +12,11 @@ module Mutations
 
     def resolve(id:, **args)
       policy_category = PolicyCategory.find(id)
-      success = policy_category.update_attributes(args.to_h)
+      policy_category.update_attributes!(args.to_h)
 
       MutationResult.call(
         obj: { policy_category: policy_category },
-        success: success,
+        success: policy_category.persisted?,
         errors: policy_category.errors
       )
     rescue ActiveRecord::RecordInvalid => invalid

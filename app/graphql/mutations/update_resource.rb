@@ -22,11 +22,11 @@ module Mutations
 
     def resolve(id:, **args)
       resource = Resource.find(id)
-      success = resource.update_attributes(args.to_h)
+      resource.update_attributes!(args.to_h)
 
       MutationResult.call(
         obj: { resource: resource },
-        success: success,
+        success: resource.persisted?,
         errors: resource.errors
       )
     rescue ActiveRecord::RecordInvalid => invalid
