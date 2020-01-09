@@ -14,7 +14,7 @@ module Mutations
       success = resource_rating.update_attributes(args.to_h)
       MutationResult.call(
         obj: {resource_rating: resource_rating},
-        success: resource_rating.persisted?,
+        success: success,
         errors: resource_rating.errors
       )
     rescue ActiveRecord::RecordInvalid => invalid
