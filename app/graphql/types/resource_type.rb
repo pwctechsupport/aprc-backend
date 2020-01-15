@@ -16,6 +16,7 @@ module Types
     field :total_rating, Int, null: true
     field :visit,Int, null: false
     field :resource_file_type, String, null: false
+    field :resource_file_size, Integer, null: false
     field :status, String, null: true
     field :created_at, GraphQL::Types::ISO8601DateTime, null: false
     field :updated_at, GraphQL::Types::ISO8601DateTime, null: false
@@ -26,6 +27,10 @@ module Types
 
     def resource_file_type
       content = object.resupload_content_type
+    end
+
+    def resource_file_size
+      content = object.resupload_file_size
     end
 
     def rating

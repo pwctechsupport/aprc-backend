@@ -1,1 +1,1 @@
-Paperclip::DataUriAdapter.register
+# Paperclip::DataUriAdapter.register
