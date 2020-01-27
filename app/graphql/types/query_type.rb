@@ -111,8 +111,8 @@ module Types
 
     def policy(id:)
       pol = Policy.find_by(id:id)
-      vieu = pol.visit +=1
-      pol.update(visit: vieu)
+      vieu = pol.visit +1
+      pol.update_attributes(visit: vieu)
       pol
     end
 
@@ -126,8 +126,8 @@ module Types
 
     def resource(id:)
       res = Resource.find_by(id:id)
-      view = res.visit += 1
-      res.update(visit: view)
+      view = res.visit.to_i + 1
+      res.update_attributes(visit: view)
       res
     end
 
