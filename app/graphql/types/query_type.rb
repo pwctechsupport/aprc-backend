@@ -79,6 +79,7 @@ module Types
     end
 
     field :resource_rating, Types::ResourceRatingType, null: true do
+      argument :id, ID, required: true
       description 'Returns the Current Resource Rating and Rating Calculation'
     end
     
@@ -154,8 +155,8 @@ module Types
       User.find_by(id:id)
     end
 
-    def resource_rating(demo: false)
-      ResourceRating.all
+    def resource_rating(id:)
+      ResourceRating.find_by(id:id)
     end
 
 
