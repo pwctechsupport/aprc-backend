@@ -4,17 +4,17 @@ module Mutations
   class CreateResourceRating < Mutations::BaseMutation
     argument :resource_id, ID, required: true
     argument :rating, Float, required: true
-    argument :user_id, ID, required: true
 
     field :resource_rating, Types::ResourceRatingType, null: true
 
     def resolve(args)
-      resource_rating = ResourceRating.where(user_id: args[:user_id], resource_id: args[:resource_id]).first
+      current_user = context[:current_user]
+      resource_rating = current_user.resource_ratings.where(user_id: current_user.id, resource_id: args[:resource_id]).first
       if resource_rating
         resource_rating.update_attributes(args.to_h)
       else
-        resource_rating = ResourceRating.create!(args.to_h)
-      end
+        resource_rating = current_user.resource_ratings.create!(args.to_h)
+      end 
 
       MutationResult.call(
         obj: {resource_rating: resource_rating},
