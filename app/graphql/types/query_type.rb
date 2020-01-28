@@ -110,7 +110,7 @@ module Types
 
     def policy(id:)
       pol = Policy.find_by(id:id)
-      vieu = pol.visit +=1
+      vieu = pol.visit + 1
       pol.update(visit: vieu)
       pol
     end
