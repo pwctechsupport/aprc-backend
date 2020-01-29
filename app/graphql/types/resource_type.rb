@@ -28,25 +28,33 @@ module Types
 
     def resource_file_type
       content = object.resupload_content_type
-      content_true = content.to_s
-      if content_true.include? "document"
-        content_true = ".docx"
-        content_true
-      elsif content_true.include? "sheet"
-        content_true = ".xlsx"
-        content_true
-      elsif content_true.include? "presentation"
-        content_true = ".pptx"
-        content_true
+      if content === nil
+        content_true = ""
       else
-        content_index = content_true.index("/")
-        content_name = content_true[content_true.index('/',content_index - 1)..-1]
-        content_file = content_name.sub("/","")
-        contender = "." << content_file
-        contender
+        content_true = content.to_s
+        if content_true.include? "document"
+          content_true = ".docx"
+          content_true
+        elsif content_true.include? "sheet"
+          content_true = ".xlsx"
+          content_true
+        elsif content_true.include? "presentation"
+          content_true = ".pptx"
+          content_true
+        else
+          if content_true == nil
+            content_true = ""
+          else
+            content_index = content_true.index("/")
+            content_name = content_true[content_true.index('/',content_index - 1)..-1]
+            content_file = content_name.sub("/","")
+            contender = "." << content_file
+            contender
+          end
+        end
       end
     end
-
+    
     def resource_file_size
       content = object.resupload_file_size
     end
