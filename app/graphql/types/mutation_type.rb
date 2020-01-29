@@ -6,6 +6,8 @@ module Types
       argument :email, String, required: true
       argument :password, String, required: true
     end
+    field :forgot_password, mutation: Mutations::ForgotPassword
+    field :update_password, mutation: Mutations::UpdatePassword
     # user and policy CRUD
     field :create_user, mutation: Mutations::CreateUser
     field :update_user, mutation: Mutations::UpdateUser
