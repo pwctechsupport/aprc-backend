@@ -32,7 +32,7 @@ module Types
         content_true = ""
       else
         content_true = content.to_s
-        if content_true.include? "document"
+        if content_true.include? "wordprocessingml"
           content_true = ".docx"
           content_true
         elsif content_true.include? "sheet"
