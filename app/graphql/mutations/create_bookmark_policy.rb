@@ -11,9 +11,12 @@ module Mutations
 
       bookmark_policy = current_user.bookmark_policies.where(user_id: current_user.id, policy_id: args[:policy_id]).first
       if bookmark_policy
+        bookmark_policy.update!(name: bookmark_policy.policy.policy_category.name)        
         bookmark_policy.update_attributes(args.to_h)
+        
       else
         bookmark_policy = current_user.bookmark_policies.create!(args.to_h)
+        bookmark_policy.update!(name: bookmark_policy.policy.policy_category.name)
       end
 
       # bookmark_policy = current_user.bookmark_policies.create!(args.to_h)

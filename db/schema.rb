@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_01_30_102318) do
+ActiveRecord::Schema.define(version: 2020_01_30_170639) do
 
   create_table "bookmark_business_processes", options: "ENGINE=InnoDB DEFAULT CHARSET=latin1", force: :cascade do |t|
     t.bigint "user_id"
@@ -35,6 +35,7 @@ ActiveRecord::Schema.define(version: 2020_01_30_102318) do
     t.bigint "policy_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "name"
     t.index ["policy_id"], name: "index_bookmark_policies_on_policy_id"
     t.index ["user_id"], name: "index_bookmark_policies_on_user_id"
   end
