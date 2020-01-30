@@ -1,4 +1,5 @@
 class Control < ApplicationRecord
+  has_paper_trail
   validates :description, uniqueness: true
   serialize :assertion, Array
   serialize :ipo, Array

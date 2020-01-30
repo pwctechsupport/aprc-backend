@@ -3,6 +3,7 @@ class User < ApplicationRecord
   include Tokenizable
   # Include default devise modules. Others available are:
   # :confirmable, :lockable, :timeoutable, :trackable and :omniauthable
+  has_paper_trail
   has_many :policies
   has_many  :policy_category, through: :policies
   has_many :resource_ratings
