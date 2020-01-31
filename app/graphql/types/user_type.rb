@@ -23,7 +23,7 @@ module Types
     # field :references, [Types::ReferenceType], null: true
     # field :business_processes, [Types::BusinessProcessType], null: true
     # field :resources, [Types::ResourceType], null: true
-    
+  
     def bookmark_policies_user
       bookmark = object.bookmark_policies
     end

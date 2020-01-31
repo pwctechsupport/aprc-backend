@@ -33,9 +33,7 @@ module Types
     field :version_before, Types::BaseScalar, null: true
     field :revert_to_previous_version, Types::BaseScalar, null: true
     field :total_versions, Int, null: true
-    field :undelete_version, Types::BaseScalar, null: true do
-      argument :id, ID, required: true
-    end
+    field :undelete_version, Types::BaseScalar, null: true 
     field :navigate_version, Types::BaseScalar, null: true do
       argument :n, Int, required: true
       argument :revert, Types::Enums::RevertConfirmation, required: true
@@ -87,103 +85,131 @@ module Types
       }
     end
 
-    def version_before
-      data = object.versions.last.reify
-      if data === nil
-        data = "Deleted Version of the Data"
-      else
-        {
-          id: data.id,
-          title:data.title,
-          description:data.description,
-          policy_category_id:data.policy_category_id,
-          created_at:data.created_at,
-          updated_at:data.updated_at,
-          parent:data.parent_id,
-          status:data.status,
-          visit:data.visit
-        }
-      end
-    end
+  #   def version_before
+  #     data = object.versions.last.reify
+  #     if data === nil
+  #       data = "Deleted Version of the Data"
+  #     else
+  #       dato= object.versions.last
+  #       dati = dato.whodunnit.to_i
+  #       if dati === nil
+  #         dati = "There is no User"
+  #         {
+  #           id: data.id,
+  #           title:data.title,
+  #           description:data.description,
+  #           policy_category_id:data.policy_category_id,
+  #           created_at:data.created_at,
+  #           updated_at:data.updated_at,
+  #           parent:data.parent_id,
+  #           status:data.status,
+  #           visit:data.visit,
+  #           id:dato.id,
+  #           item_type:dato.item_type,
+  #           item_id:dato.item_id,
+  #           event:dato.event,
+  #           modified_by:dati,
+  #           changed_at:dato.created_at
+  #         }
+  #       else
+  #         {
+  #           id: data.id,
+  #           title:data.title,
+  #           description:data.description,
+  #           policy_category_id:data.policy_category_id,
+  #           created_at:data.created_at,
+  #           updated_at:data.updated_at,
+  #           parent:data.parent_id,
+  #           status:data.status,
+  #           visit:data.visit,
+  #           id:dato.id,
+  #           item_type:dato.item_type,
+  #           item_id:dato.item_id,
+  #           event:dato.event,
+  #           modified_by:User.find_by(id: dati).name,
+  #           changed_at:dato.created_at
+  #         }
+  #       end
+  #     end
+  #   end
     
-    def revert_to_previous_version
-      data = object.paper_trail.previous_version
-      if data === nil
-        data = "Deleted Version of the Data"
-      else
-        data.save
-        {
-          id: data.id,
-          title:data.title,
-          description:data.description,
-          policy_category_id:data.policy_category_id,
-          created_at:data.created_at,
-          updated_at:data.updated_at,
-          parent:data.parent_id,
-          status:data.status,
-          visit:data.visit
-        }
-      end
-    end
+  #   def revert_to_previous_version
+  #     data = object.paper_trail.previous_version
+  #     if data === nil
+  #       data = "Deleted Version of the Data"
+  #     else
+  #       data.save
+  #       {
+  #         id: data.id,
+  #         title:data.title,
+  #         description:data.description,
+  #         policy_category_id:data.policy_category_id,
+  #         created_at:data.created_at,
+  #         updated_at:data.updated_at,
+  #         parent:data.parent_id,
+  #         status:data.status,
+  #         visit:data.visit
+  #       }
+  #     end
+  #   end
 
-    def total_versions
-      data = object.versions.length
-    end
+  #   def total_versions
+  #     data = object.versions.length
+  #   end
 
-    def undelete_version(id:)
-      data = Policy.new(id:id)
-      versioni = data.versions
-      data = versioni.last.reify
-      if data === nil
-        data = "Deleted Version of the Data"
-      else
-        data.save
-        {
-          id: data.id,
-          title:data.title,
-          description:data.description,
-          policy_category_id:data.policy_category_id,
-          created_at:data.created_at,
-          updated_at:data.updated_at,
-          parent:data.parent_id,
-          status:data.status,
-          visit:data.visit
-        }
-      end
-    end
+  #   def undelete_version
+  #     versioni = object.versions
+  #     data = versioni.last.reify(has_many: true, has_many_through: true, belongs_to: true)
+  #     if data === nil
+  #       data = "Deleted Version of the Data"
+  #     else
+  #       data.save
+  #       {
+  #         id: data.id,
+  #         title:data.title,
+  #         description:data.description,
+  #         policy_category_id:data.policy_category_id,
+  #         created_at:data.created_at,
+  #         updated_at:data.updated_at,
+  #         parent:data.parent_id,
+  #         status:data.status,
+  #         visit:data.visit
+  #       }
+  #     end
+  #   end
 
-    def navigate_version(n:, revert:)
-      x = n-1
-      data = object.versions[x].reify
-      if data === nil
-        data = "Deleted Version of the Data"
-      elsif revert === "yes"
-        data.save
-        {
-        id: data.id,
-        title:data.title,
-        description:data.description,
-        policy_category_id:data.policy_category_id,
-        created_at:data.created_at,
-        updated_at:data.updated_at,
-        parent:data.parent_id,
-        status:data.status,
-        visit:data.visit
-        }
-      else
-        {
-        id: data.id,
-        title:data.title,
-        description:data.description,
-        policy_category_id:data.policy_category_id,
-        created_at:data.created_at,
-        updated_at:data.updated_at,
-        parent:data.parent_id,
-        status:data.status,
-        visit:data.visit
-        }
-      end
-    end 
+  #   def navigate_version(n:, revert:)
+  #     x = n-1
+  #     data = object.versions[x].reify
+  #     if data === nil
+  #       data = "Deleted Version of the Data"
+  #     elsif revert === "yes"
+  #       data.save
+  #       {
+  #       id: data.id,
+  #       title:data.title,
+  #       description:data.description,
+  #       policy_category_id:data.policy_category_id,
+  #       created_at:data.created_at,
+  #       updated_at:data.updated_at,
+  #       parent:data.parent_id,
+  #       status:data.status,
+  #       visit:data.visit
+  #       }
+  #     else
+  #       {
+  #       id: data.id,
+  #       title:data.title,
+  #       description:data.description,
+  #       policy_category_id:data.policy_category_id,
+  #       created_at:data.created_at,
+  #       updated_at:data.updated_at,
+  #       parent:data.parent_id,
+  #       status:data.status,
+  #       visit:data.visit
+  #       }
+  #     end
+  #   end 
 
 
 

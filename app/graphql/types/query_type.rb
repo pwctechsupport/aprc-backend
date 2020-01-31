@@ -8,6 +8,10 @@ module Types
       description 'Returns the current user'
     end
 
+    field :versions, [Types::VersionType], null: true do 
+      description 'Returns the Version of an Object'
+    end
+
     # field :res, [Types::ResourceType], null: true do
     #   description 'Returns Resources Attributes'
     # end
@@ -30,6 +34,7 @@ module Types
 
     field :policy, Types::PolicyType, null: true do
       argument :id, ID, required: true
+      argument :undelete, Types::Enums::RevertConfirmation, required: false
       description 'Returns Policy By ID'
     end
 
@@ -89,6 +94,12 @@ module Types
       context[:current_user]
     end
 
+    def versions(demo: false)
+      peng = context[:current_user]
+      pengguna = PaperTrail::Version.where(whodunnit: peng.id)
+      pengguna
+    end
+
     # def res(demo: false)
     #   Resource.all
     # end
@@ -109,11 +120,15 @@ module Types
     #   Control.all
     # end
 
-    def policy(id:)
-      pol = Policy.find_by(id:id)
-      vieu = pol.visit+1
-      pol.update(visit: vieu)
-      pol
+    def policy(id:, undelete:)
+      if undelete === "yes"
+        Policy.new(id:id)
+      else
+        pol = Policy.find_by(id:id)
+        vieu = pol.visit+1
+        pol.update(visit: vieu)
+        polw
+      end
     end
 
     def risk(id:)
