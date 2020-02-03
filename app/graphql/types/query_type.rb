@@ -8,6 +8,10 @@ module Types
       description 'Returns the current user'
     end
 
+    field :version, [Types::VersionType], null: true do 
+      description 'Returns the Version of an Object'
+    end
+
     # field :res, [Types::ResourceType], null: true do
     #   description 'Returns Resources Attributes'
     # end
@@ -30,6 +34,7 @@ module Types
 
     field :policy, Types::PolicyType, null: true do
       argument :id, ID, required: true
+      argument :undelete, Types::Enums::RevertConfirmation, required: false
       description 'Returns Policy By ID'
     end
 
@@ -87,6 +92,12 @@ module Types
 
     def me(demo: false)
       context[:current_user]
+    end
+
+    def version(demo: false)
+      peng = context[:current_user]
+      pengguna = PaperTrail::Version.where(whodunnit: peng.id)
+      pengguna
     end
 
     # def res(demo: false)
@@ -174,5 +185,6 @@ module Types
     field :bookmark_risks, resolver: Resolvers::QueryType::BookmarkRisksResolver
     field :bookmark_controls, resolver: Resolvers::QueryType::BookmarkControlsResolver
     field :bookmark_business_processes, resolver: Resolvers::QueryType::BookmarkBusinessProcessesResolver
+    field :versions, resolver: Resolvers::QueryType::VersionsResolver
   end
 end

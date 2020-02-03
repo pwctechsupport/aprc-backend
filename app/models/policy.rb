@@ -1,5 +1,6 @@
 class Policy < ApplicationRecord
   validates :title, uniqueness: true
+  has_paper_trail ignore: [:visit]
   belongs_to :policy_category, optional: true
   belongs_to :user, optional: true
   has_many :policy_resources, dependent: :destroy
@@ -15,5 +16,6 @@ class Policy < ApplicationRecord
   has_many :controls, through: :policy_controls
   has_many :policy_risks, dependent: :destroy
   has_many :risks, through: :policy_risks
-  has_many :bookmark_policies
+  has_many :bookmark_policies, dependent: :destroy
+  has_many :users, as: :versions
 end

@@ -35,7 +35,8 @@ gem 'haml'
 gem 'rubyzip'
 gem 'axlsx'
 gem 'axlsx_rails'
-
+gem 'paper_trail'
+gem 'paper_trail-association_tracking'
 # Use Redis adapter to run Action Cable in production
 # gem 'redis', '~> 4.0'
 # Use ActiveModel has_secure_password

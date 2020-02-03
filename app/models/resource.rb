@@ -1,5 +1,6 @@
 class Resource < ApplicationRecord
   validates :name, uniqueness: true
+  has_paper_trail ignore: [:visit]
   belongs_to :policy, optional: true
   belongs_to :control, optional: true
   has_many :policy_resources, dependent: :destroy

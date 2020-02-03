@@ -26,7 +26,7 @@ module Types
     field :children, [Types::PolicyType], null: true
     field :ancestors, [Types::PolicyType], null: true
     field :status, String, null: true
-    field :visit, Int, null: false
+    field :visit, Int, null: true
     field :created_at, GraphQL::Types::ISO8601DateTime, null: false
     field :updated_at, GraphQL::Types::ISO8601DateTime, null: false
     field :policies_bookmarked_by, [Types::BookmarkPolicyType] , null: true
@@ -34,7 +34,7 @@ module Types
     field :sub_count, Types::BaseScalar, null: true
     field :control_count, Types::BaseScalar, null: true
     field :risk_count, Types::BaseScalar, null: true
-
+    
 
     
     def policies_bookmarked_by
@@ -54,6 +54,7 @@ module Types
         waiting_for_review: data.where(status: "waiting_for_review").count  
       }
     end
+
 
     def risk_count
       data = object.risks
@@ -79,8 +80,6 @@ module Types
         waiting_for_review: data.where(status: "waiting_for_review").count
       }
     end
-
-
 
     def policy_risks_count
       policy_risks = object.risks.count
