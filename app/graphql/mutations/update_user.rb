@@ -8,6 +8,9 @@ module Mutations
       argument :phone, String, required: false
       argument :password, String, required: false
       argument :password_confirmation, String, required: false
+      argument :name, String, required: false
+      argument :jobPosition, String, required: false
+      argument :department, String, required: false
   
       field :user, Types::UserType, null: false
   

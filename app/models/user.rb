@@ -1,10 +1,11 @@
 class User < ApplicationRecord
+  rolify
   include Devise::JWT::RevocationStrategies::JTIMatcher
   include Tokenizable
   # Include default devise modules. Others available are:
   # :confirmable, :lockable, :timeoutable, :trackable and :omniauthable
   has_many :policies
-  has_many  :policy_category, through: :policies
+  has_many :policy_category, through: :policies
   has_many :resource_ratings
   has_many :bookmark_policies
   has_many :risks
@@ -12,6 +13,7 @@ class User < ApplicationRecord
   has_many :bookmark_risks
   has_many :bookmark_controls
   has_many :bookmark_business_processes
+  has_many :user_policy_categories
   devise :database_authenticatable,
          :registerable,
          :recoverable, 
