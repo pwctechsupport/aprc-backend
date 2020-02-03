@@ -64,6 +64,8 @@ module Types
   
     field :create_sub_business_process, mutation: Mutations::CreateSubBusinessProcess
 
+    field :create_user_access, mutation: Mutations::CreateUserAccess
+
 
 
     def login(email:, password:)
