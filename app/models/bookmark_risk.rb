@@ -9,4 +9,7 @@ class BookmarkRisk < ApplicationRecord
   
   belongs_to :user
   belongs_to :risk
+  def to_humanize
+    "#{self.user.name} Bookmarked #{self.risk.name}"
+  end
 end

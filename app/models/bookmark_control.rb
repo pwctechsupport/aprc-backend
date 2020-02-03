@@ -9,4 +9,7 @@ class BookmarkControl < ApplicationRecord
   
   belongs_to :user
   belongs_to :control
+  def to_humanize
+    "#{self.user.name} Bookmarked #{self.control.description}"
+  end
 end

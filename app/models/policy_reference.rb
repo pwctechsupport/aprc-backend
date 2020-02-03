@@ -9,4 +9,7 @@ class PolicyReference < ApplicationRecord
   
   belongs_to :policy, optional: true
   belongs_to :reference, optional: true
+  def to_humanize
+    "#{self.policy.name} : #{self.reference.name}"
+  end
 end

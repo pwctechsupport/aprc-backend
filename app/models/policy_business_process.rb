@@ -9,4 +9,7 @@ class PolicyBusinessProcess < ApplicationRecord
   
   belongs_to :policy, optional: true
   belongs_to :business_process, optional: true
+  def to_humanize
+    "#{self.policy.title} : #{self.business_process.name}"
+  end
 end

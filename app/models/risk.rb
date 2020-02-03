@@ -12,5 +12,4 @@ class Risk < ApplicationRecord
   def to_humanize
     "#{self.name} : #{self.status}"
   end
-
 end

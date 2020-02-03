@@ -10,4 +10,7 @@ class BusinessProcess < ApplicationRecord
   has_many :risks, dependent: :destroy
   has_many :bookmark_business_processes
   has_many :users, through: :bookmark_business_processes
+  def to_humanize
+    "#{self.name} : #{self.status}"
+  end
 end
