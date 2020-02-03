@@ -9,4 +9,8 @@ class Risk < ApplicationRecord
   has_many :bookmark_risks
   has_many :users, through: :bookmark_risks
 
+  def to_humanize
+    "#{self.name} : #{self.status}"
+  end
+
 end

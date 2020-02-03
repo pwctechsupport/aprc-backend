@@ -30,6 +30,7 @@ gem 'wicked_pdf'
 gem 'wkhtmltopdf-binary-edge', '~> 0.12.5.1'
 
 gem 'haml'
+gem 'draftsman', '~> 0.7.1'
 
 gem 'rubyzip'
 gem 'axlsx'

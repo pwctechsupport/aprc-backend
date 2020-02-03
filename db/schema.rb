@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_01_30_170639) do
+ActiveRecord::Schema.define(version: 2020_02_03_092323) do
 
   create_table "bookmark_business_processes", options: "ENGINE=InnoDB DEFAULT CHARSET=latin1", force: :cascade do |t|
     t.bigint "user_id"
@@ -111,6 +111,24 @@ ActiveRecord::Schema.define(version: 2020_01_30_170639) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "drafts", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.string "item_type", null: false
+    t.integer "item_id", null: false
+    t.string "event", null: false
+    t.string "whodunnit"
+    t.text "object"
+    t.text "previous_draft"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.text "object_changes"
+    t.index ["created_at"], name: "index_drafts_on_created_at"
+    t.index ["event"], name: "index_drafts_on_event"
+    t.index ["item_id"], name: "index_drafts_on_item_id"
+    t.index ["item_type"], name: "index_drafts_on_item_type"
+    t.index ["updated_at"], name: "index_drafts_on_updated_at"
+    t.index ["whodunnit"], name: "index_drafts_on_whodunnit"
+  end
+
   create_table "it_systems", options: "ENGINE=InnoDB DEFAULT CHARSET=latin1", force: :cascade do |t|
     t.text "name"
     t.datetime "created_at", null: false
@@ -128,6 +146,9 @@ ActiveRecord::Schema.define(version: 2020_01_30_170639) do
     t.string "status", default: "draft"
     t.integer "visit", default: 0
     t.bigint "resource_id"
+    t.integer "draft_id"
+    t.timestamp "published_at"
+    t.timestamp "trashed_at"
     t.index ["ancestry"], name: "index_policies_on_ancestry"
     t.index ["policy_category_id"], name: "index_policies_on_policy_category_id"
     t.index ["resource_id"], name: "index_policies_on_resource_id"
@@ -279,6 +300,9 @@ ActiveRecord::Schema.define(version: 2020_01_30_170639) do
     t.datetime "locked_at"
     t.integer "role"
     t.string "phone"
+    t.integer "draft_id"
+    t.timestamp "published_at"
+    t.timestamp "trashed_at"
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["jti"], name: "index_users_on_jti", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true

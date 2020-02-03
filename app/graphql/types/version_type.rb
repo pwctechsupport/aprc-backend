@@ -11,6 +11,7 @@ module Types
 		field :object_changes, String, null: true
 		field :item, Types::ItemType, null: true
 		field :user, Types::UserType, null: true
+		field :description, String, null: true
 		def user
 			who = object.whodunnit.to_i
 			if who === 0 || who === nil
@@ -18,6 +19,14 @@ module Types
 			else
 				User.find(who)
 			end
+		end
+
+		def description
+			if object.whodunnit
+
+				user = User.find(object.whodunnit)
+			end
+			"#{user.&first_name} #{object.event} #{object.item_type}: #{object.item.to_humanize}"
 		end
 	end
 end

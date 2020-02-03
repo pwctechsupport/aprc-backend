@@ -31,6 +31,7 @@ module Types
     field :control_count, Types::BaseScalar, null: true
     field :risk_count, Types::BaseScalar, null: true
     
+    
 
     
     def policies_bookmarked_by
@@ -80,6 +81,8 @@ module Types
     def policy_risks_count
       policy_risks = object.risks.count
     end
+
+    
 
 
   end
