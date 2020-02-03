@@ -8,7 +8,7 @@ module Types
       description 'Returns the current user'
     end
 
-    field :versions, [Types::VersionType], null: true do 
+    field :version, [Types::VersionType], null: true do 
       description 'Returns the Version of an Object'
     end
 
@@ -94,7 +94,7 @@ module Types
       context[:current_user]
     end
 
-    def versions(demo: false)
+    def version(demo: false)
       peng = context[:current_user]
       pengguna = PaperTrail::Version.where(whodunnit: peng.id)
       pengguna
@@ -120,15 +120,11 @@ module Types
     #   Control.all
     # end
 
-    def policy(id:, undelete:)
-      if undelete === "yes"
-        Policy.new(id:id)
-      else
-        pol = Policy.find_by(id:id)
-        vieu = pol.visit+1
-        pol.update(visit: vieu)
-        polw
-      end
+    def policy(id:)
+      pol = Policy.find_by(id:id)
+      vieu = pol.visit+1
+      pol.update(visit: vieu)
+      pol
     end
 
     def risk(id:)
@@ -189,5 +185,6 @@ module Types
     field :bookmark_risks, resolver: Resolvers::QueryType::BookmarkRisksResolver
     field :bookmark_controls, resolver: Resolvers::QueryType::BookmarkControlsResolver
     field :bookmark_business_processes, resolver: Resolvers::QueryType::BookmarkBusinessProcessesResolver
+    field :versions, resolver: Resolvers::QueryType::VersionsResolver
   end
 end
