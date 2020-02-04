@@ -91,4 +91,16 @@ Rails.application.configure do
 
   # Do not dump schema after migrations.
   config.active_record.dump_schema_after_migration = false
+  config.action_mailer.default_url_options = { :host => 'mandalorian.rubyh.co' }
+  config.action_mailer.asset_host = 'https://mandalorian.rubyh.co'
+
+  config.action_mailer.delivery_method = :smtp
+  config.action_mailer.smtp_settings = {
+    :user_name => 'b39fa9f0d1604c',
+    :password => 'e0a67d6104ccc4',
+    :address => 'smtp.mailtrap.io',
+    :domain => 'smtp.mailtrap.io',
+    :port => '2525',
+    :authentication => :cram_md5
+  }
 end
