@@ -5,6 +5,7 @@ class User < ApplicationRecord
   # Include default devise modules. Others available are:
   # :confirmable, :lockable, :timeoutable, :trackable and :omniauthable
   has_paper_trail ignore: [:current_sign_in_at,:last_sign_in_at, :sign_in_count, :updated_at]
+  has_drafts
   has_many :policies
   has_many :policy_category, through: :policies
   has_many :resource_ratings
@@ -26,6 +27,10 @@ class User < ApplicationRecord
   enum role: %i[customer admin]
 
   has_many :versions, class_name: "PaperTrail::Version", foreign_key: "whodunnit"
+
+  def to_humanize
+    "#{self.name} : #{self.email}"
+  end
 
   after_initialize :setup_new_user, if: :new_record?
 

@@ -9,4 +9,7 @@ class PolicyResource < ApplicationRecord
   
   belongs_to :policy, optional: true
   belongs_to :resource, optional: true
+  def to_humanize
+    "#{self.policy.title} : #{self.resource.name}"
+  end
 end

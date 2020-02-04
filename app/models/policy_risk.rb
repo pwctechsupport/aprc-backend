@@ -9,4 +9,7 @@ class PolicyRisk < ApplicationRecord
   
   belongs_to :policy
   belongs_to :risk
+  def to_humanize
+    "#{self.policy.title} : #{self.risk.name}"
+  end
 end

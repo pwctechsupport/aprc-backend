@@ -8,5 +8,8 @@ class PolicyCategory < ApplicationRecord
 	paper_trail.on_touch
 	
 	validates :name, uniqueness: true
-	has_many :policies
+  has_many :policies
+  def to_humanize
+    "#{self.name}"
+  end
 end
