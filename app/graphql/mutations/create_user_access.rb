@@ -10,7 +10,8 @@ module Mutations
 
     def resolve(args)
       user = User.find_by(id: args[:user_id])
-      user.update_attributes(role: args[:role_id].to_i)
+      role_name = Role.find_by(id: args[:role_id]).name
+      user.add_role(role_name)
       user_policy_category = UserPolicyCategory.create(user_id: user.id, policy_category_id: args[:policy_category_id])
       MutationResult.call(
           obj: { user_policy_category: user_policy_category },
