@@ -7,6 +7,7 @@ module Mutations
     # argument :assertion, String, required: false
     # argument :ipo, String, required: false
     argument :control_owner, String, required: false
+    argument :description, String, required: false
     argument :fte_estimate, Int, required: false 
     argument :description, String, required: false
     argument :type_of_control, Types::Enums::TypeOfControl, required: false

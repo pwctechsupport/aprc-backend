@@ -7,6 +7,9 @@ module Types
     field :email, String, null: true
     field :token, String, null: false
     field :phone, String, null: true
+    field :role, Int, null: true
+    field :department, String, null: true
+    field :jobPosition, String, null: true
     field :policies, [Types::PolicyType], null: false
     field :policy_category, Types::PolicyCategoryType, null: true 
     field :created_at, GraphQL::Types::ISO8601DateTime, null: false
@@ -23,7 +26,6 @@ module Types
     # field :references, [Types::ReferenceType], null: true
     # field :business_processes, [Types::BusinessProcessType], null: true
     # field :resources, [Types::ResourceType], null: true
-  
     def bookmark_policies_user
       bookmark = object.bookmark_policies
     end
