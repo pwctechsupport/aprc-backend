@@ -18,9 +18,12 @@ module Mutations
       def resolve(args)
         user = context[:current_user]
         if args[:password].present? && args[:password_confirmation].present?
-          user.update!(args)
-        else
-          user.update_attributes(args)
+          if user.draft?
+            "Draft Cannot be created until another Draft is Approved/Rejected by an Admin"
+          else
+            user.attributes = args
+            user.save_draft
+          end
         end
 
         MutationResult.call(

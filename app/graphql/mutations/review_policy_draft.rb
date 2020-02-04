@@ -1,24 +1,29 @@
 module Mutations
-  class CreatePolicy < Mutations::BaseMutation
+  class ReviewPolicyDraft < Mutations::BaseMutation
     # arguments passed to the `resolved` method
-    argument :title, String, required: true
-    argument :description, String, required: true
-    argument :policy_category_id, ID, required: false 
-    argument :resource_id, ID, required: false
-    argument :it_system_ids, [ID], required: false
-    argument :resource_ids, [ID], required: false
-    argument :status, Types::Enums::Status, required: false
-    argument :business_process_ids, [ID], required: false
-    argument :control_ids, [ID], required: false
-    argument :risk_ids, [ID], required: false
-
+    argument :publish, Boolean, required: true
+    argument :id, ID, required: true
+    
     # return type from the mutation
     field :policy, Types::PolicyType, null: true
 
     def resolve(args)
       current_user = context[:current_user]
-      policy = current_user.policies.new(args.to_h)
-      policy.save_draft
+      policy = current_user.policies.find(args[:id])
+
+      if current_user.present? && current_user.has_role?(:admin)
+        policy_draft = policy.draft
+        if args[:publish] === true
+          
+          policy_draft.publish!
+          policy.update(status: "release")
+        else    
+          policy_draft.revert!
+        end 
+      else
+        raise GraphQL::ExecutionError, "User is not an Admin."
+      end
+
       # policy = Policy.create!(args.to_h)
       MutationResult.call(
           obj: { policy: policy },
