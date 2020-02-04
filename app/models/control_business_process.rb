@@ -9,4 +9,7 @@ class ControlBusinessProcess < ApplicationRecord
   
   belongs_to :control, optional: true
   belongs_to :business_process, optional: true
+  def to_humanize
+    "#{self.control.control_owner} : #{self.business_process.name}"
+  end
 end

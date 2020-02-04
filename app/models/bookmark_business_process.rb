@@ -9,4 +9,7 @@ class BookmarkBusinessProcess < ApplicationRecord
   
   belongs_to :user
   belongs_to :business_process
+  def to_humanize
+    "#{self.user.name} Bookmarked #{self.business_process.name}"
+  end
 end

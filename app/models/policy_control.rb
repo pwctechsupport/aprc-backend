@@ -9,4 +9,7 @@ class PolicyControl < ApplicationRecord
   
   belongs_to :policy
   belongs_to :control
+  def to_humanize
+    "#{self.policy.title} : #{self.control.name}"
+  end
 end

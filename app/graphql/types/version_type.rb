@@ -26,7 +26,7 @@ module Types
 
 				user = User.find(object.whodunnit)
 			end
-			"#{user.&first_name} #{object.event} #{object.item_type}: #{object.item.to_humanize}"
+			"#{user&.name || "someone"} #{object.event} #{object.item_type}: #{object.item&.to_humanize}"
 		end
 	end
 end

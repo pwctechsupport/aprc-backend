@@ -29,7 +29,7 @@ class User < ApplicationRecord
   has_many :versions, class_name: "PaperTrail::Version", foreign_key: "whodunnit"
 
   def to_humanize
-    "#{self.first_name}"
+    "#{self.name} : #{self.email}"
   end
 
   after_initialize :setup_new_user, if: :new_record?

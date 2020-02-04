@@ -19,5 +19,7 @@ class Policy < ApplicationRecord
   has_many :risks, through: :policy_risks
   has_many :bookmark_policies, dependent: :destroy
   has_many :users, as: :versions
-  
+  def to_humanize
+    "#{self.title.titlecase}"
+  end
 end
