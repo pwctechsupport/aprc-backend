@@ -4,24 +4,26 @@ module Mutations
   class DestroyVersion < Mutations::BaseMutation
     graphql_name "DestroyVersion"
 
-    argument :id, ID, required: true
+    argument :ids, [Int], required: true
 
-    field :version, Types::VersionType, null: false
+    field :version, Boolean, null: false
 
-    def resolve(id:)
-      version = PaperTrail::Version.find(id)
-      success = version.destroy
-      
+
+    def resolve(ids:)
+      version = PaperTrail::Version.where(id:ids)
+      success = version.destroy_all
       MutationResult.call(
         obj: { version: version },
         success: success,
-        errors: version.errors
+        errors: success
       )
+
     rescue ActiveRecord::RecordInvalid => invalid
       GraphQL::ExecutionError.new(
         "Invalid Attributes for #{invalid.record.class.name}: " \
         "#{invalid.record.errors.full_messages.join(', ')}"
       )
+      
     end
 
     def ready?(args)
