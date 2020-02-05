@@ -193,5 +193,6 @@ module Types
     field :resource_ratings, resolver: Resolvers::QueryType::ResourceRatingsResolver
     field :bookmarks, resolver: Resolvers::QueryType::BookmarksResolver
     field :versions, resolver: Resolvers::QueryType::VersionsResolver
+    field :roles, resolver: Resolvers::QueryType::RolesResolver
   end
 end
