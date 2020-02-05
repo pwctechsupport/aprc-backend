@@ -10,9 +10,9 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_01_31_111815) do
+ActiveRecord::Schema.define(version: 2020_02_03_092323) do
 
-  create_table "bookmark_business_processes", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+  create_table "bookmark_business_processes", options: "ENGINE=InnoDB DEFAULT CHARSET=latin1", force: :cascade do |t|
     t.bigint "user_id"
     t.bigint "business_process_id"
     t.datetime "created_at", null: false
@@ -21,7 +21,7 @@ ActiveRecord::Schema.define(version: 2020_01_31_111815) do
     t.index ["user_id"], name: "index_bookmark_business_processes_on_user_id"
   end
 
-  create_table "bookmark_controls", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+  create_table "bookmark_controls", options: "ENGINE=InnoDB DEFAULT CHARSET=latin1", force: :cascade do |t|
     t.bigint "user_id"
     t.bigint "control_id"
     t.datetime "created_at", null: false
@@ -30,7 +30,7 @@ ActiveRecord::Schema.define(version: 2020_01_31_111815) do
     t.index ["user_id"], name: "index_bookmark_controls_on_user_id"
   end
 
-  create_table "bookmark_policies", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+  create_table "bookmark_policies", options: "ENGINE=InnoDB DEFAULT CHARSET=latin1", force: :cascade do |t|
     t.bigint "user_id"
     t.bigint "policy_id"
     t.datetime "created_at", null: false
@@ -40,7 +40,7 @@ ActiveRecord::Schema.define(version: 2020_01_31_111815) do
     t.index ["user_id"], name: "index_bookmark_policies_on_user_id"
   end
 
-  create_table "bookmark_risks", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+  create_table "bookmark_risks", options: "ENGINE=InnoDB DEFAULT CHARSET=latin1", force: :cascade do |t|
     t.bigint "user_id"
     t.bigint "risk_id"
     t.datetime "created_at", null: false
@@ -49,7 +49,7 @@ ActiveRecord::Schema.define(version: 2020_01_31_111815) do
     t.index ["user_id"], name: "index_bookmark_risks_on_user_id"
   end
 
-  create_table "business_processes", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+  create_table "business_processes", options: "ENGINE=InnoDB DEFAULT CHARSET=latin1", force: :cascade do |t|
     t.text "name"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -58,13 +58,13 @@ ActiveRecord::Schema.define(version: 2020_01_31_111815) do
     t.index ["ancestry"], name: "index_business_processes_on_ancestry"
   end
 
-  create_table "categories", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+  create_table "categories", options: "ENGINE=InnoDB DEFAULT CHARSET=latin1", force: :cascade do |t|
     t.string "name"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
 
-  create_table "control_business_processes", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+  create_table "control_business_processes", options: "ENGINE=InnoDB DEFAULT CHARSET=latin1", force: :cascade do |t|
     t.bigint "control_id"
     t.bigint "business_process_id"
     t.datetime "created_at", null: false
@@ -73,7 +73,7 @@ ActiveRecord::Schema.define(version: 2020_01_31_111815) do
     t.index ["control_id"], name: "index_control_business_processes_on_control_id"
   end
 
-  create_table "control_descriptions", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+  create_table "control_descriptions", options: "ENGINE=InnoDB DEFAULT CHARSET=latin1", force: :cascade do |t|
     t.bigint "control_id"
     t.bigint "description_id"
     t.datetime "created_at", null: false
@@ -82,7 +82,7 @@ ActiveRecord::Schema.define(version: 2020_01_31_111815) do
     t.index ["description_id"], name: "index_control_descriptions_on_description_id"
   end
 
-  create_table "control_risks", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+  create_table "control_risks", options: "ENGINE=InnoDB DEFAULT CHARSET=latin1", force: :cascade do |t|
     t.bigint "control_id"
     t.bigint "risk_id"
     t.datetime "created_at", null: false
@@ -91,7 +91,7 @@ ActiveRecord::Schema.define(version: 2020_01_31_111815) do
     t.index ["risk_id"], name: "index_control_risks_on_risk_id"
   end
 
-  create_table "controls", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+  create_table "controls", options: "ENGINE=InnoDB DEFAULT CHARSET=latin1", force: :cascade do |t|
     t.text "type_of_control"
     t.text "frequency"
     t.text "nature"
@@ -100,24 +100,42 @@ ActiveRecord::Schema.define(version: 2020_01_31_111815) do
     t.text "control_owner"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.string "description"
     t.string "status", default: "draft"
     t.boolean "key_control", default: false, null: false
+    t.string "description"
   end
 
-  create_table "descriptions", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+  create_table "descriptions", options: "ENGINE=InnoDB DEFAULT CHARSET=latin1", force: :cascade do |t|
     t.text "name"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
 
-  create_table "it_systems", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+  create_table "drafts", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.string "item_type", null: false
+    t.integer "item_id", null: false
+    t.string "event", null: false
+    t.string "whodunnit"
+    t.text "object"
+    t.text "previous_draft"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.text "object_changes"
+    t.index ["created_at"], name: "index_drafts_on_created_at"
+    t.index ["event"], name: "index_drafts_on_event"
+    t.index ["item_id"], name: "index_drafts_on_item_id"
+    t.index ["item_type"], name: "index_drafts_on_item_type"
+    t.index ["updated_at"], name: "index_drafts_on_updated_at"
+    t.index ["whodunnit"], name: "index_drafts_on_whodunnit"
+  end
+
+  create_table "it_systems", options: "ENGINE=InnoDB DEFAULT CHARSET=latin1", force: :cascade do |t|
     t.text "name"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
 
-  create_table "policies", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+  create_table "policies", options: "ENGINE=InnoDB DEFAULT CHARSET=latin1", force: :cascade do |t|
     t.string "title"
     t.text "description"
     t.bigint "policy_category_id"
@@ -128,13 +146,16 @@ ActiveRecord::Schema.define(version: 2020_01_31_111815) do
     t.string "status", default: "draft"
     t.integer "visit", default: 0
     t.bigint "resource_id"
+    t.integer "draft_id"
+    t.timestamp "published_at"
+    t.timestamp "trashed_at"
     t.index ["ancestry"], name: "index_policies_on_ancestry"
     t.index ["policy_category_id"], name: "index_policies_on_policy_category_id"
     t.index ["resource_id"], name: "index_policies_on_resource_id"
     t.index ["user_id"], name: "index_policies_on_user_id"
   end
 
-  create_table "policy_business_processes", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+  create_table "policy_business_processes", options: "ENGINE=InnoDB DEFAULT CHARSET=latin1", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.bigint "policy_id"
@@ -143,13 +164,13 @@ ActiveRecord::Schema.define(version: 2020_01_31_111815) do
     t.index ["policy_id"], name: "index_policy_business_processes_on_policy_id"
   end
 
-  create_table "policy_categories", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+  create_table "policy_categories", options: "ENGINE=InnoDB DEFAULT CHARSET=latin1", force: :cascade do |t|
     t.string "name"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
 
-  create_table "policy_controls", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+  create_table "policy_controls", options: "ENGINE=InnoDB DEFAULT CHARSET=latin1", force: :cascade do |t|
     t.bigint "policy_id"
     t.bigint "control_id"
     t.datetime "created_at", null: false
@@ -158,7 +179,7 @@ ActiveRecord::Schema.define(version: 2020_01_31_111815) do
     t.index ["policy_id"], name: "index_policy_controls_on_policy_id"
   end
 
-  create_table "policy_it_systems", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+  create_table "policy_it_systems", options: "ENGINE=InnoDB DEFAULT CHARSET=latin1", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.bigint "policy_id"
@@ -167,7 +188,7 @@ ActiveRecord::Schema.define(version: 2020_01_31_111815) do
     t.index ["policy_id"], name: "index_policy_it_systems_on_policy_id"
   end
 
-  create_table "policy_references", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+  create_table "policy_references", options: "ENGINE=InnoDB DEFAULT CHARSET=latin1", force: :cascade do |t|
     t.bigint "policy_id"
     t.bigint "reference_id"
     t.datetime "created_at", null: false
@@ -176,7 +197,7 @@ ActiveRecord::Schema.define(version: 2020_01_31_111815) do
     t.index ["reference_id"], name: "index_policy_references_on_reference_id"
   end
 
-  create_table "policy_resources", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+  create_table "policy_resources", options: "ENGINE=InnoDB DEFAULT CHARSET=latin1", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.bigint "policy_id"
@@ -185,7 +206,7 @@ ActiveRecord::Schema.define(version: 2020_01_31_111815) do
     t.index ["resource_id"], name: "index_policy_resources_on_resource_id"
   end
 
-  create_table "policy_risks", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+  create_table "policy_risks", options: "ENGINE=InnoDB DEFAULT CHARSET=latin1", force: :cascade do |t|
     t.bigint "policy_id"
     t.bigint "risk_id"
     t.datetime "created_at", null: false
@@ -194,14 +215,14 @@ ActiveRecord::Schema.define(version: 2020_01_31_111815) do
     t.index ["risk_id"], name: "index_policy_risks_on_risk_id"
   end
 
-  create_table "references", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+  create_table "references", options: "ENGINE=InnoDB DEFAULT CHARSET=latin1", force: :cascade do |t|
     t.string "name"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "status"
   end
 
-  create_table "resource_controls", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+  create_table "resource_controls", options: "ENGINE=InnoDB DEFAULT CHARSET=latin1", force: :cascade do |t|
     t.bigint "resource_id"
     t.bigint "control_id"
     t.datetime "created_at", null: false
@@ -210,7 +231,7 @@ ActiveRecord::Schema.define(version: 2020_01_31_111815) do
     t.index ["resource_id"], name: "index_resource_controls_on_resource_id"
   end
 
-  create_table "resource_ratings", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+  create_table "resource_ratings", options: "ENGINE=InnoDB DEFAULT CHARSET=latin1", force: :cascade do |t|
     t.bigint "resource_id"
     t.float "rating"
     t.bigint "user_id"
@@ -220,26 +241,30 @@ ActiveRecord::Schema.define(version: 2020_01_31_111815) do
     t.index ["user_id"], name: "index_resource_ratings_on_user_id"
   end
 
-  create_table "resources", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+  create_table "resources", options: "ENGINE=InnoDB DEFAULT CHARSET=latin1", force: :cascade do |t|
     t.text "name"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "resupload_file_name"
     t.string "resupload_content_type"
-    t.integer "resupload_file_size"
+    t.bigint "resupload_file_size"
     t.datetime "resupload_updated_at"
     t.bigint "policy_id"
     t.bigint "control_id"
     t.bigint "business_process_id"
+    t.bigint "policy_id_id_id"
+    t.bigint "policy_id_id"
     t.string "category"
     t.integer "visit", default: 0
     t.string "status"
     t.index ["business_process_id"], name: "index_resources_on_business_process_id"
     t.index ["control_id"], name: "index_resources_on_control_id"
     t.index ["policy_id"], name: "index_resources_on_policy_id"
+    t.index ["policy_id_id"], name: "index_resources_on_policy_id_id"
+    t.index ["policy_id_id_id"], name: "index_resources_on_policy_id_id_id"
   end
 
-  create_table "risks", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+  create_table "risks", options: "ENGINE=InnoDB DEFAULT CHARSET=latin1", force: :cascade do |t|
     t.text "name"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -268,7 +293,7 @@ ActiveRecord::Schema.define(version: 2020_01_31_111815) do
     t.datetime "updated_at", null: false
   end
 
-  create_table "users", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+  create_table "users", options: "ENGINE=InnoDB DEFAULT CHARSET=latin1", force: :cascade do |t|
     t.string "first_name", default: "", null: false
     t.string "last_name", default: "", null: false
     t.string "email", default: "", null: false
@@ -293,6 +318,9 @@ ActiveRecord::Schema.define(version: 2020_01_31_111815) do
     t.datetime "locked_at"
     t.integer "role"
     t.string "phone"
+    t.integer "draft_id"
+    t.timestamp "published_at"
+    t.timestamp "trashed_at"
     t.string "department"
     t.string "job_position"
     t.index ["email"], name: "index_users_on_email", unique: true
@@ -307,7 +335,7 @@ ActiveRecord::Schema.define(version: 2020_01_31_111815) do
     t.index ["user_id", "role_id"], name: "index_users_roles_on_user_id_and_role_id"
     t.index ["user_id"], name: "index_users_roles_on_user_id"
   end
-  
+
   create_table "version_associations", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.integer "version_id"
     t.string "foreign_key_name", null: false

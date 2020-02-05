@@ -22,7 +22,12 @@ module Mutations
 
     def resolve(id:, **args)
       policy = Policy.find(id)
-      policy.update_attributes!(args.to_h)
+      if policy.draft?
+        "Draft Cannot be created until another Draft is Approved/Rejected by an Admin"
+      else
+        policy.attributes = args
+        policy.save_draft
+      end
 
       MutationResult.call(
         obj: { policy: policy },
