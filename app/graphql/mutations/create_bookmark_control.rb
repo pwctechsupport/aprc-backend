@@ -4,23 +4,19 @@ module Mutations
   class CreateBookmarkControl < Mutations::BaseMutation
     argument :control_id, ID, required: true
 
-    field :bookmark_control, Types::BookmarkControlType, null: true
+    field :bookmark, Types::BookmarkType, null: true
 
-    def resolve(args)
+    def resolve(control_id:, **args)
       current_user = context[:current_user]
+      control = Control.find(control_id)
+      name = control.description
+      bookmark = Bookmark.create!(user_id: current_user.id, originator: control, name: name)
 
-      bookmark_control = current_user.bookmark_controls.where(user_id: current_user.id, control_id: args[:control_id]).first
-      if bookmark_control
-        bookmark_control.update_attributes(args.to_h)
-      else
-        bookmark_control = current_user.bookmark_controls.create!(args.to_h)
-      end
-
-      # bookmark_control = current_user.bookmark_controls.create!(args.to_h)
+      # bookmark = current_user.bookmarks.create!(args.to_h)
       MutationResult.call(
-        obj: {bookmark_control: bookmark_control},
-        success: bookmark_control.persisted?,
-        errors: bookmark_control.errors
+        obj: {bookmark: bookmark},
+        success: bookmark.persisted?,
+        errors: bookmark.errors
       )
     rescue ActiveRecord::RecordInvalid => invalid
       GraphQL::ExecutionError.new(
@@ -29,9 +25,9 @@ module Mutations
       )
     end
 
-    # def ready?(args)
-    #   authorize_user
-    # end
+    def ready?(args)
+      authorize_user
+    end
 
   end
 end

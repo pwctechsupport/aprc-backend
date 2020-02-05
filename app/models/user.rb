@@ -13,6 +13,7 @@ class User < ApplicationRecord
   has_many :bookmark_policies
   has_many :risks
   has_many :controls
+  has_many :bookmark
   has_many :bookmark_risks
   has_many :bookmark_controls
   has_many :bookmark_business_processes

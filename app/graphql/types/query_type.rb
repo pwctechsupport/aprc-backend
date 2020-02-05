@@ -42,6 +42,11 @@ module Types
       argument :id, ID, required: true
       description 'Returns Policy Category By ID'
     end
+    
+    field :bookmark, Types::BookmarkType, null: true do
+      argument :id, ID, required: true
+      description 'Returns Bookmark Originator Based By ID'
+    end
 
     field :resource, Types::ResourceType, null: true do
       argument :id, ID, required: true
@@ -120,6 +125,11 @@ module Types
     #   Control.all
     # end
 
+    def bookmark(id:)
+      current_user = context[:current_user]
+      bookmark_query = current_user.bookmark.find_by(id:id)
+    end
+
     def policy(id:)
       pol = Policy.find_by(id:id)
       vieu = pol.visit+1
@@ -181,10 +191,7 @@ module Types
     field :controls, resolver: Resolvers::QueryType::ControlsResolver
     field :risks, resolver: Resolvers::QueryType::RisksResolver
     field :resource_ratings, resolver: Resolvers::QueryType::ResourceRatingsResolver
-    field :bookmark_policies, resolver: Resolvers::QueryType::BookmarkPoliciesResolver
-    field :bookmark_risks, resolver: Resolvers::QueryType::BookmarkRisksResolver
-    field :bookmark_controls, resolver: Resolvers::QueryType::BookmarkControlsResolver
-    field :bookmark_business_processes, resolver: Resolvers::QueryType::BookmarkBusinessProcessesResolver
+    field :bookmarks, resolver: Resolvers::QueryType::BookmarksResolver
     field :versions, resolver: Resolvers::QueryType::VersionsResolver
   end
 end

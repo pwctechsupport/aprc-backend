@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_02_03_092323) do
+ActiveRecord::Schema.define(version: 2020_02_05_084258) do
 
   create_table "bookmark_business_processes", options: "ENGINE=InnoDB DEFAULT CHARSET=latin1", force: :cascade do |t|
     t.bigint "user_id"
@@ -47,6 +47,16 @@ ActiveRecord::Schema.define(version: 2020_02_03_092323) do
     t.datetime "updated_at", null: false
     t.index ["risk_id"], name: "index_bookmark_risks_on_risk_id"
     t.index ["user_id"], name: "index_bookmark_risks_on_user_id"
+  end
+
+  create_table "bookmarks", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.bigint "user_id"
+    t.string "originator_type"
+    t.integer "originator_id"
+    t.string "name"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_bookmarks_on_user_id"
   end
 
   create_table "business_processes", options: "ENGINE=InnoDB DEFAULT CHARSET=latin1", force: :cascade do |t|
@@ -366,6 +376,7 @@ ActiveRecord::Schema.define(version: 2020_02_03_092323) do
   add_foreign_key "bookmark_policies", "users"
   add_foreign_key "bookmark_risks", "risks"
   add_foreign_key "bookmark_risks", "users"
+  add_foreign_key "bookmarks", "users"
   add_foreign_key "control_business_processes", "business_processes"
   add_foreign_key "control_business_processes", "controls"
   add_foreign_key "control_descriptions", "controls"

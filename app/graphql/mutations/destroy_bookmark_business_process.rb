@@ -5,16 +5,17 @@ module Mutations
     graphql_name "DestroyBookmarkBusinessProcess"
     argument :id, ID, required: true
 
-    field :bookmark_business_process, Types::BookmarkBusinessProcessType, null: true
+    field :bookmark, Types::BookmarkType, null: true
 
     def resolve(id:)
-      bookmark_business_process = BookmarkBusinessProcess.find(id)
-      success = bookmark_business_process.destroy
+      business_process = BusinessProcess.find(id)
+      bookmark = Bookmark.find_by(originator: business_process)
+      success = bookmark.destroy
 
       MutationResult.call(
-        obj: {bookmark_business_process: bookmark_business_process},
+        obj: {bookmark: bookmark},
         success: success,
-        errors: bookmark_business_process.errors
+        errors: bookmark.errors
       )
     rescue ActiveRecord::RecordInvalid => invalid
       GraphQL::ExecutionError.new(
@@ -23,9 +24,9 @@ module Mutations
       )
     end
 
-    # def ready?(args)
-    #   authorize_user
-    # end
+    def ready?(args)
+      authorize_user
+    end
 
   end
 end

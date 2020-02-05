@@ -15,6 +15,7 @@ class Control < ApplicationRecord
   has_many :policies, through: :policy_controls
   has_many :bookmark_controls
   has_many :users, through: :bookmark_controls
+  has_many :bookmarks, class_name: "Bookmark", as: :originator, dependent: :destroy
   def to_humanize
     "#{self.control_owner} : #{self.description}"
   end
