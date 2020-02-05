@@ -15,15 +15,12 @@ module Types
 		def user
 			who = object.whodunnit.to_i
 			if who === 0 || who === nil
-
 			else
 				User.find(who)
 			end
 		end
-
 		def description
 			if object.whodunnit
-
 				user = User.find(object.whodunnit)
 			end
 			"#{user&.name || "someone"} #{object.event} #{object.item_type}: #{object.item&.to_humanize}"
