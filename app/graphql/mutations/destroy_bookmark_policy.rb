@@ -5,16 +5,17 @@ module Mutations
     graphql_name "DestroyBookmarkPolicy"
     argument :id, ID, required: true
 
-    field :bookmark_policy, Types::BookmarkPolicyType, null: true
+    field :bookmark, Types::BookmarkType, null: true
 
     def resolve(id:)
-      bookmark_policy = BookmarkPolicy.find(id)
-      success = bookmark_policy.destroy
+      policy = Policy.find(id)
+      bookmark = Bookmark.find_by(originator: policy)
+      success = bookmark.destroy
 
       MutationResult.call(
-        obj: {bookmark_policy: bookmark_policy},
+        obj: {bookmark: bookmark},
         success: success,
-        errors: bookmark_policy.errors
+        errors: bookmark.errors
       )
     rescue ActiveRecord::RecordInvalid => invalid
       GraphQL::ExecutionError.new(
@@ -23,9 +24,9 @@ module Mutations
       )
     end
 
-    # def ready?(args)
-    #   authorize_user
-    # end
+    def ready?(args)
+      authorize_user
+    end
 
   end
 end

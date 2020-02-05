@@ -1,0 +1,13 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  user: one
+  originator_type: MyString
+  originator_id: 1
+  name: MyString
+
+two:
+  user: two
+  originator_type: MyString
+  originator_id: 1
+  name: MyString

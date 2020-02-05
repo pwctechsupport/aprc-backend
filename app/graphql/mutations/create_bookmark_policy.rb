@@ -4,26 +4,19 @@ module Mutations
   class CreateBookmarkPolicy < Mutations::BaseMutation
     argument :policy_id, ID, required: true
 
-    field :bookmark_policy, Types::BookmarkPolicyType, null: true
+    field :bookmark, Types::BookmarkType, null: true
 
-    def resolve(args)
+    def resolve(policy_id:, **args)
       current_user = context[:current_user]
-
-      bookmark_policy = current_user.bookmark_policies.where(user_id: current_user.id, policy_id: args[:policy_id]).first
-      if bookmark_policy
-        bookmark_policy.update!(name: bookmark_policy.policy.policy_category.name)        
-        bookmark_policy.update_attributes(args.to_h)
-        
-      else
-        bookmark_policy = current_user.bookmark_policies.create!(args.to_h)
-        bookmark_policy.update!(name: bookmark_policy.policy.policy_category.name)
-      end
+      policy = Policy.find(policy_id)
+      name = policy.policy_category.name
+      bookmark = Bookmark.create!(user_id: current_user.id, originator: policy, name: name)
 
       # bookmark_policy = current_user.bookmark_policies.create!(args.to_h)
       MutationResult.call(
-        obj: {bookmark_policy: bookmark_policy},
-        success: bookmark_policy.persisted?,
-        errors: bookmark_policy.errors
+        obj: {bookmark: bookmark},
+        success: bookmark.persisted?,
+        errors: bookmark.errors
       )
     rescue ActiveRecord::RecordInvalid => invalid
       GraphQL::ExecutionError.new(
@@ -32,9 +25,9 @@ module Mutations
       )
     end
 
-    # def ready?(args)
-    #   authorize_user
-    # end
+    def ready?(args)
+      authorize_user
+    end
 
   end
 end

@@ -8,7 +8,7 @@ class Risk < ApplicationRecord
   belongs_to :business_process, optional: true
   has_many :bookmark_risks
   has_many :users, through: :bookmark_risks
-
+  has_many :bookmarks, class_name: "Bookmark", as: :originator, dependent: :destroy
   def to_humanize
     "#{self.name} : #{self.status}"
   end
