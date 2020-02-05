@@ -66,6 +66,8 @@ module Types
     field :create_sub_business_process, mutation: Mutations::CreateSubBusinessProcess
 
     field :create_user_access, mutation: Mutations::CreateUserAccess
+    field :review_policy_draft, mutation: Mutations::ReviewPolicyDraft
+    field :review_user_draft, mutation: Mutations::ReviewUserDraft
 
 
 

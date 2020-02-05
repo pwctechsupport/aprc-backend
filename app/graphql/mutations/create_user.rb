@@ -10,13 +10,13 @@ module Mutations
     field :user, Types::UserType, null: true
 
     def resolve(email: nil, password: nil, password_confirmation: nil, phone: nil)
-      user = User.create!(
+      user = User.new(
         email: email,
         password: password,
         password_confirmation: password_confirmation,
-        phone: phone,
- 
+        phone: phone
       )
+      user.save_draft
       {user: user}
       MutationResult.call(
           obj: { user: user },
