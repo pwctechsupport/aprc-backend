@@ -6,7 +6,7 @@ module Mutations
     argument :policy_category_ids, [ID], required: true
 
     # return type from the mutation
-    field :user, Types::User, null: true
+    field :user, Types::UserType, null: true
 
     def resolve(user_id:, **args)
       user = User.find(user_id)

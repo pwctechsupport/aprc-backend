@@ -186,5 +186,6 @@ module Types
     field :bookmark_controls, resolver: Resolvers::QueryType::BookmarkControlsResolver
     field :bookmark_business_processes, resolver: Resolvers::QueryType::BookmarkBusinessProcessesResolver
     field :versions, resolver: Resolvers::QueryType::VersionsResolver
+    field :roles, resolver: Resolvers::QueryType::RolesResolver
   end
 end
