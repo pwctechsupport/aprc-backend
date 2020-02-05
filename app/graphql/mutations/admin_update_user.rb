@@ -2,6 +2,8 @@ module Mutations
   class AdminUpdateUser < Mutations::BaseMutation
     # arguments passed to the `resolved` method
     argument :user_id, ID, required: true
+    argument :first_name, String, required: false
+    argument :last_name, String, required: false
     argument :role_ids, [ID], required: true
     argument :policy_category_ids, [ID], required: true
 
