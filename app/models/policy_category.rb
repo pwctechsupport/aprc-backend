@@ -9,6 +9,8 @@ class PolicyCategory < ApplicationRecord
 	
 	validates :name, uniqueness: true
   has_many :policies
+  has_many :user_policy_categories, dependent: :destroy
+  has_many :users, through: :user_policy_categories
   def to_humanize
     "#{self.name}"
   end
