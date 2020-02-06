@@ -27,6 +27,8 @@ module Mutations
       else
         policy.attributes = args
         policy.save_draft
+        admin = User.with_role(:admin).pluck(:id)
+        Notification.send_notification(admin, policy.title, policy.description,policy)
       end
 
       MutationResult.call(

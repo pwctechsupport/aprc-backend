@@ -16,7 +16,9 @@ module Mutations
         password_confirmation: password_confirmation,
         phone: phone
       )
-      user.save_draft
+      admin = User.with_role(:admin).pluck(:id)
+      
+      Notification.send_notification(admin,user.email,"",user)
       {user: user}
       MutationResult.call(
           obj: { user: user },

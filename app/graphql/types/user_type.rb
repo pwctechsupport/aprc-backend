@@ -7,7 +7,7 @@ module Types
     field :email, String, null: true
     field :token, String, null: false
     field :phone, String, null: true
-    field :role, Int, null: true
+    field :role, [Int], null: true
     field :department, String, null: true
     field :jobPosition, String, null: true
     field :policies, [Types::PolicyType], null: false

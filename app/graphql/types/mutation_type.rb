@@ -34,16 +34,12 @@ module Types
     field :update_resource_rating, mutation: Mutations::UpdateResourceRating
     field :destroy_resource_rating, mutation: Mutations::DestroyResourceRating
     field :create_bookmark_policy, mutation: Mutations::CreateBookmarkPolicy
-    field :destroy_bookmark_policy, mutation: Mutations::DestroyBookmarkPolicy
 
     field :create_bookmark_risk, mutation: Mutations::CreateBookmarkRisk
-    field :destroy_bookmark_risk, mutation: Mutations::DestroyBookmarkRisk
     field :create_bookmark_control, mutation: Mutations::CreateBookmarkControl
-    field :destroy_bookmark_control, mutation: Mutations::DestroyBookmarkControl
     field :create_bookmark_business_process, mutation: Mutations::CreateBookmarkBusinessProcess
-    field :destroy_bookmark_business_process, mutation: Mutations::DestroyBookmarkBusinessProcess
     field :destroy_version, mutation: Mutations::DestroyVersion
-
+    field :destroy_bookmark, mutation: Mutations::DestroyBookmark
   
 
 
@@ -68,6 +64,8 @@ module Types
     field :admin_update_user, mutation: Mutations::AdminUpdateUser
     field :review_policy_draft, mutation: Mutations::ReviewPolicyDraft
     field :review_user_draft, mutation: Mutations::ReviewUserDraft
+    field :is_read, mutation: Mutations::IsRead
+
 
 
 

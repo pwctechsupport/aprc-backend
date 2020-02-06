@@ -14,7 +14,7 @@ module Mutations
       argument :department, String, required: false
   
       field :user, Types::UserType, null: false
-  
+     
       def resolve(args)
         user = context[:current_user]
         if args[:password].present? && args[:password_confirmation].present?
@@ -23,6 +23,9 @@ module Mutations
           else
             user.attributes = args
             user.save_draft
+            admin = User.with_role(:admin).pluck(:id)
+
+            Notification.send_notification(admin, user.name, user.email, user)
           end
         end
 
