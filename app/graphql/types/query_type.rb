@@ -12,6 +12,13 @@ module Types
       description 'Returns the Version of an Object'
     end
 
+    field :notification, Types::NotificationType, null: true do
+      argument :id, ID, required: true
+      description 'Returns the notification of an object'
+    end
+
+
+
     # field :res, [Types::ResourceType], null: true do
     #   description 'Returns Resources Attributes'
     # end
@@ -105,6 +112,10 @@ module Types
       pengguna
     end
 
+    def notification(id:)
+      Notification.find_by(id:id)
+    end
+
     # def res(demo: false)
     #   Resource.all
     # end
@@ -194,5 +205,6 @@ module Types
     field :bookmarks, resolver: Resolvers::QueryType::BookmarksResolver
     field :versions, resolver: Resolvers::QueryType::VersionsResolver
     field :roles, resolver: Resolvers::QueryType::RolesResolver
+    field :notifications, resolver: Resolvers::QueryType::NotificationsResolver
   end
 end

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_02_05_084258) do
+ActiveRecord::Schema.define(version: 2020_02_06_071710) do
 
   create_table "bookmark_business_processes", options: "ENGINE=InnoDB DEFAULT CHARSET=latin1", force: :cascade do |t|
     t.bigint "user_id"
@@ -143,6 +143,19 @@ ActiveRecord::Schema.define(version: 2020_02_05_084258) do
     t.text "name"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+  end
+
+  create_table "notifications", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.bigint "user_id"
+    t.string "title"
+    t.text "body"
+    t.string "originator_type"
+    t.integer "originator_id"
+    t.boolean "is_read", default: false
+    t.text "data"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_notifications_on_user_id"
   end
 
   create_table "policies", options: "ENGINE=InnoDB DEFAULT CHARSET=latin1", force: :cascade do |t|
@@ -328,11 +341,11 @@ ActiveRecord::Schema.define(version: 2020_02_05_084258) do
     t.datetime "locked_at"
     t.integer "role"
     t.string "phone"
+    t.string "department"
+    t.string "job_position"
     t.integer "draft_id"
     t.timestamp "published_at"
     t.timestamp "trashed_at"
-    t.string "department"
-    t.string "job_position"
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["jti"], name: "index_users_on_jti", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
@@ -355,7 +368,7 @@ ActiveRecord::Schema.define(version: 2020_02_05_084258) do
     t.index ["version_id"], name: "index_version_associations_on_version_id"
   end
 
-  create_table "versions", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4", force: :cascade do |t|
+  create_table "versions", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci", force: :cascade do |t|
     t.string "item_type", limit: 191, null: false
     t.bigint "item_id", null: false
     t.string "event", null: false
@@ -383,6 +396,7 @@ ActiveRecord::Schema.define(version: 2020_02_05_084258) do
   add_foreign_key "control_descriptions", "descriptions"
   add_foreign_key "control_risks", "controls"
   add_foreign_key "control_risks", "risks"
+  add_foreign_key "notifications", "users"
   add_foreign_key "policies", "policy_categories"
   add_foreign_key "policies", "resources"
   add_foreign_key "policies", "users"

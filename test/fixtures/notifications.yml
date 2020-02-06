@@ -1,0 +1,19 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  user: one
+  title: MyString
+  body: MyText
+  originator_type: MyString
+  originator_id: 1
+  is_read: false
+  data: MyText
+
+two:
+  user: two
+  title: MyString
+  body: MyText
+  originator_type: MyString
+  originator_id: 1
+  is_read: false
+  data: MyText

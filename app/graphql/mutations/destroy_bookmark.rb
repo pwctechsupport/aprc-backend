@@ -1,15 +1,14 @@
 #frozen_string_literal: true
 
 module Mutations
-  class DestroyBookmarkRisk < Mutations::BaseMutation
-    graphql_name "DestroyBookmarkRisk"
+  class DestroyBookmark < Mutations::BaseMutation
+    graphql_name "DestroyBookmarkByChoice"
     argument :ids, [ID], required: true
 
     field :bookmark, Boolean, null: false
 
     def resolve(ids:)
-      risk = Risk.where(id:ids)
-      bookmark = Bookmark.where(originator: risk)
+      bookmark = Bookmark.where(id: ids)
       success = bookmark.destroy_all
 
       MutationResult.call(

@@ -19,6 +19,9 @@ module Mutations
       current_user = context[:current_user]
       policy = current_user.policies.new(args.to_h)
       policy.save_draft
+
+      admin = User.with_role(:admin).pluck(:id)
+      Notification.send_notification(admin, policy.title, policy.description, policy)
       # policy = Policy.create!(args.to_h)
       MutationResult.call(
           obj: { policy: policy },
