@@ -34,7 +34,9 @@ module Types
     field :sub_count, Types::BaseScalar, null: true
     field :control_count, Types::BaseScalar, null: true
     field :risk_count, Types::BaseScalar, null: true
-    
+    field :draft, Types::VersionType, null: true
+    field :user_reviewer_id, ID, null: true
+    field :user_reviewer, Types::UserType, null: true
     
 
     

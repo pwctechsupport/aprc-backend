@@ -21,6 +21,9 @@ module Types
     field :controls, [Types::ControlType], null: false
     field :bookmark_controls_user, [Types::BookmarkControlType], null: false
     field :roles, [Types::RoleType], null: true
+    field :draft, Types::VersionType, null: true
+    field :user_reviewer_id, ID, null: true
+    field :user_reviewer, Types::UserType, null: true
     # field :controls, [Types::ControlType], null: true
     # field :risks, [Types::RiskType], null: true
     # field :references, [Types::ReferenceType], null: true
