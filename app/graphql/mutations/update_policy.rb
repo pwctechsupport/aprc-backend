@@ -21,6 +21,7 @@ module Mutations
     field :policy, Types::PolicyType, null: false
 
     def resolve(id:, **args)
+      current_user = context[:current_user]
       policy = Policy.find(id)
       if policy.draft?
         "Draft Cannot be created until another Draft is Approved/Rejected by an Admin"
@@ -28,7 +29,7 @@ module Mutations
         policy.attributes = args
         policy.save_draft
         admin = User.with_role(:admin).pluck(:id)
-        Notification.send_notification(admin, policy.title, policy.description,policy)
+        Notification.send_notification(admin, policy.title, policy.description,policy, current_user.id)
       end
 
       MutationResult.call(

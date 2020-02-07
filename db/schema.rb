@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_02_06_071710) do
+ActiveRecord::Schema.define(version: 2020_02_07_075601) do
 
   create_table "bookmark_business_processes", options: "ENGINE=InnoDB DEFAULT CHARSET=latin1", force: :cascade do |t|
     t.bigint "user_id"
@@ -155,6 +155,7 @@ ActiveRecord::Schema.define(version: 2020_02_06_071710) do
     t.text "data"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "sender_user_id"
     t.index ["user_id"], name: "index_notifications_on_user_id"
   end
 

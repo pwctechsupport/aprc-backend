@@ -7,16 +7,14 @@ class User < ApplicationRecord
   has_paper_trail ignore: [:current_sign_in_at,:last_sign_in_at, :sign_in_count, :updated_at]
   has_drafts
   has_many :policies
-  has_many :user_policy_categories, dependent: :destroy
+  has_many :user_policy_categories
   has_many :policy_categories, through: :user_policy_categories
-  has_many :resource_ratings
-  has_many :bookmark_policies
+  has_many :resource_ratings, class_name: "ResourceRating", foreign_key: "user_id", dependent: :destroy
   has_many :risks
   has_many :controls
+  has_many :business_process
   has_many :bookmark
-  has_many :bookmark_risks
-  has_many :bookmark_controls
-  has_many :bookmark_business_processes
+  has_many :notifications
   devise :database_authenticatable,
          :registerable,
          :recoverable, 

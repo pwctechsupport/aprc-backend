@@ -10,6 +10,7 @@ module Mutations
     field :user, Types::UserType, null: true
 
     def resolve(email: nil, password: nil, password_confirmation: nil, phone: nil)
+      current_user = context[:current_user]
       user = User.new(
         email: email,
         password: password,
@@ -18,7 +19,7 @@ module Mutations
       )
       admin = User.with_role(:admin).pluck(:id)
       
-      Notification.send_notification(admin,user.email,"",user)
+      Notification.send_notification(admin,user.email,"",user, current_user.id )
       {user: user}
       MutationResult.call(
           obj: { user: user },

@@ -9,8 +9,8 @@ module Mutations
     def resolve(policy_id:, **args)
       current_user = context[:current_user]
       policy = Policy.find(policy_id)
-      name = policy.policy_category.name
-      bookmark = Bookmark.create!(user_id: current_user.id, originator: policy, name: name)
+      name = policy&.policy_category&.name
+      bookmark = Bookmark.create!(user_id: current_user&.id, originator: policy, name: name)
 
       # bookmark_policy = current_user.bookmark_policies.create!(args.to_h)
       MutationResult.call(
