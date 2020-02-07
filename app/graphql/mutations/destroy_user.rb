@@ -4,12 +4,12 @@ module Mutations
   class DestroyUser < Mutations::BaseMutation
     graphql_name "DestroyUser"
 
-    argument :id, ID, required: false
+    argument :id, ID, required: true
 
     field :user, Types::UserType, null: false
 
     def resolve(id:)
-      user = context[:current_user]
+      user = User.find(id)
       success = user.destroy
       
       MutationResult.call(

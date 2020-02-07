@@ -40,7 +40,8 @@ module Types
     field :create_bookmark_business_process, mutation: Mutations::CreateBookmarkBusinessProcess
     field :destroy_version, mutation: Mutations::DestroyVersion
     field :destroy_bookmark, mutation: Mutations::DestroyBookmark
-  
+    field :destroy_bulk_notification, mutation: Mutations::DestroyBulkNotification
+    field :destroy_notification, mutation: Mutations::DestroyNotification
 
 
     # Attributes CRUD

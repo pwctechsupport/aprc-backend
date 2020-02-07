@@ -9,8 +9,8 @@ module Mutations
     def resolve(business_process_id:, **args)
       current_user = context[:current_user]
       business_process = BusinessProcess.find(business_process_id)
-      name = business_process.name
-      bookmark = Bookmark.create!(user_id: current_user.id, originator: business_process, name: name)
+      name = business_process&.name
+      bookmark = Bookmark.create!(user_id: current_user&.id, originator: business_process, name: name)
 
       # bookmark_business_process = current_user.bookmark_business_processs.create!(args.to_h)
       MutationResult.call(

@@ -25,7 +25,7 @@ module Mutations
             user.save_draft
             admin = User.with_role(:admin).pluck(:id)
 
-            Notification.send_notification(admin, user.name, user.email, user)
+            Notification.send_notification(admin, user.name, user.email, user, user.id)
           end
         end
 

@@ -9,8 +9,8 @@ module Mutations
     def resolve(risk_id:, **args)
       current_user = context[:current_user]
       risk = Risk.find(risk_id)
-      name = risk.name
-      bookmark = Bookmark.create!(user_id: current_user.id, originator: risk, name: name)
+      name = risk&.name
+      bookmark = Bookmark.create!(user_id: current_user&.id, originator: risk, name: name)
 
       # bookmark = current_user.bookmark_risks.create!(args.to_h)
       MutationResult.call(
