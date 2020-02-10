@@ -24,7 +24,7 @@ module Mutations
       current_user = context[:current_user]
       policy = Policy.find(id)
       if policy.draft?
-        "Draft Cannot be created until another Draft is Approved/Rejected by an Admin"
+        raise GraphQL::ExecutionError, "Draft Cannot be created until another Draft is Approved/Rejected by an Admin"
       else
         policy.attributes = args
         policy.save_draft
