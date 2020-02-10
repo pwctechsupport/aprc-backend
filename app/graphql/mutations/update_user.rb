@@ -19,12 +19,11 @@ module Mutations
         user = context[:current_user]
         if args[:password].present? && args[:password_confirmation].present?
           if user.draft?
-            "Draft Cannot be created until another Draft is Approved/Rejected by an Admin"
+            raise GraphQL::ExecutionError, "Draft Cannot be created until another Draft is Approved/Rejected by an Admin"
           else
             user.attributes = args
             user.save_draft
             admin = User.with_role(:admin).pluck(:id)
-
             Notification.send_notification(admin, user.name, user.email, user, user.id)
           end
         end
