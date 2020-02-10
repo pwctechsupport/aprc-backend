@@ -11,6 +11,7 @@ gem 'rails', '~> 5.2.3'
 gem 'puma', '~> 3.11'
 # Use SCSS for stylesheets
 gem 'sass-rails', '~> 5.0'
+gem 'roo', ">= 2.5.1"
 # Use Uglifier as compressor for JavaScript assets
 gem 'uglifier', '>= 1.3.0'
 # See https://github.com/rails/execjs#readme for more supported runtimes
@@ -33,8 +34,6 @@ gem 'wkhtmltopdf-binary-edge', '~> 0.12.5.1'
 gem 'haml'
 
 gem 'rubyzip'
-gem 'axlsx'
-gem 'axlsx_rails'
 
 # Use Redis adapter to run Action Cable in production
 # gem 'redis', '~> 4.0'
@@ -93,3 +92,5 @@ gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
 
 gem 'graphiql-rails', group: :development
 gem 'bootstrap'
+gem 'axlsx', git: 'https://github.com/randym/axlsx.git', ref: 'c8ac844'
+gem 'axlsx_rails'
