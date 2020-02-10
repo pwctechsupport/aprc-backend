@@ -193,6 +193,7 @@ ActiveRecord::Schema.define(version: 2020_02_07_095954) do
     t.string "name"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "user_policy_category_id"
   end
 
   create_table "policy_controls", options: "ENGINE=InnoDB DEFAULT CHARSET=latin1", force: :cascade do |t|

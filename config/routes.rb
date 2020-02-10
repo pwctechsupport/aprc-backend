@@ -4,10 +4,16 @@ Rails.application.routes.draw do
   post "/graphql", to: "graphql#execute"
   devise_for :users
   namespace :api do
+    resources :business_processes do
+      collection do
+        put 'import'
+      end
+    end
     resources :prints do
       collection do
         get 'report_risk_excel', to: "prints#report_risk_excel", as: :report_risk_excel
         get 'report_risk', to: "prints#report_risk", as: :report_risk
+        get 'business_process_excel', to: "prints#business_process_excel", as: :business_process_excel
       end
       member do
         get :control
