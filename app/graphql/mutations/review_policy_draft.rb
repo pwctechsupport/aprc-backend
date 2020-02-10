@@ -14,10 +14,18 @@ module Mutations
       if current_user.present? && current_user.has_role?(:admin)
         policy_draft = policy.draft
         if args[:publish] === true
-          
-          policy_draft.publish!
-          policy.update(status: "release")
-        else    
+          if policy.user_reviewer_id.present? && (policy.user_reviewer_id != current_user.id)
+            raise GraphQL::ExecutionError, "This Draft has been reviewed by another Admin."
+          elsif !policy.user_reviewer_id.present?
+            policy_draft.publish!
+            policy.update(status: "release")
+            policy.update(user_reviewer_id: current_user.id)
+          else
+            policy_draft.publish!
+            policy.update(status: "release")
+            policy.update(user_reviewer_id: current_user.id)
+          end
+        else
           policy_draft.revert!
         end 
       else
