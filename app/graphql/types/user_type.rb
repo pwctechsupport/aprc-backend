@@ -1,25 +1,25 @@
 module Types
   class UserType < BaseObject
     field :id, ID, null: false
-    field :name, String, null: false
-    field :firstName, String, null: false
-    field :lastName, String, null: false
+    field :name, String, null: true
+    field :firstName, String, null: true
+    field :lastName, String, null: true
     field :email, String, null: true
     field :token, String, null: false
     field :phone, String, null: true
     field :role, [Int], null: true
     field :department, String, null: true
     field :jobPosition, String, null: true
-    field :policies, [Types::PolicyType], null: false
+    field :policies, [Types::PolicyType], null: true
     field :policy_categories, [Types::PolicyCategoryType], null: true 
-    field :created_at, GraphQL::Types::ISO8601DateTime, null: false
-    field :updated_at, GraphQL::Types::ISO8601DateTime, null: false
-    field :bookmark_policies_user, [Types::BookmarkPolicyType], null: false
-    field :resource_ratings, [Types::ResourceRatingType], null: false
-    field :risks, [Types::RiskType], null: false
-    field :bookmark_risks_user, [Types::BookmarkRiskType], null: false
-    field :controls, [Types::ControlType], null: false
-    field :bookmark_controls_user, [Types::BookmarkControlType], null: false
+    field :created_at, GraphQL::Types::ISO8601DateTime, null: true
+    field :updated_at, GraphQL::Types::ISO8601DateTime, null: true
+    field :bookmark_policies_user, [Types::BookmarkPolicyType], null: true
+    field :resource_ratings, [Types::ResourceRatingType], null: true
+    field :risks, [Types::RiskType], null: true
+    field :bookmark_risks_user, [Types::BookmarkRiskType], null: true
+    field :controls, [Types::ControlType], null: true
+    field :bookmark_controls_user, [Types::BookmarkControlType], null: true
     field :roles, [Types::RoleType], null: true
     field :draft, Types::VersionType, null: true
     field :user_reviewer_id, ID, null: true
@@ -43,7 +43,7 @@ module Types
 
     def policies
       current_user = context[:current_user]
-      current_user.policies
+      current_user&.policies
     end
 
 
@@ -53,7 +53,7 @@ module Types
     
     def policy(id:)
       current_user =context[:current_user]
-      current_user.policies.find_by(id:id)
+      current_user&.policies&.find_by(id:id)
     end
 
   end
