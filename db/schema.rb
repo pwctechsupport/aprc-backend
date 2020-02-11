@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_02_07_095954) do
+ActiveRecord::Schema.define(version: 2020_02_11_071608) do
 
   create_table "bookmark_business_processes", options: "ENGINE=InnoDB DEFAULT CHARSET=latin1", force: :cascade do |t|
     t.bigint "user_id"
@@ -350,6 +350,7 @@ ActiveRecord::Schema.define(version: 2020_02_07_095954) do
     t.timestamp "published_at"
     t.timestamp "trashed_at"
     t.integer "user_reviewer_id"
+    t.string "name"
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["jti"], name: "index_users_on_jti", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true

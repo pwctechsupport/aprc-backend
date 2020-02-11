@@ -40,10 +40,7 @@ class User < ApplicationRecord
   end
 
   # return first and lastname
-  def name
-    [first_name, last_name].join(' ').strip
-  end
-
+  
   private def setup_new_user
     self.role ||= :customer
   end

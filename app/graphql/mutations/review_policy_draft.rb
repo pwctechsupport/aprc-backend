@@ -9,7 +9,7 @@ module Mutations
 
     def resolve(args)
       current_user = context[:current_user]
-      policy = current_user.policies.find(args[:id])
+      policy = Policy.find(args[:id])
 
       if current_user.present? && current_user.has_role?(:admin)
         policy_draft = policy.draft
@@ -26,6 +26,9 @@ module Mutations
             policy.update(user_reviewer_id: current_user.id)
           end
         else
+          if policy.user_reviewer_id.present? && (policy.user_reviewer_id != current_user.id)
+            raise GraphQL::ExecutionError, "This Draft has been reviewed by another Admin."
+          end
           policy_draft.revert!
         end 
       else
