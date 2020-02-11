@@ -43,7 +43,7 @@ module Api
     end
 
     def business_process_excel
-      @business_processes = BusinessProcess.all
+      @business_processes = BusinessProcess.where(id: params[:business_process_ids])
       respond_to do |format|
         format.json
         format.pdf do
