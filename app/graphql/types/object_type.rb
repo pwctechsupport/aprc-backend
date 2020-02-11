@@ -4,19 +4,18 @@ module Types
 
 		possible_types Types::PolicyType, Types::BusinessProcessType, Types::ControlType, Types::RiskType, Types::UserType
 		
-		def self.resolve_type(object,context)
-			if object&.keys == Policy.column_names
+		def self.resolve_type(object,context, **args)
+			version_or_draft = PaperTrail::Version.find_by(object: object.to_json) || Draftsman::Draft.find_by(object: object.to_json)
+			if version_or_draft&.item_type == "Policy"
 				Types::PolicyType
-			elsif object&.keys == BusinessProcess.column_names
+			elsif version_or_draft&.item_type == "BusinessProcess"
 				Types::BusinessProcessType
-			elsif object&.keys == Control.column_names
+			elsif version_or_draft&.item_type == "Control"
 				Types::ControlType
-			elsif object&.keys == Risk.column_names
+			elsif version_or_draft&.item_type == "Risk"
 				Types::RiskType
-			elsif object&.keys == User.column_names
+			elsif version_or_draft&.item_type == "User"
 				Types::UserType
-			else
-				Types::BaseScalar
 			end
 		end
 		
