@@ -23,6 +23,9 @@ module Mutations
             user_draft.publish!
           end
         else
+          if user.user_reviewer_id.present? && (user.user_reviewer_id != current_user.id)
+            raise GraphQL::ExecutionError, "This Draft has been reviewed by another Admin."
+          end
           user_draft.revert!
         end 
       else
