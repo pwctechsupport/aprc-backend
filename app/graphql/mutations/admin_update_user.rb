@@ -4,6 +4,7 @@ module Mutations
     argument :user_id, ID, required: true
     argument :role_ids, [ID], required: false
     argument :policy_category_ids, [ID], required: false
+    argument :name, String, required: false
     argument :email, String, required: false
     argument :phone, String, required: false
     argument :password, String, required: false
