@@ -10,7 +10,7 @@ defaults =  { :style => :thick, :color => "000000" }
 
 wb.add_worksheet(name: "Business Processes") do |sheet|
   sheet.add_row []
-  sheet.add_row ["Name", "Parent Name"]
+  sheet.add_row ["name", "ancestry"]
   sheet.add_row []
   @business_processes.each do |business_process|
     sheet.add_row [business_process&.name, business_process&.parent&.name]
