@@ -17,6 +17,7 @@ module Mutations
         password_confirmation: password_confirmation,
         phone: phone
       )
+      user.deep_save_draft!
       admin = User.with_role(:admin).pluck(:id)
       
       Notification.send_notification(admin,user.email,"",user, current_user.id )

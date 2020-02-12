@@ -23,7 +23,7 @@ module Mutations
             raise GraphQL::ExecutionError, "Draft Cannot be created until another Draft is Approved/Rejected by an Admin"
           else
             user.attributes = args
-            user.save_draft
+            user.deep_save_draft!
             admin = User.with_role(:admin).pluck(:id)
             Notification.send_notification(admin, user.name, user.email, user, user.id)
           end

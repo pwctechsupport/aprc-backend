@@ -7,8 +7,9 @@ module Resolvers
       argument :limit, Int, required: false
 
       def resolve(filter:, page: nil, limit: nil)
+        current_user = context[:current_user]
         Bookmark.page(page).per(limit)
-        @q = Bookmark.ransack(filter.as_json)
+        @q = Bookmark.where(user_id: current_user.id).ransack(filter.as_json)
         @q.result.page(page).per(limit)
       end
     end

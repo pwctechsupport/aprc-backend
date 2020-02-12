@@ -17,10 +17,10 @@ module Mutations
           if user.user_reviewer_id.present? && (user.user_reviewer_id != current_user.id)
             raise GraphQL::ExecutionError, "This Draft has been reviewed by another Admin."
           elsif !user.user_reviewer_id.present?
-            user_draft.publish!
+            user.deep_publish!
             user.update(user_reviewer_id: current_user.id)
           else
-            user_draft.publish!
+            user.deep_publish!
           end
         else
           if user.user_reviewer_id.present? && (user.user_reviewer_id != current_user.id)

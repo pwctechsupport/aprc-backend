@@ -3,7 +3,7 @@ module Mutations
     # arguments passed to the `resolved` method
     argument :user_id, ID, required: true
     argument :role_ids, [ID], required: false
-    argument :policy_category_ids, [ID], required: false
+    argument :user_policy_categories_attributes, [Types::BaseScalar], required: false
     argument :name, String, required: false
     argument :email, String, required: false
     argument :phone, String, required: false
@@ -21,13 +21,31 @@ module Mutations
       user = User.find(user_id)
       current_user = context[:current_user]
 
-      if user.draft?
-        raise GraphQL::ExecutionError, "Draft Cannot be created until another Draft is Approved/Rejected by an Admin"
+      if (args[:user_policy_categories_attributes].present? && !args[:name].present?) || (args[:user_policy_categories_attributes].present? ) 
+        args[:user_policy_categories_attributes] = args[:user_policy_categories_attributes].map{|obj| obj.symbolize_keys}
+        if args[:name] === nil
+          args[:name] = rand.to_s
+          user.attributes = args
+          user.deep_save_draft!
+          admin = User.with_role(:admin).pluck(:id)
+          Notification.send_notification(admin, user.name, user.email, user, current_user.id)
+        elsif user.draft?
+          raise GraphQL::ExecutionError, "Draft Cannot be created until another Draft is Approved/Rejected by an Admin"
+        else
+          user.attributes = args
+          user.deep_save_draft!
+          admin = User.with_role(:admin).pluck(:id)
+          Notification.send_notification(admin, user.name, user.email, user, current_user.id)
+        end
       else
-        user.attributes = args
-        user.save_draft
-        admin = User.with_role(:admin).pluck(:id)
-        Notification.send_notification(admin, user.name, user.email, user, current_user.id)
+        if user.draft?
+          raise GraphQL::ExecutionError, "Draft Cannot be created until another Draft is Approved/Rejected by an Admin"
+        else
+          user.attributes = args
+          user.deep_save_draft!
+          admin = User.with_role(:admin).pluck(:id)
+          Notification.send_notification(admin, user.name, user.email, user, current_user.id)
+        end
       end
       
       MutationResult.call(

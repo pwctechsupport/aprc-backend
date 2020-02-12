@@ -1,7 +1,9 @@
 class User < ApplicationRecord
   rolify
+
   include Devise::JWT::RevocationStrategies::JTIMatcher
   include Tokenizable
+  include DeeplyPublishable
   # Include default devise modules. Others available are:
   # :confirmable, :lockable, :timeoutable, :trackable and :omniauthable
   has_paper_trail ignore: [:current_sign_in_at,:last_sign_in_at, :sign_in_count, :updated_at]
@@ -9,6 +11,8 @@ class User < ApplicationRecord
   has_many :policies
   has_many :user_policy_categories
   has_many :policy_categories, through: :user_policy_categories
+  associations_to_publish :policy_categories, :user_policy_categories
+  accepts_nested_attributes_for :user_policy_categories
   has_many :resource_ratings, class_name: "ResourceRating", foreign_key: "user_id", dependent: :destroy
   has_many :risks
   has_many :controls

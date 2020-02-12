@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_02_11_071608) do
+ActiveRecord::Schema.define(version: 2020_02_12_102230) do
 
   create_table "bookmark_business_processes", options: "ENGINE=InnoDB DEFAULT CHARSET=latin1", force: :cascade do |t|
     t.bigint "user_id"
@@ -316,6 +316,9 @@ ActiveRecord::Schema.define(version: 2020_02_11_071608) do
     t.integer "policy_category_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "draft_id"
+    t.timestamp "published_at"
+    t.timestamp "trashed_at"
   end
 
   create_table "users", options: "ENGINE=InnoDB DEFAULT CHARSET=latin1", force: :cascade do |t|

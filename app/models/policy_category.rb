@@ -1,6 +1,7 @@
 class PolicyCategory < ApplicationRecord
-	has_paper_trail on: []
-
+  has_paper_trail on: []
+  include DeeplyPublishable
+  has_drafts
   # Add callbacks in the order you need.
   paper_trail.on_destroy    # add destroy callback
   paper_trail.on_update     # etc.
