@@ -21,21 +21,23 @@ module Mutations
       user = User.find(user_id)
       current_user = context[:current_user]
 
-      if (args[:user_policy_categories_attributes].present? && !args[:name].present?) || (args[:user_policy_categories_attributes].present? ) 
+      if (args[:user_policy_categories_attributes].present? && !args[:first_name].present?) || (args[:user_policy_categories_attributes].present? ) 
         args[:user_policy_categories_attributes] = args[:user_policy_categories_attributes].map{|obj| obj.symbolize_keys}
-        if args[:name] === nil
-          args[:name] = rand.to_s
-          user.attributes = args
-          user.deep_save_draft!
-          admin = User.with_role(:admin).pluck(:id)
-          Notification.send_notification(admin, user.name, user.email, user, current_user.id)
-        elsif user.draft?
+        if user.draft?
           raise GraphQL::ExecutionError, "Draft Cannot be created until another Draft is Approved/Rejected by an Admin"
         else
-          user.attributes = args
-          user.deep_save_draft!
-          admin = User.with_role(:admin).pluck(:id)
-          Notification.send_notification(admin, user.name, user.email, user, current_user.id)
+          if (args[:first_name] === nil) || user.first_name.present?
+            args[:first_name] = rand.to_s
+            user.attributes = args
+            user.deep_save_draft!
+            admin = User.with_role(:admin).pluck(:id)
+            Notification.send_notification(admin, user.name, user.email, user, current_user.id)
+          else
+            user.attributes = args
+            user.deep_save_draft!
+            admin = User.with_role(:admin).pluck(:id)
+            Notification.send_notification(admin, user.name, user.email, user, current_user.id)
+          end
         end
       else
         if user.draft?
