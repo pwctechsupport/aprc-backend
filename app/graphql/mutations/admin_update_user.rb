@@ -21,13 +21,13 @@ module Mutations
       user = User.find(user_id)
       current_user = context[:current_user]
 
-      if (args[:user_policy_categories_attributes].present? && !args[:first_name].present?) || (args[:user_policy_categories_attributes].present? ) 
+      if (args[:user_policy_categories_attributes].present? && !args[:date_decoy].present?) || (args[:user_policy_categories_attributes].present? ) 
         args[:user_policy_categories_attributes] = args[:user_policy_categories_attributes].map{|obj| obj.symbolize_keys}
         if user.draft?
           raise GraphQL::ExecutionError, "Draft Cannot be created until another Draft is Approved/Rejected by an Admin"
         else
-          if (args[:first_name] === nil) || user.first_name.present?
-            args[:first_name] = rand.to_s
+          if (args[:date_decoy] === nil) || user.date_decoy.present?
+            args[:date_decoy] = Time.new.to_s
             user.attributes = args
             user.deep_save_draft!
             admin = User.with_role(:admin).pluck(:id)

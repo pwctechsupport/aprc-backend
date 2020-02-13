@@ -24,11 +24,13 @@ module Types
     field :draft, Types::VersionType, null: true
     field :user_reviewer_id, ID, null: true
     field :user_reviewer, Types::UserType, null: true
+    
     # field :controls, [Types::ControlType], null: true
     # field :risks, [Types::RiskType], null: true
     # field :references, [Types::ReferenceType], null: true
     # field :business_processes, [Types::BusinessProcessType], null: true
     # field :resources, [Types::ResourceType], null: true
+    
     def bookmark_policies_user
       bookmark = object.bookmark_policies
     end

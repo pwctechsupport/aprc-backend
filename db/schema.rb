@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_02_12_102230) do
+ActiveRecord::Schema.define(version: 2020_02_13_053749) do
 
   create_table "bookmark_business_processes", options: "ENGINE=InnoDB DEFAULT CHARSET=latin1", force: :cascade do |t|
     t.bigint "user_id"
@@ -312,13 +312,15 @@ ActiveRecord::Schema.define(version: 2020_02_12_102230) do
   end
 
   create_table "user_policy_categories", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
-    t.integer "user_id"
-    t.integer "policy_category_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "draft_id"
     t.timestamp "published_at"
     t.timestamp "trashed_at"
+    t.bigint "user_id"
+    t.bigint "policy_category_id"
+    t.index ["policy_category_id"], name: "index_user_policy_categories_on_policy_category_id"
+    t.index ["user_id"], name: "index_user_policy_categories_on_user_id"
   end
 
   create_table "users", options: "ENGINE=InnoDB DEFAULT CHARSET=latin1", force: :cascade do |t|
@@ -353,6 +355,7 @@ ActiveRecord::Schema.define(version: 2020_02_12_102230) do
     t.timestamp "trashed_at"
     t.integer "user_reviewer_id"
     t.string "name"
+    t.string "date_decoy"
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["jti"], name: "index_users_on_jti", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
@@ -427,4 +430,6 @@ ActiveRecord::Schema.define(version: 2020_02_12_102230) do
   add_foreign_key "resources", "controls"
   add_foreign_key "resources", "policies"
   add_foreign_key "risks", "business_processes"
+  add_foreign_key "user_policy_categories", "policy_categories"
+  add_foreign_key "user_policy_categories", "users"
 end
