@@ -9,22 +9,14 @@ module Mutations
     # return type from the mutation
     field :user, Types::UserType, null: true
 
-    def resolve(email: nil, password: nil, password_confirmation: nil, phone: nil)
-      user = User.create!(
-        email: email,
-        password: password,
-        password_confirmation: password_confirmation,
-        phone: phone,
- 
-      )
-      {user: user}
+    def resolve(args)
+      user = User.create(args.to_h)
+
       MutationResult.call(
-          obj: { user: user },
-          success: user.persisted?,
-          errors: user.errors
-        )
-
+        obj: { user: user },
+        success: user.persisted?,
+        errors: user.errors
+      )
     end
-
   end
 end
