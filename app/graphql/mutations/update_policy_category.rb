@@ -12,8 +12,16 @@ module Mutations
     field :policy_category, Types::PolicyCategoryType, null: false
 
     def resolve(id:, **args)
+      current_user = context[:current_user]
       policy_category = PolicyCategory.find(id)
-      policy_category.update_attributes!(args.to_h)
+      if policy_category.draft?
+        raise GraphQL::ExecutionError, "Draft Cannot be created until another Draft is Approved/Rejected by an Admin"
+      else
+        policy_category.attributes = args
+        policy_category.save_draft
+        admin = User.with_role(:admin).pluck(:id)
+        Notification.send_notification(admin, policy_category&.name, policy_category&.name,policy_category, current_user&.id)
+      end
       MutationResult.call(
         obj: { policy_category: policy_category },
         success: policy_category.persisted?,

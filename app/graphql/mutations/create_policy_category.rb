@@ -13,6 +13,8 @@ module Mutations
 
       policy_category = current_user.policy_categories.new(args.to_h)
       policy_category.save_draft
+      admin = User.with_role(:admin).pluck(:id)
+      Notification.send_notification(admin, policy_category&.name, policy_category&.name,policy_category, current_user&.id)
       MutationResult.call(
           obj: { policy_category: policy_category },
           success: policy_category.persisted?,

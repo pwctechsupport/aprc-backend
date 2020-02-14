@@ -15,6 +15,8 @@ module Mutations
       current_user = context[:current_user]
       risk = Risk.new(args.to_h)
       risk.save_draft
+      admin = User.with_role(:admin).pluck(:id)
+      Notification.send_notification(admin, risk&.name, risk&.type_of_risk,risk, current_user&.id)
       
       MutationResult.call(
           obj: { risk: risk },

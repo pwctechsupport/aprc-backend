@@ -1,5 +1,6 @@
 class Control < ApplicationRecord
   has_paper_trail
+  has_drafts
   validates :description, uniqueness: true
   serialize :assertion, Array
   serialize :ipo, Array
@@ -16,6 +17,7 @@ class Control < ApplicationRecord
   has_many :bookmark_controls
   has_many :users, through: :bookmark_controls
   has_many :bookmarks, class_name: "Bookmark", as: :originator, dependent: :destroy
+  belongs_to :user_reviewer, class_name: "User", foreign_key:"user_reviewer_id", optional: true
   def to_humanize
     "#{self.control_owner} : #{self.description}"
   end

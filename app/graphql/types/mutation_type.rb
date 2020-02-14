@@ -67,6 +67,7 @@ module Types
     field :review_policy_category_draft, mutation: Mutations::ReviewPolicyCategoryDraft
     field :review_user_draft, mutation: Mutations::ReviewUserDraft
     field :review_risk_draft, mutation: Mutations::ReviewRiskDraft
+    field :review_control_draft, mutation: Mutations::ReviewControlDraft
     field :is_read, mutation: Mutations::IsRead
     field :update_user_password, mutation: Mutations::UpdateUserPassword
 

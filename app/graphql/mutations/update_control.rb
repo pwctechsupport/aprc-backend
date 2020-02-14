@@ -25,8 +25,16 @@ module Mutations
     field :control, Types::ControlType, null: true
 
     def resolve(id:, **args)
+      current_user = context[:current_user]
       control = Control.find(id)
-      control.update_attributes!(args.to_h)
+      if control.draft?
+        raise GraphQL::ExecutionError, "Draft Cannot be created until another Draft is Approved/Rejected by an Admin"
+      else
+        control.attributes = args
+        control.save_draft
+        admin = User.with_role(:admin).pluck(:id)
+        Notification.send_notification(admin, control&.description, control&.type_of_control,control, current_user&.id)
+      end
 
       MutationResult.call(
         obj: { control: control },
