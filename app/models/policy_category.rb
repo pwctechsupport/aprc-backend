@@ -5,13 +5,15 @@ class PolicyCategory < ApplicationRecord
   paper_trail.on_destroy    # add destroy callback
   paper_trail.on_update     # etc.
   paper_trail.on_create
-	paper_trail.on_touch
+  paper_trail.on_touch
+  has_drafts
 	
 	validates :name, uniqueness: true
   has_many :policies, inverse_of: :policy_category
   accepts_nested_attributes_for :policies, allow_destroy: true
   has_many :user_policy_categories, dependent: :destroy
   has_many :users, through: :user_policy_categories
+  belongs_to :user_reviewer, class_name: "User", foreign_key:"user_reviewer_id", optional: true
   def to_humanize
     "#{self.name}"
   end
