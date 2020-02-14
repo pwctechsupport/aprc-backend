@@ -29,7 +29,6 @@ class User < ApplicationRecord
          :trackable,
          :jwt_authenticatable,
          jwt_revocation_strategy: self
-  enum role: %i[customer admin]
 
   has_many :versions, class_name: "PaperTrail::Version", foreign_key: "whodunnit"
 
@@ -37,7 +36,6 @@ class User < ApplicationRecord
     "#{self.name} : #{self.email}"
   end
 
-  after_initialize :setup_new_user, if: :new_record?
 
   # Send mail through activejob
   def send_devise_notification(notification, *args)
@@ -46,7 +44,9 @@ class User < ApplicationRecord
 
   # return first and lastname
   
-  private def setup_new_user
-    self.role ||= :customer
+  def self.change_role(user,role)
+    pub_user = User.find(user)
+    pub_user.role_ids = [role]
+    pub_user.save!
   end
 end

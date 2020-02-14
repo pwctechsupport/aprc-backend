@@ -28,6 +28,51 @@ module Mutations
         else
           if (args[:date_decoy] === nil) || user.date_decoy.present?
             args[:date_decoy] = Time.new.to_s
+            if args[:role_ids].present?
+              role = args[:role_ids]
+              role_int = role[0].to_i
+              args[:role_ids] = nil
+              args[:role] = role_int
+              args.delete(:role_ids)
+              user.attributes = args
+              user.deep_save_draft!
+              admin = User.with_role(:admin).pluck(:id)
+              Notification.send_notification(admin, user.name, user.email, user, current_user.id)
+            else
+              user.attributes = args
+              user.deep_save_draft!
+              admin = User.with_role(:admin).pluck(:id)
+              Notification.send_notification(admin, user.name, user.email, user, current_user.id)
+            end
+          else
+            if args[:role_ids].present?
+              role = args[:role_ids]
+              role_int = role[0].to_i
+              args[:role_ids] = nil
+              args[:role] = role_int
+              args.delete(:role_ids)
+              user.attributes = args
+              user.deep_save_draft!
+              admin = User.with_role(:admin).pluck(:id)
+              Notification.send_notification(admin, user.name, user.email, user, current_user.id)
+            else
+              user.attributes = args
+              user.deep_save_draft!
+              admin = User.with_role(:admin).pluck(:id)
+              Notification.send_notification(admin, user.name, user.email, user, current_user.id)
+            end
+          end
+        end
+      else
+        if user.draft?
+          raise GraphQL::ExecutionError, "Draft Cannot be created until another Draft is Approved/Rejected by an Admin"
+        else
+          if args[:role_ids].present?
+            role = args[:role_ids]
+            role_int = role[0].to_i
+            args[:role_ids] = nil
+            args[:role] = role_int
+            args.delete(:role_ids)
             user.attributes = args
             user.deep_save_draft!
             admin = User.with_role(:admin).pluck(:id)
@@ -38,15 +83,6 @@ module Mutations
             admin = User.with_role(:admin).pluck(:id)
             Notification.send_notification(admin, user.name, user.email, user, current_user.id)
           end
-        end
-      else
-        if user.draft?
-          raise GraphQL::ExecutionError, "Draft Cannot be created until another Draft is Approved/Rejected by an Admin"
-        else
-          user.attributes = args
-          user.deep_save_draft!
-          admin = User.with_role(:admin).pluck(:id)
-          Notification.send_notification(admin, user.name, user.email, user, current_user.id)
         end
       end
       
