@@ -6,6 +6,7 @@ module Mutations
 
     argument :id, ID, required: true
     argument :name, String, required: false
+    argument :policy_ids, [ID], required: false
 
 
     field :policy_category, Types::PolicyCategoryType, null: false
@@ -13,7 +14,6 @@ module Mutations
     def resolve(id:, **args)
       policy_category = PolicyCategory.find(id)
       policy_category.update_attributes!(args.to_h)
-
       MutationResult.call(
         obj: { policy_category: policy_category },
         success: policy_category.persisted?,
