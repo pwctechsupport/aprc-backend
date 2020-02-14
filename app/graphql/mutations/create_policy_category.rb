@@ -2,6 +2,7 @@ module Mutations
   class CreatePolicyCategory < Mutations::BaseMutation
     # arguments passed to the `resolved` method
     argument :name, String, required: true
+    argument :policy_ids, [ID], required: false
 
 
     # return type from the mutation

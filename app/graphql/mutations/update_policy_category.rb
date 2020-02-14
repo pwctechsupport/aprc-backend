@@ -6,6 +6,7 @@ module Mutations
 
     argument :id, ID, required: true
     argument :name, String, required: false
+    argument :policy_ids, [ID], required: false
 
 
     field :policy_category, Types::PolicyCategoryType, null: false
