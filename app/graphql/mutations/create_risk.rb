@@ -6,12 +6,15 @@ module Mutations
     argument :status, Types::Enums::Status, required: false
     argument :type_of_risk, Types::Enums::TypeOfRisk, required: false 
     argument :business_process_id, ID, required: false
+    
 
     # return type from the mutation
     field :risk, Types::RiskType, null: true
 
     def resolve(args)
-      risk=Risk.create!(args.to_h)
+      current_user = context[:current_user]
+      risk = Risk.new(args.to_h)
+      risk.save_draft
       
       MutationResult.call(
           obj: { risk: risk },

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_02_11_071608) do
+ActiveRecord::Schema.define(version: 2020_02_14_133759) do
 
   create_table "bookmark_business_processes", options: "ENGINE=InnoDB DEFAULT CHARSET=latin1", force: :cascade do |t|
     t.bigint "user_id"
@@ -193,7 +193,10 @@ ActiveRecord::Schema.define(version: 2020_02_11_071608) do
     t.string "name"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.integer "user_policy_category_id"
+    t.integer "draft_id"
+    t.timestamp "published_at"
+    t.timestamp "trashed_at"
+    t.integer "user_reviewer_id"
   end
 
   create_table "policy_controls", options: "ENGINE=InnoDB DEFAULT CHARSET=latin1", force: :cascade do |t|
@@ -298,6 +301,10 @@ ActiveRecord::Schema.define(version: 2020_02_11_071608) do
     t.string "status", default: "draft"
     t.bigint "business_process_id", default: 0
     t.string "type_of_risk"
+    t.integer "draft_id"
+    t.timestamp "published_at"
+    t.timestamp "trashed_at"
+    t.integer "user_reviewer_id"
     t.index ["business_process_id"], name: "index_risks_on_business_process_id"
   end
 
