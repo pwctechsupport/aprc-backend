@@ -13,6 +13,9 @@ module Types
     field :updated_at, GraphQL::Types::ISO8601DateTime, null: false
     field :risks_bookmarked_by, [Types::BookmarkRiskType] , null: true
     field :user, Types::UserType, null:true
+    field :draft, Types::VersionType, null: true
+    field :user_reviewer_id, ID, null: true
+    field :user_reviewer, Types::UserType, null: true
     
     def risks_bookmarked_by
       bookmark = object.bookmark_risks
