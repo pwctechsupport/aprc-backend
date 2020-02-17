@@ -23,6 +23,9 @@ module Types
     field :controls_bookmarked_by, [Types::BookmarkControlType] , null: true
     field :user, Types::UserType, null:true
     field :key_control, Boolean, null:true
+    field :draft, Types::VersionType, null: true
+    field :user_reviewer_id, ID, null: true
+    field :user_reviewer, Types::UserType, null: true
     
     def controls_bookmarked_by
       bookmark = object.bookmark_controls
