@@ -25,7 +25,15 @@ module Mutations
     field :control, Types::ControlType, null: true
 
     def resolve(args)
-      control=Control.create!(args.to_h)
+      current_user = context[:current_user]
+
+      control=Control.new(args.to_h)
+
+      control.save_draft
+
+      admin = User.with_role(:admin).pluck(:id)
+      Notification.send_notification(admin, control&.description, control&.type_of_control,control, current_user&.id)
+
 
       MutationResult.call(
           obj: { control: control },

@@ -9,12 +9,12 @@ module Mutations
     field :policy_category, Types::PolicyCategoryType, null: true
 
     def resolve(args)
-      policy_category = PolicyCategory.find_by(name: args[:name])
-      if policy_category.present?
-        policy_category.update_attributes(args.to_h)
-      else
-      policy_category = PolicyCategory.create!(args.to_h)
-      end
+      current_user = context[:current_user]
+
+      policy_category = current_user.policy_categories.new(args.to_h)
+      policy_category.save_draft
+      admin = User.with_role(:admin).pluck(:id)
+      Notification.send_notification(admin, policy_category&.name, policy_category&.name,policy_category, current_user&.id)
       MutationResult.call(
           obj: { policy_category: policy_category },
           success: policy_category.persisted?,
