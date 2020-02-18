@@ -27,8 +27,8 @@ module Types
     field :ancestors, [Types::PolicyType], null: true
     field :status, String, null: true
     field :visit, Int, null: true
-    field :created_at, GraphQL::Types::ISO8601DateTime, null: false
-    field :updated_at, GraphQL::Types::ISO8601DateTime, null: false
+    field :created_at, String, null: false
+    field :updated_at, String, null: false
     field :policies_bookmarked_by, [Types::BookmarkPolicyType] , null: true
     field :user, Types::UserType, null:true
     field :sub_count, Types::BaseScalar, null: true

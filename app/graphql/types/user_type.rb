@@ -12,8 +12,8 @@ module Types
     field :jobPosition, String, null: true
     field :policies, [Types::PolicyType], null: true
     field :policy_categories, [Types::PolicyCategoryType], null: true 
-    field :created_at, GraphQL::Types::ISO8601DateTime, null: true
-    field :updated_at, GraphQL::Types::ISO8601DateTime, null: true
+    field :created_at, String, null: true
+    field :updated_at, String, null: true
     field :bookmark_policies_user, [Types::BookmarkPolicyType], null: true
     field :resource_ratings, [Types::ResourceRatingType], null: true
     field :risks, [Types::RiskType], null: true
