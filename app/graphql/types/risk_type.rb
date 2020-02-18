@@ -9,8 +9,8 @@ module Types
     field :business_process, Types::BusinessProcessType, null: true
     field :policies, [Types::PolicyType], null: false
     field :controls, [Types::ControlType], null: false
-    field :created_at, GraphQL::Types::ISO8601DateTime, null: false
-    field :updated_at, GraphQL::Types::ISO8601DateTime, null: false
+    field :created_at, String, null: false
+    field :updated_at, String, null: false
     field :risks_bookmarked_by, [Types::BookmarkRiskType] , null: true
     field :user, Types::UserType, null:true
     field :draft, Types::VersionType, null: true

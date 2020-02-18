@@ -1,0 +1,12 @@
+
+wb = xlsx_package.workbook
+
+
+wb.add_worksheet(name: "Risks") do |sheet|
+  # Create the header row
+  sheet.add_row ["name", "level of risk", "status", "type of risk", "business process"]
+  # Create entries for each item
+  @risks.each do |risk|
+    sheet.add_row [risk&.name, risk&.level_of_risk, risk&.status, risk&.type_of_risk,risk&.business_process&.name]
+  end
+end
