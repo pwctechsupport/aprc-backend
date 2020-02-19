@@ -14,18 +14,9 @@ module Mutations
       if current_user.present? && current_user.has_role?(:admin_reviewer)
         user_draft= user.draft
         if args[:publish] === true
-          if user.user_reviewer_id.present? && (user.user_reviewer_id != current_user.id)
-            raise GraphQL::ExecutionError, "This Draft has been reviewed by another Admin."
-          elsif !user.user_reviewer_id.present?
-            user_draft.publish!
-            user.update(user_reviewer_id: current_user.id)
-          else
-            user_draft.publish!
-          end
+          user_draft.publish!
+          user.update(user_reviewer_id: current_user.id)
         else
-          if user.user_reviewer_id.present? && (user.user_reviewer_id != current_user.id)
-            raise GraphQL::ExecutionError, "This Draft has been reviewed by another Admin."
-          end
           user_draft.revert!
         end 
       else
@@ -44,6 +35,7 @@ module Mutations
         "#{invalid.record.errors.full_messages.join(', ')}"
       )
     end
+    
     def ready?(args)
       authorize_user
     end

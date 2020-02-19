@@ -14,21 +14,10 @@ module Mutations
       if current_user.present? && current_user.has_role?(:admin_reviewer)
         policy_draft = policy.draft
         if args[:publish] === true
-          if policy.user_reviewer_id.present? && (policy.user_reviewer_id != current_user.id)
-            raise GraphQL::ExecutionError, "This Draft has been reviewed by another Admin."
-          elsif !policy.user_reviewer_id.present?
-            policy_draft.publish!
-            policy.update(status: "release")
-            policy.update(user_reviewer_id: current_user.id)
-          else
-            policy_draft.publish!
-            policy.update(status: "release")
-            policy.update(user_reviewer_id: current_user.id)
-          end
+          policy_draft.publish!
+          policy.update(status: "release")
+          policy.update(user_reviewer_id: current_user.id)
         else
-          if policy.user_reviewer_id.present? && (policy.user_reviewer_id != current_user.id)
-            raise GraphQL::ExecutionError, "This Draft has been reviewed by another Admin."
-          end
           policy_draft.revert!
         end 
       else
@@ -37,16 +26,17 @@ module Mutations
 
       # policy = Policy.create!(args.to_h)
       MutationResult.call(
-          obj: { policy: policy },
-          success: policy.persisted?,
-          errors: policy.errors
-        )
+        obj: { policy: policy },
+        success: policy.persisted?,
+        errors: policy.errors
+      )
     rescue ActiveRecord::RecordInvalid => invalid
       GraphQL::ExecutionError.new(
         "Invalid Attributes for #{invalid.record.class.name}: " \
         "#{invalid.record.errors.full_messages.join(', ')}"
       )
     end
+    
     def ready?(args)
       authorize_user
     end
