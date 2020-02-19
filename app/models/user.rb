@@ -33,6 +33,10 @@ class User < ApplicationRecord
     "#{self.name} : #{self.email}"
   end
 
+  def request_edit
+    request_edits.last
+  end
+
   after_initialize :setup_new_user, if: :new_record?
 
   # Send mail through activejob

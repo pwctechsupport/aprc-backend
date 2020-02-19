@@ -11,7 +11,7 @@ module Mutations
       case args[:originator_type]
       when "Policy"
         policy = Policy.find(args[:originator_id])
-        if policy.request_edit.present? && policy.request_edit.last.requested?
+        if policy.request_edit.present? && policy.request_edit.requested?
           raise GraphQL::ExecutionError, "Request not permitted. Another Request exist"
         else
           request_edit = RequestEdit.create!(args.to_h)
@@ -20,7 +20,7 @@ module Mutations
         end
       when "User"
         user = User.find(args[:originator_id])
-        if user.request_edit.present? && user.request_edit.last.requested?
+        if user.request_edit.present? && user.request_edit.requested?
           raise GraphQL::ExecutionError, "Request not permitted. Another Request exist"
         else
           request_edit = RequestEdit.create!(args.to_h)

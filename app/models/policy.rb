@@ -27,4 +27,8 @@ class Policy < ApplicationRecord
   def to_humanize
     "#{self.title.titlecase}"
   end
+
+  def request_edit
+    request_edits.last
+  end
 end
