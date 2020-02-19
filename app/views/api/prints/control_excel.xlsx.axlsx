@@ -8,9 +8,9 @@ wb.add_worksheet(name: "Controls") do |sheet|
   # Create entries for each item
   @controls.each do |control|
     if control.assertion.count < 2
-      sheet.add_row [control&.control_owner.titlecase, control&.description.titlecase, control&.type_of_control&.gsub(/_/, ' ')&.titlecase, control&.frequency, control&.nature.titlecase, control&.assertion.join&.gsub(/_/, ' ')&.titlecase, control&.ipo.join&.gsub(/_/, ' ')&.titlecase, control&.status&.gsub(/_/, ' ')&.titlecase, control&.key_control]
+      sheet.add_row [control&.control_owner&.titlecase, control&.description&.titlecase, control&.type_of_control&.gsub(/_/, ' ')&.titlecase, control&.frequency, control&.nature&.titlecase, control&.assertion&.join&.gsub(/_/, ' ')&.titlecase, control&.ipo.join&.gsub(/_/, ' ')&.titlecase, control&.status&.gsub(/_/, ' ')&.titlecase, control&.key_control]
     else
-      sheet.add_row [control&.control_owner.titlecase, control&.description.titlecase, control&.type_of_control&.gsub(/_/, ' ')&.titlecase, control&.frequency, control&.nature.titlecase, control&.assertion.join(",")&.gsub(/_/, ' ')&.titlecase, control&.ipo.join(",")&.gsub(/_/, ' ')&.titlecase, control&.status&.gsub(/_/, ' ')&.titlecase, control&.key_control]
+      sheet.add_row [control&.control_owner&.titlecase, control&.description&.titlecase, control&.type_of_control&.gsub(/_/, ' ')&.titlecase, control&.frequency, control&.nature&.titlecase, control&.assertion&.join(",")&.gsub(/_/, ' ')&.titlecase, control&.ipo&.join(",")&.gsub(/_/, ' ')&.titlecase, control&.status&.gsub(/_/, ' ')&.titlecase, control&.key_control]
     end
   end
 end
