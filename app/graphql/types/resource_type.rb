@@ -19,8 +19,8 @@ module Types
     field :resource_file_size, Integer, null: true
     field :resource_file_name, String, null: true
     field :status, String, null: true
-    field :created_at, GraphQL::Types::ISO8601DateTime, null: false
-    field :updated_at, GraphQL::Types::ISO8601DateTime, null: false
+    field :created_at, String, null: false
+    field :updated_at, String, null: false
     
     def  resupload_url
       attachment = object.resupload.url

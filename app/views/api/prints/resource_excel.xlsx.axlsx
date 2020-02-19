@@ -1,0 +1,41 @@
+
+wb = xlsx_package.workbook
+
+
+wb.add_worksheet(name: "Resources") do |sheet|
+  # Create the header row
+  sheet.add_row ["name", "file name", "file type", "file size", "category", "status", "related control", "related policy"]
+  # Create entries for each item
+  def resource_file_type(object)
+    content = object.resupload_content_type
+    if content === nil
+      content_true = ""
+    else
+      content_true = content.to_s
+      if content_true.include? "wordprocessingml"
+        content_true = ".docx"
+        content_true
+      elsif content_true.include? "sheet"
+        content_true = ".xlsx"
+        content_true
+      elsif content_true.include? "presentation"
+        content_true = ".pptx"
+        content_true
+      else
+        if content_true == nil
+          content_true = ""
+        else
+          content_index = content_true.index("/")
+          content_name = content_true[content_true.index('/',content_index - 1)..-1]
+          content_file = content_name.sub("/","")
+          contender = "." << content_file
+          contender
+        end
+      end
+    end
+  end
+  @resources.each do |resource|
+    
+    sheet.add_row [resource&.name, resource&.resupload_file_name, resource_file_type(resource), resource&.resupload_file_size,resource&.category, resource&.status,resource&.controls&.pluck(:id)&.join, resource&.policies&.pluck(:id)&.join(",")&.gsub(",", "|")]
+  end
+end

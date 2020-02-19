@@ -75,7 +75,7 @@ module Api
     end
 
     def control_excel
-      @controls = Control.where(id: params[:risk_ids])
+      @controls = Control.where(id: params[:control_ids])
       respond_to do |format|
         format.json
         format.pdf do
@@ -86,6 +86,22 @@ module Api
           response.headers[
             'Content-Disposition'
           ] = "attachment; filename=Control.xlsx"
+        }
+      end
+    end
+
+    def resource_excel
+      @resources = Resource.where(id: params[:resource_ids])
+      respond_to do |format|
+        format.json
+        format.pdf do
+          render pdf: 'resource_excel', layout: 'layouts/pdf.haml', template: 'api/prints/show.pdf.haml', dpi: 300, show_as_html: params.key?('debug'), javascript_delay: 3000, margin: {top: 10, bottom: 20, left: 15, right: 15 }, outline: {outline: true, outline_depth: 10 }, footer: {html: {template:'shared/_pdf_footer'}}
+        end
+        format.html
+        format.xlsx {
+          response.headers[
+            'Content-Disposition'
+          ] = "attachment; filename=resource.xlsx"
         }
       end
     end
