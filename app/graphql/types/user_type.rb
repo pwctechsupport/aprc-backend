@@ -34,6 +34,7 @@ module Types
     end
 
     def request_status
+      current_user = context[:current_user]
       object&.request_edit&.where(user_id: current_user&.id)&.last&.state
     end
     # field :controls, [Types::ControlType], null: true
