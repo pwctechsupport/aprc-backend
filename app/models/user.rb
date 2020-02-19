@@ -6,6 +6,7 @@ class User < ApplicationRecord
   # :confirmable, :lockable, :timeoutable, :trackable and :omniauthable
   has_paper_trail ignore: [:current_sign_in_at,:last_sign_in_at, :sign_in_count, :updated_at]
   has_drafts
+  has_many :request_edit, class_name: "RequestEdit", as: :originator, dependent: :destroy
   has_many :policies
   has_many :user_policy_categories
   has_many :policy_categories, through: :user_policy_categories

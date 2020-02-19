@@ -24,6 +24,18 @@ module Types
     field :draft, Types::VersionType, null: true
     field :user_reviewer_id, ID, null: true
     field :user_reviewer, Types::UserType, null: true
+    field :has_edit_access, Boolean, null: true
+    field :request_status, String, null: true
+    field :request_edit, Types::RequestEditType, null: true
+
+    def has_edit_access
+      current_user = context[:current_user]
+      object&.request_edits&.where(user_id: current_user&.id)&.last&.state == "approved"
+    end
+
+    def request_status
+      object&.request_edits&.where(user_id: current_user&.id)&.last&.state
+    end
     # field :controls, [Types::ControlType], null: true
     # field :risks, [Types::RiskType], null: true
     # field :references, [Types::ReferenceType], null: true
