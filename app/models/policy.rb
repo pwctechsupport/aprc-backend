@@ -22,9 +22,12 @@ class Policy < ApplicationRecord
   has_many :users, as: :versions
   has_many :bookmarks, class_name: "Bookmark", as: :originator, dependent: :destroy
   belongs_to :user_reviewer, class_name: "User", foreign_key:"user_reviewer_id", optional: true
-  
 
   def to_humanize
     "#{self.title.titlecase}"
+  end
+
+  def request_edit
+    request_edits.last
   end
 end
