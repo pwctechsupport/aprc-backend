@@ -23,12 +23,12 @@ module Mutations
     def resolve(id:, **args)
       current_user = context[:current_user]
       policy = Policy.find(id)
-      if policy.request_edit.last.approved?
-        if policy.draft?
+      if policy&.request_edit&.last&.approved?
+        if policy&.draft?
           raise GraphQL::ExecutionError, "Draft Cannot be created until another Draft is Approved/Rejected by an Admin"
         else
-          policy.attributes = args
-          policy.save_draft
+          policy&.attributes = args
+          policy&.save_draft
           admin = User.with_role(:admin).pluck(:id)
           Notification.send_notification(admin, policy&.title, policy&.description,policy, current_user&.id)
         end
