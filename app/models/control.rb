@@ -21,4 +21,24 @@ class Control < ApplicationRecord
   def to_humanize
     "#{self.control_owner} : #{self.description}"
   end
+
+  def self.import(file)
+    spreadsheet = open_spreadsheet(file)
+    allowed_attributes = ["control owner", "description", "type of control", "frequency", "nature", "assertion", "ipo", "status", "key control"]
+    header = spreadsheet.row(1)
+    (2..spreadsheet.last_row).each do |i|
+      row = Hash[[header, spreadsheet.row(i)].transpose]      
+      control_id = Control.find_or_create_by(description: row["description"], control_owner: row["control owner"], status: row["status"]&.gsub(" ","_").downcase, type_of_control: row["type of control"]&.gsub(" ","_").downcase, frequency: row["frequency"].downcase, nature: row["nature"].downcase, assertion: row["assertion"].split(",").map {|x| x&.gsub(" ","_").downcase}, ipo: row["ipo"].split(",").map {|x| x&.gsub(" ","_").downcase}, key_control: row["key control"])
+    end
+  end
+
+  def self.open_spreadsheet(file)
+    case File.extname(file.original_filename)
+    when ".csv" then Roo::CSV.new(file.path)
+    when ".xls" then Roo::Excel.new(file.path, nil, :ignore)
+    when ".xlsx" then Roo::Excelx.new(file.path, packed: nil, file_warning: :ignore)
+    else 
+      raise "Unknown file type: #{file.original_filename}"
+    end
+  end
 end
