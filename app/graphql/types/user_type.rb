@@ -30,8 +30,7 @@ module Types
     field :request_edit, Types::RequestEditType, null: true
 
     def request_edit
-      current_user = context[:current_user]
-      object&.request_edits&.where(user_id: current_user&.id)&.last
+      object&.request_edit
     end
 
     def has_edit_access
