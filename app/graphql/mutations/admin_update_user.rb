@@ -20,7 +20,7 @@ module Mutations
     def resolve(user_id:, **args)
       user = User.find(user_id)
       current_user = context[:current_user]
-      if user&.request_edit&.last&.approved?
+      if user&.request_edits&.last&.approved?
         if user.draft?
           raise GraphQL::ExecutionError, "Draft Cannot be created until another Draft is Approved/Rejected by an Admin"
         else

@@ -10,7 +10,7 @@ class Policy < ApplicationRecord
   has_many :resources, through: :policy_resources
   has_many :it_systems, through: :policy_it_systems
   has_many :business_processes, through: :policy_business_processes
-  has_many :request_edit, class_name: "RequestEdit", as: :originator, dependent: :destroy
+  has_many :request_edits, class_name: "RequestEdit", as: :originator, dependent: :destroy
   has_ancestry
   has_many :policy_references, dependent: :destroy
   has_many :references, through: :policy_references
