@@ -11,7 +11,7 @@ module Mutations
       current_user = context[:current_user]
       policy = Policy.find(args[:id])
 
-      if current_user.present? && current_user.has_role?(:admin)
+      if current_user.present? && current_user.has_role?(:admin_reviewer)
         policy_draft = policy.draft
         if args[:publish] === true
           if policy.user_reviewer_id.present? && (policy.user_reviewer_id != current_user.id)

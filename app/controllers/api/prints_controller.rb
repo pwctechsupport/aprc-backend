@@ -73,6 +73,22 @@ module Api
         }
       end
     end
+
+    def control_excel
+      @controls = Control.all
+      respond_to do |format|
+        format.json
+        format.pdf do
+          render pdf: 'control_excel', layout: 'layouts/pdf.haml', template: 'api/prints/show.pdf.haml', dpi: 300, show_as_html: params.key?('debug'), javascript_delay: 3000, margin: {top: 10, bottom: 20, left: 15, right: 15 }, outline: {outline: true, outline_depth: 10 }, footer: {html: {template:'shared/_pdf_footer'}}
+        end
+        format.html
+        format.xlsx {
+          response.headers[
+            'Content-Disposition'
+          ] = "attachment; filename=Control.xlsx"
+        }
+      end
+    end
     
     def policy_category_excel
       @policy_categories = PolicyCategory.where(id: params[:policy_category_ids])

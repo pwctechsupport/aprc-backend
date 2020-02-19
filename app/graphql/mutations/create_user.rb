@@ -13,7 +13,7 @@ module Mutations
     def resolve(args)
       user = User.create(args.to_h)
       current_user = context[:current_user]
-      admin = User.with_role(:admin).pluck(:id)
+      admin = User.with_role(:admin_reviewer).pluck(:id)
       Notification.send_notification(admin,user.email,"",user, current_user&.id )
 
       MutationResult.call(

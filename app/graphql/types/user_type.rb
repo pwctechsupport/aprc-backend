@@ -26,17 +26,32 @@ module Types
     field :user_reviewer, Types::UserType, null: true
     field :has_edit_access, Boolean, null: true
     field :request_status, String, null: true
+    field :request_edits, [Types::RequestEditType], null: true
     field :request_edit, Types::RequestEditType, null: true
+
+    def request_edit
+      current_user = context[:current_user]
+      object&.request_edits&.where(user_id: current_user&.id)&.last
+    end
 
     def has_edit_access
       current_user = context[:current_user]
-      object&.request_edit&.where(user_id: current_user&.id)&.last&.state == "approved"
+      if object.class == Hash
+        empty = [] 
+      else
+        object&.request_edits&.where(user_id: current_user&.id)&.last&.state == "approved"
+      end
     end
 
     def request_status
       current_user = context[:current_user]
-      object&.request_edit&.where(user_id: current_user&.id)&.last&.state
+      if object.class == Hash
+        empty = []
+      else
+        object&.request_edits&.where(user_id: current_user&.id)&.last&.state
+      end
     end
+
     # field :controls, [Types::ControlType], null: true
     # field :risks, [Types::RiskType], null: true
     # field :references, [Types::ReferenceType], null: true

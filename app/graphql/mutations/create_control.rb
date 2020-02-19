@@ -31,7 +31,7 @@ module Mutations
 
       control.save_draft
 
-      admin = User.with_role(:admin).pluck(:id)
+      admin = User.with_role(:admin_reviewer).pluck(:id)
       Notification.send_notification(admin, control&.description, control&.type_of_control,control, current_user&.id)
 
 
