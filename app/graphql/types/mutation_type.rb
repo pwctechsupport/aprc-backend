@@ -70,7 +70,8 @@ module Types
     field :review_control_draft, mutation: Mutations::ReviewControlDraft
     field :is_read, mutation: Mutations::IsRead
     field :update_user_password, mutation: Mutations::UpdateUserPassword
-
+    field :create_request_edit, mutation: Mutations::CreateRequestEdit
+    field :approve_request_edit, mutation: Mutations::ApproveRequestEdit
 
 
 

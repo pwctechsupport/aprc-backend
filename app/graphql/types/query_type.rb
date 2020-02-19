@@ -100,6 +100,10 @@ module Types
       description 'Returns the Current Resource Rating and Rating Calculation'
     end
     
+    field :request_edit, Types::RequestEditType, null: true do 
+      argument :id, ID, required: true
+      description 'Returns the Current Edit Request'
+    end
 
 
     def me(demo: false)
@@ -116,6 +120,9 @@ module Types
       Notification.find_by(id:id)
     end
 
+    def request_edit(id:)
+      RequestEdit.find_by(id:id)
+    end
     # def res(demo: false)
     #   Resource.all
     # end
@@ -191,7 +198,6 @@ module Types
       ResourceRating.find_by(id:id)
     end
 
-
     field :users, resolver: Resolvers::QueryType::UsersResolver
     field :policies, resolver: Resolvers::QueryType::PoliciesResolver
     field :policy_categories, resolver: Resolvers::QueryType::PolicyCategoriesResolver
@@ -206,5 +212,6 @@ module Types
     field :versions, resolver: Resolvers::QueryType::VersionsResolver
     field :roles, resolver: Resolvers::QueryType::RolesResolver
     field :notifications, resolver: Resolvers::QueryType::NotificationsResolver
+    field :request_edits, resolver: Resolvers::QueryType::RequestEditsResolver
   end
 end

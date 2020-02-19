@@ -37,14 +37,25 @@ module Types
     field :draft, Types::VersionType, null: true
     field :user_reviewer_id, ID, null: true
     field :user_reviewer, Types::UserType, null: true
-    
+    field :has_edit_access, Boolean, null: true
+    field :request_status, String, null: true
+    field :request_edit, Types::RequestEditType, null: true
+
+    def has_edit_access
+      current_user = context[:current_user]
+      
+      object&.request_edit&.where(user_id: current_user&.id)&.last&.state == "approved"
+    end
+
+    def request_status
+      current_user = context[:current_user]
+      object&.request_edit&.where(user_id: current_user&.id)&.last&.state
+    end
 
     
     def policies_bookmarked_by
       bookmark = object.bookmark_policies
     end
-
-
 
     def control_count
       data = object.controls
