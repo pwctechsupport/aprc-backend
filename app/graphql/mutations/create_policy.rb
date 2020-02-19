@@ -20,7 +20,7 @@ module Mutations
       policy = current_user.policies.new(args.to_h)
       policy.save_draft
 
-      admin = User.with_role(:admin).pluck(:id)
+      admin = User.with_role(:admin_reviewer).pluck(:id)
       Notification.send_notification(admin, policy.title, policy.description, policy, current_user.id)
       # policy = Policy.create!(args.to_h)
       MutationResult.call(

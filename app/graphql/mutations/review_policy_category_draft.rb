@@ -11,7 +11,7 @@ module Mutations
       current_user = context[:current_user]
       policy_category = PolicyCategory.find(args[:id])
 
-      if current_user.present? && current_user.has_role?(:admin)
+      if current_user.present? && current_user.has_role?(:admin_reviewer)
         policy_category_draft = policy_category.draft
         if args[:publish] === true
           if policy_category.user_reviewer_id.present? && (policy_category.user_reviewer_id != current_user.id)

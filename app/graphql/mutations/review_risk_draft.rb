@@ -11,7 +11,7 @@ module Mutations
       current_user = context[:current_user]
       risk = Risk.find(args[:id])
 
-      if current_user.present? && current_user.has_role?(:admin)
+      if current_user.present? && current_user.has_role?(:admin_reviewer)
         risk_draft = risk.draft
         if args[:publish] === true
           if risk.user_reviewer_id.present? && (risk.user_reviewer_id != current_user.id)

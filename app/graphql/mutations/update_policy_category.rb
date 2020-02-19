@@ -19,7 +19,7 @@ module Mutations
       else
         policy_category.attributes = args
         policy_category.save_draft
-        admin = User.with_role(:admin).pluck(:id)
+        admin = User.with_role(:admin_reviewer).pluck(:id)
         Notification.send_notification(admin, policy_category&.name, policy_category&.name,policy_category, current_user&.id)
       end
       MutationResult.call(
