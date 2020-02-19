@@ -75,7 +75,7 @@ module Api
     end
 
     def control_excel
-      @controls = Control.all
+      @controls = Control.where(id: params[:risk_ids])
       respond_to do |format|
         format.json
         format.pdf do
