@@ -43,13 +43,20 @@ module Types
 
     def has_edit_access
       current_user = context[:current_user]
-      
-      object&.request_edit&.where(user_id: current_user&.id)&.last&.state == "approved"
+      if object.class == Hash
+        empty = []
+      else
+        object&.request_edit&.where(user_id: current_user&.id)&.last&.state == "approved"
+      end
     end
 
     def request_status
       current_user = context[:current_user]
-      object&.request_edit&.where(user_id: current_user&.id)&.last&.state
+      if object.class == Hash
+        empty = []
+      else
+        object&.request_edit&.where(user_id: current_user&.id)&.last&.state
+      end  
     end
 
     
