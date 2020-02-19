@@ -30,11 +30,11 @@ module Types
 
     def has_edit_access
       current_user = context[:current_user]
-      object&.request_edits&.where(user_id: current_user&.id)&.last&.state == "approved"
+      object&.request_edit&.where(user_id: current_user&.id)&.last&.state == "approved"
     end
 
     def request_status
-      object&.request_edits&.where(user_id: current_user&.id)&.last&.state
+      object&.request_edit&.where(user_id: current_user&.id)&.last&.state
     end
     # field :controls, [Types::ControlType], null: true
     # field :risks, [Types::RiskType], null: true
