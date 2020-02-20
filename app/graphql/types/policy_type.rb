@@ -39,7 +39,7 @@ module Types
     field :user_reviewer, Types::UserType, null: true
     field :has_edit_access, Boolean, null: true
     field :request_status, String, null: true
-    field :request_edit, [Types::RequestEditType], null: true
+    field :request_edits, [Types::RequestEditType], null: true
     field :request_edit, Types::RequestEditType, null: true
 
     def request_edit
