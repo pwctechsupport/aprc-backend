@@ -17,6 +17,7 @@ class Control < ApplicationRecord
   has_many :bookmark_controls
   has_many :users, through: :bookmark_controls
   has_many :bookmarks, class_name: "Bookmark", as: :originator, dependent: :destroy
+  has_many :file_attachments, class_name: "FileAttachment", as: :originator, dependent: :destroy
   belongs_to :user_reviewer, class_name: "User", foreign_key:"user_reviewer_id", optional: true
   def to_humanize
     "#{self.control_owner} : #{self.description}"

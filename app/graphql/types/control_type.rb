@@ -26,6 +26,15 @@ module Types
     field :draft, Types::VersionType, null: true
     field :user_reviewer_id, ID, null: true
     field :user_reviewer, Types::UserType, null: true
+    field :file_attachments, [Types::FileAttachmentType], null: true
+
+    def file_attachments
+      if object&.class == Hash
+        empty = []
+      else
+        object&.file_attachments
+      end  
+    end
     
     def controls_bookmarked_by
       bookmark = object.bookmark_controls

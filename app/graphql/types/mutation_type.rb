@@ -72,6 +72,9 @@ module Types
     field :update_user_password, mutation: Mutations::UpdateUserPassword
     field :create_request_edit, mutation: Mutations::CreateRequestEdit
     field :approve_request_edit, mutation: Mutations::ApproveRequestEdit
+    field :create_file_attachment, mutation: Mutations::CreateFileAttachment
+    field :update_file_attachment, mutation: Mutations::UpdateFileAttachment
+    field :destroy_file_attachment, mutation: Mutations::DestroyFileAttachment
 
 
 
