@@ -41,6 +41,9 @@ module Types
         elsif content_true.include? "presentation"
           content_true = ".pptx"
           content_true
+        elsif content_true.include? "plain"
+          content_true = ".txt"
+          content_true
         else
           if content_true == nil
             content_true = ""

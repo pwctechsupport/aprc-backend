@@ -75,6 +75,11 @@ module Types
     field :create_file_attachment, mutation: Mutations::CreateFileAttachment
     field :update_file_attachment, mutation: Mutations::UpdateFileAttachment
     field :destroy_file_attachment, mutation: Mutations::DestroyFileAttachment
+    field :create_activity_control, mutation: Mutations::CreateActivityControl
+    field :update_activity_control, mutation: Mutations::UpdateActivityControl
+    field :destroy_activity_control, mutation: Mutations::DestroyActivityControl
+
+    
 
 
 
