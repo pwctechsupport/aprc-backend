@@ -16,7 +16,7 @@ module Mutations
         else
           request_edit = RequestEdit.create!(args.to_h)
           admin = User.with_role(:admin_reviewer).pluck(:id)
-          Notification.send_notification(admin, policy.title, "Request Edit Policy", policy, current_user.id)
+          Notification.send_notification(admin, policy.title, "Request Edit Policy", policy, current_user.id, "request_edit")
         end
       when "User"
         user = User.find(args[:originator_id])
@@ -25,7 +25,7 @@ module Mutations
         else
           request_edit = RequestEdit.create!(args.to_h)
           admin = User.with_role(:admin_reviewer).pluck(:id)
-          Notification.send_notification(admin, user.name, "Request Edit User", user, current_user.id)
+          Notification.send_notification(admin, user.name, "Request Edit User", user, current_user.id, "request_edit")
         end
       end
       # request_edit = current_user.request_edit_risks.create!(args.to_h)

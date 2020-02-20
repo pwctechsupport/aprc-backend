@@ -27,7 +27,7 @@ module Mutations
           user&.attributes = args
           user&.save_draft
           admin = User.with_role(:admin_reviewer).pluck(:id)
-          Notification.send_notification(admin, user&.name, user&.email, user, current_user&.id)
+          Notification.send_notification(admin, user&.name, user&.email, user, current_user&.id, "request_draft")
         end
       else 
         raise GraphQL::ExecutionError, "Request not granted. Please Check Your Request Status"
