@@ -7,6 +7,7 @@ class User < ApplicationRecord
   has_paper_trail ignore: [:current_sign_in_at,:last_sign_in_at, :sign_in_count, :updated_at]
   has_drafts
   has_many :request_edits, class_name: "RequestEdit", as: :originator, dependent: :destroy
+  has_many :file_attachments
   has_many :policies
   has_many :user_policy_categories
   has_many :policy_categories, through: :user_policy_categories
@@ -31,7 +32,7 @@ class User < ApplicationRecord
 
   def request_edit
     request_edits.last
-  end
+end
 
   def to_humanize
     "#{self.name} : #{self.email}"

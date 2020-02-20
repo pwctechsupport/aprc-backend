@@ -17,6 +17,11 @@ module Types
       description 'Returns the notification of an object'
     end
 
+    field :file_attachment, Types::FileAttachmentType, null: true do
+      argument :id, ID, required: true
+      description 'Returns the File Attachment of an Object'
+    end 
+
 
 
     # field :res, [Types::ResourceType], null: true do
@@ -123,6 +128,10 @@ module Types
     def request_edit(id:)
       RequestEdit.find_by(id:id)
     end
+
+    def file_attachment(id:)
+      FileAttachment.find_by(id:id)
+    end
     # def res(demo: false)
     #   Resource.all
     # end
@@ -213,5 +222,6 @@ module Types
     field :roles, resolver: Resolvers::QueryType::RolesResolver
     field :notifications, resolver: Resolvers::QueryType::NotificationsResolver
     field :request_edits, resolver: Resolvers::QueryType::RequestEditsResolver
+    field :file_attachments, resolver: Resolvers::QueryType::FileAttachmentsResolver
   end
 end

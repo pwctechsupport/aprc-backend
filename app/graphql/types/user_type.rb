@@ -28,6 +28,15 @@ module Types
     field :request_status, String, null: true
     field :request_edits, [Types::RequestEditType], null: true
     field :request_edit, Types::RequestEditType, null: true
+    field :file_attachments, [Types::FileAttachmentType], null: true
+
+    def file_attachments
+      if object&.class == Hash
+        empty = []
+      else
+        object&.file_attachments
+      end  
+    end
 
     def request_edit
       object&.request_edit
