@@ -32,18 +32,18 @@ module Types
     end
 
     def assertion
-      if object.try(:assertion).class == Array
-        object.assertion
+      if object&.try(:assertion)&.class == Array
+        object&.assertion
       else
-        object["assertion"].gsub(/([-() ])/, '').split("\n").reject(&:empty?)
+        object["assertion"]&.gsub(/([-() ])/, '')&.split("\n")&.reject(&:empty?)
       end
     end
 
     def ipo
-      if object.try(:ipo).class == Array
-        object.ipo
+      if object&.try(:ipo).class == Array
+        object&.ipo
       else
-        object["ipo"].gsub(/([-() ])/, '').split("\n").reject(&:empty?)
+        object["ipo"]&.gsub(/([-() ])/, '')&.split("\n")&.reject(&:empty?)
       end
     end
 
