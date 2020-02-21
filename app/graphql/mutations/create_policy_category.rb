@@ -11,8 +11,8 @@ module Mutations
     def resolve(args)
       current_user = context[:current_user]
 
-      policy_category = current_user.policy_categories.new(args.to_h)
-      policy_category.save_draft
+      policy_category = current_user&.policy_categories&.new(args.to_h)
+      policy_category&.save_draft
       admin = User.with_role(:admin_reviewer).pluck(:id)
       Notification.send_notification(admin, policy_category&.name, policy_category&.name,policy_category, current_user&.id)
       MutationResult.call(

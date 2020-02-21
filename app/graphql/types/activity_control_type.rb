@@ -1,24 +1,23 @@
 module Types
-  class FileAttachmentType < BaseObject
+  class ActivityControlType < BaseObject
     field :id, ID, null: false
     field :user_id, ID, null: true
-    field :originator_type, String, null: true
-    field :originator_id, ID, null: true
     field :created_at, String, null: false
     field :updated_at, String, null: false
-    field :originator, Types::OriginatorType, null: true
     field :user, Types::UserType, null: true
-    field :resuploadUrl, String, null: true
-    field :file_type, String, null: true
-    field :file_size, Integer, null: true
-    field :file_name, String, null: true
+    field :control, Types::ControlType, null: true
+    field :guidance_resupload_url, String, null: true
+    field :guidance_file_type, String, null: true
+    field :guidance_file_size, Integer, null: true
+    field :guidance_file_name, String, null: true
+    field :is_attachment, Boolean, null: true
 
 
-    def resupload_url
+    def guidance_resupload_url
       attachment = object.resupload.url
     end
 
-    def file_type
+    def guidance_file_type
       content = object.resupload_content_type
       if content === nil
         content_true = ""
@@ -50,11 +49,11 @@ module Types
       end
     end
     
-    def file_size
+    def guidance_file_size
       content = object.resupload_file_size
     end
 
-    def file_name
+    def guidance_file_name
       content = object.resupload_file_name
     end
 

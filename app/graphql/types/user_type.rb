@@ -29,6 +29,15 @@ module Types
     field :request_edits, [Types::RequestEditType], null: true
     field :request_edit, Types::RequestEditType, null: true
     field :file_attachments, [Types::FileAttachmentType], null: true
+    field :activity_controls, [Types::ActivityControlType], null: true
+
+    def activity_controls
+      if object&.class == Hash
+        empty = []
+      else
+        object&.activity_controls
+      end 
+    end
 
     def file_attachments
       if object&.class == Hash

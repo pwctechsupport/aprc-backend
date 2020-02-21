@@ -22,6 +22,10 @@ module Types
       description 'Returns the File Attachment of an Object'
     end 
 
+    field :activity_control, Types::ActivityControlType, null: true do
+      argument :id, ID, required: true
+      description 'Returns the Activity Control and its Guidance of an Object'
+    end
 
 
     # field :res, [Types::ResourceType], null: true do
@@ -132,6 +136,10 @@ module Types
     def file_attachment(id:)
       FileAttachment.find_by(id:id)
     end
+
+    def activity_control(id:)
+      ActivityControl.find_by(id:id)  
+    end
     # def res(demo: false)
     #   Resource.all
     # end
@@ -223,5 +231,6 @@ module Types
     field :notifications, resolver: Resolvers::QueryType::NotificationsResolver
     field :request_edits, resolver: Resolvers::QueryType::RequestEditsResolver
     field :file_attachments, resolver: Resolvers::QueryType::FileAttachmentsResolver
+    field :activity_controls, resolver: Resolvers::QueryType::ActivityControlsResolver
   end
 end
