@@ -14,8 +14,7 @@ module Types
 		field :user, Types::UserType, null: true
 		field :sender_user_id, ID, null: true
 		field :sender_user, Types::UserType, null:true
-
-		
+		field :data_type, String, null: true
 	end
 
 end
