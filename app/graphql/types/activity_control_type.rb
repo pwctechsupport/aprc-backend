@@ -6,6 +6,7 @@ module Types
     field :updated_at, String, null: false
     field :user, Types::UserType, null: true
     field :activity, String, null: true
+    field :guidance, String, null: true
     field :control, Types::ControlType, null: true
     field :guidance_resupload_url, String, null: true
     field :guidance_file_type, String, null: true
