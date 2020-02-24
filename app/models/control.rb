@@ -30,7 +30,7 @@ class Control < ApplicationRecord
     header = spreadsheet.row(1)
     (2..spreadsheet.last_row).each do |i|
       row = Hash[[header, spreadsheet.row(i)].transpose]      
-      control_id = Control.find_or_create_by(description: row["description"], control_owner: row["control owner"], status: row["status"]&.gsub(" ","_").downcase, type_of_control: row["type of control"]&.gsub(" ","_").downcase, frequency: row["frequency"].downcase, nature: row["nature"].downcase, assertion: row["assertion"].split(",").map {|x| x&.gsub(" ","_").downcase}, ipo: row["ipo"].split(",").map {|x| x&.gsub(" ","_").downcase}, key_control: row["key control"])
+      control_id = Control.find_or_create_by(description: row["description"], control_owner: row["control owner"], status: row["status"]&.gsub(" ","_")&.downcase, type_of_control: row["type of control"]&.gsub(" ","_")&.downcase, frequency: row["frequency"]&.downcase, nature: row["nature"]&.downcase, assertion: row["assertion"]&.split(",")&.map {|x| x&.gsub(" ","_")&.downcase}, ipo: row["ipo"]&.split(",").map {|x| x&.gsub(" ","_")&.downcase}, key_control: row["key control"])
     end
   end
 

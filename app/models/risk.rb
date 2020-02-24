@@ -27,7 +27,7 @@ class Risk < ApplicationRecord
       bp_id = row["business process"]
       bispro = BusinessProcess.find_by(name: bp_id)
       
-      risk_id = Risk.find_or_create_by(name: row["name"], level_of_risk: row["level of risk"], status: row["status"], type_of_risk: row["type of risk"], business_process_id: bispro.id)
+      risk_id = Risk.find_or_create_by(name: row["name"], level_of_risk: row["level of risk"], status: row["status"], type_of_risk: row["type of risk"], business_process_id: bispro&.id)
     end
   end
 

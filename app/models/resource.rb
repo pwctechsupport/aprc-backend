@@ -27,7 +27,7 @@ class Resource < ApplicationRecord
       
       row = Hash[[header, spreadsheet.row(i)].transpose]
       
-      resource_id = Resource.create(name: row["name"], category: row["category"], control_ids: [row["related control"]], policy_ids: row["related policy"].split("|"))
+      resource_id = Resource.create(name: row["name"], category: row["category"], control_ids: [row["related control"]], policy_ids: row["related policy"]&.split("|"))
     end
   end
 
