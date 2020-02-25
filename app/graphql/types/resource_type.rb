@@ -1,7 +1,7 @@
 module Types
   class ResourceType < BaseObject
     field :id, ID, null: false
-    field :name, String, null: false
+    field :name, String, null: true
     field :resuploadUrl, String, null: true
     field :category, String, null: true
     field :policy, Types::PolicyType, null: true
@@ -14,7 +14,7 @@ module Types
     field :business_process, Types::BusinessProcessType, null: true
     field :rating, Float, null: true
     field :total_rating, Int, null: true
-    field :visit,Int, null: false
+    field :visit,Int, null: true
     field :resource_file_type, String, null: true
     field :resource_file_size, Integer, null: true
     field :resource_file_name, String, null: true

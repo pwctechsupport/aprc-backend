@@ -1,8 +1,8 @@
 module Types
   class PolicyCategoryType < BaseObject
     field :id, ID, null: false
-    field :name, String, null: false
-    field :policies, [Types::PolicyType], null: false
+    field :name, String, null: true
+    field :policies, [Types::PolicyType], null: true
     field :users, [Types::UserType], null: true
     field :created_at, String, null: false
     field :updated_at, String, null: false
