@@ -11,6 +11,7 @@ module Mutations
     argument :fte_estimate, Int, required: false 
     argument :description, String, required: false
     argument :type_of_control, Types::Enums::TypeOfControl, required: false
+    argument :activity_controls_attributes, [Types::BaseScalar], required: false
     argument :frequency, Types::Enums::Frequency, required: false
     argument :nature, Types::Enums::Nature, required: false 
     argument :assertion, [Types::Enums::Assertion], required: false

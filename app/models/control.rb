@@ -9,6 +9,7 @@ class Control < ApplicationRecord
   has_many :control_descriptions, class_name: "ControlDescription", foreign_key: "control_id", dependent: :destroy
   has_many :descriptions, through: :control_descriptions
   has_many :control_risks, class_name: "ControlRisk", foreign_key: "control_id", dependent: :destroy
+  
   has_many :risks, through: :control_risks
   has_many :resource_controls, dependent: :destroy
   has_many :resources, through: :resource_controls
@@ -19,6 +20,7 @@ class Control < ApplicationRecord
   has_many :bookmarks, class_name: "Bookmark", as: :originator, dependent: :destroy
   has_many :file_attachments, class_name: "FileAttachment", as: :originator, dependent: :destroy
   has_many :activity_controls, dependent: :destroy
+  accepts_nested_attributes_for :activity_controls, allow_destroy: true
   belongs_to :user_reviewer, class_name: "User", foreign_key:"user_reviewer_id", optional: true
   has_many :request_edits, class_name: "RequestEdit", as: :originator, dependent: :destroy
   def to_humanize
