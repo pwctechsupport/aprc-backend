@@ -11,6 +11,7 @@ module Mutations
     argument :frequency, Types::Enums::Frequency, required: false
     argument :nature, Types::Enums::Nature, required: false 
     argument :assertion, [Types::Enums::Assertion], required: false
+    argument :activity_controls_attributes, [Types::BaseScalar], required: false
     argument :ipo, [Types::Enums::Ipo], required: false
     argument :description, String, required: false
     argument :control_owner, String, required: false
