@@ -10,7 +10,22 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_02_14_135735) do
+ActiveRecord::Schema.define(version: 2020_02_26_060020) do
+
+  create_table "activity_controls", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.text "activity"
+    t.text "guidance"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.integer "user_id"
+    t.string "resupload_file_name"
+    t.string "resupload_content_type"
+    t.integer "resupload_file_size"
+    t.datetime "resupload_updated_at"
+    t.bigint "control_id"
+    t.boolean "is_attachment", default: false
+    t.index ["control_id"], name: "index_activity_controls_on_control_id"
+  end
 
   create_table "bookmark_business_processes", options: "ENGINE=InnoDB DEFAULT CHARSET=latin1", force: :cascade do |t|
     t.bigint "user_id"
@@ -143,6 +158,18 @@ ActiveRecord::Schema.define(version: 2020_02_14_135735) do
     t.index ["whodunnit"], name: "index_drafts_on_whodunnit"
   end
 
+  create_table "file_attachments", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.integer "user_id"
+    t.string "originator_type"
+    t.integer "originator_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.string "resupload_file_name"
+    t.string "resupload_content_type"
+    t.integer "resupload_file_size"
+    t.datetime "resupload_updated_at"
+  end
+
   create_table "it_systems", options: "ENGINE=InnoDB DEFAULT CHARSET=latin1", force: :cascade do |t|
     t.text "name"
     t.datetime "created_at", null: false
@@ -160,6 +187,7 @@ ActiveRecord::Schema.define(version: 2020_02_14_135735) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "sender_user_id"
+    t.string "data_type"
     t.index ["user_id"], name: "index_notifications_on_user_id"
   end
 
@@ -253,6 +281,16 @@ ActiveRecord::Schema.define(version: 2020_02_14_135735) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "status"
+  end
+
+  create_table "request_edits", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.string "originator_type"
+    t.integer "originator_id"
+    t.string "state"
+    t.integer "user_id"
+    t.integer "approver_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "resource_controls", options: "ENGINE=InnoDB DEFAULT CHARSET=latin1", force: :cascade do |t|
@@ -397,6 +435,7 @@ ActiveRecord::Schema.define(version: 2020_02_14_135735) do
     t.index ["transaction_id"], name: "index_versions_on_transaction_id"
   end
 
+  add_foreign_key "activity_controls", "controls"
   add_foreign_key "bookmark_business_processes", "business_processes"
   add_foreign_key "bookmark_business_processes", "users"
   add_foreign_key "bookmark_controls", "controls"
