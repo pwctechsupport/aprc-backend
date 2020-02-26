@@ -12,6 +12,11 @@ class Risk < ApplicationRecord
   has_many :users, through: :bookmark_risks
   has_many :bookmarks, class_name: "Bookmark", as: :originator, dependent: :destroy
   belongs_to :user_reviewer, class_name: "User", foreign_key:"user_reviewer_id", optional: true
+  has_many :request_edits, class_name: "RequestEdit", as: :originator, dependent: :destroy
+
+  def request_edit
+    request_edits.last
+  end
 
   def to_humanize
     "#{self.name} : #{self.status}"

@@ -14,6 +14,12 @@ class PolicyCategory < ApplicationRecord
   has_many :user_policy_categories, dependent: :destroy
   has_many :users, through: :user_policy_categories
   belongs_to :user_reviewer, class_name: "User", foreign_key:"user_reviewer_id", optional: true
+  has_many :request_edits, class_name: "RequestEdit", as: :originator, dependent: :destroy
+
+  def request_edit
+    request_edits.last
+  end
+
   def to_humanize
     "#{self.name}"
   end

@@ -28,6 +28,33 @@ module Types
     field :user_reviewer, Types::UserType, null: true
     field :file_attachments, [Types::FileAttachmentType], null: true
     field :activity_controls, [Types::ActivityControlType], null: true
+    field :has_edit_access, Boolean, null: true
+    field :request_status, String, null: true
+    field :request_edits, [Types::RequestEditType], null: true
+    field :request_edit, Types::RequestEditType, null: true
+    
+
+    def request_edit
+      object&.request_edit
+    end
+
+    def has_edit_access
+      current_user = context[:current_user]
+      if object.class == Hash
+        empty = []
+      else
+        object&.request_edits&.where(user_id: current_user&.id)&.last&.state == "approved"
+      end
+    end
+
+    def request_status
+      current_user = context[:current_user]
+      if object.class == Hash
+        empty = []
+      else
+        object&.request_edits&.where(user_id: current_user&.id)&.last&.state
+      end  
+    end
 
     def activity_controls
       if object&.class == Hash
