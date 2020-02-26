@@ -14,14 +14,21 @@ module Mutations
     def resolve(id:, **args)
       current_user = context[:current_user]
       policy_category = PolicyCategory.find(id)
-      if policy_category.draft?
-        raise GraphQL::ExecutionError, "Draft Cannot be created until another Draft is Approved/Rejected by an Admin"
+
+      if policy_category&.request_edits&.last&.approved?
+        if policy_category.draft?
+          raise GraphQL::ExecutionError, "Draft Cannot be created until another Draft is Approved/Rejected by an Admin"
+        else
+          policy_category.attributes = args
+          policy_category.save_draft
+          admin = User.with_role(:admin_reviewer).pluck(:id)
+          Notification.send_notification(admin, policy_category&.name, policy_category&.name,policy_category, current_user&.id, "request draft")
+        end
       else
-        policy_category.attributes = args
-        policy_category.save_draft
-        admin = User.with_role(:admin_reviewer).pluck(:id)
-        Notification.send_notification(admin, policy_category&.name, policy_category&.name,policy_category, current_user&.id)
+        raise GraphQL::ExecutionError, "Request not granted. Please Check Your Request Status"
       end
+
+      
       MutationResult.call(
         obj: { policy_category: policy_category },
         success: policy_category.persisted?,

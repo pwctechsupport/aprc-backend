@@ -27,14 +27,19 @@ module Mutations
     def resolve(id:, **args)
       current_user = context[:current_user]
       control = Control.find(id)
-      if control.draft?
-        raise GraphQL::ExecutionError, "Draft Cannot be created until another Draft is Approved/Rejected by an Admin"
+      if control&.request_edits&.last&.approved?
+        if control.draft?
+          raise GraphQL::ExecutionError, "Draft Cannot be created until another Draft is Approved/Rejected by an Admin"
+        else
+          control&.attributes = args
+          control&.save_draft
+          admin = User.with_role(:admin_reviewer).pluck(:id)
+          Notification.send_notification(admin, control&.description, control&.type_of_control,control, current_user&.id, "request_draft")
+        end
       else
-        control.attributes = args
-        control.save_draft
-        admin = User.with_role(:admin_reviewer).pluck(:id)
-        Notification.send_notification(admin, control&.description, control&.type_of_control,control, current_user&.id)
+        raise GraphQL::ExecutionError, "Request not granted. Please Check Your Request Status"
       end
+      
 
       MutationResult.call(
         obj: { control: control },

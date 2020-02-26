@@ -20,8 +20,13 @@ class Control < ApplicationRecord
   has_many :file_attachments, class_name: "FileAttachment", as: :originator, dependent: :destroy
   has_many :activity_controls, dependent: :destroy
   belongs_to :user_reviewer, class_name: "User", foreign_key:"user_reviewer_id", optional: true
+  has_many :request_edits, class_name: "RequestEdit", as: :originator, dependent: :destroy
   def to_humanize
     "#{self.control_owner} : #{self.description}"
+  end
+
+  def request_edit
+    request_edits.last
   end
 
   def self.import(file)
