@@ -27,13 +27,25 @@ module Mutations
 
     def resolve(args)
       current_user = context[:current_user]
+      if args[:activity_controls_attributes].present?
+        act_control = args[:activity_controls_attributes]&.first&.permit(:id,:activity,:guidance,:control_id,:resuploadBase64,:resuploadFileName,:_destroy)
+        args.delete(:activity_controls_attributes)
+        args[:activity_controls_attributes]= [act_control.to_h]
 
-      control=Control.new(args.to_h)
+        control=Control.new(args)
+        control.save_draft
 
-      control.save_draft
+        admin = User.with_role(:admin_reviewer).pluck(:id)
+        Notification.send_notification(admin, control&.description, control&.type_of_control,control, current_user&.id)
+      else
+        control=Control.new(args)
 
-      admin = User.with_role(:admin_reviewer).pluck(:id)
-      Notification.send_notification(admin, control&.description, control&.type_of_control,control, current_user&.id)
+        control.save_draft
+
+        admin = User.with_role(:admin_reviewer).pluck(:id)
+        Notification.send_notification(admin, control&.description, control&.type_of_control,control, current_user&.id)
+      end
+      
 
 
       MutationResult.call(

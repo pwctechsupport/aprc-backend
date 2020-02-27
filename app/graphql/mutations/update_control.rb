@@ -32,10 +32,20 @@ module Mutations
         if control.draft?
           raise GraphQL::ExecutionError, "Draft Cannot be created until another Draft is Approved/Rejected by an Admin"
         else
-          control&.attributes = args
-          control&.save_draft
-          admin = User.with_role(:admin_reviewer).pluck(:id)
-          Notification.send_notification(admin, control&.description, control&.type_of_control,control, current_user&.id, "request_draft")
+          if args[:activity_controls_attributes].present?
+            act_control = args[:activity_controls_attributes]&.first&.permit(:id,:activity,:guidance,:control_id,:resuploadBase64,:resuploadFileName,:_destroy)
+            args.delete(:activity_controls_attributes)
+            args[:activity_controls_attributes]= [act_control.to_h]
+            control&.attributes = args
+            control&.save_draft
+            admin = User.with_role(:admin_reviewer).pluck(:id)
+            Notification.send_notification(admin, control&.description, control&.type_of_control,control, current_user&.id, "request_draft")
+          else
+            control&.attributes = args
+            control&.save_draft
+            admin = User.with_role(:admin_reviewer).pluck(:id)
+            Notification.send_notification(admin, control&.description, control&.type_of_control,control, current_user&.id, "request_draft")
+          end
         end
       else
         raise GraphQL::ExecutionError, "Request not granted. Please Check Your Request Status"
