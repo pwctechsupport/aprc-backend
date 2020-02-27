@@ -28,10 +28,10 @@ module Mutations
     def resolve(args)
       current_user = context[:current_user]
       if args[:activity_controls_attributes].present?
-        act_control = args[:activity_controls_attributes]&.first&.permit(:activity,:guidance,:control_id,:resuploadBase64,:resuploadFileName)
+        act_control = args[:activity_controls_attributes]&.first&.permit(:id,:activity,:guidance,:control_id,:resuploadBase64,:resuploadFileName,:_destroy)
         args.delete(:activity_controls_attributes)
         args[:activity_controls_attributes]= [act_control.to_h]
-        
+
         control=Control.new(args)
         control.save_draft
 
