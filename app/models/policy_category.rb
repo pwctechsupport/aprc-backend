@@ -30,7 +30,11 @@ class PolicyCategory < ApplicationRecord
     header = spreadsheet.row(1)
     (2..spreadsheet.last_row).each do |i|
       row = Hash[[header, spreadsheet.row(i)].transpose]
-      policy_category_id = PolicyCategory&.create(name: row["name"],policy_ids: row["related policy"]&.split("|"))
+      if row["related policy"].class == Integer
+        policy_category_id = PolicyCategory&.create(name: row["name"],policy_ids: row["related policy"])
+      else
+        policy_category_id = PolicyCategory&.create(name: row["name"],policy_ids: row["related policy"]&.split("|"))
+      end
     end
   end
 
