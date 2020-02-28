@@ -9,7 +9,7 @@ class PolicyCategory < ApplicationRecord
   has_drafts
 	
 	validates :name, uniqueness: true
-  has_many :policies, inverse_of: :policy_category
+  has_many :policies, inverse_of: :policy_category, dependent: :destroy
   accepts_nested_attributes_for :policies, allow_destroy: true
   has_many :user_policy_categories, dependent: :destroy
   has_many :users, through: :user_policy_categories
