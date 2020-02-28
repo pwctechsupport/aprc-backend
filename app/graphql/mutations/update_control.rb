@@ -29,17 +29,27 @@ module Mutations
       current_user = context[:current_user]
       control = Control.find(id)
       if control&.request_edits&.last&.approved?
+        
         if control.draft?
           raise GraphQL::ExecutionError, "Draft Cannot be created until another Draft is Approved/Rejected by an Admin"
         else
           if args[:activity_controls_attributes].present?
-            act_control = args[:activity_controls_attributes]&.first&.permit(:id,:activity,:guidance,:control_id,:resuploadBase64,:resuploadFileName,:_destroy)
-            args.delete(:activity_controls_attributes)
-            args[:activity_controls_attributes]= [act_control.to_h]
-            control&.attributes = args
-            control&.save_draft
-            admin = User.with_role(:admin_reviewer).pluck(:id)
-            Notification.send_notification(admin, control&.description, control&.type_of_control,control, current_user&.id, "request_draft")
+            act = args[:activity_controls_attributes]&.first
+            if act&.class == ActionController::Parameters
+              act_control = act&.permit(:id,:activity,:guidance,:control_id,:resuploadBase64,:resuploadFileName,:_destroy)
+              args.delete(:activity_controls_attributes)
+              args[:activity_controls_attributes]= [act_control.to_h]
+    
+              control&.attributes = args
+              control&.save_draft
+              admin = User.with_role(:admin_reviewer).pluck(:id)
+              Notification.send_notification(admin, control&.description, control&.type_of_control,control, current_user&.id, "request_draft")
+            else
+              control&.attributes = args
+              control&.save_draft
+              admin = User.with_role(:admin_reviewer).pluck(:id)
+              Notification.send_notification(admin, control&.description, control&.type_of_control,control, current_user&.id, "request_draft")
+            end
           else
             control&.attributes = args
             control&.save_draft
