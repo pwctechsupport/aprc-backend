@@ -34,11 +34,12 @@ module Mutations
           raise GraphQL::ExecutionError, "Draft Cannot be created until another Draft is Approved/Rejected by an Admin"
         else
           if args[:activity_controls_attributes].present?
-            act = args[:activity_controls_attributes]&.first
-            if act&.class == ActionController::Parameters
-              act_control = act&.permit(:id,:activity,:guidance,:control_id,:resuploadBase64,:resuploadFileName,:_destroy)
+            act = args[:activity_controls_attributes]
+            if act&.first&.class == ActionController::Parameters
+              activities = act.collect {|x| x.permit(:id,:activity,:guidance,:control_id,:resuploadBase64,:resuploadFileName,:_destroy)}
+              
               args.delete(:activity_controls_attributes)
-              args[:activity_controls_attributes]= [act_control.to_h]
+              args[:activity_controls_attributes]= activities.collect{|x| x.to_h}
     
               control&.attributes = args
               control&.save_draft
