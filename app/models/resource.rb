@@ -26,7 +26,7 @@ class Resource < ApplicationRecord
     (2..spreadsheet.last_row).each do |i|
       
       row = Hash[[header, spreadsheet.row(i)].transpose]
-      if row["related policy"].class == Integer
+      if row["related policy"].class == (Integer || Fixnum || Bignum)
         resource_id = Resource.create(name: row["name"], category: row["category"], control_ids: [row["related control"]], policy_ids: row["related policy"])
       else
         resource_id = Resource.create(name: row["name"], category: row["category"], control_ids: [row["related control"]], policy_ids: row["related policy"]&.split("|"))     
