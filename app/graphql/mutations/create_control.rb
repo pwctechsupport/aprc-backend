@@ -31,7 +31,7 @@ module Mutations
       if args[:activity_controls_attributes].present?
         act = args[:activity_controls_attributes]
         if act&.first&.class == ActionController::Parameters
-          activities = act.collect {|x| x.permit(:id,:activity,:guidance,:control_id,:resuploadBase64,:resuploadFileName,:_destroy)}
+          activities = act.collect {|x| x.permit(:id,:activity,:guidance,:control_id,:resuploadBase64,:resuploadFileName,:_destroy,:resupload,:user_id)}
           args.delete(:activity_controls_attributes)
           args[:activity_controls_attributes]= activities.collect{|x| x.to_h}
           control=Control.new(args)
