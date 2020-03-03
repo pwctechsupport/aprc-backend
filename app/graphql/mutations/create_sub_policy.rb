@@ -20,6 +20,13 @@ module Mutations
       current_user = context[:current_user]
       policy = current_user.policies.new(args.to_h)
       policy.save_draft
+
+      admin = User.with_role(:admin_reviewer).pluck(:id)
+      if policy.id.present?
+        Notification.send_notification(admin, policy.title, policy.description, policy, current_user.id, "request_draft")
+      else
+        raise GraphQL::ExecutionError, "The exact same draft cannot be duplicated"
+      end
       # policy = Policy.create!(args.to_h)
       MutationResult.call(
           obj: { policy: policy },

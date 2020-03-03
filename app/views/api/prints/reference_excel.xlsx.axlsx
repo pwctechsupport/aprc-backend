@@ -1,0 +1,12 @@
+
+wb = xlsx_package.workbook
+
+
+wb.add_worksheet(name: "References") do |sheet|
+  # Create the header row
+  sheet.add_row ["name", "related policy"]
+  # Create entries for each item
+  @references.each do |reference|
+    sheet.add_row [reference&.name, reference&.policies&.pluck(:id)&.join(",")&.gsub(",", "|")]
+  end
+end

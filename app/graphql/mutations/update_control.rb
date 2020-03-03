@@ -11,6 +11,7 @@ module Mutations
     argument :frequency, Types::Enums::Frequency, required: false
     argument :nature, Types::Enums::Nature, required: false 
     argument :assertion, [Types::Enums::Assertion], required: false
+    argument :activity_controls_attributes, [Types::BaseScalar], required: false
     argument :ipo, [Types::Enums::Ipo], required: false
     argument :description, String, required: false
     argument :control_owner, String, required: false
@@ -28,13 +29,43 @@ module Mutations
       current_user = context[:current_user]
       control = Control.find(id)
       if control&.request_edits&.last&.approved?
+        
         if control.draft?
           raise GraphQL::ExecutionError, "Draft Cannot be created until another Draft is Approved/Rejected by an Admin"
         else
-          control&.attributes = args
-          control&.save_draft
-          admin = User.with_role(:admin_reviewer).pluck(:id)
-          Notification.send_notification(admin, control&.description, control&.type_of_control,control, current_user&.id, "request_draft")
+          if args[:activity_controls_attributes].present?
+            act = args[:activity_controls_attributes]
+            if act&.first&.class == ActionController::Parameters
+              activities = act.collect {|x| x.permit(:id,:activity,:guidance,:control_id,:resuploadBase64,:resuploadFileName,:_destroy,:resupload,:user_id,:resupload_file_name)}
+              
+              args.delete(:activity_controls_attributes)
+              args[:activity_controls_attributes]= activities.collect{|x| x.to_h}
+    
+              control&.attributes = args
+              control&.save_draft
+              admin = User.with_role(:admin_reviewer).pluck(:id)
+              if control.draft.present?
+                Notification.send_notification(admin, control&.description, control&.type_of_control,control, current_user&.id, "request_draft")
+              else
+              end
+            else
+              control&.attributes = args
+              control&.save_draft
+              admin = User.with_role(:admin_reviewer).pluck(:id)
+              if control.draft.present?
+                Notification.send_notification(admin, control&.description, control&.type_of_control,control, current_user&.id, "request_draft")
+              else
+              end
+            end
+          else
+            control&.attributes = args
+            control&.save_draft
+            admin = User.with_role(:admin_reviewer).pluck(:id)
+            if control.draft.present?
+              Notification.send_notification(admin, control&.description, control&.type_of_control,control, current_user&.id, "request_draft")
+            else
+            end
+          end
         end
       else
         raise GraphQL::ExecutionError, "Request not granted. Please Check Your Request Status"

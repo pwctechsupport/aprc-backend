@@ -4,6 +4,11 @@ Rails.application.routes.draw do
   post "/graphql", to: "graphql#execute"
   devise_for :users
   namespace :api do
+    resources :references do
+      collection do
+        put 'import'
+      end
+    end
     resources :resources do
       collection do
         put 'import'
@@ -38,6 +43,7 @@ Rails.application.routes.draw do
         get 'policy_category_excel', to: "prints#policy_category_excel", as: :policy_category_excel
         get 'control_excel', to: "prints#control_excel", as: :control_excel
         get 'resource_excel', to: "prints#resource_excel", as: :resource_excel
+        get 'reference_excel', to: "prints#reference_excel", as: :reference_excel
       end
       member do
         get :control

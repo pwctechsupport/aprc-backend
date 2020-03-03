@@ -11,6 +11,7 @@ module Mutations
     argument :fte_estimate, Int, required: false 
     argument :description, String, required: false
     argument :type_of_control, Types::Enums::TypeOfControl, required: false
+    argument :activity_controls_attributes, [Types::BaseScalar], required: false
     argument :frequency, Types::Enums::Frequency, required: false
     argument :nature, Types::Enums::Nature, required: false 
     argument :assertion, [Types::Enums::Assertion], required: false
@@ -23,16 +24,50 @@ module Mutations
 
     # return type from the mutation
     field :control, Types::ControlType, null: true
+    
 
     def resolve(args)
       current_user = context[:current_user]
+      if args[:activity_controls_attributes].present?
+        act = args[:activity_controls_attributes]
+        if act&.first&.class == ActionController::Parameters
+          activities = act.collect {|x| x.permit(:id,:activity,:guidance,:control_id,:resuploadBase64,:resuploadFileName,:_destroy,:resupload,:user_id,:resupload_file_name)}
+          args.delete(:activity_controls_attributes)
+          args[:activity_controls_attributes]= activities.collect{|x| x.to_h}
+          control=Control.new(args)
+          control&.save_draft
+          admin = User.with_role(:admin_reviewer).pluck(:id)
+          if control.id.present?
+            Notification.send_notification(admin, control&.description, control&.type_of_control,control, current_user&.id, "request_draft")
+          else
+            raise GraphQL::ExecutionError, "The exact same draft cannot be duplicated"
+          end
+        else
+          control=Control.new(args)
+          control&.save_draft
 
-      control=Control.new(args.to_h)
+          admin = User.with_role(:admin_reviewer).pluck(:id)
+          if control.id.present?
+            Notification.send_notification(admin, control&.description, control&.type_of_control,control, current_user&.id, "request_draft")
+          else
+            raise GraphQL::ExecutionError, "The exact same draft cannot be duplicated"
+          end
+        end
+      else
+        control=Control.new(args)
 
-      control.save_draft
+        control.save_draft
 
-      admin = User.with_role(:admin_reviewer).pluck(:id)
-      Notification.send_notification(admin, control&.description, control&.type_of_control,control, current_user&.id)
+        admin = User.with_role(:admin_reviewer).pluck(:id)
+        if control.id.present?
+          Notification.send_notification(admin, control&.description, control&.type_of_control,control, current_user&.id, "request_draft")
+        else
+          raise GraphQL::ExecutionError, "The exact same draft cannot be duplicated"
+        end
+      end
+
+      
+      
 
 
       MutationResult.call(
