@@ -14,7 +14,11 @@ module Mutations
       user = User.create(args.to_h)
       current_user = context[:current_user]
       admin = User.with_role(:admin_reviewer).pluck(:id)
-      Notification.send_notification(admin,user.email,"",user, current_user&.id )
+      if user.id.present?
+        Notification.send_notification(admin,user.email,"",user, current_user&.id, "request_draft")
+      else
+        raise GraphQL::ExecutionError, "The exact same draft cannot be duplicated"
+      end
 
       MutationResult.call(
         obj: { user: user },

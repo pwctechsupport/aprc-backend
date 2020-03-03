@@ -44,18 +44,27 @@ module Mutations
               control&.attributes = args
               control&.save_draft
               admin = User.with_role(:admin_reviewer).pluck(:id)
-              Notification.send_notification(admin, control&.description, control&.type_of_control,control, current_user&.id, "request_draft")
+              if control.draft.present?
+                Notification.send_notification(admin, control&.description, control&.type_of_control,control, current_user&.id, "request_draft")
+              else
+              end
             else
               control&.attributes = args
               control&.save_draft
               admin = User.with_role(:admin_reviewer).pluck(:id)
-              Notification.send_notification(admin, control&.description, control&.type_of_control,control, current_user&.id, "request_draft")
+              if control.draft.present?
+                Notification.send_notification(admin, control&.description, control&.type_of_control,control, current_user&.id, "request_draft")
+              else
+              end
             end
           else
             control&.attributes = args
             control&.save_draft
             admin = User.with_role(:admin_reviewer).pluck(:id)
-            Notification.send_notification(admin, control&.description, control&.type_of_control,control, current_user&.id, "request_draft")
+            if control.draft.present?
+              Notification.send_notification(admin, control&.description, control&.type_of_control,control, current_user&.id, "request_draft")
+            else
+            end
           end
         end
       else

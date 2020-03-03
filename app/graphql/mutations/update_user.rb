@@ -25,7 +25,10 @@ module Mutations
             user.attributes = args
             user.save_draft
             admin = User.with_role(:admin_reviewer).pluck(:id)
-            Notification.send_notification(admin, user.name, user.email, user, user.id)
+            if user.draft.present?
+              Notification.send_notification(admin, user.name, user.email, user, user.id, "request_draft")
+            else
+            end
           end
         end
 
