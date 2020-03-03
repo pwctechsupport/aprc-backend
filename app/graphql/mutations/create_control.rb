@@ -37,13 +37,21 @@ module Mutations
           control=Control.new(args)
           control&.save_draft
           admin = User.with_role(:admin_reviewer).pluck(:id)
-          Notification.send_notification(admin, control&.description, control&.type_of_control,control, current_user&.id)
+          if control.id.present?
+            Notification.send_notification(admin, control&.description, control&.type_of_control,control, current_user&.id, "request_draft")
+          else
+            raise GraphQL::ExecutionError, "The exact same draft cannot be duplicated"
+          end
         else
           control=Control.new(args)
           control&.save_draft
 
           admin = User.with_role(:admin_reviewer).pluck(:id)
-          Notification.send_notification(admin, control&.description, control&.type_of_control,control, current_user&.id)
+          if control.id.present?
+            Notification.send_notification(admin, control&.description, control&.type_of_control,control, current_user&.id, "request_draft")
+          else
+            raise GraphQL::ExecutionError, "The exact same draft cannot be duplicated"
+          end
         end
       else
         control=Control.new(args)
@@ -51,7 +59,11 @@ module Mutations
         control.save_draft
 
         admin = User.with_role(:admin_reviewer).pluck(:id)
-        Notification.send_notification(admin, control&.description, control&.type_of_control,control, current_user&.id)
+        if control.id.present?
+          Notification.send_notification(admin, control&.description, control&.type_of_control,control, current_user&.id, "request_draft")
+        else
+          raise GraphQL::ExecutionError, "The exact same draft cannot be duplicated"
+        end
       end
 
       

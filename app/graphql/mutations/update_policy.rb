@@ -29,8 +29,12 @@ module Mutations
         else
           policy&.attributes = args
           policy&.save_draft
+
           admin = User.with_role(:admin_reviewer).pluck(:id)
-          Notification.send_notification(admin, policy&.title, policy&.description,policy, current_user&.id, "request_draft")
+          if policy.draft.present?
+            Notification.send_notification(admin, policy&.title, policy&.description,policy, current_user&.id, "request_draft")
+          else
+          end
         end
       else
         raise GraphQL::ExecutionError, "Request not granted. Please Check Your Request Status"
