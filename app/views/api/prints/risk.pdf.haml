@@ -25,7 +25,13 @@
           %h3 Type of Risk         : #{@risk.type_of_risk.to_s.gsub(/_/, ' ').titlecase}
     .row.m-t-10
       .col-md-12
+  %ul
+    .row.m-t-10
+      .col-md-12
         %li
-          %h3 Business Process : #{@risk.business_process.name.capitalize}
+          %h3 Business Process :
+          %ul
+            -@risk.business_processes.each do |bis|
+              %li #{bis.name.capitalize}
     
     
