@@ -81,6 +81,9 @@ module Types
     field :create_tag, mutation: Mutations::CreateTag
     field :update_tag, mutation: Mutations::UpdateTag
     field :destroy_tag, mutation: Mutations::DestroyTag
+    field :create_enum_list, mutation: Mutations::CreateEnumList
+    field :update_enum_list, mutation: Mutations::UpdateEnumList
+    field :destroy_enum_list, mutation: Mutations::DestroyEnumList
 
 
     

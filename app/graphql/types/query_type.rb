@@ -119,6 +119,11 @@ module Types
       description 'Returns the Current image tag location'
     end
 
+    field :enum_list, Types::EnumListType, null: true do
+      argument :id, ID, required: true
+      description 'Returns the current Enumerated List'
+    end
+
 
     def me(demo: false)
       context[:current_user]
@@ -224,6 +229,10 @@ module Types
       Tag.find_by(id:id)
     end
 
+    def enum_list(id:)
+      EnumList.find_by(id:id)
+    end
+
     field :users, resolver: Resolvers::QueryType::UsersResolver
     field :policies, resolver: Resolvers::QueryType::PoliciesResolver
     field :policy_categories, resolver: Resolvers::QueryType::PolicyCategoriesResolver
@@ -241,5 +250,7 @@ module Types
     field :request_edits, resolver: Resolvers::QueryType::RequestEditsResolver
     field :file_attachments, resolver: Resolvers::QueryType::FileAttachmentsResolver
     field :activity_controls, resolver: Resolvers::QueryType::ActivityControlsResolver
+    field :tags, resolver: Resolvers::QueryType::TagsResolver
+    field :enum_lists, resolver: Resolvers::QueryType::TagsResolver
   end
 end
