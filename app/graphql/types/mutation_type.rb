@@ -78,6 +78,13 @@ module Types
     field :create_activity_control, mutation: Mutations::CreateActivityControl
     field :update_activity_control, mutation: Mutations::UpdateActivityControl
     field :destroy_activity_control, mutation: Mutations::DestroyActivityControl
+    field :create_tag, mutation: Mutations::CreateTag
+    field :update_tag, mutation: Mutations::UpdateTag
+    field :destroy_tag, mutation: Mutations::DestroyTag
+    field :create_enum_list, mutation: Mutations::CreateEnumList
+    field :update_enum_list, mutation: Mutations::UpdateEnumList
+    field :destroy_enum_list, mutation: Mutations::DestroyEnumList
+
 
     
 

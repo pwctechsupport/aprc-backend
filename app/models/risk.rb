@@ -6,7 +6,8 @@ class Risk < ApplicationRecord
   has_many :controls, through: :control_risks
   has_many :policy_risks, dependent: :destroy
   has_many :policies, through: :policy_risks
-  belongs_to :business_process, class_name: "BusinessProcess", foreign_key: "business_process_id",  optional: true
+  has_many :risk_business_processes, dependent: :destroy
+  has_many :business_processes, through: :risk_business_processes
   belongs_to :user, optional: true
   has_many :bookmark_risks
   has_many :users, through: :bookmark_risks

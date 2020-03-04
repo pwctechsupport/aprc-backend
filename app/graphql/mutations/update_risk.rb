@@ -9,7 +9,7 @@ module Mutations
     argument :status, Types::Enums::Status, required: false
     argument :level_of_risk, Types::Enums::LevelOfRisk, required: false
     argument :type_of_risk, Types::Enums::TypeOfRisk, required: false 
-    argument :business_process_id, ID, required: false
+    argument :business_process_ids, [ID], required: false
 
 
 
@@ -26,7 +26,10 @@ module Mutations
           risk.attributes = args
           risk.save_draft
           admin = User.with_role(:admin_reviewer).pluck(:id)
-          Notification.send_notification(admin, risk&.name, risk&.type_of_risk,risk, current_user&.id, "request draft")
+          if risk.draft.present?
+            Notification.send_notification(admin, risk&.name, risk&.type_of_risk,risk, current_user&.id, "request draft")
+          else
+          end
         end
       else
         raise GraphQL::ExecutionError, "Request not granted. Please Check Your Request Status"

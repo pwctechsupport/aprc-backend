@@ -1,3 +1,5 @@
+require 'net/http'
+
 module Mutations
   class CreateResource < Mutations::BaseMutation
     # arguments passed to the `resolved` method
@@ -19,6 +21,14 @@ module Mutations
     field :resource, Types::ResourceType, null: true
 
     def resolve(args)
+      if args[:resupload].present?
+        url = URI.parse(args[:resupload])
+        if url.class == (URI::HTTP || URI::HTTPS)
+          args[:resupload] = URI.parse(args[:resupload])
+        else
+        end
+      else
+      end
       resource=Resource.create!(args.to_h)
       resource = Resource.find_by(name: args[:name], category: args[:category])
       if resource.category == "flowchart"

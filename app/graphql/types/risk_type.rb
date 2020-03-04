@@ -5,8 +5,7 @@ module Types
     field :status, String, null: true
     field :level_of_risk, String, null: true
     field :type_of_risk, String, null: true
-    field :business_process_id, ID, null: true
-    field :business_process, Types::BusinessProcessType, null: true
+    field :business_processes, [Types::BusinessProcessType], null: true
     field :policies, [Types::PolicyType], null: true
     field :controls, [Types::ControlType], null: true
     field :created_at, String, null: true
