@@ -34,14 +34,14 @@ module Mutations
           admin_main = User.with_role(:admin).pluck(:id)
           all_admin = admin_prep + admin_rev + admin_main
           admin = all_admin.uniq
-          Notification.send_notification(admin, policy&.title, policy&.description,policy, current_user&.id, "request_draft")
+          Notification.send_notification(admin_rev, policy&.title, policy&.description,policy, current_user&.id, "request_draft")
           if policy.references.present?
             ref= policy&.references
             polisi = Policy.find(id)
             ref.each do |r|
               namu = r&.policies&.pluck(:title).reject{ |k| k==polisi.title}
               nama = namu.join(", ")
-              Notification.send_notification(admin,"Policy with the same reference" ,"#{policy.title} with #{r.name} reference has the same references with #{nama}.",policy, current_user&.id, "same_reference" )  
+              Notification.send_notification_to_all(admin,"Policy with the same reference" ,"#{policy.title} with #{r.name} reference has the same references with #{nama}.",policy, current_user&.id, "same_reference" )  
             end
           else
           end
