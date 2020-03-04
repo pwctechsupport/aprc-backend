@@ -12,6 +12,8 @@ class BusinessProcess < ApplicationRecord
   has_many :bookmark_business_processes
   has_many :users, through: :bookmark_business_processes
   has_many :bookmarks, class_name: "Bookmark", as: :originator, dependent: :destroy
+  has_many :tags, dependent: :destroy
+
 
   def to_humanize
     "#{self.name} : #{self.status}"
