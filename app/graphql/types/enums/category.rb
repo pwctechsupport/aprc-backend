@@ -1,5 +1,7 @@
 class Types::Enums::Category < Types::BaseEnum
-  EnumList&.where(category_type: "Category").each do |cat|
-    value "#{cat.name}", "#{cat.code}"
-  end
+  value "references", "References"
+  value "sop", "SOP"
+  value "template", "Template"
+  value "flowchart", "Flowchart"
+  value "add_new_category", "Add New Category"
 end
