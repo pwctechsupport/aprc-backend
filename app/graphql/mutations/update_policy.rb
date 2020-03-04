@@ -29,7 +29,11 @@ module Mutations
         else
           policy&.attributes = args
           policy&.save_draft
-          admin = User.with_role(:admin_reviewer).pluck(:id)
+          admin_prep = User.with_role(:admin_preparer).pluck(:id)
+          admin_rev = User.with_role(:admin_reviewer).pluck(:id)
+          admin_main = User.with_role(:admin).pluck(:id)
+          all_admin = admin_prep + admin_rev + admin_main
+          admin = all_admin.uniq
           Notification.send_notification(admin, policy&.title, policy&.description,policy, current_user&.id, "request_draft")
           if policy.references.present?
             ref= policy&.references
