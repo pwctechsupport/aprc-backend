@@ -21,6 +21,7 @@ module Types
     field :status, String, null: true
     field :created_at, String, null: false
     field :updated_at, String, null: false
+    field :tags, [Types::TagType], null: true
     
     def  resupload_url
       attachment = object.resupload.url

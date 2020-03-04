@@ -30,6 +30,8 @@ class User < ApplicationRecord
   enum role: %i[customer admin]
 
   has_many :versions, class_name: "PaperTrail::Version", foreign_key: "whodunnit"
+  has_many :tags, dependent: :destroy
+
 
   def request_edit
     request_edits.last

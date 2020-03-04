@@ -114,6 +114,11 @@ module Types
       description 'Returns the Current Edit Request'
     end
 
+    field :tag, Types::TagType, null: true do
+      argument :id, ID, required: true
+      description 'Returns the Current image tag location'
+    end
+
 
     def me(demo: false)
       context[:current_user]
@@ -213,6 +218,10 @@ module Types
 
     def resource_rating(id:)
       ResourceRating.find_by(id:id)
+    end
+
+    def tag(id:)
+      Tag.find_by(id:id)
     end
 
     field :users, resolver: Resolvers::QueryType::UsersResolver

@@ -15,6 +15,7 @@ class Resource < ApplicationRecord
   # belongs_to :control, optional: true, class_name: "Control", foreign_key: "control_id"
   belongs_to :business_process, optional: true, class_name: "BusinessProcess", foreign_key: "business_process_id"
   has_many :resource_ratings
+  has_many :tags, dependent: :destroy
 
   def to_humanize
     "#{self.name} : #{self.resupload_file_name}"
