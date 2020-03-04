@@ -29,10 +29,16 @@ module Mutations
         else
           policy&.attributes = args
           policy&.save_draft
-
           admin = User.with_role(:admin_reviewer).pluck(:id)
-          if policy.draft.present?
-            Notification.send_notification(admin, policy&.title, policy&.description,policy, current_user&.id, "request_draft")
+          Notification.send_notification(admin, policy&.title, policy&.description,policy, current_user&.id, "request_draft")
+          if policy.references.present?
+            ref= policy&.references
+            polisi = Policy.find(id)
+            ref.each do |r|
+              namu = r&.policies&.pluck(:title).reject{ |k| k==polisi.title}
+              nama = namu.join(", ")
+              Notification.send_notification(admin,"Policy with the same reference" ,"#{policy.title} with #{r.name} reference has the same references with #{nama}.",policy, current_user&.id, "same_reference" )  
+            end
           else
           end
         end
