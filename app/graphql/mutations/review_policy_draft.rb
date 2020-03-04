@@ -16,43 +16,23 @@ module Mutations
         if args[:publish] === true
           if policy.user_reviewer_id.present? && (policy.user_reviewer_id != current_user.id)
             raise GraphQL::ExecutionError, "This Draft has been reviewed by another Admin."
-          elsif !policy.user_reviewer_id.present?
-            policy_draft.publish!
-            policy.update(status: "release")
-            policy.update(user_reviewer_id: current_user.id)
-            admin_prep = User.with_role(:admin_preparer).pluck(:id)
-            admin_rev = User.with_role(:admin_reviewer).pluck(:id)
-            admin_main = User.with_role(:admin).pluck(:id)
-            all_admin = admin_prep + admin_rev + admin_main
-            admin = all_admin.uniq
-            if policy.references.present?
-              ref= policy&.references
-              polisi = Policy.find(args[:id])
-              ref.each do |r|
-                namu = r&.policies&.pluck(:title).reject{ |k| k==polisi.title}
-                nama = namu.join(", ")
-                Notification.send_notification_to_all(admin,"Policy with the same reference" ,"#{policy.title} with #{r.name} reference has the same references with #{nama}.",policy, current_user&.id, "same_reference" )  
-              end
-            else
-            end
           else
             policy_draft.publish!
             policy.update(status: "release")
             policy.update(user_reviewer_id: current_user.id)
-            admin_prep = User.with_role(:admin_preparer).pluck(:id)
-            admin_rev = User.with_role(:admin_reviewer).pluck(:id)
-            admin_main = User.with_role(:admin).pluck(:id)
-            all_admin = admin_prep + admin_rev + admin_main
-            admin = all_admin.uniq
-            if policy.references.present?
-              ref= policy&.references
-              polisi = Policy.find(args[:id])
-              ref.each do |r|
-                namu = r&.policies&.pluck(:title).reject{ |k| k==polisi.title}
-                nama = namu.join(", ")
-                Notification.send_notification_to_all(admin,"Policy with the same reference" ,"#{policy.title} with #{r.name} reference has the same references with #{nama}.",policy, current_user&.id, "same_reference" )  
-              end
-            else
+          end
+          admin_prep = User.with_role(:admin_preparer).pluck(:id)
+          admin_rev = User.with_role(:admin_reviewer).pluck(:id)
+          admin_main = User.with_role(:admin).pluck(:id)
+          all_admin = admin_prep + admin_rev + admin_main
+          admin = all_admin.uniq
+          if policy.references.present?
+            ref= policy&.references
+            polisi = Policy.find(args[:id])
+            ref.each do |r|
+              namu = r&.policies&.pluck(:title).reject{ |k| k==polisi.title}
+              nama = namu.join(", ")
+              Notification.send_notification_to_all(admin,"Policy with the same reference" ,"#{policy.title} with #{r.name} reference has the same references with #{nama}.",policy, current_user&.id, "same_reference" )  
             end
           end
         else
