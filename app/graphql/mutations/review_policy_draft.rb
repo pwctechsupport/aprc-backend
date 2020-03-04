@@ -32,7 +32,7 @@ module Mutations
             ref.each do |r|
               namu = r&.policies&.pluck(:title).reject{ |k| k==polisi.title}
               nama = namu.join(", ")
-              Notification.send_notification_to_all(admin,"Policy with the same reference" ,"#{policy.title} with #{r.name} reference has the same references with #{nama}.",policy, current_user&.id, "same_reference" )  
+              Notification.send_notification_to_all(admin ,"#{policy.title} with #{r.name} reference has the same references with #{nama}.","Policy with the same reference",policy, current_user&.id, "same_reference" )  
             end
           end
         else
