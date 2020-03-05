@@ -8,7 +8,7 @@ module Mutations
     argument :name, String, required: false
     argument :resuploadBase64, String, as: :resupload, required: false
     argument :resuploadFileName, String, as: :resupload_file_name, default_value: 'resupload', required: false  
-    argument :category, Types::Enums::Category, required: false 
+    argument :category, String, required: false 
     argument :policy_ids, [ID], required: false 
     argument :control_ids, [ID], required: false 
     argument :policy_id, ID, required: false
@@ -25,9 +25,11 @@ module Mutations
         url = URI.parse(args[:resupload])
         if url.class == (URI::HTTP || URI::HTTPS)
           args[:resupload] = URI.parse(args[:resupload])
-        else
         end
-      else
+      end
+      if args[:category].present?
+        enum_list = EnumList.find_by(category_type: "Category", name: args[:category])
+        args[:category] = enum_list.code
       end
       resource = Resource.find(id)
       resource.update_attributes!(args.to_h)

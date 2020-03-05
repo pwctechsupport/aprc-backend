@@ -22,7 +22,11 @@ module Types
     field :created_at, String, null: false
     field :updated_at, String, null: false
     field :tags, [Types::TagType], null: true
-    
+    field :enum_list, Types::EnumListType, null: true
+
+    def enum_list
+      enum_list = EnumList.find_by(code: object&.category)
+    end
     def  resupload_url
       attachment = object.resupload.url
     end
