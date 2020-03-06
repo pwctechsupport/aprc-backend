@@ -251,6 +251,6 @@ module Types
     field :file_attachments, resolver: Resolvers::QueryType::FileAttachmentsResolver
     field :activity_controls, resolver: Resolvers::QueryType::ActivityControlsResolver
     field :tags, resolver: Resolvers::QueryType::TagsResolver
-    field :enum_lists, resolver: Resolvers::QueryType::TagsResolver
+    field :enum_lists, resolver: Resolvers::QueryType::EnumListsResolver
   end
 end

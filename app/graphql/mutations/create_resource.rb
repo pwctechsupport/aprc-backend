@@ -27,7 +27,7 @@ module Mutations
           args[:resupload] = URI.parse(args[:resupload])
         end
       end
-      if arg[:category].present?
+      if args[:category].present?
         enum_list = EnumList.find_by(category_type: "Category", name: args[:category])
         args[:category] = enum_list.code
       end

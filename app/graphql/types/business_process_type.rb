@@ -15,5 +15,10 @@ module Types
     field :risks, [Types::RiskType], null: true
     field :status, String, null: true
     field :tags, [Types::TagType], null: true
+    field :ancestors, [Types::BusinessProcessType], null: true
+
+    def ancestors
+      object&.ancestors
+    end
   end
 end
