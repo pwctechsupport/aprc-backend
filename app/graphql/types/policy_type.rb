@@ -42,6 +42,11 @@ module Types
     field :request_edits, [Types::RequestEditType], null: true
     field :request_edit, Types::RequestEditType, null: true
     field :file_attachments, [Types::FileAttachmentType], null: true
+    field :ancestors, [Types::PolicyType], null: true
+
+    def ancestors
+      object&.ancestors
+    end
 
     def file_attachments
       if object&.class == Hash
