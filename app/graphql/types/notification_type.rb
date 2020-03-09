@@ -15,6 +15,17 @@ module Types
 		field :sender_user_id, ID, null: true
 		field :sender_user, Types::UserType, null:true
 		field :data_type, String, null: true
+		field :sender_user_name, String, null: true
+
+		def sender_user_name
+			sender = object.sender_user.name
+			if object.is_general
+				sender= "System"
+				sender
+			else
+				sender
+			end
+		end
 	end
 
 end

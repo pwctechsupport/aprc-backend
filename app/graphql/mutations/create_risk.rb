@@ -6,6 +6,7 @@ module Mutations
     argument :status, Types::Enums::Status, required: false
     argument :type_of_risk, Types::Enums::TypeOfRisk, required: false 
     argument :business_process_ids, [ID], required: false
+    argument :control_ids, [ID], required: false
     
 
     # return type from the mutation

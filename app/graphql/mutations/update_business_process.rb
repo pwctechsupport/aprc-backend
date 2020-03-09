@@ -7,6 +7,8 @@ module Mutations
     argument :id, ID, required: true
     argument :name, String, required: false
     argument :status, Types::Enums::Status, required: false
+    argument :risk_ids, [ID], required: false
+
 
 
 

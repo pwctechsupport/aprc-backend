@@ -13,6 +13,7 @@ module Mutations
       argument :last_name, String, required: false
       argument :jobPosition, String, required: false
       argument :department, String, required: false
+      argument :push_notification, Boolean, required: false
   
       field :user, Types::UserType, null: false
      
