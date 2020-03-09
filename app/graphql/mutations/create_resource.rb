@@ -38,7 +38,7 @@ module Mutations
       end
       resource=Resource.create!(args.to_h)
       resource = Resource.find_by(name: args[:name], category: args[:category])
-      if resource.category == "flowchart"
+      if resource.category.downcase == "flowchart"
         resource.update(policy_id: nil)
         resource.update(policy_ids: nil)
         resource.update(control_id: nil)
