@@ -30,6 +30,7 @@ module Types
     field :request_edit, Types::RequestEditType, null: true
     field :file_attachments, [Types::FileAttachmentType], null: true
     field :activity_controls, [Types::ActivityControlType], null: true
+    field :push_notification, Boolean, null:true
 
     def activity_controls
       if object&.class == Hash

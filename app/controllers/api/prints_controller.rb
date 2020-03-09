@@ -42,6 +42,36 @@ module Api
       end
     end
 
+    def report_risk_policy
+      @risks = Risk.all
+      respond_to do |format|
+        format.json
+        format.pdf do
+          render pdf: 'report_risk_policy', layout: 'layouts/pdf.haml', template: 'api/prints/report_risk_policy.pdf.haml', dpi: 300, show_as_html: params.key?('debug'), javascript_delay: 3000, margin: {top: 10, bottom: 20, left: 15, right: 15 }, outline: {outline: true, outline_depth: 10 }, footer: {html: {template:'shared/_pdf_footer'}}
+        end
+        format.xlsx {
+          response.headers[
+            'Content-Disposition'
+          ] = "attachment; filename=report_risk_policy.xlsx"
+        }
+      end
+    end
+
+    def report_control_policy
+      @controls = Control.all
+      respond_to do |format|
+        format.json
+        format.pdf do
+          render pdf: 'report_control_policy', layout: 'layouts/pdf.haml', template: 'api/prints/report_control_policy.pdf.haml', dpi: 300, show_as_html: params.key?('debug'), javascript_delay: 3000, margin: {top: 10, bottom: 20, left: 15, right: 15 }, outline: {outline: true, outline_depth: 10 }, footer: {html: {template:'shared/_pdf_footer'}}
+        end
+        format.xlsx {
+          response.headers[
+            'Content-Disposition'
+          ] = "attachment; filename=report_control_policy.xlsx"
+        }
+      end
+    end
+
     def business_process_excel
       @business_processes = BusinessProcess.where(id: params[:business_process_ids])
       respond_to do |format|

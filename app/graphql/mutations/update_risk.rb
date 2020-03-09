@@ -10,6 +10,7 @@ module Mutations
     argument :level_of_risk, Types::Enums::LevelOfRisk, required: false
     argument :type_of_risk, Types::Enums::TypeOfRisk, required: false 
     argument :business_process_ids, [ID], required: false
+    argument :control_ids, [ID], required: false
 
 
 

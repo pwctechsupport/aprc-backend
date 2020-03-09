@@ -6,7 +6,7 @@ module Mutations
     argument :name, String, required: true
     argument :resuploadBase64, String, as: :resupload, required: false
     argument :resuploadFileName, String, as: :resupload_file_name, default_value: 'resupload', required: false
-    argument :category, Types::Enums::Category, required: true
+    argument :category, String, required: true
     argument :policy_id, ID, required: false
     argument :control_id, ID, required: false
     argument :policy_ids, [ID], required: false 
@@ -25,13 +25,20 @@ module Mutations
         url = URI.parse(args[:resupload])
         if url.class == (URI::HTTP || URI::HTTPS)
           args[:resupload] = URI.parse(args[:resupload])
-        else
         end
-      else
+      end
+      if args[:category].present?
+        enum_list = EnumList&.find_by(category_type: "Category", name: args[:category]) || EnumList&.find_by(category_type: "Category", code: args[:category])
+        if enum_list ==  nil
+          kode = args[:category].gsub("_"," ").titlecase
+          EnumList.create(name: args[:category], category_type: "Category", code: kode)
+        end
+        enum_list = EnumList&.find_by(category_type: "Category", name: args[:category]) || EnumList&.find_by(category_type: "Category", code: args[:category])
+        args[:category] = enum_list&.code
       end
       resource=Resource.create!(args.to_h)
       resource = Resource.find_by(name: args[:name], category: args[:category])
-      if resource.category == "flowchart"
+      if resource.category.downcase == "flowchart"
         resource.update(policy_id: nil)
         resource.update(policy_ids: nil)
         resource.update(control_id: nil)

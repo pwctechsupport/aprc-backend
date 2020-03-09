@@ -4,6 +4,7 @@ class Risk < ApplicationRecord
   has_drafts
   has_many :control_risks, class_name: "ControlRisk", foreign_key: "risk_id", dependent: :destroy
   has_many :controls, through: :control_risks
+  accepts_nested_attributes_for :controls, allow_destroy: true
   has_many :policy_risks, dependent: :destroy
   has_many :policies, through: :policy_risks
   has_many :risk_business_processes, dependent: :destroy

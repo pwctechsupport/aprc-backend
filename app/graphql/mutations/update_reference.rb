@@ -7,16 +7,19 @@ module Mutations
     argument :id, ID, required: true
     argument :name, String, required: false
     argument :status, Types::Enums::Status, required: false
+    argument :policy_ids, [ID], required: false
+
     
     
     
     field :reference, Types::ReferenceType, null: false
     
-    def resolve(id:, name: nil, status: nil)
+    def resolve(id:, name: nil, status: nil, policy_ids: nil)
       reference = Reference.find(id)
       reference_update = reference.update_attributes!(
         name: '#' << name,
-        status: status
+        status: status,
+        policy_ids: policy_ids
       )
       lovar= reference.name.count "#"
       
