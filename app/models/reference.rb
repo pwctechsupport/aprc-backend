@@ -3,6 +3,7 @@ class Reference < ApplicationRecord
   has_paper_trail
   has_many :policy_references
   has_many :policies, through: :policy_references
+  accepts_nested_attributes_for :policies, allow_destroy: true
   def to_humanize
     "#{self.name} : #{self.status}"
   end
@@ -14,7 +15,6 @@ class Reference < ApplicationRecord
     (2..spreadsheet.last_row).each do |i|
       row = Hash[[header, spreadsheet.row(i)].transpose]
       if row["related policy"].class == (Integer || Fixnum || Bignum)
-
         lovar= row["name"].count "#"
         if lovar >= 1
           refa= row["name"].gsub('#','')
