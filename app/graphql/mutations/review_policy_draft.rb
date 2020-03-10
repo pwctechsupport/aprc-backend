@@ -30,9 +30,9 @@ module Mutations
             ref= policy&.references
             polisi = Policy.find(args[:id])
             ref.each do |r|
-              namu = r&.policies&.pluck(:title).reject{ |k| k==polisi.title}
+              namu = r&.policies&.pluck(:id).reject{ |k| k==polisi.id}
               nama = namu.join(", ")
-              Notification.send_notification_to_all(admin ,"#{polisi.title} with #{r.name} has been updated. Consider review other related policies with #{r.name} #{nama}.","Policy with the same reference",policy, current_user&.id, "related_reference" ) 
+              Notification.send_notification_to_all(admin ,"#{polisi.title} with #{r.name} has been updated. Consider review for other related policies with #{r.name} i.e.:","#{nama}",policy, current_user&.id, "related_reference" ) 
               #{polisi.title} with #{r.name} has been updated. Consider review other related policies with #{r.name} #{nama}. 
             end
           end

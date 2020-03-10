@@ -7,6 +7,12 @@ wb.add_worksheet(name: "Risks") do |sheet|
   sheet.add_row ["name", "level of risk", "status", "type of risk", "business process"]
   # Create entries for each item
   @risks.each do |risk|
-    sheet.add_row [risk&.name, risk&.level_of_risk, risk&.status, risk&.type_of_risk,risk&.business_process&.name]
+    if risk.business_processes.present?
+      risk&.business_processes.each do |bis|
+        sheet.add_row [risk&.name, risk&.level_of_risk, risk&.status, risk&.type_of_risk,bis&.name]
+      end
+    else
+      sheet.add_row [risk&.name, risk&.level_of_risk, risk&.status, risk&.type_of_risk,"No Business Process"] 
+    end
   end
 end
