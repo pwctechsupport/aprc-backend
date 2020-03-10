@@ -11,7 +11,7 @@ module Mutations
       current_user = context[:current_user]
       control = Control.find(args[:id])
 
-      if current_user.present? && current_user.has_role?(:admin)
+      if current_user.present? && current_user.has_role?(:admin_reviewer)
         control_draft = control.draft
         if args[:publish] === true
           if control.user_reviewer_id.present? && (control.user_reviewer_id != current_user.id)
