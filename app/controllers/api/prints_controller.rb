@@ -57,6 +57,21 @@ module Api
       end
     end
 
+    def report_resource_rating
+      @resources = Resource.all
+      respond_to do |format|
+        format.json
+        format.pdf do
+          render pdf: 'report_resource_rating', layout: 'layouts/pdf.haml', template: 'api/prints/report_resource_rating.pdf.haml', dpi: 300, show_as_html: params.key?('debug'), javascript_delay: 3000, margin: {top: 10, bottom: 20, left: 15, right: 15 }, outline: {outline: true, outline_depth: 10 }, footer: {html: {template:'shared/_pdf_footer'}}
+        end
+        format.xlsx {
+          response.headers[
+            'Content-Disposition'
+          ] = "attachment; filename=report_resource_rating.xlsx"
+        }
+      end
+    end
+
     def report_control_policy
       @controls = Control.all
       respond_to do |format|

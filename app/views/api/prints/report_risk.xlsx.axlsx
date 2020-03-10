@@ -7,7 +7,9 @@ wb.add_worksheet(name: "Risks") do |sheet|
   # Create entries for each item
   @risks.each do |item|
     item.controls.each do |bis| 
-      sheet.add_row [item.name,item.business_process.name,bis.control_owner.to_s.gsub(/"/,'').gsub(/"|\[|\]/, ''),bis.description.to_s.gsub(/"/,'').gsub(/"|\[|\]/, ''),bis.type_of_control.to_s.gsub(/"/,'').gsub(/"|\[|\]/, '').titlecase]
+      item.business_processes.each do |bes|
+        sheet.add_row [item.name,bes.name,bis.control_owner.to_s.gsub(/"/,'').gsub(/"|\[|\]/, ''),bis.description.to_s.gsub(/"/,'').gsub(/"|\[|\]/, ''),bis.type_of_control.to_s.gsub(/"/,'').gsub(/"|\[|\]/, '').titlecase]
+      end
     end
   end
 end
