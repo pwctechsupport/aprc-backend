@@ -15,21 +15,20 @@ module Mutations
     argument :control_id, ID, required: false
     argument :business_process_id, ID, required: false 
     argument :status, Types::Enums::Status, required: false
+    argument :resuploadLink, String, as: :resupload, required: false
+
 
 
 
     field :resource, Types::ResourceType, null: false
 
     def resolve(id:, **args)
-      if args[:resupload].present?
-        url = URI.parse(args[:resupload])
-        if url.class == (URI::HTTP || URI::HTTPS)
-          args[:resupload] = URI.parse(args[:resupload])
-        end
+      if args[:resuploadLink].present?        
+        args[:resuploadLink] = URI.parse(args[:resuploadLink])
       end
       if args[:category].present?
         enum_list = EnumList&.find_by(category_type: "Category", name: args[:category]) || EnumList&.find_by(category_type: "Category", code: args[:category])
-        if enum_list ==  nil
+        if enum_list ==  nil 
           kode = args[:category].gsub("_"," ").titlecase
           EnumList.create(name: args[:category], category_type: "Category", code: kode)
         end
@@ -38,6 +37,9 @@ module Mutations
       end
       resource = Resource.find(id)
       resource.update_attributes!(args.to_h)
+      if args[:resupload_file_name].present?
+        resource.update(resupload_file_name: args[:resupload_file_name])
+      end
 
       MutationResult.call(
         obj: { resource: resource },

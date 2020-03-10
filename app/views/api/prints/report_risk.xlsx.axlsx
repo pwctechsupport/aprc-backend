@@ -1,7 +1,7 @@
 wb = xlsx_package.workbook
 
 
-wb.add_worksheet(name: "Risks") do |sheet|
+wb.add_worksheet(name: "Report Risks") do |sheet|
   # Create the header row
   sheet.add_row ["Risk", "Business Process","Control Owner","Description","Control Type"]
   # Create entries for each item
