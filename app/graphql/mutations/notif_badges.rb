@@ -8,9 +8,10 @@ module Mutations
 
     field :user, Boolean, null: false
 
-    def resolve(id:, **args)
+    def resolve(args)
       current_user = context[:current_user]
-      success = current_user.update(args)
+      user = User.find(current_user.id)
+      success = user.update(args)
       MutationResult.call(
         obj: { user: user },
         success: success,

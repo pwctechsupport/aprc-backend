@@ -36,6 +36,19 @@ module Mutations
         args[:category] = enum_list&.code
       end
       resource = Resource.find(id)
+      if resource.resupload.present?
+        if (!(args[:resupload].present?) || (args[:resupload].present?)) && (args[:resupload_file_name] == "resupload")
+          args.delete(:resupload_file_name)
+        elsif !(args[:resupload].present?) && (args[:resupload_file_name] != "resupload") && args[:name].present?
+          args[:resupload_file_name] = "#{args[:name]}" << resource.resource_file_type(resource)
+          resource.update_attributes(resupload: resource.resupload, resupload_file_name: args[:resupload_file_name])
+        elsif args[:resupload].present? && (args[:resupload_file_name] != "resupload") && args[:name].present?
+          args[:resupload_file_name] = "#{args[:name]}" << resource.resource_file_type(resource)
+          resource.update_attributes(resupload: args[:resupload], resupload_file_name: args[:resupload_file_name])
+        end      
+      end
+
+
       resource.update_attributes!(args.to_h)
       
 
