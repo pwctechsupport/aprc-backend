@@ -4,6 +4,7 @@ module Mutations
     argument :name, String, required: true
     argument :status, Types::Enums::Status, required: false
     argument :risk_ids, [ID], required: false
+    argument :control_ids, [ID], required: false
 
 
     # return type from the mutation
