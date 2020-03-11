@@ -6,12 +6,12 @@ module Mutations
 
     argument :notif_show,Boolean, required: true
 
-    field :user, Boolean, null: false
+    field :user, Types::UserType, null: false
 
     def resolve(args)
       current_user = context[:current_user]
       user = User.find(current_user.id)
-      success = user.update(args)
+      success = user.update!(args)
       MutationResult.call(
         obj: { user: user },
         success: success,
