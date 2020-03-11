@@ -35,12 +35,9 @@ module Mutations
         enum_list = EnumList&.find_by(category_type: "Category", name: args[:category]) || EnumList&.find_by(category_type: "Category", code: args[:category])
         args[:category] = enum_list&.code
       end
-      resource=Resource.create!(args.to_h)
       
+      resource=Resource.create!(args.to_h)
       resource = Resource.find_by(name: args[:name], category: args[:category])
-      if args[:resupload_file_name].present?
-        resource.update(resupload_file_name: args[:resupload_file_name])
-      end
       if resource.category.downcase == "flowchart"
         resource.update(policy_id: nil)
         resource.update(policy_ids: nil)

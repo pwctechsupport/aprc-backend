@@ -4,14 +4,13 @@ module Mutations
   class NotifBadges < Mutations::BaseMutation
     graphql_name "NotifBadges"
 
-    argument :id, ID, required: true
     argument :notif_show,Boolean, required: true
 
     field :user, Boolean, null: false
 
     def resolve(id:, **args)
-      user = User.find(id)
-      success = user.update(args)
+      current_user = context[:current_user]
+      success = current_user.update(args)
       MutationResult.call(
         obj: { user: user },
         success: success,
