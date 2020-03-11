@@ -15,7 +15,7 @@ module Mutations
     argument :control_id, ID, required: false
     argument :business_process_id, ID, required: false 
     argument :status, Types::Enums::Status, required: false
-    argument :resuploadLink, String, as: :resupload, required: false
+    argument :resupload_link, String, required: false
 
 
 
@@ -23,8 +23,8 @@ module Mutations
     field :resource, Types::ResourceType, null: false
 
     def resolve(id:, **args)
-      if args[:resuploadLink].present?        
-        args[:resuploadLink] = URI.parse(args[:resuploadLink])
+      if args[:resupload_link].present?        
+        args[:resupload] = URI.parse(args[:resupload_link])
       end
       if args[:category].present?
         enum_list = EnumList&.find_by(category_type: "Category", name: args[:category]) || EnumList&.find_by(category_type: "Category", code: args[:category])
