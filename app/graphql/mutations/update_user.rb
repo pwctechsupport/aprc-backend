@@ -14,22 +14,17 @@ module Mutations
       argument :jobPosition, String, required: false
       argument :department, String, required: false
       argument :push_notification, Boolean, required: false
+      argument :notif_show, Boolean, required: false
   
       field :user, Types::UserType, null: false
      
       def resolve(args)
         user = context[:current_user]
-        if args[:password].present? && args[:password_confirmation].present?
-          if user.draft?
-            raise GraphQL::ExecutionError, "Draft Cannot be created until another Draft is Approved/Rejected by an Admin"
-          else
-            user.attributes = args
-            user.save_draft
-            admin = User.with_role(:admin_reviewer).pluck(:id)
-            if user.draft.present?
-              Notification.send_notification(admin, user.name, user.email, user, user.id, "request_draft")
-            end
-          end
+        
+        if args[:notif_show].present?
+          user.update!(notif_show: args[:notif_show])
+        elsif args[:password].present? && args[:password_confirmation].present?
+          user.update_attributes(args.to_h)
         end
 
         MutationResult.call(

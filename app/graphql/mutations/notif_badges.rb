@@ -11,11 +11,11 @@ module Mutations
     def resolve(args)
       current_user = context[:current_user]
       user = User.find(current_user.id)
-      success = user.update!(args)
+      user.update_attributes(args)
       MutationResult.call(
         obj: { user: user },
-        success: success,
-        errors: success
+        success: user.persisted?,
+        errors: user.errors
       )
 
     rescue ActiveRecord::RecordInvalid => invalid
