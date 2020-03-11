@@ -822,6 +822,15 @@ table .nw {
 																				<p style="font-family: Helvetica, Arial, sans-serif;font-size: 16px;line-height: 23px;color: #616161;mso-line-height-rule: exactly;display: block;margin-top: 0;margin-bottom: 16px;">Hello <strong><%= User.find(@user.notifications.last.user_id).name.titlecase%></strong>,</p>
 																				<p style="font-family: Helvetica, Arial, sans-serif;font-size: 16px;line-height: 23px;color: #616161;mso-line-height-rule: exactly;display: block;margin-top: 0;margin-bottom: 16px;"><span class="success_b" style="box-sizing: border-box;background-color:#888888;line-height: 30px;font-family: Helvetica, Arial, sans-serif;mso-line-height-rule: exactly;border-radius: 4px;text-align: center;font-weight: bold;font-size: 16px;padding: 1px 3px;text-decoration: none;color: #fff; position: relative; margin-right: 7px;"><%=@user.notifications.last.data_type.gsub("_"," ").titlecase%></span>There is a new Notification for Item <strong><em><%=@user.notifications.last.originator_type%></em></strong> with content:</p>
 																				<p style="font-family: Helvetica, Arial, sans-serif;font-size: 16px;line-height: 23px;color: #616161;mso-line-height-rule: exactly;display: block;margin-top: 0;margin-bottom: 16px; align: justify;"><%=@user.notifications.last.title%></p>
+																				<% if @user.notifications.last.data_type == "related_reference"%>
+                                          <ol type="a">
+                                            <%@user.notifications.last.body.split(", ").each do |pol|%>
+                                            
+                                              <li style="font-family: Helvetica, Arial, sans-serif;font-size: 16px; align: justify;"><%=Policy.find(pol.to_i).title%></p>
+
+                                            <%end%>
+                                          </ol>
+                                        <%end%>
 																			</td>
 																		</tr>
 																	</tbody>

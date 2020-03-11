@@ -1,0 +1,93 @@
+
+!!!
+%html
+  %head
+    %meta{:content => "text/html; charset=UTF-8", "http-equiv" => "Content-Type"}/
+    %meta{:charset => "utf-8"}/
+    %meta{:content => "IE=edge", "http-equiv" => "X-UA-Compatible"}/
+    %title Report Resource with Rating
+    :css
+      input[type=checkbox]{
+      \/* Double-sized Checkboxes */
+      \-ms-transform: scale(3.5); /* IE */
+      \-moz-transform: scale(3.5); /* FF */
+      \-webkit-transform: scale(3.5); /* Safari and Chrome */
+      \-o-transform: scale(3.5); /* Opera */
+      transform: scale(3.5);
+      padding: 1px;}
+    :css
+      .table.table-borderless {border:10px !important;}
+      .risk {margin-top:15px;}
+      hr.new5 {
+      border: 2px solid #D85604;
+      border-radius: 5px;}
+      th,td{max-width: 50%;}
+
+      
+    :css
+      .apo{font-size:13px;}
+      th{font-size:14px;}
+      td{font-size:13px;}
+      .tab{ margin-left:40px;}
+      .ape{%font-size:24px; text-align:left;}
+      .aps{font-size:36px;}
+
+    :css
+      span {position:relative; bottom:1.7px; background:#F32013; border-radius:6px; font-size:15px; color:white; font-family:Arial; text-shadow: 0.5px 0.5px black; padding:1px 5px 4px;}
+
+    %h1.text-center.aps Report Resource with Rating
+    %h2.ape 
+    
+
+      
+    
+    -# %table.table.table-border
+    -#   %thead
+    -#     %tr
+    -#       %th{:scope => "col"} Risk Name
+    -#       %th{:scope => "col"} Level of Risk
+    -#       %th{:scope => "col"} Type of Risk
+    -#       %th{:scope => "col"} Business Process
+    -#   %tbody
+    -#     %tr
+    -#       %td #{ris.name}
+    -#       %td #{ris.level_of_risk.to_s.gsub(/_/, ' ').titlecase}
+    -#       %td #{ris.type_of_risk.to_s.gsub(/_/, ' ').titlecase}
+    -#       %td #{ris.business_process.name.capitalize}
+    -# %br
+    %table.table.table-borderless
+      %thead
+        %tr
+          %th.text-center{:scope => "col"} #
+          %th.text-center{:scope => "col"} Name
+          %th.text-center{:scope => "col"} Views
+          %th.text-center{:scope => "col"} Rating
+          %th.text-center{:scope => "col"} Total Rating
+      -@resources.each_with_index do |res, i|
+        %tbody
+          %tr
+            %td.text-center{:scope => "row"} #{i+1}
+            %td.text-center #{res&.name&.titlecase&.html_safe}
+            %td.text-center #{res&.visit}
+            %td.text-center 
+              -rating_total = res&.resource_ratings&.count
+              -rating_sum =  res&.resource_ratings&.sum(:rating)
+              -rating_average = rating_sum/rating_total
+              -if rating_average.nan?
+                Not Rated
+              -else
+                #{rating_average&.round(1)}
+
+                
+            %td.text-center
+              -rating_total = res.resource_ratings.count
+              #{rating_total}
+
+    %br
+    %br
+
+
+
+
+    / %p{:style => "page-break-after:always;"}
+    / / %p{:style => "page-break-after:auto;"}

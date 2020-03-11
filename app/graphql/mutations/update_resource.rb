@@ -15,21 +15,20 @@ module Mutations
     argument :control_id, ID, required: false
     argument :business_process_id, ID, required: false 
     argument :status, Types::Enums::Status, required: false
+    argument :resupload_link, String, required: false
+
 
 
 
     field :resource, Types::ResourceType, null: false
 
     def resolve(id:, **args)
-      if args[:resupload].present?
-        url = URI.parse(args[:resupload])
-        if url.class == (URI::HTTP || URI::HTTPS)
-          args[:resupload] = URI.parse(args[:resupload])
-        end
+      if args[:resupload_link].present?        
+        args[:resupload] = URI.parse(args[:resupload_link])
       end
       if args[:category].present?
         enum_list = EnumList&.find_by(category_type: "Category", name: args[:category]) || EnumList&.find_by(category_type: "Category", code: args[:category])
-        if enum_list ==  nil
+        if enum_list ==  nil 
           kode = args[:category].gsub("_"," ").titlecase
           EnumList.create(name: args[:category], category_type: "Category", code: kode)
         end
@@ -37,7 +36,21 @@ module Mutations
         args[:category] = enum_list&.code
       end
       resource = Resource.find(id)
+      if resource.resupload.present?
+        if (!(args[:resupload].present?) || (args[:resupload].present?)) && (args[:resupload_file_name] == "resupload")
+          args.delete(:resupload_file_name)
+        elsif !(args[:resupload].present?) && (args[:resupload_file_name] != "resupload") && args[:name].present?
+          args[:resupload_file_name] = "#{args[:name]}" << resource.resource_file_type(resource)
+          resource.update_attributes(resupload: resource.resupload, resupload_file_name: args[:resupload_file_name])
+        elsif args[:resupload].present? && (args[:resupload_file_name] != "resupload") && args[:name].present?
+          args[:resupload_file_name] = "#{args[:name]}" << resource.resource_file_type(resource)
+          resource.update_attributes(resupload: args[:resupload], resupload_file_name: args[:resupload_file_name])
+        end      
+      end
+
+
       resource.update_attributes!(args.to_h)
+      
 
       MutationResult.call(
         obj: { resource: resource },

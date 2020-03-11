@@ -13,6 +13,8 @@ module Mutations
     argument :control_ids, [ID], required: false 
     argument :business_process_id, ID, required: false 
     argument :status, Types::Enums::Status, required: false
+    argument :resupload_link, String, required: false
+
     # argument :type_of_control, Types::Enums::TypeOfControl, required: true
 
 
@@ -21,12 +23,10 @@ module Mutations
     field :resource, Types::ResourceType, null: true
 
     def resolve(args)
-      if args[:resupload].present?
-        url = URI.parse(args[:resupload])
-        if url.class == (URI::HTTP || URI::HTTPS)
-          args[:resupload] = URI.parse(args[:resupload])
-        end
+      if args[:resupload_link].present?        
+        args[:resupload] = URI.parse(args[:resupload_link])
       end
+      
       if args[:category].present?
         enum_list = EnumList&.find_by(category_type: "Category", name: args[:category]) || EnumList&.find_by(category_type: "Category", code: args[:category])
         if enum_list ==  nil
@@ -36,7 +36,13 @@ module Mutations
         enum_list = EnumList&.find_by(category_type: "Category", name: args[:category]) || EnumList&.find_by(category_type: "Category", code: args[:category])
         args[:category] = enum_list&.code
       end
+
+      
       resource=Resource.create!(args.to_h)
+      if args[:resupload].present?
+        args[:resupload_file_name] = "#{args[:name]}" << resource.resource_file_type(resource)
+        resource.update_attributes(resupload: args[:resupload], resupload_file_name: args[:resupload_file_name])
+      end
       resource = Resource.find_by(name: args[:name], category: args[:category])
       if resource.category.downcase == "flowchart"
         resource.update(policy_id: nil)

@@ -1,0 +1,20 @@
+
+wb = xlsx_package.workbook
+
+
+wb.add_worksheet(name: "Report Resource Rating") do |sheet|
+  # Create the header row
+  sheet.add_row ["name", "views", "rating", "total rating"]
+  # Create entries for each item
+  @resources.each do |resource|
+    rating_total = resource.resource_ratings.count
+    rating_sum =  resource.resource_ratings.sum(:rating)
+    rating_average = rating_sum/rating_total
+    rating_round = rating_average.round(1)
+    if rating_average.nan?
+      sheet.add_row [resource&.name, resource&.visit, "Not Rated", rating_total]
+    else
+      sheet.add_row [resource&.name, resource&.visit, rating_round, rating_total]
+    end
+  end
+end

@@ -85,6 +85,7 @@ module Types
     field :update_enum_list, mutation: Mutations::UpdateEnumList
     field :destroy_enum_list, mutation: Mutations::DestroyEnumList
     field :push_notification, mutation: Mutations::PushNotification
+    field :notif_badges, mutation: Mutations::NotifBadges
 
 
     
