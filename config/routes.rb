@@ -40,6 +40,7 @@ Rails.application.routes.draw do
         get 'report_risk', to: "prints#report_risk", as: :report_risk
         get 'report_risk_policy', to: "prints#report_risk_policy", as: :report_risk_policy
         get 'report_control_policy', to: "prints#report_control_policy", as: :report_control_policy
+        get 'unmapped_risk_control', to: "prints#unmapped_risk_control", as: :unmapped_risk_control
         get 'report_resource_rating', to: "prints#report_resource_rating", as: :report_resource_rating
         get 'business_process_excel', to: "prints#business_process_excel", as: :business_process_excel
         get 'risk_excel', to: "prints#risk_excel", as: :risk_excel

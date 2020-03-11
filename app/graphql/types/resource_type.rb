@@ -23,6 +23,7 @@ module Types
     field :updated_at, String, null: false
     field :tags, [Types::TagType], null: true
     field :enum_list, Types::EnumListType, null: true
+    field :resupload_link, String, null: true
 
     def enum_list
       enum_list = EnumList.find_by(code: object&.category)
