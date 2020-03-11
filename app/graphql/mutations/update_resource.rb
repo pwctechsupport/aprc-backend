@@ -37,9 +37,7 @@ module Mutations
       end
       resource = Resource.find(id)
       resource.update_attributes!(args.to_h)
-      if args[:resupload_file_name].present?
-        resource.update(resupload_file_name: args[:resupload_file_name])
-      end
+      
 
       MutationResult.call(
         obj: { resource: resource },
