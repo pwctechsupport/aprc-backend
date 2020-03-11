@@ -72,17 +72,32 @@ module Api
       end
     end
 
-    def unmapped_risk_control
+    def unmapped_risk
       @tags = Tag.all
       respond_to do |format|
         format.json
         format.pdf do
-          render pdf: 'unmapped_risk_control', layout: 'layouts/pdf.haml', template: 'api/prints/unmapped_risk_control.pdf.haml', dpi: 300, show_as_html: params.key?('debug'), javascript_delay: 3000, margin: {top: 10, bottom: 20, left: 15, right: 15 }, outline: {outline: true, outline_depth: 10 }, footer: {html: {template:'shared/_pdf_footer'}}
+          render pdf: 'unmapped_risk', layout: 'layouts/pdf.haml', template: 'api/prints/unmapped_risk.pdf.haml', dpi: 300, show_as_html: params.key?('debug'), javascript_delay: 3000, margin: {top: 10, bottom: 20, left: 15, right: 15 }, outline: {outline: true, outline_depth: 10 }, footer: {html: {template:'shared/_pdf_footer'}}
         end
         format.xlsx {
           response.headers[
             'Content-Disposition'
-          ] = "attachment; filename=unmapped_risk_control.xlsx"
+          ] = "attachment; filename=unmapped_risk.xlsx"
+        }
+      end
+    end
+
+    def unmapped_control
+      @tags = Tag.all
+      respond_to do |format|
+        format.json
+        format.pdf do
+          render pdf: 'unmapped_control', layout: 'layouts/pdf.haml', template: 'api/prints/unmapped_control.pdf.haml', dpi: 300, show_as_html: params.key?('debug'), javascript_delay: 3000, margin: {top: 10, bottom: 20, left: 15, right: 15 }, outline: {outline: true, outline_depth: 10 }, footer: {html: {template:'shared/_pdf_footer'}}
+        end
+        format.xlsx {
+          response.headers[
+            'Content-Disposition'
+          ] = "attachment; filename=unmapped_control.xlsx"
         }
       end
     end
