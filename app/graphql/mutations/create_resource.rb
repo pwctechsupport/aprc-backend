@@ -38,11 +38,20 @@ module Mutations
       end
 
       
-      resource=Resource.create!(args.to_h)
+      resource=Resource.new(args)
+      resource&.save_draft
       if args[:resupload].present?
         args[:resupload_file_name] = "#{args[:name]}" << resource.resource_file_type(resource)
         resource.update_attributes(resupload: args[:resupload], resupload_file_name: args[:resupload_file_name])
       end
+      admin = User.with_role(:admin_reviewer).pluck(:id)
+      if resource.id.present?
+        Notification.send_notification(admin, resource&.name, resource&.category,resource, current_user&.id, "request_draft")
+      else
+        raise GraphQL::ExecutionError, "The exact same draft cannot be duplicated"
+      end
+
+      
       resource = Resource.find_by(name: args[:name], category: args[:category])
       if resource.category.downcase == "flowchart"
         resource.update(policy_id: nil)

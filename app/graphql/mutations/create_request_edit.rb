@@ -54,6 +54,15 @@ module Mutations
           admin = User.with_role(:admin_reviewer).pluck(:id)
           Notification.send_notification(admin, policy_category.name, "Request Edit Policy Category", policy_category, current_user.id, "request_edit")
         end
+      when "Resource"
+        resource = Resource.find(args[:originator_id])
+        if resource.request_edit.present? && resource.request_edit.requested?
+          raise GraphQL::ExecutionError, "Request not permitted. Another Request exist"
+        else
+          request_edit = RequestEdit.create!(args.to_h)
+          admin = User.with_role(:admin_reviewer).pluck(:id)
+          Notification.send_notification(admin, resource.name, "Request Edit Resource", resource, current_user.id, "request_edit")
+        end
       end
       # request_edit = current_user.request_edit_risks.create!(args.to_h)
       MutationResult.call(

@@ -23,6 +23,8 @@ class Control < ApplicationRecord
   accepts_nested_attributes_for :activity_controls, allow_destroy: true
   belongs_to :user_reviewer, class_name: "User", foreign_key:"user_reviewer_id", optional: true
   has_many :request_edits, class_name: "RequestEdit", as: :originator, dependent: :destroy
+  has_many :tags, dependent: :destroy
+
   def to_humanize
     "#{self.control_owner} : #{self.description}"
   end

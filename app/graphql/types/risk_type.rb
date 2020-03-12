@@ -19,6 +19,7 @@ module Types
     field :request_status, String, null: true
     field :request_edits, [Types::RequestEditType], null: true
     field :request_edit, Types::RequestEditType, null: true
+    field :tags, [Types::TagType], null: true
     
 
     def request_edit
