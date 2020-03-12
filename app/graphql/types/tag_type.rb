@@ -12,5 +12,7 @@ module Types
     field :image_name, String, null: true
     field :created_at, String, null: false
     field :updated_at, String, null: false
+    field :control, Types::ControlType, null: true
+    field :risk, Types::RiskType, null: true
   end
 end
