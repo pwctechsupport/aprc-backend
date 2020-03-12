@@ -1,6 +1,7 @@
 class Resource < ApplicationRecord
   validates :name, uniqueness: true
   has_paper_trail ignore: [:visit]
+  has_drafts
   belongs_to :policy, optional: true
   belongs_to :control, optional: true
   has_many :policy_resources, dependent: :destroy
@@ -17,9 +18,16 @@ class Resource < ApplicationRecord
   has_many :resource_ratings
   has_many :tags, dependent: :destroy
   has_many :enum_lists, dependent: :destroy
+  has_many :request_edits, class_name: "RequestEdit", as: :originator, dependent: :destroy
+  belongs_to :user_reviewer, class_name: "User", foreign_key:"user_reviewer_id", optional: true
+
 
   def to_humanize
     "#{self.name} : #{self.resupload_file_name}"
+  end
+
+  def request_edit
+    request_edits.last
   end
   
   def resupload_remote_url=(url_value)
