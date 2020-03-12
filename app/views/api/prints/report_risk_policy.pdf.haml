@@ -13,9 +13,6 @@
   %body
     %center
       %h2 Report Risk without Control
-  -@risks.each_with_index do |ris,u|
-    -if ris.policies.present?
-      %h2=ris.name.html_safe
       %table.table.table-borderless
         %thead
           %tr
@@ -25,20 +22,54 @@
             %th.text-center.apo{:scope => "col"} Type of Risk
             %th.text-center.apo{:scope => "col"} Business Processes
             %th.text-center.apo{:scope => "col"} Related Policy
-        -ris.policies.each_with_index do |pol,i|
-          %tbody
-            %tr
-              %td.text-center{:scope => "row"} #{i+1}
-              %td.text-center.ape #{ris.name.to_s.gsub(/[^0-9A-Za-z]/, ' ').titlecase.html_safe}
-              %td.text-center.apo #{ris.level_of_risk.to_s.gsub(/[^0-9A-Za-z]/, ' ').titlecase.html_safe}
-              %td.text-center.apo #{ris.type_of_risk.to_s.gsub(/[^0-9A-Za-z]/, ' ').titlecase.html_safe}
-              %td.text-center.apo
-                %ul
-                  -ris.business_processes.each do |bus|
-                    %li=bus&.name&.titlecase
-              %td.text-center.apo
-                %ul
-                  %li=pol&.title&.titlecase&.html_safe
+        -z = 1
+        -@risks.each do |ris| 
+          -if ris.business_processes.present?
+            -ris&.business_processes.each do |bus|
+              -if ris.policies.present?
+                -ris.policies.each do |pol|
+                  %tbody
+                    %tr
+                      %td.text-center{:scope => "row"} #{z}
+                      %td.text-center.ape #{ris.name.to_s.gsub(/[^0-9A-Za-z]/, ' ').titlecase.html_safe}
+                      %td.text-center.apo #{ris.level_of_risk.to_s.gsub(/[^0-9A-Za-z]/, ' ').titlecase.html_safe}
+                      %td.text-center.apo #{ris.type_of_risk.to_s.gsub(/[^0-9A-Za-z]/, ' ').titlecase.html_safe}
+                      %td.text-center.apo #{bus&.name&.titlecase}
+                      %td.text-center.apo #{pol&.title&.titlecase&.html_safe}
+                      -z+=1
+              -else
+                %tbody
+                  %tr
+                    %td.text-center{:scope => "row"} #{z}
+                    %td.text-center.ape #{ris.name.to_s.gsub(/[^0-9A-Za-z]/, ' ').titlecase.html_safe}
+                    %td.text-center.apo #{ris.level_of_risk.to_s.gsub(/[^0-9A-Za-z]/, ' ').titlecase.html_safe}
+                    %td.text-center.apo #{ris.type_of_risk.to_s.gsub(/[^0-9A-Za-z]/, ' ').titlecase.html_safe}
+                    %td.text-center.apo #{bus&.name&.titlecase}
+                    %td.text-center.apo No Related Policies
+                    -z+=1
+          -else
+            -if ris.policies.present?
+              -ris.policies.each do |pol|
+                %tbody
+                  %tr
+                    %td.text-center{:scope => "row"} #{z}
+                    %td.text-center.ape #{ris.name.to_s.gsub(/[^0-9A-Za-z]/, ' ').titlecase.html_safe}
+                    %td.text-center.apo #{ris.level_of_risk.to_s.gsub(/[^0-9A-Za-z]/, ' ').titlecase.html_safe}
+                    %td.text-center.apo #{ris.type_of_risk.to_s.gsub(/[^0-9A-Za-z]/, ' ').titlecase.html_safe}
+                    %td.text-center.apo No Business Process
+                    %td.text-center.apo #{pol&.title&.titlecase&.html_safe}
+                    -z+=1
+            -else
+              %tbody
+                %tr
+                  %td.text-center{:scope => "row"} #{z}
+                  %td.text-center.ape #{ris.name.to_s.gsub(/[^0-9A-Za-z]/, ' ').titlecase.html_safe}
+                  %td.text-center.apo #{ris.level_of_risk.to_s.gsub(/[^0-9A-Za-z]/, ' ').titlecase.html_safe}
+                  %td.text-center.apo #{ris.type_of_risk.to_s.gsub(/[^0-9A-Za-z]/, ' ').titlecase.html_safe}
+                  %td.text-center.apo No Business Process
+                  %td.text-center.apo No Related Policies
+                  -z+=1
+
       %p{:style => "page-break-after:always;"}
       %p{:style => "page-break-after:auto;"}
 

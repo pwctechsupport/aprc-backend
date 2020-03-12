@@ -40,47 +40,169 @@
     
 
     %hr.new5
-    -@controls.each_with_index do |con, x|
+    
+    -# %table.table.table-border
+    -#   %thead
+    -#     %tr
+    -#       %th{:scope => "col"} Risk Name
+    -#       %th{:scope => "col"} Level of Risk
+    -#       %th{:scope => "col"} Type of Risk
+    -#       %th{:scope => "col"} Business Process
+    -#   %tbody
+    -#     %tr
+    -#       %td #{ris.name}
+    -#       %td #{ris.level_of_risk.to_s.gsub(/_/, ' ').titlecase}
+    -#       %td #{ris.type_of_risk.to_s.gsub(/_/, ' ').titlecase}
+    -#       %td #{ris.business_process.name.capitalize}
+    -# %br
 
-      -if con.policies.present? == false
-      
-      -else  
-        %ul
-          %li
-            %h3 
-              #{con&.description&.titlecase}
-        -# %table.table.table-border
-        -#   %thead
-        -#     %tr
-        -#       %th{:scope => "col"} Risk Name
-        -#       %th{:scope => "col"} Level of Risk
-        -#       %th{:scope => "col"} Type of Risk
-        -#       %th{:scope => "col"} Business Process
-        -#   %tbody
-        -#     %tr
-        -#       %td #{ris.name}
-        -#       %td #{ris.level_of_risk.to_s.gsub(/_/, ' ').titlecase}
-        -#       %td #{ris.type_of_risk.to_s.gsub(/_/, ' ').titlecase}
-        -#       %td #{ris.business_process.name.capitalize}
-        -# %br
-        %table.table.table-borderless
-          %thead
-            %tr
-              %th.text-center{:scope => "col"} #
-              %th.text-center{:scope => "col"} Type of Control
-              %th.text-center{:scope => "col"} Control Owner
-              %th.text-center{:scope => "col"} Frequency
-              %th.text-center{:scope => "col"} Nature
-              %th.text-center{:scope => "col"} Assertion
-              %th.text-center{:scope => "col"} Ipo
-              %th.text-center{:scope => "col"} Status
-              %th.text-center{:scope => "col"} Related Policy
-              %th.text-center{:scope => "col"} Business Process 
-              %th.text-center{:scope => "col"} Key Control
-          -con.policies.each_with_index do |pol,i|
+    %table.table.table-borderless
+      %thead
+        %tr
+          %th.text-center{:scope => "col"} #
+          %th.text-center{:scope => "col"} Description
+          %th.text-center{:scope => "col"} Type of Control
+          %th.text-center{:scope => "col"} Control Owner
+          %th.text-center{:scope => "col"} Frequency
+          %th.text-center{:scope => "col"} Nature
+          %th.text-center{:scope => "col"} Assertion
+          %th.text-center{:scope => "col"} Ipo
+          %th.text-center{:scope => "col"} Status
+          %th.text-center{:scope => "col"} Related Policy
+          %th.text-center{:scope => "col"} Business Process 
+          %th.text-center{:scope => "col"} Key Control
+      -z = 1
+      -@controls.each do |con|
+        -if con.business_processes.present?
+          -con&.business_processes.each do |bis|
+            -if con.policies.present?
+              -con.policies.each do |pol|
+                %tbody
+                  %tr
+                    %td.text-center{:scope => "row"} #{z}
+                    %td.text-center{:scope => "row"} #{con&.description&.titlecase&.html_safe}
+                    %td.text-center #{con.type_of_control.to_s.gsub(/[^0-9A-Za-z]/, ' ').titlecase.html_safe}
+                    %td.text-center #{con.control_owner.to_s.gsub(/[^0-9A-Za-z]/, ' ').titlecase.html_safe}
+                    %td.text-center #{con.frequency.to_s.gsub(/[^0-9A-Za-z]/, ' ').titlecase.html_safe}
+                    %td.text-center #{con.nature.to_s.gsub(/[^0-9A-Za-z]/, ' ').titlecase.html_safe}
+                    %td
+                      -if con.assertion.count > 1
+                        .apo  
+                          %ul
+                            -con.assertion.each do |cop|
+                              %li=cop.to_s.gsub(/[^0-9A-Za-z]/, ' ').titlecase
+                      -elsif con.assertion.count == 1
+                        %ul
+                          %li=con.assertion.to_s.gsub(/[^0-9A-Za-z]/, ' ').titlecase
+                    %td
+                      -if con.ipo.count > 1
+                        .apo  
+                          %ul
+                            -con.ipo.each do |cop|
+                              %li=cop.to_s.gsub(/[^0-9A-Za-z]/, ' ').titlecase
+                      -elsif con.ipo.count == 1
+                        %ul
+                          %li=con.ipo.to_s.gsub(/[^0-9A-Za-z]/, ' ').titlecase
+                    %td.text-center #{con.status.to_s.gsub(/[^0-9A-Za-z]/, ' ').titlecase}
+                    %td.text-center #{pol&.title&.titlecase&.html_safe}
+                    %td.text-center #{bis&.name}
+                    %td 
+                      -if con&.key_control == true
+                        .risk.text-center
+                          %input#checkboxG5.css-checkbox{:checked => "checked", :name => "checkboxG5", :type => "checkbox"}/
+                          %label.css-label{:for => "checkboxG5"}
+                      -else
+                        .risk.text-center
+                          %input#checkboxG4.css-checkbox{:name => "checkboxG4", :type => "checkbox"}/
+                          %label.css-label{:for => "checkboxG4"}
+                    -z+=1
+            -else
+              %tbody
+                %tr
+                  %td.text-center{:scope => "row"} #{z}
+                  %td.text-center{:scope => "row"} #{con&.description&.titlecase&.html_safe}
+                  %td.text-center #{con.type_of_control.to_s.gsub(/[^0-9A-Za-z]/, ' ').titlecase.html_safe}
+                  %td.text-center #{con.control_owner.to_s.gsub(/[^0-9A-Za-z]/, ' ').titlecase.html_safe}
+                  %td.text-center #{con.frequency.to_s.gsub(/[^0-9A-Za-z]/, ' ').titlecase.html_safe}
+                  %td.text-center #{con.nature.to_s.gsub(/[^0-9A-Za-z]/, ' ').titlecase.html_safe}
+                  %td
+                    -if con.assertion.count > 1
+                      .apo  
+                        %ul
+                          -con.assertion.each do |cop|
+                            %li=cop.to_s.gsub(/[^0-9A-Za-z]/, ' ').titlecase
+                    -elsif con.assertion.count == 1
+                      %ul
+                        %li=con.assertion.to_s.gsub(/[^0-9A-Za-z]/, ' ').titlecase
+                  %td
+                    -if con.ipo.count > 1
+                      .apo  
+                        %ul
+                          -con.ipo.each do |cop|
+                            %li=cop.to_s.gsub(/[^0-9A-Za-z]/, ' ').titlecase
+                    -elsif con.ipo.count == 1
+                      %ul
+                        %li=con.ipo.to_s.gsub(/[^0-9A-Za-z]/, ' ').titlecase
+                  %td.text-center #{con.status.to_s.gsub(/[^0-9A-Za-z]/, ' ').titlecase}
+                  %td.text-center No Related Policies
+                  %td.text-center #{bis&.name}
+                  %td 
+                    -if con&.key_control == true
+                      .risk.text-center
+                        %input#checkboxG5.css-checkbox{:checked => "checked", :name => "checkboxG5", :type => "checkbox"}/
+                        %label.css-label{:for => "checkboxG5"}
+                    -else
+                      .risk.text-center
+                        %input#checkboxG4.css-checkbox{:name => "checkboxG4", :type => "checkbox"}/
+                        %label.css-label{:for => "checkboxG4"}
+                  -z+=1
+        -else
+          -if con.policies.present?
+            -con.policies.each do |pol|
+              %tbody
+                %tr
+                  %td.text-center{:scope => "row"} #{z}
+                  %td.text-center{:scope => "row"} #{con&.description&.titlecase&.html_safe}
+                  %td.text-center #{con.type_of_control.to_s.gsub(/[^0-9A-Za-z]/, ' ').titlecase.html_safe}
+                  %td.text-center #{con.control_owner.to_s.gsub(/[^0-9A-Za-z]/, ' ').titlecase.html_safe}
+                  %td.text-center #{con.frequency.to_s.gsub(/[^0-9A-Za-z]/, ' ').titlecase.html_safe}
+                  %td.text-center #{con.nature.to_s.gsub(/[^0-9A-Za-z]/, ' ').titlecase.html_safe}
+                  %td
+                    -if con.assertion.count > 1
+                      .apo  
+                        %ul
+                          -con.assertion.each do |cop|
+                            %li=cop.to_s.gsub(/[^0-9A-Za-z]/, ' ').titlecase
+                    -elsif con.assertion.count == 1
+                      %ul
+                        %li=con.assertion.to_s.gsub(/[^0-9A-Za-z]/, ' ').titlecase
+                  %td
+                    -if con.ipo.count > 1
+                      .apo  
+                        %ul
+                          -con.ipo.each do |cop|
+                            %li=cop.to_s.gsub(/[^0-9A-Za-z]/, ' ').titlecase
+                    -elsif con.ipo.count == 1
+                      %ul
+                        %li=con.ipo.to_s.gsub(/[^0-9A-Za-z]/, ' ').titlecase
+                  %td.text-center #{con.status.to_s.gsub(/[^0-9A-Za-z]/, ' ').titlecase}
+                  %td.text-center #{pol&.title&.titlecase&.html_safe}
+                  %td.text-center No Business Process
+                  %td 
+                    -if con&.key_control == true
+                      .risk.text-center
+                        %input#checkboxG5.css-checkbox{:checked => "checked", :name => "checkboxG5", :type => "checkbox"}/
+                        %label.css-label{:for => "checkboxG5"}
+                    -else
+                      .risk.text-center
+                        %input#checkboxG4.css-checkbox{:name => "checkboxG4", :type => "checkbox"}/
+                        %label.css-label{:for => "checkboxG4"}
+                  -z+=1
+          -else
             %tbody
               %tr
-                %td.text-center{:scope => "row"} #{i+1}
+                %td.text-center{:scope => "row"} #{z}
+                %td.text-center{:scope => "row"} #{con&.description&.titlecase&.html_safe}
                 %td.text-center #{con.type_of_control.to_s.gsub(/[^0-9A-Za-z]/, ' ').titlecase.html_safe}
                 %td.text-center #{con.control_owner.to_s.gsub(/[^0-9A-Za-z]/, ' ').titlecase.html_safe}
                 %td.text-center #{con.frequency.to_s.gsub(/[^0-9A-Za-z]/, ' ').titlecase.html_safe}
@@ -91,7 +213,7 @@
                       %ul
                         -con.assertion.each do |cop|
                           %li=cop.to_s.gsub(/[^0-9A-Za-z]/, ' ').titlecase
-                  -else
+                  -elsif con.assertion.count == 1
                     %ul
                       %li=con.assertion.to_s.gsub(/[^0-9A-Za-z]/, ' ').titlecase
                 %td
@@ -100,18 +222,12 @@
                       %ul
                         -con.ipo.each do |cop|
                           %li=cop.to_s.gsub(/[^0-9A-Za-z]/, ' ').titlecase
-                  -else
+                  -elsif con.ipo.count == 1
                     %ul
                       %li=con.ipo.to_s.gsub(/[^0-9A-Za-z]/, ' ').titlecase
                 %td.text-center #{con.status.to_s.gsub(/[^0-9A-Za-z]/, ' ').titlecase}
-                %td.text-center #{pol&.title&.titlecase&.html_safe}
-                %td.text-center
-                  -if con.business_processes.count > 3
-                    -con.business_processes.each do |bus|
-                      %ul
-                        %li=bus.name.titlecase
-                  -else 
-                    -con.business_processes.pluck(:name).join(", ")
+                %td.text-center No Related Policies
+                %td.text-center No Business Process
                 %td 
                   -if con&.key_control == true
                     .risk.text-center
@@ -121,11 +237,13 @@
                     .risk.text-center
                       %input#checkboxG4.css-checkbox{:name => "checkboxG4", :type => "checkbox"}/
                       %label.css-label{:for => "checkboxG4"}
-        %br
-        %br
+                -z+=1
+    %br
+    %br
 
-  
 
 
-      / %p{:style => "page-break-after:always;"}
-      / / %p{:style => "page-break-after:auto;"}
+
+  / %p{:style => "page-break-after:always;"}
+  / / %p{:style => "page-break-after:auto;"}
+

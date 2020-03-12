@@ -72,7 +72,8 @@
           %th.text-center{:scope => "col"} Business Process 
           %th.text-center{:scope => "col"} Key Control
       -collect_risk=[]
-      -ris = @tags.pluck(:business_process_id).map{|x| BusinessProcess.find(x).controls.pluck(:id)}.flatten.group_by(&:itself).reject{|k,v|v.count>1}.keys
+      -ris = @tags.pluck(:control_id).group_by(&:itself).reject{|k,v| v.count>1}.keys
+      -ris.reject!{|x| x == nil} if ris.count(nil) >= 1
       -ris.each_with_index do |ras,i|
         -con = Control.find(ras)
         -if con.business_processes.present?
