@@ -8,7 +8,7 @@ module Resolvers
 
       def resolve(filter:, page: nil, limit: nil)
         current_user = context[:current_user]
-        @q = Tag.where(user_id: current_user.id).ransack(filter.as_json)
+        @q = Tag.ransack(filter.as_json)
         @q.result.page(page).per(limit)
       end
     end
