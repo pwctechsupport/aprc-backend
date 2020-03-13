@@ -20,6 +20,15 @@ module Types
     field :request_edits, [Types::RequestEditType], null: true
     field :request_edit, Types::RequestEditType, null: true
     field :tags, [Types::TagType], null: true
+    field :resource_tags, [Types::TagType], null: true
+
+    def resource_tags
+      if object.class == Hash
+        empty = []
+      else
+        object.tags
+      end  
+    end
     
 
     def request_edit
