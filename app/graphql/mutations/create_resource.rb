@@ -23,8 +23,21 @@ module Mutations
     field :resource, Types::ResourceType, null: true
 
     def resolve(args)
-      if args[:resupload_link].present?        
-        args[:resupload] = URI.parse(args[:resupload_link])
+
+      if args[:resupload_link].present?
+        url = URI.parse(args[:resupload_link])
+        http = Net::HTTP.new(url.host, url.port)
+        http.use_ssl = (url.scheme == "https")
+
+        http.start do |http|
+          if http.head(url.request_uri)['Content-Type'].include? "text/html"
+            if args[:resupload_file_name].present?
+              args.delete(:resupload_file_name)
+            end
+          else
+            args[:resupload] = URI.parse(args[:resupload_link])
+          end
+        end 
       end
       
       if args[:category].present?
@@ -46,6 +59,7 @@ module Mutations
       end
       admin = User.with_role(:admin_reviewer).pluck(:id)
       if resource.id.present?
+        current_user = context[:current_user]
         Notification.send_notification(admin, resource&.name, resource&.category,resource, current_user&.id, "request_draft")
       else
         raise GraphQL::ExecutionError, "The exact same draft cannot be duplicated"

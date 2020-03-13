@@ -13,6 +13,7 @@ module Mutations
 
       if current_user.present? && current_user.has_role?(:admin_reviewer)
         risk_draft = risk.draft
+        admin_prep = User.with_role(:admin_preparer)
         if args[:publish] === true
           if risk.user_reviewer_id.present? && (risk.user_reviewer_id != current_user.id)
             raise GraphQL::ExecutionError, "This Draft has been reviewed by another Admin."
@@ -20,16 +21,20 @@ module Mutations
             risk_draft.publish!
             risk.update(user_reviewer_id: current_user.id)
             risk.update(status: "release" )
+            Notification.send_notification(admin_prep, "Risk Draft named #{risk&.name} Approved", risk&.name,risk, current_user&.id, "request_draft_approved")
           else
             risk_draft.publish!
             risk.update(user_reviewer_id: current_user.id)
             risk.update(status: "release" )
+            Notification.send_notification(admin_prep, "Risk Draft named #{risk&.name} Approved", risk&.name,risk, current_user&.id, "request_draft_approved")
           end
         else
           if risk.user_reviewer_id.present? && (risk.user_reviewer_id != current_user.id)
             raise GraphQL::ExecutionError, "This Draft has been reviewed by another Admin."
+          else
+            Notification.send_notification(admin_prep, "Risk Draft named #{risk&.name} Rejected", risk&.name,risk, current_user&.id, "request_draft_rejected")
+            risk_draft.revert!
           end
-          risk_draft.revert!
         end 
       else
         raise GraphQL::ExecutionError, "User is not an Admin."

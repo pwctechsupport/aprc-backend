@@ -29,9 +29,22 @@ module Mutations
         if resource.draft?
           raise GraphQL::ExecutionError, "Draft Cannot be created until another Draft is Approved/Rejected by an Admin"
         else
-          if args[:resupload_link].present?        
-            args[:resupload] = URI.parse(args[:resupload_link])
+          if args[:resupload_link].present?
+            url = URI.parse(args[:resupload_link])
+            http = Net::HTTP.new(url.host, url.port)
+            http.use_ssl = (url.scheme == "https")
+
+            http.start do |http|
+              if http.head(url.request_uri)['Content-Type'].include? "text/html"
+                if args[:resupload_file_name].present?
+                  args.delete(:resupload_file_name)
+                end
+              else
+                args[:resupload] = URI.parse(args[:resupload_link])
+              end
+            end 
           end
+
           if args[:category].present?
             enum_list = EnumList&.find_by(category_type: "Category", name: args[:category]) || EnumList&.find_by(category_type: "Category", code: args[:category])
             if enum_list ==  nil 
