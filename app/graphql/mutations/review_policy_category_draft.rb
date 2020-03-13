@@ -13,21 +13,27 @@ module Mutations
 
       if current_user.present? && current_user.has_role?(:admin_reviewer)
         policy_category_draft = policy_category.draft
+        admin_prep = User.with_role(:admin_preparer).pluck(:id)
         if args[:publish] === true
           if policy_category.user_reviewer_id.present? && (policy_category.user_reviewer_id != current_user.id)
             raise GraphQL::ExecutionError, "This Draft has been reviewed by another Admin."
           elsif !policy_category.user_reviewer_id.present?
             policy_category_draft.publish!
             policy_category.update(user_reviewer_id: current_user.id)
+            Notification.send_notification(admin_prep, "Policy Category Draft named #{policy_category.name} Approved", policy_category&.name,policy, current_user&.id, "request_draft_approved")
           else
             policy_category_draft.publish!
             policy_category.update(user_reviewer_id: current_user.id)
+            Notification.send_notification(admin_prep, "Policy Category Draft named #{policy_category.name} Approved", policy_category&.name,policy, current_user&.id, "request_draft_approved")
           end
+
         else
           if policy_category.user_reviewer_id.present? && (policy_category.user_reviewer_id != current_user.id)
             raise GraphQL::ExecutionError, "This Draft has been reviewed by another Admin."
+          else
+            Notification.send_notification(admin_prep, "Policy Category Draft named #{policy_category.name} Rejected", policy_category&.name,policy, current_user&.id, "request_draft_rejected")
+            policy_category_draft.revert!
           end
-          policy_category_draft.revert!
         end 
       else
         raise GraphQL::ExecutionError, "User is not an Admin."
