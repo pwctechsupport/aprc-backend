@@ -40,12 +40,11 @@ class Resource < ApplicationRecord
     allowed_attributes = ["name", "category", "status", "related control", "related policy"]
     header = spreadsheet.row(1)
     (2..spreadsheet.last_row).each do |i|
-      
       row = Hash[[header, spreadsheet.row(i)].transpose]
-      if row["related policy"].class == (Integer || Fixnum || Bignum)
-        resource_id = Resource.create(name: row["name"], category: row["category"], control_ids: [row["related control"]], policy_ids: row["related policy"])
-      else
+      if row["related policy"].class === String
         resource_id = Resource.create(name: row["name"], category: row["category"], control_ids: [row["related control"]], policy_ids: row["related policy"]&.split("|"))     
+      else 
+        resource_id = Resource.create(name: row["name"], category: row["category"], control_ids: [row["related control"]], policy_ids: row["related policy"])
       end
     end
   end

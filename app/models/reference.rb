@@ -14,18 +14,7 @@ class Reference < ApplicationRecord
     header = spreadsheet.row(1)
     (2..spreadsheet.last_row).each do |i|
       row = Hash[[header, spreadsheet.row(i)].transpose]
-      if row["related policy"].class == (Integer || Fixnum || Bignum)
-        lovar= row["name"].count "#"
-        if lovar >= 1
-          refa= row["name"].gsub('#','')
-          refu = '#' << refa 
-          reference_id = Reference&.create(name: refu,policy_ids: row["related policy"])
-        elsif lovar < 1
-          refu = '#' << row["name"]
-          reference_id = Reference&.create(name: refu,policy_ids: row["related policy"])
-        end
-      
-      else
+      if row["related policy"].class === String
         lovar= row["name"].count "#"
         if lovar >= 1
           refa= row["name"].gsub('#','')
@@ -34,6 +23,16 @@ class Reference < ApplicationRecord
         elsif lovar < 1
           refu = '#' << row["name"] 
           reference_id = Reference&.create(name: refu,policy_ids: row["related policy"]&.split("|"))
+        end
+      else
+        lovar= row["name"].count "#"
+        if lovar >= 1
+          refa= row["name"].gsub('#','')
+          refu = '#' << refa
+          reference_id = Reference&.create(name: refu,policy_ids: row["related policy"])
+        elsif lovar < 1
+          refu = '#' << row["name"]
+          reference_id = Reference&.create(name: refu,policy_ids: row["related policy"])
         end
       end
     end
