@@ -1,5 +1,5 @@
 class UserPushMailer < ApplicationMailer
-  default :from => 'pwcrubyhuser@gmail.com'
+  default :from => 'noreply.notagain@gmail.com'
 
   def push_notif_email(user)
     @user = user

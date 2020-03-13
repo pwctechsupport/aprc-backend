@@ -35,12 +35,16 @@ module Mutations
               Notification.send_notification_to_all(admin ,"#{polisi.title} with #{r.name} has been updated. Consider review for other related policies with #{r.name} i.e.:","#{nama}",policy, current_user&.id, "related_reference" ) 
               #{polisi.title} with #{r.name} has been updated. Consider review other related policies with #{r.name} #{nama}. 
             end
+          else
+            Notification.send_notification(admin_prep, "Policy Draft titled #{policy.title} Approved", policy&.description,policy, current_user&.id, "request_draft_approved")
           end
         else
           if policy.user_reviewer_id.present? && (policy.user_reviewer_id != current_user.id)
             raise GraphQL::ExecutionError, "This Draft has been reviewed by another Admin."
+          else
+            Notification.send_notification(admin_prep, "Policy Draft titled #{policy.title} Has been Rejected", policy&.description, current_user&.id, "request_draft_rejected")
+            policy_draft.revert!
           end
-          policy_draft.revert!
         end 
       else
         raise GraphQL::ExecutionError, "User is not an Admin."

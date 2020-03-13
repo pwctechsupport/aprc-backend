@@ -1,6 +1,7 @@
 class Resource < ApplicationRecord
   validates :name, uniqueness: true
   has_paper_trail ignore: [:visit]
+  has_drafts
   belongs_to :policy, optional: true
   belongs_to :control, optional: true
   has_many :policy_resources, dependent: :destroy
@@ -16,10 +17,15 @@ class Resource < ApplicationRecord
   belongs_to :business_process, optional: true, class_name: "BusinessProcess", foreign_key: "business_process_id"
   has_many :resource_ratings
   has_many :tags, dependent: :destroy
-  has_many :enum_lists, dependent: :destroy
+  has_many :request_edits, class_name: "RequestEdit", as: :originator, dependent: :destroy
+  belongs_to :user_reviewer, class_name: "User", foreign_key:"user_reviewer_id", optional: true
 
   def to_humanize
     "#{self.name} : #{self.resupload_file_name}"
+  end
+
+  def request_edit
+    request_edits.last
   end
   
   def resupload_remote_url=(url_value)
@@ -32,12 +38,11 @@ class Resource < ApplicationRecord
     allowed_attributes = ["name", "category", "status", "related control", "related policy"]
     header = spreadsheet.row(1)
     (2..spreadsheet.last_row).each do |i|
-      
       row = Hash[[header, spreadsheet.row(i)].transpose]
-      if row["related policy"].class == (Integer || Fixnum || Bignum)
-        resource_id = Resource.create(name: row["name"], category: row["category"], control_ids: [row["related control"]], policy_ids: row["related policy"])
-      else
+      if row["related policy"].class === String
         resource_id = Resource.create(name: row["name"], category: row["category"], control_ids: [row["related control"]], policy_ids: row["related policy"]&.split("|"))     
+      else 
+        resource_id = Resource.create(name: row["name"], category: row["category"], control_ids: [row["related control"]], policy_ids: row["related policy"])
       end
     end
   end

@@ -67,7 +67,8 @@
           %th.text-center.apo{:scope => "col"} Type of Risk
           %th.text-center.apo{:scope => "col"} Business Processes
       -collect_risk=[]
-      -ris = @tags.pluck(:business_process_id).map{|x| BusinessProcess.find(x).risks.pluck(:id)}.flatten.group_by(&:itself).reject{|k,v|v.count>1}.keys
+      -ris =  @tags.pluck(:risk_id).group_by(&:itself).reject{|k,v| v.count>1}.keys
+      -ris.reject!{|x| x == nil} if ris.count(nil) >= 1
       -ris.each_with_index do |ras,i|
         -rus = Risk.find(ras)
         -if rus.business_processes.present?
@@ -85,8 +86,6 @@
             %td.text-center.apo #{rus.level_of_risk.to_s.gsub(/[^0-9A-Za-z]/, ' ').titlecase.html_safe}
             %td.text-center.apo #{rus.type_of_risk.to_s.gsub(/[^0-9A-Za-z]/, ' ').titlecase.html_safe}
             %td.text-center.apo No Business Process
-        
-
     %br
     %br
 

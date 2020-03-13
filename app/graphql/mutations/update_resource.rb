@@ -1,4 +1,3 @@
-# frozen_string_literal: true
 
 module Mutations
   class UpdateResource < Mutations::BaseMutation
@@ -23,33 +22,60 @@ module Mutations
     field :resource, Types::ResourceType, null: false
 
     def resolve(id:, **args)
-      if args[:resupload_link].present?        
-        args[:resupload] = URI.parse(args[:resupload_link])
-      end
-      if args[:category].present?
-        enum_list = EnumList&.find_by(category_type: "Category", name: args[:category]) || EnumList&.find_by(category_type: "Category", code: args[:category])
-        if enum_list ==  nil 
-          kode = args[:category].gsub("_"," ").titlecase
-          EnumList.create(name: args[:category], category_type: "Category", code: kode)
-        end
-        enum_list = EnumList&.find_by(category_type: "Category", name: args[:category]) || EnumList&.find_by(category_type: "Category", code: args[:category])
-        args[:category] = enum_list&.code
-      end
+      current_user = context[:current_user]
       resource = Resource.find(id)
-      if resource.resupload.present?
-        if (!(args[:resupload].present?) || (args[:resupload].present?)) && (args[:resupload_file_name] == "resupload")
-          args.delete(:resupload_file_name)
-        elsif !(args[:resupload].present?) && (args[:resupload_file_name] != "resupload") && args[:name].present?
-          args[:resupload_file_name] = "#{args[:name]}" << resource.resource_file_type(resource)
-          resource.update_attributes(resupload: resource.resupload, resupload_file_name: args[:resupload_file_name])
-        elsif args[:resupload].present? && (args[:resupload_file_name] != "resupload") && args[:name].present?
-          args[:resupload_file_name] = "#{args[:name]}" << resource.resource_file_type(resource)
-          resource.update_attributes(resupload: args[:resupload], resupload_file_name: args[:resupload_file_name])
-        end      
+
+      if resource&.request_edits&.last&.approved?
+        if resource.draft?
+          raise GraphQL::ExecutionError, "Draft Cannot be created until another Draft is Approved/Rejected by an Admin"
+        else
+          if args[:resupload_link].present?
+            url = URI.parse(args[:resupload_link])
+            http = Net::HTTP.new(url.host, url.port)
+            http.use_ssl = (url.scheme == "https")
+
+            http.start do |http|
+              if http.head(url.request_uri)['Content-Type'].include? "text/html"
+                if args[:resupload_file_name].present?
+                  args.delete(:resupload_file_name)
+                end
+              else
+                args[:resupload] = URI.parse(args[:resupload_link])
+              end
+            end 
+          end
+
+          if args[:category].present?
+            enum_list = EnumList&.find_by(category_type: "Category", name: args[:category]) || EnumList&.find_by(category_type: "Category", code: args[:category])
+            if enum_list ==  nil 
+              kode = args[:category].gsub("_"," ").titlecase
+              EnumList.create(name: args[:category], category_type: "Category", code: kode)
+            end
+            enum_list = EnumList&.find_by(category_type: "Category", name: args[:category]) || EnumList&.find_by(category_type: "Category", code: args[:category])
+            args[:category] = enum_list&.code
+          end
+          if resource.resupload.present?
+            if (!(args[:resupload].present?) || (args[:resupload].present?)) && (args[:resupload_file_name] == "resupload") && !(args[:name].present?)
+              args.delete(:resupload_file_name)
+            elsif !(args[:resupload].present?) && (args[:resupload_file_name] == "resupload") && args[:name].present?
+              args[:resupload_file_name] = "#{args[:name]}" << resource.resource_file_type(resource)
+              resource.update_attributes(resupload: resource.resupload, resupload_file_name: args[:resupload_file_name])
+            elsif args[:resupload].present? && (args[:resupload_file_name] == "resupload") && args[:name].present?
+              args[:resupload_file_name] = "#{args[:name]}" << resource.resource_file_type(resource)
+              resource.update_attributes(resupload: args[:resupload], resupload_file_name: args[:resupload_file_name])
+            end      
+          end
+          resource.attributes = args
+          resource.save_draft
+          admin = User.with_role(:admin_reviewer).pluck(:id)
+          if resource.draft.present?
+            Notification.send_notification(admin, resource&.name, resource&.name,resource, current_user&.id, "request draft")
+          end
+        end
+      else
+        raise GraphQL::ExecutionError, "Request not granted. Please Check Your Request Status"
       end
-
-
-      resource.update_attributes!(args.to_h)
+      
       
 
       MutationResult.call(
