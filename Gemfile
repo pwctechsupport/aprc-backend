@@ -21,6 +21,9 @@ gem 'rolify'
 
 gem 'hirb'
 
+gem 'delayed_job_active_record'
+
+
 gem 'state_machines-activerecord'
 # Use CoffeeScript for .coffee assets and views
 gem 'coffee-rails', '~> 4.2'

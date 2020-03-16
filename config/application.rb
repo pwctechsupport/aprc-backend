@@ -12,6 +12,9 @@ Paperclip.options[:content_type_mappings] = {
   xlsx: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
 }
 
+config.active_job.queue_adapter = :delayed_job
+
+
 module GraphqlDevise
   class Application < Rails::Application
     # Initialize configuration defaults for originally generated Rails version.
