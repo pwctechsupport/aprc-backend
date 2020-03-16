@@ -25,21 +25,19 @@
 
       
     :css
-      .apo{font-size:13px;}
-      th{font-size:14px;}
-      td{font-size:13px;}
+      th{font-size:20px;}
+      td{font-size:12px;}
       .tab{ margin-left:40px;}
       .ape{%font-size:24px; text-align:left;}
       .aps{font-size:36px;}
+      .mege{text-shadow: 0.5px 0.5px black;}
+      
 
     :css
       span {position:relative; bottom:1.7px; background:#F32013; border-radius:6px; font-size:15px; color:white; font-family:Arial; text-shadow: 0.5px 0.5px black; padding:1px 5px 4px;}
 
-    %h1.text-center.aps Risk & Control List View
-    %h2.ape= @business_process.name.titlecase
+    %h1.aps Risk & Controls
     
-
-    %hr.new5
     -@business_process.risks.each_with_index do |ris, x|
 
       -if ris.controls.present? == false
@@ -48,9 +46,13 @@
         %ul
           %li
             %h3 
-              #{ris.name.titlecase}
-              %span #{ris.level_of_risk.to_s.gsub(/_/, ' ').titlecase}
-              %span #{ris.type_of_risk.to_s.gsub(/_/, ' ').titlecase}
+              R.#{ris.id}: #{ris.name.titlecase}
+              -if ris.level_of_risk.present?
+                %span #{ris.level_of_risk.to_s.gsub(/_/, ' ').titlecase}
+              -if ris.type_of_risk.present?
+                %span #{ris.type_of_risk.to_s.gsub(/_/, ' ').titlecase}
+        %h4 
+          %u Associated Control(s)
         -# %table.table.table-border
         -#   %thead
         -#     %tr
@@ -68,16 +70,16 @@
         %table.table.table-borderless
           %thead
             %tr
-              %th.text-center{:scope => "col"} #
-              %th.text-center{:scope => "col"} Description
-              %th.text-center{:scope => "col"} Type of Control
-              %th.text-center{:scope => "col"} Control Owner
-              %th.text-center{:scope => "col"} Frequency
-              %th.text-center{:scope => "col"} Nature
-              %th.text-center{:scope => "col"} Assertion
-              %th.text-center{:scope => "col"} Ipo
-              %th.text-center{:scope => "col"} Status
-              %th.text-center{:scope => "col"} Key Control
+              %th.mege.text-center{:scope => "col"} Control ID
+              %th.mege.text-center{:scope => "col"} Control Description
+              %th.mege.text-center{:scope => "col"} Type of Control
+              %th.mege.text-center{:scope => "col"} Control Owner
+              %th.mege.text-center{:scope => "col"} Frequency
+              %th.mege.text-center{:scope => "col"} Nature
+              %th.mege.text-center{:scope => "col"} Assertion
+              %th.mege.text-center{:scope => "col"} IPO
+              %th.mege.text-center{:scope => "col"} Status
+              %th.mege.text-center{:scope => "col"} Key Control
           -ris.controls.each_with_index do |con,i|
             %tbody
               %tr
@@ -89,7 +91,7 @@
                 %td.text-center #{con.nature.to_s.gsub(/[^0-9A-Za-z]/, ' ').titlecase.html_safe}
                 %td
                   -if con.assertion.count > 1
-                    .apo  
+                    .text-left  
                       %ul
                         -con.assertion.each do |cop|
                           %li=cop.to_s.gsub(/[^0-9A-Za-z]/, ' ').titlecase
@@ -98,7 +100,7 @@
                       %li=con.assertion.to_s.gsub(/[^0-9A-Za-z]/, ' ').titlecase
                 %td
                   -if con.ipo.count > 1
-                    .apo  
+                    .text-left  
                       %ul
                         -con.ipo.each do |cop|
                           %li=cop.to_s.gsub(/[^0-9A-Za-z]/, ' ').titlecase
