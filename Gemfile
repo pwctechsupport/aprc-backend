@@ -21,6 +21,8 @@ gem 'rolify'
 
 gem 'hirb'
 
+gem 'daemons'
+
 gem 'delayed_job_active_record'
 
 
