@@ -1,5 +1,5 @@
 class Notification < ApplicationRecord
-  # after_create :push_notif_email
+  after_create :push_notif_email
 
   belongs_to :user, optional: true
   serialize :data
