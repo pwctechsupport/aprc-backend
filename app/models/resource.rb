@@ -15,7 +15,7 @@ class Resource < ApplicationRecord
   # belongs_to :policy, optional: true, class_name: "Policy", foreign_key: "policy_id"
   # belongs_to :control, optional: true, class_name: "Control", foreign_key: "control_id"
   belongs_to :business_process, optional: true, class_name: "BusinessProcess", foreign_key: "business_process_id"
-  has_many :resource_ratings
+  has_many :resource_ratings, dependent: :destroy
   has_many :tags, dependent: :destroy
   accepts_nested_attributes_for :tags, allow_destroy: true
   has_many :request_edits, class_name: "RequestEdit", as: :originator, dependent: :destroy
