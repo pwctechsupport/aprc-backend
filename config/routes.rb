@@ -53,6 +53,7 @@ Rails.application.routes.draw do
       member do
         get :control
         get :risk
+        get :policy, to: "prints#policy", as: :policy
         get 'report', to: "prints#report", as: :report
         get 'business_process', to: "prints#business_process", as: :business_process
       end
