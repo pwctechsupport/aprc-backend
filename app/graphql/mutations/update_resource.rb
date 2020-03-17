@@ -15,6 +15,8 @@ module Mutations
     argument :business_process_id, ID, required: false 
     argument :status, Types::Enums::Status, required: false
     argument :resupload_link, String, required: false
+    argument :tags_attributes, [Types::BaseScalar], required: false
+
 
 
 
@@ -24,6 +26,7 @@ module Mutations
     def resolve(id:, **args)
       current_user = context[:current_user]
       resource = Resource.find(id)
+      resource_name = resource.name
 
       if resource&.request_edits&.last&.approved?
         if resource.draft?
@@ -63,13 +66,31 @@ module Mutations
             elsif args[:resupload].present? && (args[:resupload_file_name] == "resupload") && args[:name].present?
               args[:resupload_file_name] = "#{args[:name]}" << resource.resource_file_type(resource)
               resource.update_attributes(resupload: args[:resupload], resupload_file_name: args[:resupload_file_name])
-            end      
+            end     
           end
+
+          if args[:tags_attributes].present?
+            act = args[:tags_attributes]
+            if act&.first&.class == ActionController::Parameters
+              activities = act.collect {|x| x.permit(:id,:_destroy,:x_coordinates,:y_coordinates, :body, :resource_id, :business_process_id, :image_name, :user_id, :risk_id, :control_id)}
+              args.delete(:tags_attributes)
+              args[:tags_attributes]= activities.collect{|x| x.to_h}
+              args[:tags_attributes].first["user_id"] = current_user.id
+            end
+          end
+
+          if !(args[:resupload].present?)
+            args.delete(:resupload_file_name)
+          end
+
           resource.attributes = args
           resource.save_draft
+          if args[:resupload].present?
+            resource.update_attributes(resupload: args[:resupload], resupload_file_name: args[:resupload_file_name], name: resource_name)
+          end
           admin = User.with_role(:admin_reviewer).pluck(:id)
           if resource.draft.present?
-            Notification.send_notification(admin, resource&.name, resource&.name,resource, current_user&.id, "request draft")
+            Notification.send_notification(admin, resource&.name, resource&.name,resource, current_user&.id, "request_draft")
           end
         end
       else

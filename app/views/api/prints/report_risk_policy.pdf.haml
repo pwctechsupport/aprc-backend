@@ -9,10 +9,31 @@
       .table.table-borderless {border:10px !important;}
       .apo{max-width: 30%;}
       .ape{max-width: 250px;}
-
+      .aha{border:none;}
+    :javascript
+      $(window).load(function () {
+        var vars={};
+        var x=window.location.search.substring(1).split('&');
+        for (var i in x) {
+          var z=x[i].split('=',2);
+          vars[z[0]] = unescape(z[1]);
+        }
+        document.getElementById('page').innerHTML = vars.page; 
+        document.getElementById('topage').innerHTML = vars.topage;
+      });
   %body
     %center
       %h2 Report Risk without Control
+    %table.table.table-borderless.aha{style:"display:block;"}
+      %tr.aha
+        %td.aha Printed On
+        %td.aha :
+        %td.aha #{Time.now.strftime("%C %B %G")}
+      %tr.aha
+        %td.aha Printed By
+        %td.aha :
+        %td.aha= User.find(4).name
+    %center
       %table.table.table-borderless
         %thead
           %tr
@@ -23,6 +44,7 @@
             %th.text-center.apo{:scope => "col"} Business Processes
             %th.text-center.apo{:scope => "col"} Related Policy
         -z = 1
+        -x=1
         -@risks.each do |ris| 
           -if ris.business_processes.present?
             -ris&.business_processes.each do |bus|
@@ -72,4 +94,5 @@
 
       %p{:style => "page-break-after:always;"}
       %p{:style => "page-break-after:auto;"}
+      -x+=1 
 

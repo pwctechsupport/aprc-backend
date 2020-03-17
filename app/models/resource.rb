@@ -17,6 +17,7 @@ class Resource < ApplicationRecord
   belongs_to :business_process, optional: true, class_name: "BusinessProcess", foreign_key: "business_process_id"
   has_many :resource_ratings
   has_many :tags, dependent: :destroy
+  accepts_nested_attributes_for :tags, allow_destroy: true
   has_many :request_edits, class_name: "RequestEdit", as: :originator, dependent: :destroy
   belongs_to :user_reviewer, class_name: "User", foreign_key:"user_reviewer_id", optional: true
 
