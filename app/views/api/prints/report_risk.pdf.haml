@@ -9,6 +9,7 @@
       .table.table-borderless {border:10px !important;}
       .apo{max-width: 30%;}
       .ape{max-width: 250px;}
+      .aih{font-size:20px}
 
   %body
   -@risks.each do |ris|
@@ -16,7 +17,7 @@
       
     -else 
       %center
-        %h2=ris.name.titlecase.html_safe  
+        %h2.aih=ris.name.titlecase.html_safe  
       %table.table.table-borderless
         %thead
           %tr
