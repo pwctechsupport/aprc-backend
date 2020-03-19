@@ -13,7 +13,7 @@ module Mutations
 
       if current_user.present? && current_user.has_role?(:admin_reviewer)
         risk_draft = risk.draft
-        admin_prep = User.with_role(:admin_preparer)
+        admin_prep = User.with_role(:admin_preparer).pluck(:id)
         if args[:publish] === true
           if risk.user_reviewer_id.present? && (risk.user_reviewer_id != current_user.id)
             raise GraphQL::ExecutionError, "This Draft has been reviewed by another Admin."
