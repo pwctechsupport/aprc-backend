@@ -177,8 +177,7 @@ module Types
 
     def policy(id:)
       pol = Policy&.find_by(id:id)
-      vieu = pol&.visit+1
-      pol&.update(visit: vieu)
+      pol&.update(recent_visit: Time.now)
       pol
     end
 
@@ -192,8 +191,7 @@ module Types
 
     def resource(id:)
       res = Resource&.find_by(id:id)
-      view = res&.visit+1
-      res&.update(visit: view)
+      res&.update(recent_visit: Time.now)
       res
     end
 
@@ -252,5 +250,9 @@ module Types
     field :activity_controls, resolver: Resolvers::QueryType::ActivityControlsResolver
     field :tags, resolver: Resolvers::QueryType::TagsResolver
     field :enum_lists, resolver: Resolvers::QueryType::EnumListsResolver
+    field :recently_added_policies, resolver: Resolvers::QueryType::RecentlyAddedPoliciesResolver
+    field :popular_policies, resolver: Resolvers::QueryType::PopularPoliciesResolver
+    field :recently_visited_policies, resolver: Resolvers::QueryType::RecentlyVisitedPoliciesResolver
+    field :popular_resources, resolver: Resolvers::QueryType::PopularResourcesResolver
   end
 end

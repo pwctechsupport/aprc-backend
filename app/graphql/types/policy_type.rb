@@ -43,6 +43,7 @@ module Types
     field :request_edit, Types::RequestEditType, null: true
     field :file_attachments, [Types::FileAttachmentType], null: true
     field :ancestors, [Types::PolicyType], null: true
+    field :recent_visit, String, null: true
 
     def ancestors
       object&.ancestors
