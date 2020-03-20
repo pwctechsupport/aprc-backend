@@ -14,7 +14,6 @@ module Mutations
     argument :business_process_id, ID, required: false 
     argument :status, Types::Enums::Status, required: false
     argument :resupload_link, String, required: false
-    argument :tags_input, [Types::TagInput],required: false
     argument :tags_attributes, [Types::BaseScalar], required: false
 
     # argument :type_of_control, Types::Enums::TypeOfControl, required: true
@@ -25,10 +24,6 @@ module Mutations
     field :resource, Types::ResourceType, null: true
 
     def resolve(args)
-      args[:tags_attributes] = args[:tags_input].map{|x| x.to_h}
-      args.delete(:tags_input)
-      args[:tags_attributes].map!{|x| x.stringify_keys}
-
       current_user = context[:current_user]
 
       if args[:resupload_link].present?
@@ -46,6 +41,7 @@ module Mutations
           end
         end 
       end
+      
       if args[:category].present?
         enum_list = EnumList&.find_by(category_type: "Category", name: args[:category]) || EnumList&.find_by(category_type: "Category", code: args[:category])
         if enum_list ==  nil
@@ -58,10 +54,8 @@ module Mutations
 
       if args[:tags_attributes].present?
         act = args[:tags_attributes]
-        act.map{|x| x["user_id"]= current_user.id}
-
         if act&.first&.class == ActionController::Parameters
-          activities = act.collect {|x| x.permit(:id,:_destroy,:x_coordinates,:y_coordinates, :body, :resource_id, :business_process_id, :image_name, :user_id, :risk_id, :control_id, :xCoordinates, :yCoordinates, :resourceId, :businessProcessId, :controlId, :riskId)}
+          activities = act.collect {|x| x.permit(:id,:_destroy,:x_coordinates,:y_coordinates, :body, :resource_id, :business_process_id, :image_name, :user_id, :risk_id, :control_id)}
           args.delete(:tags_attributes)
           args[:tags_attributes]= activities.collect{|x| x.to_h}
           args[:tags_attributes].first["user_id"] = current_user.id
