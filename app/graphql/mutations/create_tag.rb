@@ -1,18 +1,18 @@
 module Mutations
   class CreateTag < Mutations::BaseMutation
     # arguments passed to the `resolved` method
-    argument :body, String, required: false
-    argument :resource_id, ID, required: true
-    argument :business_process_id, ID, required: true
-    argument :x_coordinates, Int, required: false
-    argument :y_coordinates, Int, required: false
-    argument :control_id, ID, required: false
-    argument :risk_id, ID, required: false
+    argument :tag_input, Types::TagInput, required: true
+
+
 
     # return type from the mutation
     field :tag, Types::TagType, null: true
 
     def resolve(args)
+      args[:tag_input] = args[:tag_input].to_h
+      tester = args[:tag_input]
+      args.delete(:tag_input)
+      args.merge!(tester)
       current_user = context[:current_user]
       args[:user_id] = current_user&.id
       resource = Resource.find(args[:resource_id].to_i)
