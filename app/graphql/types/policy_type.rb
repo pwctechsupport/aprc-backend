@@ -45,6 +45,14 @@ module Types
     field :ancestors, [Types::PolicyType], null: true
     field :recent_visit, String, null: true
 
+    def controls
+      object.descendants.map {|x| x.controls}.flatten
+    end
+
+    def risks
+      object.descendants.map {|x| x.risks}.flatten
+    end
+
     def ancestors
       object&.ancestors
     end
