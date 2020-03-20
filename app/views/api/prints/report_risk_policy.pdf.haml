@@ -21,18 +21,10 @@
         document.getElementById('page').innerHTML = vars.page; 
         document.getElementById('topage').innerHTML = vars.topage;
       });
+
   %body
     %center
       %h2 Report Risk without Control
-    %table.table.table-borderless.aha{style:"display:block;"}
-      %tr.aha
-        %td.aha Printed On
-        %td.aha :
-        %td.aha #{Time.now.strftime("%C %B %G")}
-      %tr.aha
-        %td.aha Printed By
-        %td.aha :
-        %td.aha= User.find(4).name
     %center
       %table.table.table-borderless
         %thead

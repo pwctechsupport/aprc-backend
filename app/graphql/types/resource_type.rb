@@ -31,6 +31,7 @@ module Types
     field :request_status, String, null: true
     field :request_edits, [Types::RequestEditType], null: true
     field :request_edit, Types::RequestEditType, null: true
+    field :recent_visit, String, null: true
     
 
     def request_edit
