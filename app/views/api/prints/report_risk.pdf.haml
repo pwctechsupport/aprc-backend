@@ -59,7 +59,7 @@
                   %td.text-center.ape=ris&.updated_at
                 -else
                   %td.text-center.apo
-                -if User&.find(ris&.versions&.last&.whodunnit).present?
+                -if ris&.versions&.last&.whodunnit.present?
                   %td.text-center.ape=User&.find(ris&.versions&.last&.whodunnit)&.name
                 -else
                   %td.text-center.apo
@@ -84,7 +84,7 @@
                 %td.text-center.ape=ris&.updated_at
               -else
                 %td.text-center.apo
-              -if User&.find(ris&.versions&.last&.whodunnit).present?
+              -if ris&.versions&.last&.whodunnit.present?
                 %td.text-center.ape=User&.find(ris&.versions&.last&.whodunnit)&.name
               -else
                 %td.text-center.apo
