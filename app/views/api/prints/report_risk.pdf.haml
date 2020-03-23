@@ -47,19 +47,22 @@
                 %td.text-center.apo=ris.name.titlecase.html_safe 
                 %td.text-center.apo #{ris.type_of_risk.to_s.gsub(/[^0-9A-Za-z]/, ' ').titlecase.html_safe}
                 %td.text-center.apo #{ris.level_of_risk.to_s.gsub(/[^0-9A-Za-z]/, ' ').titlecase.html_safe}
-                -
-                %td.text-center.apo
-                  -if ris&.versions&.find_by(event:"create")&.whodunnit
-                    -User&.find(ris&.versions&.find_by(event:"create")&.whodunnit).name
-                %td.text-center.apo
-                  -if ris&.versions&.find_by(event:"create")&.created_at
-                    -ris&.versions&.find_by(event:"create")&.created_at
-                %td.text-center.ape
-                  -if ris&.updated_at
-                    -ris&.updated_at
-                %td.text-center.ape
-                  -if User&.find(ris&.versions&.last&.whodunnit)&.name
-                    -User&.find(ris&.versions&.last&.whodunnit)&.name
+                -if ris&.versions&.find_by(event:"create")&.whodunnit.present?
+                  %td.text-center.apo=User&.find(ris&.versions&.find_by(event:"create")&.whodunnit).name
+                -else
+                  %td.text-center.apo
+                -if ris&.versions&.find_by(event:"create")&.present?
+                  %td.text-center.apo=ris&.versions&.find_by(event:"create")&.created_at
+                -else
+                  %td.text-center.apo
+                -if ris&.updated_at.present?
+                  %td.text-center.ape=ris&.updated_at
+                -else
+                  %td.text-center.apo
+                -if User&.find(ris&.versions&.last&.whodunnit).present?
+                  %td.text-center.ape=User&.find(ris&.versions&.last&.whodunnit)&.name
+                -else
+                  %td.text-center.apo
                 -z+=1
         -else 
           %tbody
@@ -69,18 +72,22 @@
               %td.text-center.apo=ris.name.titlecase.html_safe 
               %td.text-center.apo #{ris.type_of_risk.to_s.gsub(/[^0-9A-Za-z]/, ' ').titlecase.html_safe}
               %td.text-center.apo #{ris.level_of_risk.to_s.gsub(/[^0-9A-Za-z]/, ' ').titlecase.html_safe}
-              %td.text-center.apo
-                -if ris&.versions&.find_by(event:"create")&.whodunnit
-                  -User&.find(ris&.versions&.find_by(event:"create")&.whodunnit).name
-              %td.text-center.apo
-                -if ris&.versions&.find_by(event:"create")&.created_at
-                  -ris&.versions&.find_by(event:"create")&.created_at
-              %td.text-center.ape
-                -if ris&.updated_at
-                  -ris&.updated_at
-              %td.text-center.ape
-                -if User&.find(ris&.versions&.last&.whodunnit)&.name
-                  -User&.find(ris&.versions&.last&.whodunnit)&.name
+              -if ris&.versions&.find_by(event:"create")&.whodunnit.present?
+                %td.text-center.apo=User&.find(ris&.versions&.find_by(event:"create")&.whodunnit).name
+              -else
+                %td.text-center.apo
+              -if ris&.versions&.find_by(event:"create")&.present?
+                %td.text-center.apo=ris&.versions&.find_by(event:"create")&.created_at
+              -else
+                %td.text-center.apo
+              -if ris&.updated_at.present?
+                %td.text-center.ape=ris&.updated_at
+              -else
+                %td.text-center.apo
+              -if User&.find(ris&.versions&.last&.whodunnit).present?
+                %td.text-center.ape=User&.find(ris&.versions&.last&.whodunnit)&.name
+              -else
+                %td.text-center.apo
               -z+=1
     %p{:style => "page-break-after:always;"}
     %p{:style => "page-break-after:auto;"}
