@@ -56,6 +56,7 @@ module Types
     field :update_reference, mutation: Mutations::UpdateReference
 
     field :destroy_resource, mutation: Mutations::DestroyResource
+    field :destroy_resource_attachment, mutation: Mutations::DestroyResourceAttachment
     field :destroy_it_system, mutation: Mutations::DestroyItSystem
     field :destroy_business_process, mutation: Mutations::DestroyBusinessProcess
     field :destroy_reference, mutation: Mutations::DestroyReference
