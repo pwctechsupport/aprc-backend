@@ -57,6 +57,7 @@ module Types
 
     field :destroy_resource, mutation: Mutations::DestroyResource
     field :destroy_resource_attachment, mutation: Mutations::DestroyResourceAttachment
+    field :destroy_manual_attachment, mutation: Mutations::DestroyManualAttachment
     field :destroy_it_system, mutation: Mutations::DestroyItSystem
     field :destroy_business_process, mutation: Mutations::DestroyBusinessProcess
     field :destroy_reference, mutation: Mutations::DestroyReference
@@ -85,6 +86,9 @@ module Types
     field :create_enum_list, mutation: Mutations::CreateEnumList
     field :update_enum_list, mutation: Mutations::UpdateEnumList
     field :destroy_enum_list, mutation: Mutations::DestroyEnumList
+    field :create_manual, mutation: Mutations::CreateManual
+    field :update_manual, mutation: Mutations::UpdateManual
+    field :destroy_manual, mutation: Mutations::DestroyManual
     field :push_notification, mutation: Mutations::PushNotification
     field :notif_badges, mutation: Mutations::NotifBadges
     field :review_resource_draft, mutation: Mutations::ReviewResourceDraft
