@@ -39,9 +39,7 @@ module Mutations
             raise GraphQL::ExecutionError, "This Draft has been reviewed by another Admin."
           else
             Notification.send_notification(admin_prep, "Resource Draft named #{resource&.name} Rejected", resource&.name,resource, current_user&.id, "request_draft_rejected")
-            resource_name = resource.name
             resource_draft.revert!
-            resource.update(name:resource_name)
           end
         end 
       else

@@ -26,7 +26,7 @@ module Mutations
     def resolve(id:, **args)
       current_user = context[:current_user]
       resource = Resource.find(id)
-      resource_name = resource.name
+      resource_name = resource&.name
 
       if resource&.request_edits&.last&.approved?
         if resource.draft?
@@ -57,18 +57,8 @@ module Mutations
             enum_list = EnumList&.find_by(category_type: "Category", name: args[:category]) || EnumList&.find_by(category_type: "Category", code: args[:category])
             args[:category] = enum_list&.code
           end
-          if resource.resupload.present?
-            if (!(args[:resupload].present?) || (args[:resupload].present?)) && (args[:resupload_file_name] == "resupload") && !(args[:name].present?)
-              args.delete(:resupload_file_name)
-            elsif !(args[:resupload].present?) && (args[:resupload_file_name] == "resupload") && args[:name].present?
-              args[:resupload_file_name] = "#{args[:name]}" << resource.resource_file_type(resource)
-              resource.update_attributes(resupload: resource.resupload, resupload_file_name: args[:resupload_file_name])
-            elsif args[:resupload].present? && (args[:resupload_file_name] == "resupload") && args[:name].present?
-              args[:resupload_file_name] = "#{args[:name]}" << resource.resource_file_type(resource)
-              resource.update_attributes(resupload: args[:resupload], resupload_file_name: args[:resupload_file_name])
-            end     
-          end
-
+          
+          
           if args[:tags_attributes].present?
             act = args[:tags_attributes]
             if act&.first&.class == ActionController::Parameters
@@ -79,15 +69,21 @@ module Mutations
             end
           end
 
-          if !(args[:resupload].present?)
-            args.delete(:resupload_file_name)
-          end
-
+          
+          
           resource.attributes = args
           resource.save_draft
-          if args[:resupload].present?
-            resource.update_attributes(resupload: args[:resupload], resupload_file_name: args[:resupload_file_name], name: resource_name)
+          resource.name = resource_name
+          if resource.resupload.present?
+            if !(args[:resupload].present?) && args[:name].present?
+              args[:resupload_file_name] = "#{args[:name]}" << resource.resource_file_type(resource)
+              resource.update_attributes!(resupload: resource.resupload, resupload_file_name: args[:resupload_file_name])
+            elsif args[:resupload].present? && args[:name].present?
+              args[:resupload_file_name] = "#{args[:name]}" << resource.resource_file_type(resource)
+              resource.update_attributes!(resupload: args[:resupload], resupload_file_name: args[:resupload_file_name])
+            end     
           end
+          
           admin = User.with_role(:admin_reviewer).pluck(:id)
           if resource.draft.present?
             Notification.send_notification(admin, resource&.name, resource&.name,resource, current_user&.id, "request_draft")

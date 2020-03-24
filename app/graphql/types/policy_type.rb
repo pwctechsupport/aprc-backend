@@ -44,6 +44,11 @@ module Types
     field :file_attachments, [Types::FileAttachmentType], null: true
     field :ancestors, [Types::PolicyType], null: true
     field :recent_visit, String, null: true
+    field :version, Types::VersionType, null: true
+
+    def version
+      object.versions.last
+    end
 
     def controls
       object.descendants.map {|x| x.controls}.flatten
