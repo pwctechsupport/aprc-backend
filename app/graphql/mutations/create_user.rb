@@ -1,6 +1,8 @@
 module Mutations
   class CreateUser < Mutations::BaseMutation
     # arguments passed to the `resolved` method
+    argument :role_ids, [ID], required: false
+    argument :policy_category_ids, [ID], required: false
     argument :email, String, required: true
     argument :password, String, required: true
     argument :password_confirmation, String, required: true
