@@ -45,16 +45,18 @@ module Types
     field :ancestors, [Types::PolicyType], null: true
     field :recent_visit, String, null: true
     field :version, Types::VersionType, null: true
+    field :descendants_controls, [Types::ControlType], null: true
+    field :descendants_risks, [Types::RiskType], null: true
 
     def version
       object.versions.last
     end
 
-    def controls
+    def descendants_controls
       object.descendants.map {|x| x.controls}.flatten
     end
 
-    def risks
+    def descendants_risks
       object.descendants.map {|x| x.risks}.flatten
     end
 
