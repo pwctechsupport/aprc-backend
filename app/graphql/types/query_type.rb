@@ -27,6 +27,11 @@ module Types
       description 'Returns the Activity Control and its Guidance of an Object'
     end
 
+    field :manual, Types::ManualType, null: true do
+      argument :id, ID, required: true
+      description 'Returns the User Manuals'
+    end
+
 
     # field :res, [Types::ResourceType], null: true do
     #   description 'Returns Resources Attributes'
@@ -254,5 +259,6 @@ module Types
     field :popular_policies, resolver: Resolvers::QueryType::PopularPoliciesResolver
     field :recently_visited_policies, resolver: Resolvers::QueryType::RecentlyVisitedPoliciesResolver
     field :popular_resources, resolver: Resolvers::QueryType::PopularResourcesResolver
+    field :manuals, resolver: Resolvers::QueryType::ManualsResolver
   end
 end

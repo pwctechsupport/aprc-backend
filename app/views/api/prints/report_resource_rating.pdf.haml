@@ -31,10 +31,24 @@
       .tab{ margin-left:40px;}
       .ape{%font-size:24px; text-align:left;}
       .aps{font-size:36px;}
+      .aha{border:none;}
 
     :css
       span {position:relative; bottom:1.7px; background:#F32013; border-radius:6px; font-size:15px; color:white; font-family:Arial; text-shadow: 0.5px 0.5px black; padding:1px 5px 4px;}
 
+
+    
+    %table.table.table-borderless.aha{style:"display:block;"}
+      %tr.aha
+        %td.aha Printed On
+        %td.aha :
+        %td.aha #{Time.now.strftime("%d %B %Y")}
+        
+
+      %tr.aha
+        %td.aha Printed By
+        %td.aha :
+        %td.aha= current_user&.name
     %h1.text-center.aps Report Resource with Rating
     %h2.ape 
     

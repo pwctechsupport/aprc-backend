@@ -5,7 +5,7 @@
     %meta{:content => "text/html; charset=UTF-8", "http-equiv" => "Content-Type"}/
     %meta{:charset => "utf-8"}/
     %meta{:content => "IE=edge", "http-equiv" => "X-UA-Compatible"}/
-    %title Flowchart Unmapped Risk and Control 
+    %title Flowchart Unmapped Control 
     :css
       input[type=checkbox]{
       \/* Double-sized Checkboxes */
@@ -35,7 +35,18 @@
     :css
       span {position:relative; bottom:1.7px; background:#F32013; border-radius:6px; font-size:15px; color:white; font-family:Arial; text-shadow: 0.5px 0.5px black; padding:1px 5px 4px;}
 
-    %h1.text-center.aps Flowchart Unmapped Risk and Control 
+    %table.table.table-borderless.aha{style:"display:block;"}
+      %tr.aha
+        %td.aha Printed On
+        %td.aha :
+        %td.aha #{Time.now.strftime("%d %B %Y")}
+        
+
+      %tr.aha
+        %td.aha Printed By
+        %td.aha :
+        %td.aha= current_user&.name
+    %h1.text-center.aps Flowchart Unmapped Control 
     %h2.ape 
     
     
