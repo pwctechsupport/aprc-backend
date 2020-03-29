@@ -9,8 +9,13 @@ module Mutations
     field :manual, Types::ManualType, null: false
 
     def resolve(id:)
+      current_user = context[:current_user]
       manual = Manual.find(id)
-      success = manual.update(resupload:nil)
+      if current_user.has_role?(:admin_reviewer)
+        success = manual.update(resupload:nil)
+      else
+        raise GraphQL::ExecutionError ,"Only User with role \"Admin Reviewer\" can Upload the user manual"
+      end
       
       MutationResult.call(
         obj: { manual: manual },

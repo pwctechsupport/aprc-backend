@@ -9,10 +9,18 @@ module Mutations
     def resolve(args)
       current_user = context[:current_user]
       args[:user_id] = current_user&.id
-      manual = Manual.create!(args.to_h)
-      if args[:resupload].present?
-        args[:resupload_file_name] = "#{args[:name]}" << manual.resource_file_type(manual)
-        manual.update_attributes(resupload: args[:resupload], resupload_file_name: args[:resupload_file_name])
+      if Manual.count < 1
+        if current_user.has_role?(:admin_reviewer)
+          manual = Manual.create!(args.to_h)
+          if args[:resupload].present?
+            args[:resupload_file_name] = "#{args[:name]}" << manual.resource_file_type(manual)
+            manual.update_attributes(resupload: args[:resupload], resupload_file_name: args[:resupload_file_name])
+          end
+        else
+          raise GraphQL::ExecutionError ,"Only User with role \"Admin Reviewer\" can Upload the user manual"
+        end
+      else
+        raise GraphQL::ExecutionError ,"A manual has already existed. You can either update or delete the existing manual"
       end
       # request_edit = current_user.request_edit_risks.create!(args.to_h)
       MutationResult.call(
