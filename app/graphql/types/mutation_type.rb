@@ -93,6 +93,8 @@ module Types
     field :notif_badges, mutation: Mutations::NotifBadges
     field :review_resource_draft, mutation: Mutations::ReviewResourceDraft
     field :is_visit, mutation: Mutations::IsVisit
+    field :update_draft_policy, mutation: Mutations::UpdateDraftPolicy
+    field :submit_draft_policy, mutation: Mutations::SubmitDraftPolicy
     
 
 
