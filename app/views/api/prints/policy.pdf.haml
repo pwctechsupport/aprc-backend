@@ -19,7 +19,7 @@
 
   %body
     %h1{style:"font-size:20px;"} #{@policy&.title&.html_safe}
-    %em{style:"font-size:8px;"} Published Date: #{Time.now.strftime("%C %m %G")}
+    %em{style:"font-size:8px;"} Published Date: #{Time.now.strftime("%C %B %G")}
     %p #{@policy&.description&.html_safe}
     %strong
       %em= @policy.children.pluck(:id).map {|x| Policy.find(x).references.pluck(:name)}.join(" ")
@@ -27,7 +27,7 @@
       -@policy&.children&.each do |chil|
         %li{style:"margin-top: 10px;"}
           %b="P#{chil.id}.#{chil&.title&.html_safe}"
-        %em{style:"font-size:8px;"} Published Date: #{Time.now.strftime("%C %m %G")}
+        %em{style:"font-size:8px;"} Published Date: #{Time.now.strftime("%C %B %G")}
         %p= chil&.description&.html_safe
         %strong
           %em= chil.references.pluck(:name).join(" ")
@@ -35,7 +35,7 @@
           -chil&.children&.each do |chilo|
             %li{style:"margin-top: 10px;"}
               %b="P#{chilo.id}.#{chilo&.title&.html_safe}"
-            %em{style:"font-size:8px;"} Published Date: #{Time.now.strftime("%C %m %G")}
+            %em{style:"font-size:8px;"} Published Date: #{Time.now.strftime("%C %B %G")}
             %p= chilo&.description&.html_safe
             %strong
               %em= chilo.references.pluck(:name).join(" ")
@@ -43,7 +43,7 @@
               -chilo&.children&.each do |chili|
                 %li{style:"margin-top: 10px;"}
                   %b="P#{chili.id}.#{chili&.title&.html_safe}"
-                %em{style:"font-size:8px;"} Published Date: #{Time.now.strftime("%C %m %G")}
+                %em{style:"font-size:8px;"} Published Date: #{Time.now.strftime("%C %B %G")}
                 %p= chili&.description&.html_safe
                 %strong
                   %em= chili.references.pluck(:name).join(" ")
@@ -51,7 +51,7 @@
                   -chili&.children&.each do |chilu|
                     %li{style:"margin-top: 10px;"}
                       %b="P#{chilu.id}.#{chilu&.title&.html_safe}"
-                    %em{style:"font-size:8px;"} Published Date: #{Time.now.strftime("%C %m %G")}
+                    %em{style:"font-size:8px;"} Published Date: #{Time.now.strftime("%C %B %G")}
                     %p= chilu&.description&.html_safe
                     %strong
                       %em= chilu.references.pluck(:name).join(" ")
@@ -59,7 +59,7 @@
                       -chilu&.children&.each do |chile|
                         %li{style:"margin-top: 10px;"}
                           %b="P#{chile.id}.#{chile&.title&.html_safe}"
-                        %em{style:"font-size:8px;"} Published Date: #{Time.now.strftime("%C %m %G")}
+                        %em{style:"font-size:8px;"} Published Date: #{Time.now.strftime("%C %B %G")}
                         %p= chile&.description&.html_safe
                         %strong
                           %em= chile.references.pluck(:name).join(" ")

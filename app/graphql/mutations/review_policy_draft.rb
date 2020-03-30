@@ -10,44 +10,47 @@ module Mutations
     def resolve(args)
       current_user = context[:current_user]
       policy = Policy.find(args[:id])
-
-      if current_user.present? && current_user.has_role?(:admin_reviewer)
-        policy_draft = policy.draft
-        if args[:publish] === true
-          if policy.user_reviewer_id.present? && (policy.user_reviewer_id != current_user.id)
-            raise GraphQL::ExecutionError, "This Draft has been reviewed by another Admin."
-          else
-            policy_draft.publish!
-            policy.update(status: "release")
-            policy.update(user_reviewer_id: current_user.id)
-          end
-          admin_prep = User.with_role(:admin_preparer).pluck(:id)
-          admin_rev = User.with_role(:admin_reviewer).pluck(:id)
-          admin_main = User.with_role(:admin).pluck(:id)
-          all_admin = admin_prep + admin_rev + admin_main
-          admin = all_admin.uniq
-          if policy.references.present?
-            ref= policy&.references
-            polisi = Policy.find(args[:id])
-            ref.each do |r|
-              namu = r&.policies&.pluck(:id).reject{ |k| k==polisi.id}
-              nama = namu.join(", ")
-              Notification.send_notification_to_all(admin ,"#{polisi.title} with #{r.name} has been updated. Consider review for other related policies with #{r.name} i.e.:","#{nama}",policy, current_user&.id, "related_reference" ) 
-              #{polisi.title} with #{r.name} has been updated. Consider review other related policies with #{r.name} #{nama}. 
+      if policy.is_submitted
+        if current_user.present? && current_user.has_role?(:admin_reviewer)
+          policy_draft = policy.draft
+          if args[:publish] === true
+            if policy.user_reviewer_id.present? && (policy.user_reviewer_id != current_user.id)
+              raise GraphQL::ExecutionError, "This Draft has been reviewed by another Admin."
+            else
+              policy_draft.publish!
+              policy.update(status: "release")
+              policy.update(user_reviewer_id: current_user.id)
+            end
+            admin_prep = User.with_role(:admin_preparer).pluck(:id)
+            admin_rev = User.with_role(:admin_reviewer).pluck(:id)
+            admin_main = User.with_role(:admin).pluck(:id)
+            all_admin = admin_prep + admin_rev + admin_main
+            admin = all_admin.uniq
+            if policy.references.present?
+              ref= policy&.references
+              polisi = Policy.find(args[:id])
+              ref.each do |r|
+                namu = r&.policies&.pluck(:id).reject{ |k| k==polisi.id}
+                nama = namu.join(", ")
+                Notification.send_notification_to_all(admin ,"#{polisi.title} with #{r.name} has been updated. Consider review for other related policies with #{r.name} i.e.:","#{nama}",policy, current_user&.id, "related_reference" ) 
+                #{polisi.title} with #{r.name} has been updated. Consider review other related policies with #{r.name} #{nama}. 
+              end
+            else
+              Notification.send_notification(admin_prep, "Policy Draft titled #{policy.title} Approved", policy&.description,policy, current_user&.id, "request_draft_approved")
             end
           else
-            Notification.send_notification(admin_prep, "Policy Draft titled #{policy.title} Approved", policy&.description,policy, current_user&.id, "request_draft_approved")
-          end
+            if policy.user_reviewer_id.present? && (policy.user_reviewer_id != current_user.id)
+              raise GraphQL::ExecutionError, "This Draft has been reviewed by another Admin."
+            else
+              Notification.send_notification(admin_prep, "Policy Draft titled #{policy.title} Has been Rejected", policy&.description, current_user&.id, "request_draft_rejected")
+              policy_draft.revert!
+            end
+          end 
         else
-          if policy.user_reviewer_id.present? && (policy.user_reviewer_id != current_user.id)
-            raise GraphQL::ExecutionError, "This Draft has been reviewed by another Admin."
-          else
-            Notification.send_notification(admin_prep, "Policy Draft titled #{policy.title} Has been Rejected", policy&.description, current_user&.id, "request_draft_rejected")
-            policy_draft.revert!
-          end
-        end 
+          raise GraphQL::ExecutionError, "User is not an Admin."
+        end
       else
-        raise GraphQL::ExecutionError, "User is not an Admin."
+        raise GraphQL::ExecutionError, "This Draft has not been Submitted."
       end
 
       # policy = Policy.create!(args.to_h)

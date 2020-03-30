@@ -1,25 +1,29 @@
 module Mutations
-  class CreateSubPolicy < Mutations::BaseMutation
+  class UpdateDraftPolicy < Mutations::BaseMutation
     # arguments passed to the `resolved` method
-    argument :title, String, required: true
-    argument :description, String, required: true
-    argument :parent_id, ID, required: true
-    argument :reference_ids, [ID], required: false
+    argument :id, ID, required: true
+    argument :title, String, required: false
+    argument :description, String, required: false
+    argument :policy_category_id, ID, required: false 
+    argument :resource_id, ID, required: false
+    argument :it_system_ids, [ID], required: false
+    argument :resource_ids, [ID], required: false
     argument :status, Types::Enums::Status, required: false
     argument :business_process_ids, [ID], required: false
     argument :control_ids, [ID], required: false
     argument :risk_ids, [ID], required: false
-    argument :resource_ids, [ID], required: false
-
-
 
     # return type from the mutation
     field :policy, Types::PolicyType, null: true
 
-    def resolve(args)
+    def resolve(id:, **args)
       current_user = context[:current_user]
-      policy = current_user.policies.new(args.to_h)
-      policy.save_draft
+      policy = Policy.find(id)
+      if policy.user_id == current_user&.id
+        policy.draft.reify.update_attributes(args.to_h)
+      else
+        raise GraphQL::ExecutionError, "You cannot edit this draft. This Draft belongs to another User"
+      end
 
       # policy = Policy.create!(args.to_h)
       MutationResult.call(
@@ -32,6 +36,9 @@ module Mutations
         "Invalid Attributes for #{invalid.record.class.name}: " \
         "#{invalid.record.errors.full_messages.join(', ')}"
       )
+    end
+    def ready?(args)
+      authorize_user
     end
   end
 end
