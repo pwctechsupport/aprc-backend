@@ -44,7 +44,7 @@ module Types
     field :file_attachments, [Types::FileAttachmentType], null: true
     field :ancestors, [Types::PolicyType], null: true
     field :recent_visit, String, null: true
-    field :version, Types::VersionType, null: true
+    field :versions_count, String, null: true
     field :descendants_controls, [Types::ControlType], null: true
     field :descendants_risks, [Types::RiskType], null: true
     field :is_submitted, Boolean, null: true
@@ -55,8 +55,9 @@ module Types
       object.draft.reify
     end
 
-    def version
-      object.versions.last
+    def versions_count
+      ver = object.versions.count.to_f
+      ver.to_s
     end
 
     def descendants_controls
