@@ -26,6 +26,7 @@ module Mutations
             admin_main = User.with_role(:admin).pluck(:id)
             all_admin = admin_prep + admin_rev + admin_main
             admin = all_admin.uniq
+            policy.update(is_submitted:false)
             if policy.references.present?
               ref= policy&.references
               polisi = Policy.find(args[:id])
