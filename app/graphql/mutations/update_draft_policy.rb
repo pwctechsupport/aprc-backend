@@ -21,8 +21,10 @@ module Mutations
       policy = Policy.find(id)
       if policy.user_id == current_user&.id
         policy.draft.reify.update_attributes(args.stringify_keys!)
-        policy.draft.update(object_changes: JSON.parse(policy.draft.object_changes).update(args.stringify_keys!).to_json)
-        policy.draft.update(object:JSON.parse(policy.draft.object).update(args.stringify_keys!).to_json)
+        policy.draft.update_attributes(
+          object_changes: JSON.parse(policy.draft.object_changes).update(args.stringify_keys!).to_json, 
+          object:JSON.parse(policy.draft.object).update(args.stringify_keys!).to_json
+        )
 
       else
         raise GraphQL::ExecutionError, "You cannot edit this draft. This Draft belongs to another User"
