@@ -13,6 +13,7 @@ module Mutations
     argument :business_process_ids, [ID], required: false
     argument :control_ids, [ID], required: false
     argument :risk_ids, [ID], required: false
+    argument :reference_ids, [ID], required: false
 
     # return type from the mutation
     field :policy, Types::PolicyType, null: true
