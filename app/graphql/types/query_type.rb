@@ -260,5 +260,7 @@ module Types
     field :recently_visited_policies, resolver: Resolvers::QueryType::RecentlyVisitedPoliciesResolver
     field :popular_resources, resolver: Resolvers::QueryType::PopularResourcesResolver
     field :manuals, resolver: Resolvers::QueryType::ManualsResolver
+    field :sidebar_policies, resolver: Resolvers::QueryType::SidebarPoliciesResolver
+
   end
 end
