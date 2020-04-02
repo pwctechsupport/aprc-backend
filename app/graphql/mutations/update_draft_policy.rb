@@ -1,7 +1,7 @@
 module Mutations
   class UpdateDraftPolicy < Mutations::BaseMutation
     # arguments passed to the `resolved` method
-    argument :parent_id, ID, required: true
+    argument :parent_id, ID, required: false
     argument :id, ID, required: true
     argument :title, String, required: false
     argument :description, String, required: false
