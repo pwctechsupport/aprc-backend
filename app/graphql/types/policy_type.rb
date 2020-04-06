@@ -48,12 +48,9 @@ module Types
     field :descendants_controls, [Types::ControlType], null: true
     field :descendants_risks, [Types::RiskType], null: true
     field :is_submitted, Boolean, null: true
-    field :current_draft, Types::PolicyType, null: true
+    field :created_by, String, null: true
+    field :last_updated_by, String, null: true
 
-
-    def current_draft
-      object.draft.reify
-    end
 
     def versions_count
       ver = object.versions.count.to_f
