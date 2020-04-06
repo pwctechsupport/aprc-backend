@@ -4,7 +4,6 @@ module Types
     field :name, String, null: true
     field :resuploadUrl, String, null: true
     field :category, String, null: true
-    field :policy, Types::PolicyType, null: true
     field :control, Types::ControlType, null: true
     field :policy_ids, [Types::PolicyType], null: true
     field :policies, [Types::PolicyType], null: true
@@ -32,6 +31,8 @@ module Types
     field :request_edits, [Types::RequestEditType], null: true
     field :request_edit, Types::RequestEditType, null: true
     field :recent_visit, String, null: true
+    field :last_updated_by, String, null: true
+    field :created_by, String, null: true
     
 
     def request_edit

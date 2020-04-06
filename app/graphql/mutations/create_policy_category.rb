@@ -3,6 +3,10 @@ module Mutations
     # arguments passed to the `resolved` method
     argument :name, String, required: true
     argument :policy_ids, [ID], required: false
+    argument :created_by, String, required: false
+    argument :last_updated_by, String, required: false
+    argument :status, Types::Enums::Status, required: false
+
 
 
     # return type from the mutation
@@ -10,6 +14,9 @@ module Mutations
 
     def resolve(args)
       current_user = context[:current_user]
+
+      args[:created_by] = current_user&.name || "User with ID#{current_user&.id}"
+      args[:last_updated_by] = current_user&.name || "User with ID#{current_user&.id}"
 
       policy_category = current_user&.policy_categories&.new(args.to_h)
       policy_category&.save_draft

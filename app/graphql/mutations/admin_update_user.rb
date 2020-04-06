@@ -13,6 +13,8 @@ module Mutations
     argument :last_name, String, required: false
     argument :jobPosition, String, required: false
     argument :department, String, required: false
+    argument :status, Types::Enums::Status, required: false
+
 
     # return type from the mutation
     field :user, Types::UserType, null: true

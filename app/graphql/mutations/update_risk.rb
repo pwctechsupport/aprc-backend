@@ -11,6 +11,7 @@ module Mutations
     argument :type_of_risk, Types::Enums::TypeOfRisk, required: false 
     argument :business_process_ids, [ID], required: false
     argument :control_ids, [ID], required: false
+    argument :last_updated_by, String, required: false
 
 
 
@@ -24,6 +25,8 @@ module Mutations
         if risk.draft?
           raise GraphQL::ExecutionError, "Draft Cannot be created until another Draft is Approved/Rejected by an Admin"
         else
+          args[:created_by] = current_user&.name || "User with ID#{current_user&.id}"
+          args[:last_updated_by] = current_user&.name || "User with ID#{current_user&.id}"
           risk.attributes = args
           risk.save_draft
           admin = User.with_role(:admin_reviewer).pluck(:id)

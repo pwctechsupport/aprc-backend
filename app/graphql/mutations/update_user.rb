@@ -14,6 +14,8 @@ module Mutations
       argument :jobPosition, String, required: false
       argument :department, String, required: false
       argument :notif_show, Boolean, required: false
+      argument :status, Types::Enums::Status, required: false
+
   
       field :user, Types::UserType, null: false
      

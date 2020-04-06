@@ -20,6 +20,8 @@ module Types
     field :request_edits, [Types::RequestEditType], null: true
     field :request_edit, Types::RequestEditType, null: true
     field :tags, [Types::TagType], null: true
+    field :last_updated_by, String, null: true
+    field :created_by, String, null: true
     
 
     def request_edit

@@ -16,6 +16,7 @@ module Mutations
     argument :status, Types::Enums::Status, required: false
     argument :resupload_link, String, required: false
     argument :tags_attributes, [Types::BaseScalar], required: false
+    argument :last_updated_by, String, required: false
 
 
 
@@ -70,7 +71,7 @@ module Mutations
           end
 
           
-          
+          args[:last_updated_by] = current_user&.name || "User with ID#{current_user&.id}"
           resource.attributes = args
           resource.save_draft
           resource.name = resource_name

@@ -10,6 +10,8 @@ module Mutations
     argument :control_ids, [ID], required: false
     argument :risk_ids, [ID], required: false
     argument :resource_ids, [ID], required: false
+    argument :created_by, String, required: false
+    argument :last_updated_by, String, required: false
 
 
 
@@ -18,6 +20,8 @@ module Mutations
 
     def resolve(args)
       current_user = context[:current_user]
+      args[:created_by] = current_user&.name || "User with ID#{current_user&.id}"
+      args[:last_updated_by] = current_user&.name || "User with ID#{current_user&.id}"
       policy = current_user.policies.new(args.to_h)
       policy.save_draft
 

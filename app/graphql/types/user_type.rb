@@ -31,6 +31,8 @@ module Types
     field :file_attachments, [Types::FileAttachmentType], null: true
     field :activity_controls, [Types::ActivityControlType], null: true
     field :notif_show, Boolean, null: true
+    field :status, String, null: true
+
 
     def activity_controls
       if object&.class == Hash

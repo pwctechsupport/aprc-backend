@@ -7,6 +7,8 @@ module Mutations
     argument :type_of_risk, Types::Enums::TypeOfRisk, required: false 
     argument :business_process_ids, [ID], required: false
     argument :control_ids, [ID], required: false
+    argument :created_by, String, required: false
+    argument :last_updated_by, String, required: false
     
 
     # return type from the mutation
@@ -14,6 +16,8 @@ module Mutations
 
     def resolve(args)
       current_user = context[:current_user]
+      args[:created_by] = current_user&.name || "User with ID#{current_user&.id}"
+      args[:last_updated_by] = current_user&.name || "User with ID#{current_user&.id}"
       risk = Risk.new(args.to_h)
       risk.save_draft
       admin = User.with_role(:admin_reviewer).pluck(:id)

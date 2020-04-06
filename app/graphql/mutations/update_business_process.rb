@@ -9,6 +9,7 @@ module Mutations
     argument :status, Types::Enums::Status, required: false
     argument :risk_ids, [ID], required: false
     argument :control_ids, [ID], required: false
+    argument :last_updated_by, String, required: false
 
 
 
@@ -16,7 +17,10 @@ module Mutations
     field :business_process, Types::BusinessProcessType, null: false
 
     def resolve(id:, **args)
+      current_user = context[:current_user]
+
       business_process = BusinessProcess.find(id)
+      args[:last_updated_by] = current_user&.name || "User with ID#{current_user&.id}"
       business_process.update_attributes!(args.to_h)
 
       MutationResult.call(

@@ -21,6 +21,8 @@ module Mutations
     argument :status, Types::Enums::Status, required: false
     argument :risk_ids, [ID], required: false
     argument :key_control, Boolean, required: false
+    argument :created_by, String, required: false
+    argument :last_updated_by, String, required: false
 
     # return type from the mutation
     field :control, Types::ControlType, null: true
@@ -34,6 +36,8 @@ module Mutations
           activities = act.collect {|x| x.permit(:id,:activity,:guidance,:control_id,:resuploadBase64,:resuploadFileName,:_destroy,:resupload,:user_id,:resupload_file_name)}
           args.delete(:activity_controls_attributes)
           args[:activity_controls_attributes]= activities.collect{|x| x.to_h}
+          args[:created_by] = current_user&.name || "User with ID#{current_user&.id}"
+          args[:last_updated_by] = current_user&.name || "User with ID#{current_user&.id}"
           control=Control.new(args)
           control&.save_draft
           admin = User.with_role(:admin_reviewer).pluck(:id)
