@@ -11,7 +11,6 @@ class AddCreateToPolicies < ActiveRecord::Migration[5.2]
     add_column :resources, :last_updated_by, :string
     add_column :resources, :created_by, :string
     add_column :business_processes, :created_by, :string
-
     add_column :business_processes, :last_updated_by, :string
 
   end
