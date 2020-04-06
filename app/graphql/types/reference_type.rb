@@ -6,5 +6,7 @@ module Types
     field :status, String, null: true
     field :created_at, GraphQL::Types::ISO8601DateTime, null: false
     field :updated_at, GraphQL::Types::ISO8601DateTime, null: false
+    field :last_updated_by, String, null: true
+    field :created_by, String, null: true
   end
 end

@@ -15,6 +15,8 @@ module Mutations
     argument :status, Types::Enums::Status, required: false
     argument :resupload_link, String, required: false
     argument :tags_attributes, [Types::BaseScalar], required: false
+    argument :created_by, String, required: false
+    argument :last_updated_by, String, required: false
 
     # argument :type_of_control, Types::Enums::TypeOfControl, required: true
 
@@ -66,6 +68,8 @@ module Mutations
         args.delete(:resupload_file_name)
       end
 
+      args[:created_by] = current_user&.name || "User with ID#{current_user&.id}"
+      args[:last_updated_by] = current_user&.name || "User with ID#{current_user&.id}"
       resource=Resource.new(args)
       resource&.save_draft
       if args[:resupload].present?

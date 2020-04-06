@@ -8,18 +8,22 @@ module Mutations
     argument :name, String, required: false
     argument :status, Types::Enums::Status, required: false
     argument :policy_ids, [ID], required: false
+    argument :last_updated_by, String, required: false
+
 
     
     
     
     field :reference, Types::ReferenceType, null: false
     
-    def resolve(id:, name: nil, status: nil, policy_ids: nil)
+    def resolve(id:, name: nil, status: nil, policy_ids: nil, last_updated_by: nil)
+      current_user = context[:current_user]
       reference = Reference.find(id)
       reference_update = reference.update_attributes!(
         name: '#' << name,
         status: status,
-        policy_ids: policy_ids
+        policy_ids: policy_ids,
+        last_updated_by: current_user&.name || "User with ID#{current_user&.id}"
       )
       lovar= reference.name.count "#"
       

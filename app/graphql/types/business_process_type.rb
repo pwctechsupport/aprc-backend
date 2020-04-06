@@ -16,6 +16,8 @@ module Types
     field :status, String, null: true
     field :tags, [Types::TagType], null: true
     field :ancestors, [Types::BusinessProcessType], null: true
+    field :last_updated_by, String, null: true
+    field :created_by, String, null: true
 
     def ancestors
       object&.ancestors

@@ -22,6 +22,9 @@ module Mutations
     argument :status, Types::Enums::Status, required: false
     argument :risk_ids, [ID], required: false
     argument :key_control, Boolean, required: false
+    argument :last_updated_by, String, required: false
+
+    
 
     field :control, Types::ControlType, null: true
 
@@ -40,7 +43,7 @@ module Mutations
               
               args.delete(:activity_controls_attributes)
               args[:activity_controls_attributes]= activities.collect{|x| x.to_h}
-    
+              args[:last_updated_by] = current_user&.name || "User with ID#{current_user&.id}"
               control&.attributes = args
               control&.save_draft
               admin = User.with_role(:admin_reviewer).pluck(:id)

@@ -13,6 +13,10 @@ module Types
     field :request_status, String, null: true
     field :request_edits, [Types::RequestEditType], null: true
     field :request_edit, Types::RequestEditType, null: true
+    field :last_updated_by, String, null: true
+    field :created_by, String, null: true
+    field :status, String, null: true
+
     
 
     def request_edit
