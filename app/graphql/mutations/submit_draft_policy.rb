@@ -19,7 +19,7 @@ module Mutations
 
       admin = User.with_role(:admin_reviewer).pluck(:id)
       if policy.id.present?
-        Notification.send_notification(admin, policy.title, policy.description, policy, current_user.id, "request_draft")
+        Notification.send_notification(admin, policy.title, policy.title, policy, current_user.id, "request_draft")
       else
         raise GraphQL::ExecutionError, "The exact same draft cannot be duplicated"
       end
