@@ -10,6 +10,6 @@ class ControlBusinessProcess < ApplicationRecord
   belongs_to :control, optional: true
   belongs_to :business_process, optional: true
   def to_humanize
-    "#{self.control.control_owner} : #{self.business_process.name}"
+    "#{self.control.control_owner.join(", ")} : #{self.business_processes&.collect{|x| x.name}.join(", ")}"
   end
 end

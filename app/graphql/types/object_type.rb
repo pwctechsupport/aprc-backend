@@ -2,7 +2,7 @@ module Types
 	class Types::ObjectType < Types::BaseUnion
 		description "Types of an Object"
 
-		possible_types Types::PolicyType, Types::BusinessProcessType, Types::ControlType, Types::RiskType, Types::UserType, Types::PolicyCategoryType, Types::ResourceType
+		possible_types Types::PolicyType, Types::BusinessProcessType, Types::ControlType, Types::RiskType, Types::UserType, Types::PolicyCategoryType, Types::ResourceType, Types::DepartmentType
 		
 		def self.resolve_type(object,context, **args)
 			version_or_draft = PaperTrail::Version.find_by(object: object.to_json) || Draftsman::Draft.find_by(object: object.to_json)
@@ -20,6 +20,8 @@ module Types
 				Types::PolicyCategoryType
 			elsif version_or_draft&.item_type == "Resource"
 				Types::ResourceType
+			elsif version_or_draft&.item_type == "Department"
+				Types::DepartmentType
 			end
 		end
 		

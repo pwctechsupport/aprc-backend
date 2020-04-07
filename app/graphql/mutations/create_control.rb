@@ -6,7 +6,7 @@ module Mutations
     # argument :nature, String, required: false 
     # argument :assertion, String, required: false
     # argument :ipo, String, required: false
-    argument :control_owner, String, required: false
+    argument :control_owner, [ID], as: :department_ids,required: false
     argument :description, String, required: false
     argument :fte_estimate, Int, required: false 
     argument :description, String, required: false
@@ -38,6 +38,9 @@ module Mutations
           args[:activity_controls_attributes]= activities.collect{|x| x.to_h}
           args[:created_by] = current_user&.name || "User with ID#{current_user&.id}"
           args[:last_updated_by] = current_user&.name || "User with ID#{current_user&.id}"
+          if args[:department_ids].present?
+            args[:control_owner] = args[:department_ids].map{|x| Department.find(x&.to_i).name}
+          end
           control=Control.new(args)
           control&.save_draft
           admin = User.with_role(:admin_reviewer).pluck(:id)
@@ -47,6 +50,9 @@ module Mutations
             raise GraphQL::ExecutionError, "The exact same draft cannot be duplicated"
           end
         else
+          if args[:department_ids].present?
+            args[:control_owner] = args[:department_ids].map{|x| Department.find(x&.to_i).name}
+          end
           control=Control.new(args)
           control&.save_draft
 
@@ -58,6 +64,9 @@ module Mutations
           end
         end
       else
+        if args[:department_ids].present?
+          args[:control_owner] = args[:department_ids].map{|x| Department.find(x&.to_i).name}
+        end
         control=Control.new(args)
 
         control.save_draft

@@ -9,12 +9,12 @@ wb.add_worksheet(name: "Report Risks") do |sheet|
     if item.business_processes.present?
       item.controls.each do |bis|
         item.business_processes.each do |bes| 
-          sheet.add_row [item.name,bes&.name,bis.control_owner.to_s.gsub(/"/,'').gsub(/"|\[|\]/, ''),bis.description.to_s.gsub(/"/,'').gsub(/"|\[|\]/, ''),bis.type_of_control.to_s.gsub(/"/,'').gsub(/"|\[|\]/, '').titlecase]
+          sheet.add_row [item.name,bes&.name,bis.control_owner.join(",").to_s.gsub(/"/,'').gsub(/"|\[|\]/, ''),bis.description.to_s.gsub(/"/,'').gsub(/"|\[|\]/, ''),bis.type_of_control.to_s.gsub(/"/,'').gsub(/"|\[|\]/, '').titlecase]
         end
       end
     else
       item.controls.each do |bis| 
-        sheet.add_row [item.name,"No Business Process",bis.control_owner.to_s.gsub(/"/,'').gsub(/"|\[|\]/, ''),bis.description.to_s.gsub(/"/,'').gsub(/"|\[|\]/, ''),bis.type_of_control.to_s.gsub(/"/,'').gsub(/"|\[|\]/, '').titlecase]
+        sheet.add_row [item.name,"No Business Process",bis.control_owner.join(",").to_s.gsub(/"/,'').gsub(/"|\[|\]/, ''),bis.description.to_s.gsub(/"/,'').gsub(/"|\[|\]/, ''),bis.type_of_control.to_s.gsub(/"/,'').gsub(/"|\[|\]/, '').titlecase]
       end
     end  
   end

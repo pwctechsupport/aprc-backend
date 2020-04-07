@@ -4,7 +4,7 @@
     %meta{:content => "text/html; charset=UTF-8", "http-equiv" => "Content-Type"}/
     %meta{:charset => "utf-8"}/
     %meta{:content => "IE=edge", "http-equiv" => "X-UA-Compatible"}/
-    %title #{@control.control_owner}
+    %title #{@control.id}
     :css
       input[type=checkbox]{
       \/* Double-sized Checkboxes */
@@ -40,7 +40,7 @@
       %td.aha= current_user&.name
   .row.m-t-10.text-center
     .col-md-12
-      %h1 #{@control.control_owner}
+      %h1 Control
   %ul   
     .row.m-t-10
       .col-md-12
@@ -54,6 +54,10 @@
       .col-md-12
         %li
           %h3 Nature         : #{@control.nature.to_s.gsub(/[^0-9A-Za-z]/, ' ').titlecase}
+    .row.m-t-10
+      .col-md-12
+        %li
+          %h3 Control Owner         : #{@control.control_owner.join(",").titlecase}
     .row.m-t-10
       .col-md-12
         %li

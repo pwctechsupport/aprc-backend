@@ -14,7 +14,7 @@ module Mutations
     argument :activity_controls_attributes, [Types::BaseScalar], required: false
     argument :ipo, [Types::Enums::Ipo], required: false
     argument :description, String, required: false
-    argument :control_owner, String, required: false
+    argument :control_owner, [ID], as: :department_ids,required: false
     argument :description, String, required: false
     argument :fte_estimate, String, required: false 
     argument :business_process_ids, [ID], required: false
@@ -44,6 +44,9 @@ module Mutations
               args.delete(:activity_controls_attributes)
               args[:activity_controls_attributes]= activities.collect{|x| x.to_h}
               args[:last_updated_by] = current_user&.name || "User with ID#{current_user&.id}"
+              if args[:department_ids].present?
+                args[:control_owner] = args[:department_ids].map{|x| Department.find(x&.to_i).name}
+              end
               control&.attributes = args
               control&.save_draft
               admin = User.with_role(:admin_reviewer).pluck(:id)
@@ -51,6 +54,9 @@ module Mutations
                 Notification.send_notification(admin, control&.description, control&.type_of_control,control, current_user&.id, "request_draft")
               end
             else
+              if args[:department_ids].present?
+                args[:control_owner] = args[:department_ids].map{|x| Department.find(x&.to_i).name}
+              end
               control&.attributes = args
               control&.save_draft
               admin = User.with_role(:admin_reviewer).pluck(:id)
@@ -59,6 +65,9 @@ module Mutations
               end
             end
           else
+            if args[:department_ids].present?
+              args[:control_owner] = args[:department_ids].map{|x| Department.find(x&.to_i).name}
+            end
             control&.attributes = args
             control&.save_draft
             admin = User.with_role(:admin_reviewer).pluck(:id)

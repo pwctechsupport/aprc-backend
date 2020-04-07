@@ -32,6 +32,10 @@ module Types
       description 'Returns the User Manuals'
     end
 
+    field :department, Types::DepartmentType, null: true do
+      argument :id, ID, required: true
+      description 'Returns the User Department'
+    end
 
     # field :res, [Types::ResourceType], null: true do
     #   description 'Returns Resources Attributes'
@@ -142,6 +146,10 @@ module Types
 
     def notification(id:)
       Notification.find_by(id:id)
+    end
+
+    def department(id:)
+      Department.find_by(id:id)
     end
 
     def request_edit(id:)
@@ -261,6 +269,7 @@ module Types
     field :popular_resources, resolver: Resolvers::QueryType::PopularResourcesResolver
     field :manuals, resolver: Resolvers::QueryType::ManualsResolver
     field :sidebar_policies, resolver: Resolvers::QueryType::SidebarPoliciesResolver
+    field :departments_resolver, resolver: Resolvers::QueryType::DepartmentsResolver
 
   end
 end
