@@ -4,6 +4,7 @@ class Control < ApplicationRecord
   validates :description, uniqueness: true
   serialize :assertion, Array
   serialize :ipo, Array
+  serialize :control_owner, Array
   has_many :control_business_processes, dependent: :destroy
   has_many :business_processes, through: :control_business_processes
   has_many :control_descriptions, class_name: "ControlDescription", foreign_key: "control_id", dependent: :destroy
@@ -24,9 +25,11 @@ class Control < ApplicationRecord
   belongs_to :user_reviewer, class_name: "User", foreign_key:"user_reviewer_id", optional: true
   has_many :request_edits, class_name: "RequestEdit", as: :originator, dependent: :destroy
   has_many :tags, dependent: :destroy
+  has_many :control_departments, dependent: :destroy
+  has_many :departments, through: :control_departments
 
   def to_humanize
-    "#{self.control_owner} : #{self.description}"
+    "#{self.control_owner.join(", ")} : #{self.description}"
   end
 
   def request_edit
@@ -39,7 +42,7 @@ class Control < ApplicationRecord
     header = spreadsheet.row(1)
     (2..spreadsheet.last_row).each do |i|
       row = Hash[[header, spreadsheet.row(i)].transpose]      
-      control_id = Control.find_or_create_by(description: row["description"], control_owner: row["control owner"], status: row["status"]&.gsub(" ","_")&.downcase, type_of_control: row["type of control"]&.gsub(" ","_")&.downcase, frequency: row["frequency"]&.downcase, nature: row["nature"]&.downcase, assertion: row["assertion"]&.split(",")&.map {|x| x&.gsub(" ","_")&.downcase}, ipo: row["ipo"]&.split(",").map {|x| x&.gsub(" ","_")&.downcase}, key_control: row["key control"])
+      control_id = Control.find_or_create_by(description: row["description"], control_owner: row["control owner"]&.split(","), status: row["status"]&.gsub(" ","_")&.downcase, type_of_control: row["type of control"]&.gsub(" ","_")&.downcase, frequency: row["frequency"]&.downcase, nature: row["nature"]&.downcase, assertion: row["assertion"]&.split(",")&.map {|x| x&.gsub(" ","_")&.downcase}, ipo: row["ipo"]&.split(",").map {|x| x&.gsub(" ","_")&.downcase}, key_control: row["key control"])
     end
   end
 

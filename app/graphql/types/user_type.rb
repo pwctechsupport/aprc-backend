@@ -8,7 +8,6 @@ module Types
     field :token, String, null: false
     field :phone, String, null: true
     field :role, [Int], null: true
-    field :department, String, null: true
     field :jobPosition, String, null: true
     field :policies, [Types::PolicyType], null: true
     field :policy_categories, [Types::PolicyCategoryType], null: true 
@@ -32,7 +31,7 @@ module Types
     field :activity_controls, [Types::ActivityControlType], null: true
     field :notif_show, Boolean, null: true
     field :status, String, null: true
-
+    field :department, Types::DepartmentType, null: true
 
     def activity_controls
       if object&.class == Hash

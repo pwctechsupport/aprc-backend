@@ -95,7 +95,7 @@
             %tr
               %td.text-center{:scope => "row"} #{i+1}
               %td.text-center #{con.type_of_control.to_s.gsub(/[^0-9A-Za-z]/, ' ').titlecase.html_safe}
-              %td.text-center #{con.control_owner.to_s.gsub(/[^0-9A-Za-z]/, ' ').titlecase.html_safe}
+              %td.text-center #{con.control_owner.join(",").to_s.gsub(/[^0-9A-Za-z]/, ' ').titlecase.html_safe}
               %td.text-center #{con.frequency.to_s.gsub(/[^0-9A-Za-z]/, ' ').titlecase.html_safe}
               %td.text-center #{con.nature.to_s.gsub(/[^0-9A-Za-z]/, ' ').titlecase.html_safe}
               %td
@@ -131,7 +131,7 @@
           %tr
             %td.text-center{:scope => "row"} #{i+1}
             %td.text-center #{con.type_of_control.to_s.gsub(/[^0-9A-Za-z]/, ' ').titlecase.html_safe}
-            %td.text-center #{con.control_owner.to_s.gsub(/[^0-9A-Za-z]/, ' ').titlecase.html_safe}
+            %td.text-center #{con.control_owner.join(",").to_s.gsub(/[^0-9A-Za-z]/, ' ').titlecase.html_safe}
             %td.text-center #{con.frequency.to_s.gsub(/[^0-9A-Za-z]/, ' ').titlecase.html_safe}
             %td.text-center #{con.nature.to_s.gsub(/[^0-9A-Za-z]/, ' ').titlecase.html_safe}
             %td

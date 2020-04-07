@@ -31,7 +31,7 @@
       %ul
       -@policy.controls.each do |con|
         %li
-          %p=con.control_owner.html_safe
+          %p=con.control_owner.join(",").html_safe
   .col-md-12
     %h3 Control Description
     %ul

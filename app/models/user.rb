@@ -20,6 +20,7 @@ class User < ApplicationRecord
   has_many :activity_controls
   has_many :manuals
   belongs_to :user_reviewer, class_name: "User", foreign_key:"user_reviewer_id", optional: true
+  belongs_to :department, optional: true
   devise :database_authenticatable,
          :registerable,
          :recoverable, 

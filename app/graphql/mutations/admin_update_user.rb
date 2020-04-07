@@ -12,7 +12,7 @@ module Mutations
     argument :first_name, String, required: false
     argument :last_name, String, required: false
     argument :jobPosition, String, required: false
-    argument :department, String, required: false
+    argument :department_id, ID, required: false
     argument :status, Types::Enums::Status, required: false
 
 

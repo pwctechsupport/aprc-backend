@@ -7,9 +7,9 @@ module Mutations
     argument :password, String, required: true
     argument :password_confirmation, String, required: true
     argument :name, String, required: false
-    argument :phone, String, required: true
+    argument :phone, String, required: false
     argument :status, Types::Enums::Status, required: false
-
+    argument :department_id, ID, required: false
 
     # return type from the mutation
     field :user, Types::UserType, null: true

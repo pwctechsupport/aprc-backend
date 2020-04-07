@@ -12,19 +12,19 @@ wb.add_worksheet(name: "Report Controls Without Risk") do |sheet|
         control&.business_processes.each do |bis|
           if control.policies.present?
             control.policies.each do |pol|
-              sheet.add_row [control&.control_owner&.titlecase, control&.description&.titlecase, control&.type_of_control&.gsub(/_/, ' ')&.titlecase, control&.frequency, control&.nature&.titlecase, control&.assertion&.join&.gsub(/_/, ' ')&.titlecase, control&.ipo.join&.gsub(/_/, ' ')&.titlecase, control&.status&.gsub(/_/, ' ')&.titlecase, control&.key_control,bis&.name,pol&.title]
+              sheet.add_row [control&.control_owner.join(",")&.titlecase, control&.description&.titlecase, control&.type_of_control&.gsub(/_/, ' ')&.titlecase, control&.frequency, control&.nature&.titlecase, control&.assertion&.join&.gsub(/_/, ' ')&.titlecase, control&.ipo.join&.gsub(/_/, ' ')&.titlecase, control&.status&.gsub(/_/, ' ')&.titlecase, control&.key_control,bis&.name,pol&.title]
             end
           else
-            sheet.add_row [control&.control_owner&.titlecase, control&.description&.titlecase, control&.type_of_control&.gsub(/_/, ' ')&.titlecase, control&.frequency, control&.nature&.titlecase, control&.assertion&.join&.gsub(/_/, ' ')&.titlecase, control&.ipo.join&.gsub(/_/, ' ')&.titlecase, control&.status&.gsub(/_/, ' ')&.titlecase, control&.key_control,bis&.name,"No Related Policies"]
+            sheet.add_row [control&.control_owner.join(",")&.titlecase, control&.description&.titlecase, control&.type_of_control&.gsub(/_/, ' ')&.titlecase, control&.frequency, control&.nature&.titlecase, control&.assertion&.join&.gsub(/_/, ' ')&.titlecase, control&.ipo.join&.gsub(/_/, ' ')&.titlecase, control&.status&.gsub(/_/, ' ')&.titlecase, control&.key_control,bis&.name,"No Related Policies"]
           end
         end
       else
         if control.policies.present?
           control.policies.each do |pol|
-            sheet.add_row [control&.control_owner&.titlecase, control&.description&.titlecase, control&.type_of_control&.gsub(/_/, ' ')&.titlecase, control&.frequency, control&.nature&.titlecase, control&.assertion&.join&.gsub(/_/, ' ')&.titlecase, control&.ipo.join&.gsub(/_/, ' ')&.titlecase, control&.status&.gsub(/_/, ' ')&.titlecase, control&.key_control,"No Business Process",pol&.title]
+            sheet.add_row [control&.control_owner.join(",")&.titlecase, control&.description&.titlecase, control&.type_of_control&.gsub(/_/, ' ')&.titlecase, control&.frequency, control&.nature&.titlecase, control&.assertion&.join&.gsub(/_/, ' ')&.titlecase, control&.ipo.join&.gsub(/_/, ' ')&.titlecase, control&.status&.gsub(/_/, ' ')&.titlecase, control&.key_control,"No Business Process",pol&.title]
           end
         else
-          sheet.add_row [control&.control_owner&.titlecase, control&.description&.titlecase, control&.type_of_control&.gsub(/_/, ' ')&.titlecase, control&.frequency, control&.nature&.titlecase, control&.assertion&.join&.gsub(/_/, ' ')&.titlecase, control&.ipo.join&.gsub(/_/, ' ')&.titlecase, control&.status&.gsub(/_/, ' ')&.titlecase, control&.key_control,"No Business Process","No Related Policies"]
+          sheet.add_row [control&.control_owner.join(",")&.titlecase, control&.description&.titlecase, control&.type_of_control&.gsub(/_/, ' ')&.titlecase, control&.frequency, control&.nature&.titlecase, control&.assertion&.join&.gsub(/_/, ' ')&.titlecase, control&.ipo.join&.gsub(/_/, ' ')&.titlecase, control&.status&.gsub(/_/, ' ')&.titlecase, control&.key_control,"No Business Process","No Related Policies"]
         end
       end
     else
@@ -32,19 +32,19 @@ wb.add_worksheet(name: "Report Controls Without Risk") do |sheet|
         control&.business_processes.each do |bis|
           if control.policies.present?
             control.policies.each do |pol|
-              sheet.add_row [control&.control_owner&.titlecase, control&.description&.titlecase, control&.type_of_control&.gsub(/_/, ' ')&.titlecase, control&.frequency, control&.nature&.titlecase, control&.assertion&.join(",")&.gsub(/_/, ' ')&.titlecase, control&.ipo&.join(",")&.gsub(/_/, ' ')&.titlecase, control&.status&.gsub(/_/, ' ')&.titlecase, control&.key_control,bis&.name,pol&.title]
+              sheet.add_row [control&.control_owner.join(",")&.titlecase, control&.description&.titlecase, control&.type_of_control&.gsub(/_/, ' ')&.titlecase, control&.frequency, control&.nature&.titlecase, control&.assertion&.join(",")&.gsub(/_/, ' ')&.titlecase, control&.ipo&.join(",")&.gsub(/_/, ' ')&.titlecase, control&.status&.gsub(/_/, ' ')&.titlecase, control&.key_control,bis&.name,pol&.title]
             end
           else
-            sheet.add_row [control&.control_owner&.titlecase, control&.description&.titlecase, control&.type_of_control&.gsub(/_/, ' ')&.titlecase, control&.frequency, control&.nature&.titlecase, control&.assertion&.join(",")&.gsub(/_/, ' ')&.titlecase, control&.ipo&.join(",")&.gsub(/_/, ' ')&.titlecase, control&.status&.gsub(/_/, ' ')&.titlecase, control&.key_control,bis&.name,"No Related Policies"]
+            sheet.add_row [control&.control_owner.join(",")&.titlecase, control&.description&.titlecase, control&.type_of_control&.gsub(/_/, ' ')&.titlecase, control&.frequency, control&.nature&.titlecase, control&.assertion&.join(",")&.gsub(/_/, ' ')&.titlecase, control&.ipo&.join(",")&.gsub(/_/, ' ')&.titlecase, control&.status&.gsub(/_/, ' ')&.titlecase, control&.key_control,bis&.name,"No Related Policies"]
           end
         end
       else
         if control.policies.present?
           control.policies.each do |pol|
-            sheet.add_row [control&.control_owner&.titlecase, control&.description&.titlecase, control&.type_of_control&.gsub(/_/, ' ')&.titlecase, control&.frequency, control&.nature&.titlecase, control&.assertion&.join(",")&.gsub(/_/, ' ')&.titlecase, control&.ipo&.join(",")&.gsub(/_/, ' ')&.titlecase, control&.status&.gsub(/_/, ' ')&.titlecase, control&.key_control,"No Business Process",pol&.title]
+            sheet.add_row [control&.control_owner.join(",")&.titlecase, control&.description&.titlecase, control&.type_of_control&.gsub(/_/, ' ')&.titlecase, control&.frequency, control&.nature&.titlecase, control&.assertion&.join(",")&.gsub(/_/, ' ')&.titlecase, control&.ipo&.join(",")&.gsub(/_/, ' ')&.titlecase, control&.status&.gsub(/_/, ' ')&.titlecase, control&.key_control,"No Business Process",pol&.title]
           end
         else
-          sheet.add_row [control&.control_owner&.titlecase, control&.description&.titlecase, control&.type_of_control&.gsub(/_/, ' ')&.titlecase, control&.frequency, control&.nature&.titlecase, control&.assertion&.join(",")&.gsub(/_/, ' ')&.titlecase, control&.ipo&.join(",")&.gsub(/_/, ' ')&.titlecase, control&.status&.gsub(/_/, ' ')&.titlecase, control&.key_control,"No Business Process","No Related Policies"]
+          sheet.add_row [control&.control_owner.join(",")&.titlecase, control&.description&.titlecase, control&.type_of_control&.gsub(/_/, ' ')&.titlecase, control&.frequency, control&.nature&.titlecase, control&.assertion&.join(",")&.gsub(/_/, ' ')&.titlecase, control&.ipo&.join(",")&.gsub(/_/, ' ')&.titlecase, control&.status&.gsub(/_/, ' ')&.titlecase, control&.key_control,"No Business Process","No Related Policies"]
         end
       end
     end

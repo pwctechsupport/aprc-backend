@@ -86,6 +86,9 @@ module Types
     field :create_enum_list, mutation: Mutations::CreateEnumList
     field :update_enum_list, mutation: Mutations::UpdateEnumList
     field :destroy_enum_list, mutation: Mutations::DestroyEnumList
+    field :create_department, mutation: Mutations::CreateDepartment
+    field :update_department, mutation: Mutations::UpdateDepartment
+    field :destroy_department, mutation: Mutations::DestroyDepartment
     field :create_manual, mutation: Mutations::CreateManual
     field :update_manual, mutation: Mutations::UpdateManual
     field :destroy_manual, mutation: Mutations::DestroyManual
