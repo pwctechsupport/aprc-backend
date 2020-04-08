@@ -269,7 +269,7 @@ module Types
     field :popular_resources, resolver: Resolvers::QueryType::PopularResourcesResolver
     field :manuals, resolver: Resolvers::QueryType::ManualsResolver
     field :sidebar_policies, resolver: Resolvers::QueryType::SidebarPoliciesResolver
-    field :departments_resolver, resolver: Resolvers::QueryType::DepartmentsResolver
+    field :departments, resolver: Resolvers::QueryType::DepartmentsResolver
 
   end
 end
