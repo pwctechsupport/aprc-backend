@@ -3,7 +3,7 @@ module Mutations
     # arguments passed to the `resolved` method
     argument :title, String, required: true
     argument :description, String, required: true
-    argument :policy_category_id, ID, required: false 
+    argument :policy_category_id, ID, required: true 
     argument :resource_id, ID, required: false
     argument :it_system_ids, [ID], required: false
     argument :resource_ids, [ID], required: false

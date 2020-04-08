@@ -50,6 +50,7 @@ module Types
     field :is_submitted, Boolean, null: true
     field :created_by, String, null: true
     field :last_updated_by, String, null: true
+    field :is_attributes, Boolean, null: true
 
 
     def versions_count
