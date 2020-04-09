@@ -9,7 +9,7 @@ module Mutations
     argument :control_owner, [ID], as: :department_ids,required: true
     argument :fte_estimate, Int, required: false 
     argument :description, String, required: true
-    argument :type_of_control, Types::Enums::TypeOfControl, required: false
+    argument :type_of_control, Types::Enums::TypeOfControl, required: true
     argument :activity_controls_attributes, [Types::BaseScalar], required: true
     argument :frequency, Types::Enums::Frequency, required: true
     argument :nature, Types::Enums::Nature, required: true 
