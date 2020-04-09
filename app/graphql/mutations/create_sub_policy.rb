@@ -6,13 +6,12 @@ module Mutations
     argument :parent_id, ID, required: true
     argument :reference_ids, [ID], required: false
     argument :status, Types::Enums::Status, required: false
-    argument :business_process_ids, [ID], required: false
-    argument :control_ids, [ID], required: false
-    argument :risk_ids, [ID], required: false
+    argument :business_process_ids, [ID], required: true
+    argument :control_ids, [ID], required: true
+    argument :risk_ids, [ID], required: true
     argument :resource_ids, [ID], required: false
     argument :created_by, String, required: false
     argument :last_updated_by, String, required: false
-    argument :is_attributes, Boolean, required: false
 
 
 
@@ -23,34 +22,16 @@ module Mutations
       current_user = context[:current_user]
       args[:created_by] = current_user&.name || "User with ID#{current_user&.id}"
       args[:last_updated_by] = current_user&.name || "User with ID#{current_user&.id}"
-      if args[:is_attributes]
-        if !args[:business_process_ids].present? && !args[:risk_ids].present? && !args[:control_ids].present?
-          raise GraphQL::ExecutionError , "Field Business Process, Control, and Risk cannot be empty"
-        else
-          policy = current_user.policies.new(args.to_h)
-          policy.save_draft
-          
-          admin = User.with_role(:admin_reviewer).pluck(:id)
-          if policy.id.present?
-            policy.update(created_by: policy&.user&.name)
-            Notification.send_notification(admin, policy&.title, policy&.title, policy, current_user&.id, "request_draft")
-          else
-            raise GraphQL::ExecutionError, "The exact same draft cannot be duplicated"
-          end
-        end
-      else
-        policy = current_user.policies.new(args.to_h)
-        policy.save_draft
+      policy = current_user.policies.new(args.to_h)
+      policy.save_draft
 
-        admin = User.with_role(:admin_reviewer).pluck(:id)
-        if policy.id.present?
-          policy.update(created_by: policy&.user&.name)
-          Notification.send_notification(admin, policy&.title, policy&.title, policy, current_user&.id, "request_draft")
-        else
-          raise GraphQL::ExecutionError, "The exact same draft cannot be duplicated"
-        end
+      admin = User.with_role(:admin_reviewer).pluck(:id)
+      if policy.id.present?
+        policy.update(created_by: policy&.user&.name)
+        Notification.send_notification(admin, policy&.title, policy&.title, policy, current_user&.id, "request_draft")
+      else
+        raise GraphQL::ExecutionError, "The exact same draft cannot be duplicated"
       end
-      
 
       # policy = Policy.create!(args.to_h)
       MutationResult.call(
