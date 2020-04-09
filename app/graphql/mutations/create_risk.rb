@@ -2,9 +2,9 @@ module Mutations
   class CreateRisk < Mutations::BaseMutation
     # arguments passed to the `resolved` method
     argument :name, String, required: true
-    argument :level_of_risk, Types::Enums::LevelOfRisk, required: false
+    argument :level_of_risk, Types::Enums::LevelOfRisk, required: true
     argument :status, Types::Enums::Status, required: false
-    argument :type_of_risk, Types::Enums::TypeOfRisk, required: false 
+    argument :type_of_risk, Types::Enums::TypeOfRisk, required: true 
     argument :business_process_ids, [ID], required: false
     argument :control_ids, [ID], required: false
     argument :created_by, String, required: false

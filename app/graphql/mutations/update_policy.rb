@@ -17,12 +17,14 @@ module Mutations
     argument :risk_ids, [ID], required: false
     argument :control_ids, [ID], required: false
     argument :last_updated_by, String, required: false
+    argument :user_id, ID, required: false
 
-    
+
     field :policy, Types::PolicyType, null: false
 
     def resolve(id:, **args)
       current_user = context[:current_user]
+      args[:user_id] = current_user.id
       policy = Policy.find(id)
       if policy&.request_edits&.last&.approved?
         if policy&.draft?

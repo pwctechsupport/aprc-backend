@@ -4,7 +4,7 @@ module Mutations
   class CreateResource < Mutations::BaseMutation
     # arguments passed to the `resolved` method
     argument :name, String, required: true
-    argument :resuploadBase64, String, as: :resupload, required: false
+    argument :resuploadBase64, String, as: :resupload, required: true
     argument :resuploadFileName, String, as: :resupload_file_name, required: false
     argument :category, String, required: true
     argument :policy_id, ID, required: false
