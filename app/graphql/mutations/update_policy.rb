@@ -18,6 +18,7 @@ module Mutations
     argument :control_ids, [ID], required: false
     argument :last_updated_by, String, required: false
     argument :user_id, ID, required: false
+    argument :last_updated_at, String, required: false
 
 
     field :policy, Types::PolicyType, null: false
@@ -31,6 +32,7 @@ module Mutations
           raise GraphQL::ExecutionError, "Draft Cannot be created until another Draft is Approved/Rejected by an Admin"
         else
           args[:last_updated_by] = current_user&.name || "User with ID#{current_user&.id}"
+          args[:last_updated_at] = Time.now
           policy&.attributes = args
           policy&.save_draft
         end

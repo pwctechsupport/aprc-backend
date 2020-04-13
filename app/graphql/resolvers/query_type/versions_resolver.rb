@@ -9,6 +9,7 @@ module Resolvers
       def resolve(filter:nil, page:nil, limit:nil)
         current_user = context[:current_user]
         @q = PaperTrail::Version.where(whodunnit: current_user.id).ransack(filter.as_json)
+        @q.sorts = 'created_at desc' if @q.sorts.empty?
         @q.result.page(page).per(limit)
       end
     end

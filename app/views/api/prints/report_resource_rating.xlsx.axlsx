@@ -2,7 +2,7 @@
 wb = xlsx_package.workbook
 
 
-wb.add_worksheet(name: "Report Resource Rating") do |sheet|
+wb.add_worksheet(name: "Exception Report Resource Rating") do |sheet|
   # Create the header row
   sheet.add_row ["name", "views", "rating", "total rating"]
   # Create entries for each item
