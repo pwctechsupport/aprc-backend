@@ -14,6 +14,6 @@ class ControlDepartment < ApplicationRecord
   belongs_to :department
 
   def to_humanize
-    "#{self.control.control_owner.join(", ")} : #{self.department.name}"
+    "#{self.control&.description} : #{self.department.name}"
   end
 end

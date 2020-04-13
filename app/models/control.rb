@@ -29,7 +29,7 @@ class Control < ApplicationRecord
   has_many :departments, through: :control_departments
 
   def to_humanize
-    "#{self.control_owner.join(", ")} : #{self.description}"
+    "#{self.description} : #{self.description}"
   end
 
   def request_edit
