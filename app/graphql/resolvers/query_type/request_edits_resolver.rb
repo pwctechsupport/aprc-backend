@@ -9,7 +9,7 @@ module Resolvers
       def resolve(filter:, page: nil, limit: nil)
         current_user = context[:current_user]
         @q = RequestEdit.where(user_id: current_user.id).ransack(filter.as_json)
-        @q.result.page(page).per(limit)
+        @q.result(distinct: true).page(page).per(limit)
       end
     end
   end

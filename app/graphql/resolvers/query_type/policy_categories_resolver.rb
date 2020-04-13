@@ -9,7 +9,7 @@ module Resolvers
       def resolve(filter:, page: nil,limit: nil)
         PolicyCategory.page(page).per(limit)
         @q = PolicyCategory.ransack(filter.as_json)
-        @q.result.page(page).per(limit)  
+        @q.result(distinct: true).page(page).per(limit)
         # ::context[:current_user].page(page).per(limit)
       end
 

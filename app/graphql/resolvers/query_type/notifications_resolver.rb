@@ -10,7 +10,7 @@ module Resolvers
         current_user = context[:current_user]
         @q = Notification&.where(user_id: current_user&.id).ransack(filter.as_json)
         @q.sorts = 'created_at desc' if @q.sorts.empty?
-        @q.result.page(page).per(limit)
+        @q.result(distinct: true).page(page).per(limit)
       end
     end
   end
