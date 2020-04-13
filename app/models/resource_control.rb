@@ -11,6 +11,6 @@ class ResourceControl < ApplicationRecord
   belongs_to :control
 
   def to_humanize
-    "#{self.control.description}: #{self.resource.name}"
+    "#{self.control&.description}: #{self.resource.name}"
   end
 end
