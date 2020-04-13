@@ -13,4 +13,12 @@ class Tag < ApplicationRecord
   belongs_to :user, optional: true
   belongs_to :control, optional: true
   belongs_to :risk, optional:true
+
+  def to_humanize
+    if self.control.present?
+      "#{self.resource&.name} : #{self.control&.description}"
+    elsif self.risk.present?
+      "#{self.resource&.name} : #{self.risk&.name}"
+    end
+  end
 end

@@ -8,4 +8,7 @@ class RiskBusinessProcess < ApplicationRecord
   paper_trail.on_touch
   belongs_to :risk, optional: true
   belongs_to :business_process, optional: true
+  def to_humanize
+    "#{self.risk&.name} : #{self.business_process&.name}"
+  end
 end
