@@ -15,6 +15,7 @@ module Mutations
     argument :risk_ids, [ID], required: false
     argument :reference_ids, [ID], required: false
     argument :last_updated_by, String, required: false
+    argument :last_updated_at, String, required: false
 
     # return type from the mutation
     field :policy, Types::PolicyType, null: true
@@ -24,6 +25,7 @@ module Mutations
       policy = Policy.find(id)
       if policy.user_id == current_user&.id
         args[:last_updated_by] = current_user&.name || "User with ID#{current_user&.id}"
+        args[:last_updated_at] = Time.now
         policy.draft.reify.update_attributes(args.stringify_keys!)
         policy.draft.update_attributes(
           object_changes: JSON.parse(policy.draft.object_changes).update(args.stringify_keys!).to_json, 

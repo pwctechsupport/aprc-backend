@@ -2,7 +2,7 @@
 wb = xlsx_package.workbook
 
 
-wb.add_worksheet(name: "Report Risks without Controls") do |sheet|
+wb.add_worksheet(name: "Exception Report Risks without Controls") do |sheet|
   # Create the header row
   sheet.add_row ["name", "level of risk", "status", "type of risk", "business process", "related policy"]
   # Create entries for each item

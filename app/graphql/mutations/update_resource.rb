@@ -17,6 +17,7 @@ module Mutations
     argument :resupload_link, String, required: false
     argument :tags_attributes, [Types::BaseScalar], required: false
     argument :last_updated_by, String, required: false
+    argument :last_updated_at, String, required: false
 
 
 
@@ -72,6 +73,7 @@ module Mutations
 
           
           args[:last_updated_by] = current_user&.name || "User with ID#{current_user&.id}"
+          args[:last_updated_at] = Time.now
           resource.attributes = args
           resource.save_draft
           resource.name = resource_name
