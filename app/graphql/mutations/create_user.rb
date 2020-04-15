@@ -15,7 +15,8 @@ module Mutations
     field :user, Types::UserType, null: true
 
     def resolve(args)
-      user = User.create(args.to_h)
+      user = User.new(args.to_h)
+      user.save_draft
       current_user = context[:current_user]
       admin = User.with_role(:admin_reviewer).pluck(:id)
       if user.id.present?
