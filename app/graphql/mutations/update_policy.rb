@@ -19,6 +19,8 @@ module Mutations
     argument :last_updated_by, String, required: false
     argument :user_id, ID, required: false
     argument :last_updated_at, String, required: false
+    argument :is_submitted, Boolean, required: false
+
 
 
     field :policy, Types::PolicyType, null: false
