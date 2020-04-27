@@ -12,6 +12,7 @@ module Mutations
     argument :resource_ids, [ID], required: false
     argument :created_by, String, required: false
     argument :last_updated_by, String, required: false
+    argument :is_submitted, Boolean, required: false
 
 
 
