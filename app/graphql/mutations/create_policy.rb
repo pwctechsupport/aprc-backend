@@ -13,6 +13,7 @@ module Mutations
     argument :risk_ids, [ID], required: false
     argument :created_by, String, required: false
     argument :last_updated_by, String, required: false
+    argument :is_submitted, Boolean, required: false
 
     # return type from the mutation
     field :policy, Types::PolicyType, null: true
