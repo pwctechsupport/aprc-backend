@@ -27,6 +27,10 @@ module Mutations
         args[:last_updated_by] = current_user&.name || "User with ID#{current_user&.id}"
         args[:last_updated_at] = Time.now
         args[:is_submitted] = true
+        if policy.draft? == false
+          policy.attributes = args
+          policy.save_draft
+        end
         policy.draft.reify.update_attributes(args.stringify_keys!)
         policy.draft.update_attributes(
           object_changes: JSON.parse(policy.draft.object_changes).update(args.stringify_keys!).to_json, 
