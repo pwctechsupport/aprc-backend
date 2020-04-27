@@ -1,7 +1,21 @@
 module Mutations
   class SubmitDraftPolicy < Mutations::BaseMutation
     # arguments passed to the `resolved` method
+    argument :parent_id, ID, required: false
     argument :id, ID, required: true
+    argument :title, String, required: false
+    argument :description, String, required: false
+    argument :policy_category_id, ID, required: false 
+    argument :resource_id, ID, required: false
+    argument :it_system_ids, [ID], required: false
+    argument :resource_ids, [ID], required: false
+    argument :status, Types::Enums::Status, required: false
+    argument :business_process_ids, [ID], required: false
+    argument :control_ids, [ID], required: false
+    argument :risk_ids, [ID], required: false
+    argument :reference_ids, [ID], required: false
+    argument :last_updated_by, String, required: false
+    argument :last_updated_at, String, required: false
 
     # return type from the mutation
     field :policy, Types::PolicyType, null: true
@@ -10,8 +24,14 @@ module Mutations
       current_user = context[:current_user]
       policy = Policy.find(id)
       if policy.user_id == current_user&.id
+        args[:last_updated_by] = current_user&.name || "User with ID#{current_user&.id}"
+        args[:last_updated_at] = Time.now
         args[:is_submitted] = true
-        policy.update(args.to_h)
+        policy.draft.reify.update_attributes(args.stringify_keys!)
+        policy.draft.update_attributes(
+          object_changes: JSON.parse(policy.draft.object_changes).update(args.stringify_keys!).to_json, 
+          object:JSON.parse(policy.draft.object).update(args.stringify_keys!).to_json
+        )
       else
         raise GraphQL::ExecutionError, "You cannot submit this draft. This Draft belongs to another User"
       end
@@ -19,7 +39,7 @@ module Mutations
 
       admin = User.with_role(:admin_reviewer).pluck(:id)
       if policy.id.present?
-        Notification.send_notification(admin, policy.title, policy.title, policy, current_user.id, "request_draft")
+        Notification.send_notification(admin, "Policy #{policy.title} Has Been Submitted", policy.title, policy, current_user.id, "request_draft")
       else
         raise GraphQL::ExecutionError, "The exact same draft cannot be duplicated"
       end
