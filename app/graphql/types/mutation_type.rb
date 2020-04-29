@@ -98,6 +98,8 @@ module Types
     field :is_visit, mutation: Mutations::IsVisit
     field :update_draft_policy, mutation: Mutations::UpdateDraftPolicy
     field :submit_draft_policy, mutation: Mutations::SubmitDraftPolicy
+    field :create_role, mutation: Mutations::CreateRole
+    field :destroy_role, mutation: Mutations::DestroyRole
     
 
 
