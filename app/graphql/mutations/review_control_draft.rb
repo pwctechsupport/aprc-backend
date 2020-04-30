@@ -18,10 +18,12 @@ module Mutations
           if control.user_reviewer_id.present? && (control.user_reviewer_id != current_user.id)
             raise GraphQL::ExecutionError, "This Draft has been reviewed by another Admin."
           else
-            serial = ["control_owner", "assertion", "ipo"]
-            serial.each do |sif|
-              if control_draft.changeset[sif].present?
-                control_draft.changeset[sif].map!{|x| JSON.parse(x)}
+            if control_draft.event == "update"
+              serial = ["control_owner", "assertion", "ipo"]
+              serial.each do |sif|
+                if control_draft.changeset[sif].present?
+                  control_draft.changeset[sif].map!{|x| JSON.parse(x)}
+                end
               end
             end
             control_draft.reify
