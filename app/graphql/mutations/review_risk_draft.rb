@@ -22,11 +22,9 @@ module Mutations
             risk.update(user_reviewer_id: current_user.id)
             risk.update(status: "release" )
             Notification.send_notification(admin_prep, "Risk Draft named #{risk&.name} Approved", risk&.name,risk, current_user&.id, "request_draft_approved")
-          else
-            risk_draft.publish!
-            risk.update(user_reviewer_id: current_user.id)
-            risk.update(status: "release" )
-            Notification.send_notification(admin_prep, "Risk Draft named #{risk&.name} Approved", risk&.name,risk, current_user&.id, "request_draft_approved")
+          end
+          if risk&.present? && risk&.request_edit&.present?
+            risk&.request_edit&.request!
           end
         else
           if risk.user_reviewer_id.present? && (risk.user_reviewer_id != current_user.id)
@@ -34,6 +32,9 @@ module Mutations
           else
             Notification.send_notification(admin_prep, "Risk Draft named #{risk&.name} Rejected", risk&.name,risk, current_user&.id, "request_draft_rejected")
             risk_draft.revert!
+            if risk&.present? && risk&.request_edit&.present?
+              risk&.request_edit&.request!
+            end
           end
         end 
       else

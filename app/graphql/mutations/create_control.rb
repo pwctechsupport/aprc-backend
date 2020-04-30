@@ -1,11 +1,5 @@
 module Mutations
   class CreateControl < Mutations::BaseMutation
-    # arguments passed to the `resolved` method
-    # argument :type_of_control, String, required: false
-    # argument :frequency, String, required: false
-    # argument :nature, String, required: false 
-    # argument :assertion, String, required: false
-    # argument :ipo, String, required: false
     argument :control_owner, [ID], as: :department_ids,required: true
     argument :fte_estimate, Int, required: false 
     argument :description, String, required: true
@@ -23,10 +17,8 @@ module Mutations
     argument :created_by, String, required: false
     argument :last_updated_by, String, required: false
 
-    # return type from the mutation
     field :control, Types::ControlType, null: true
     
-
     def resolve(args)
       current_user = context[:current_user]
       if args[:activity_controls_attributes].present?
@@ -36,51 +28,20 @@ module Mutations
           args.delete(:activity_controls_attributes)
           args[:activity_controls_attributes]= activities.collect{|x| x.to_h}
           args[:created_by] = current_user&.name || "User with ID#{current_user&.id}"
-          args[:last_updated_by] = current_user&.name || "User with ID#{current_user&.id}"
-          if args[:department_ids].present?
-            args[:control_owner] = args[:department_ids].map{|x| Department.find(x&.to_i).name}
-          end
-          control=Control.new(args)
-          control&.save_draft
-          admin = User.with_role(:admin_reviewer).pluck(:id)
-          if control.id.present?
-            Notification.send_notification(admin, control&.description, control&.type_of_control,control, current_user&.id, "request_draft")
-          else
-            raise GraphQL::ExecutionError, "The exact same draft cannot be duplicated"
-          end
-        else
-          if args[:department_ids].present?
-            args[:control_owner] = args[:department_ids].map{|x| Department.find(x&.to_i).name}
-          end
-          control=Control.new(args)
-          control&.save_draft
-
-          admin = User.with_role(:admin_reviewer).pluck(:id)
-          if control.id.present?
-            Notification.send_notification(admin, control&.description, control&.type_of_control,control, current_user&.id, "request_draft")
-          else
-            raise GraphQL::ExecutionError, "The exact same draft cannot be duplicated"
-          end
-        end
-      else
-        if args[:department_ids].present?
-          args[:control_owner] = args[:department_ids].map{|x| Department.find(x&.to_i).name}
-        end
-        control=Control.new(args)
-
-        control.save_draft
-
-        admin = User.with_role(:admin_reviewer).pluck(:id)
-        if control.id.present?
-          Notification.send_notification(admin, control&.description, control&.type_of_control,control, current_user&.id, "request_draft")
-        else
-          raise GraphQL::ExecutionError, "The exact same draft cannot be duplicated"
         end
       end
-
-      
-      
-
+      args[:last_updated_by] = current_user&.name || "User with ID#{current_user&.id}"
+      if args[:department_ids].present?
+        args[:control_owner] = args[:department_ids].map{|x| Department.find(x&.to_i).name}
+      end
+      control=Control.new(args)
+      control&.save_draft
+      admin = User.with_role(:admin_reviewer).pluck(:id)
+      if control.id.present?
+        Notification.send_notification(admin, control&.description, control&.type_of_control,control, current_user&.id, "request_draft")
+      else
+        raise GraphQL::ExecutionError, "The exact same draft cannot be duplicated"
+      end
 
       MutationResult.call(
           obj: { control: control },

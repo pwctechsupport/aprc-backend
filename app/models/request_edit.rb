@@ -11,6 +11,8 @@ class RequestEdit < ApplicationRecord
     event :reject do
       transition to: :rejected, from: :requested
     end
+    event :request do
+      transition to: :requested, from: [:approved, :rejected]
+    end
   end
-
 end

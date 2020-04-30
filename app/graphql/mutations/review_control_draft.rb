@@ -17,16 +17,14 @@ module Mutations
         if args[:publish] === true
           if control.user_reviewer_id.present? && (control.user_reviewer_id != current_user.id)
             raise GraphQL::ExecutionError, "This Draft has been reviewed by another Admin."
-          elsif !control.user_reviewer_id.present?
-            control_draft.publish!
-            control.update(user_reviewer_id: current_user.id)
-            control.update(status: "release")
-            Notification.send_notification(admin_prep, "Control Draft with owner #{control&.control_owner.join(", ")} Approved", control&.description,control, current_user&.id, "request_draft_approved")
           else
             control_draft.publish!
             control.update(user_reviewer_id: current_user.id)
             control.update(status: "release")
             Notification.send_notification(admin_prep, "Control Draft with owner #{control&.control_owner.join(", ")} Approved", control&.description,control, current_user&.id, "request_draft_approved")
+          end
+          if control&.present? && control&.request_edit&.present?
+            control&.request_edit&.request!
           end
         else
           if control.user_reviewer_id.present? && (control.user_reviewer_id != current_user.id)
@@ -34,6 +32,9 @@ module Mutations
           else
             Notification.send_notification(admin_prep, "Control Draft with owner #{control&.control_owner.join(", ")} Rejected", control&.description,control, current_user&.id, "request_draft_rejected")
             control_draft.revert!
+            if control&.present? && control&.request_edit&.present?
+              control&.request_edit&.request!
+            end
           end
         end 
       else
