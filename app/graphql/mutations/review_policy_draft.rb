@@ -42,7 +42,7 @@ module Mutations
               Notification.send_notification(admin_prep, "Policy Draft titled #{policy.title} Approved", policy&.title,policy, current_user&.id, "request_draft_approved")
             end
             if policy&.present? && policy&.request_edit&.present?
-              policy&.request_edit&.request!
+              policy&.request_edit&.destroy
             end
           else
             if policy&.user_reviewer_id.present? && (policy&.user_reviewer_id != current_user.id)
@@ -52,7 +52,7 @@ module Mutations
               Notification.send_notification(admin_prep, "Policy Draft titled #{policy.title} Has been Rejected", policy&.title,policy, current_user&.id, "request_draft_rejected")
               policy_draft.revert!
               if policy&.present? && policy&.request_edit&.present?
-                policy&.request_edit&.request!
+                policy&.request_edit&.destroy
               end
             end
           end 

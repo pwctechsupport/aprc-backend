@@ -23,7 +23,7 @@ module Mutations
             Notification.send_notification(admin_prep, "Policy Category Draft named #{policy_category.name} Approved", policy_category&.name,policy_category, current_user&.id, "request_draft_approved")
           end
           if policy_category&.present? && policy_category&.request_edit&.present?
-            policy_category&.request_edit&.request!
+            policy_category&.request_edit&.destroy
           end
 
         else
@@ -33,7 +33,7 @@ module Mutations
             Notification.send_notification(admin_prep, "Policy Category Draft named #{policy_category.name} Rejected", policy_category&.name,policy_category, current_user&.id, "request_draft_rejected")
             policy_category_draft.revert!
             if policy_category&.present? && policy_category&.request_edit&.present?
-              policy_category&.request_edit&.request!
+              policy_category&.request_edit&.destroy
             end
           end
         end 

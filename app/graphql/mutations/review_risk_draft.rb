@@ -24,7 +24,7 @@ module Mutations
             Notification.send_notification(admin_prep, "Risk Draft named #{risk&.name} Approved", risk&.name,risk, current_user&.id, "request_draft_approved")
           end
           if risk&.present? && risk&.request_edit&.present?
-            risk&.request_edit&.request!
+            risk&.request_edit&.destroy
           end
         else
           if risk.user_reviewer_id.present? && (risk.user_reviewer_id != current_user.id)
@@ -33,7 +33,7 @@ module Mutations
             Notification.send_notification(admin_prep, "Risk Draft named #{risk&.name} Rejected", risk&.name,risk, current_user&.id, "request_draft_rejected")
             risk_draft.revert!
             if risk&.present? && risk&.request_edit&.present?
-              risk&.request_edit&.request!
+              risk&.request_edit&.destroy
             end
           end
         end 

@@ -35,7 +35,7 @@ module Mutations
             resource.update_attributes!(resupload:rodi_res, resupload_file_name:rodi_name)
           end
           if resource&.present? && resource&.request_edit&.present?
-            resource&.request_edit&.request!
+            resource&.request_edit&.destroy
           end
         else
           if resource.user_reviewer_id.present? && (resource.user_reviewer_id != current_user.id)
@@ -44,7 +44,7 @@ module Mutations
             Notification.send_notification(admin_prep, "Resource Draft named #{resource&.name} Rejected", resource&.name,resource, current_user&.id, "request_draft_rejected")
             resource_draft.revert!
             if resource&.present? && resource&.request_edit&.present?
-              resource&.request_edit&.request!
+              resource&.request_edit&.destroy
             end
           end
         end 
