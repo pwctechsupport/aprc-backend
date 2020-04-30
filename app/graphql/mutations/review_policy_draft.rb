@@ -41,12 +41,19 @@ module Mutations
             else
               Notification.send_notification(admin_prep, "Policy Draft titled #{policy.title} Approved", policy&.title,policy, current_user&.id, "request_draft_approved")
             end
+            if policy&.present? && policy&.request_edit&.present?
+              policy&.request_edit&.request!
+            end
           else
-            if policy.user_reviewer_id.present? && (policy.user_reviewer_id != current_user.id)
+            if policy&.user_reviewer_id.present? && (policy&.user_reviewer_id != current_user.id)
               raise GraphQL::ExecutionError, "This Draft has been reviewed by another Admin."
             else
-              Notification.send_notification(admin_prep, "Policy Draft titled #{policy.title} Has been Rejected", policy&.title, current_user&.id, "request_draft_rejected")
+              admin_prep = User.with_role(:admin_preparer).pluck(:id)
+              Notification.send_notification(admin_prep, "Policy Draft titled #{policy.title} Has been Rejected", policy&.title,policy, current_user&.id, "request_draft_rejected")
               policy_draft.revert!
+              if policy&.present? && policy&.request_edit&.present?
+                policy&.request_edit&.request!
+              end
             end
           end 
         else

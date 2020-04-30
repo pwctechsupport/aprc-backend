@@ -1,12 +1,8 @@
-# frozen_string_literal: true
-
 module Mutations
   class UpdateControl < Mutations::BaseMutation
     graphql_name "UpdateControl"
 
     argument :id, ID, required: true
-    # argument :control_description, String, required: false
-    # argument :assertion_risk, String, required: false
     argument :type_of_control, Types::Enums::TypeOfControl, required: false
     argument :frequency, Types::Enums::Frequency, required: false
     argument :nature, Types::Enums::Nature, required: false 
@@ -24,11 +20,10 @@ module Mutations
     argument :key_control, Boolean, required: false
     argument :last_updated_by, String, required: false
 
-    
-
     field :control, Types::ControlType, null: true
 
     def resolve(id:, **args)
+      Control.serialize(:control_owner, Array)
       current_user = context[:current_user]
       control = Control.find(id)
       if control&.request_edits&.last&.approved?
@@ -43,44 +38,22 @@ module Mutations
               
               args.delete(:activity_controls_attributes)
               args[:activity_controls_attributes]= activities.collect{|x| x.to_h}
-              args[:last_updated_by] = current_user&.name || "User with ID#{current_user&.id}"
-              if args[:department_ids].present?
-                args[:control_owner] = args[:department_ids].map{|x| Department.find(x&.to_i).name}
-              end
-              control&.attributes = args
-              control&.save_draft
-              admin = User.with_role(:admin_reviewer).pluck(:id)
-              if control.draft.present?
-                Notification.send_notification(admin, control&.description, control&.type_of_control,control, current_user&.id, "request_draft")
-              end
-            else
-              if args[:department_ids].present?
-                args[:control_owner] = args[:department_ids].map{|x| Department.find(x&.to_i).name}
-              end
-              control&.attributes = args
-              control&.save_draft
-              admin = User.with_role(:admin_reviewer).pluck(:id)
-              if control.draft.present?
-                Notification.send_notification(admin, control&.description, control&.type_of_control,control, current_user&.id, "request_draft")
-              end
             end
-          else
-            if args[:department_ids].present?
-              args[:control_owner] = args[:department_ids].map{|x| Department.find(x&.to_i).name}
-            end
-            control&.attributes = args
-            control&.save_draft
-            admin = User.with_role(:admin_reviewer).pluck(:id)
-            if control.draft.present?
-              Notification.send_notification(admin, control&.description, control&.type_of_control,control, current_user&.id, "request_draft")
-            else
-            end
+          end
+          if args[:department_ids].present?
+            args[:control_owner] = args[:department_ids].map{|x| Department.find(x&.to_i).name}
+          end
+          args[:last_updated_by] = current_user&.name || "User with ID#{current_user&.id}"
+          control&.attributes = args
+          control&.save_draft
+          admin = User.with_role(:admin_reviewer).pluck(:id)
+          if control.draft.present?
+            Notification.send_notification(admin, control&.description, control&.type_of_control,control, current_user&.id, "request_draft")
           end
         end
       else
         raise GraphQL::ExecutionError, "Request not granted. Please Check Your Request Status"
       end
-      
 
       MutationResult.call(
         obj: { control: control },
@@ -98,3 +71,5 @@ module Mutations
     # end
   end
 end
+
+

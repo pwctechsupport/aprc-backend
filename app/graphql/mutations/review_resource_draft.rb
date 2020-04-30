@@ -34,12 +34,18 @@ module Mutations
           if resource.resupload.present?
             resource.update_attributes!(resupload:rodi_res, resupload_file_name:rodi_name)
           end
+          if resource&.present? && resource&.request_edit&.present?
+            resource&.request_edit&.request!
+          end
         else
           if resource.user_reviewer_id.present? && (resource.user_reviewer_id != current_user.id)
             raise GraphQL::ExecutionError, "This Draft has been reviewed by another Admin."
           else
             Notification.send_notification(admin_prep, "Resource Draft named #{resource&.name} Rejected", resource&.name,resource, current_user&.id, "request_draft_rejected")
             resource_draft.revert!
+            if resource&.present? && resource&.request_edit&.present?
+              resource&.request_edit&.request!
+            end
           end
         end 
       else
