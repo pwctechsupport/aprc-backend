@@ -9,6 +9,7 @@ module Mutations
     argument :created_by, String, required: false
     argument :last_updated_by, String, required: false
     argument :business_process, [ID], as: :business_process_ids,required: false
+    argument :business_process_ids, [ID],required: false
 
     
 
