@@ -14,10 +14,19 @@ module Mutations
       if current_user.present? && current_user.has_role?(:admin_reviewer)
         risk_draft = risk.draft
         admin_prep = User.with_role(:admin_preparer).pluck(:id)
-        if args[:publish] === true
+        if args[:publish] == true
           if risk.user_reviewer_id.present? && (risk.user_reviewer_id != current_user.id)
             raise GraphQL::ExecutionError, "This Draft has been reviewed by another Admin."
-          elsif !risk.user_reviewer_id.present?
+          else
+            if risk_draft.event == "update"
+              serial = ["business_process"]
+              serial.each do |sif|
+                if risk_draft.changeset[sif].present?
+                  risk_draft.changeset[sif].map!{|x| JSON.parse(x)}
+                end
+              end
+            end
+            risk_draft.reify
             risk_draft.publish!
             risk.update(user_reviewer_id: current_user.id)
             risk.update(status: "release" )
@@ -31,9 +40,11 @@ module Mutations
             raise GraphQL::ExecutionError, "This Draft has been reviewed by another Admin."
           else
             Notification.send_notification(admin_prep, "Risk Draft named #{risk&.name} Rejected", risk&.name,risk, current_user&.id, "request_draft_rejected")
+            business_process_rejected = risk&.business_process
             risk_draft.revert!
             if risk&.present? && risk&.request_edit&.present?
               risk&.request_edit&.destroy
+              risk&.update(business_process: business_process_rejected)
             end
           end
         end 

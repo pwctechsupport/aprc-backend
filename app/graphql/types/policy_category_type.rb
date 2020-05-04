@@ -16,8 +16,8 @@ module Types
     field :last_updated_by, String, null: true
     field :created_by, String, null: true
     field :status, String, null: true
+    field :policy, [String], null: true
 
-    
 
     def request_edit
       object&.request_edit

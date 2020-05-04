@@ -9,6 +9,8 @@ module Mutations
     argument :policy_ids, [ID], required: false
     argument :last_updated_by, String, required: false
     argument :status, Types::Enums::Status, required: false
+    argument :policy, [ID], as: :policy_ids,required: false
+
 
 
 
@@ -23,6 +25,9 @@ module Mutations
           raise GraphQL::ExecutionError, "Draft Cannot be created until another Draft is Approved/Rejected by an Admin"
         else
           args[:last_updated_by] = current_user&.name || "User with ID#{current_user&.id}"
+          if args[:policy_ids].present?
+            args[:policy] = args[:policy_ids].map{|x| Policy.find(x&.to_i).title}
+          end
           policy_category.attributes = args
           policy_category.save_draft
           admin = User.with_role(:admin_reviewer).pluck(:id)

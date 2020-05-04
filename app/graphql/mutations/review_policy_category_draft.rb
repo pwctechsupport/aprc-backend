@@ -18,6 +18,15 @@ module Mutations
           if policy_category.user_reviewer_id.present? && (policy_category.user_reviewer_id != current_user.id)
             raise GraphQL::ExecutionError, "This Draft has been reviewed by another Admin."
           else
+            if policy_category_draft.event == "update"
+              serial = ["policy"]
+              serial.each do |sif|
+                if policy_category_draft.changeset[sif].present?
+                  policy_category_draft.changeset[sif].map!{|x| JSON.parse(x)}
+                end
+              end
+            end
+            policy_category_draft.reify
             policy_category_draft.publish!
             policy_category.update(user_reviewer_id: current_user.id)
             Notification.send_notification(admin_prep, "Policy Category Draft named #{policy_category.name} Approved", policy_category&.name,policy_category, current_user&.id, "request_draft_approved")
@@ -31,9 +40,11 @@ module Mutations
             raise GraphQL::ExecutionError, "This Draft has been reviewed by another Admin."
           else
             Notification.send_notification(admin_prep, "Policy Category Draft named #{policy_category.name} Rejected", policy_category&.name,policy_category, current_user&.id, "request_draft_rejected")
+            policy_rejected = policy_category&.policy
             policy_category_draft.revert!
             if policy_category&.present? && policy_category&.request_edit&.present?
               policy_category&.request_edit&.destroy
+              policy_category.update(policy: policy_rejected)
             end
           end
         end 

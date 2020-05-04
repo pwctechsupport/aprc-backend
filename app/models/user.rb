@@ -6,6 +6,8 @@ class User < ApplicationRecord
   # :confirmable, :lockable, :timeoutable, :trackable and :omniauthable
   has_paper_trail ignore: [:current_sign_in_at,:last_sign_in_at, :sign_in_count, :updated_at]
   has_drafts
+  serialize :policy_category, Array
+
   has_many :request_edits, class_name: "RequestEdit", as: :originator, dependent: :destroy
   has_many :file_attachments
   has_many :policies

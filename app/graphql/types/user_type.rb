@@ -32,6 +32,7 @@ module Types
     field :notif_show, Boolean, null: true
     field :status, String, null: true
     field :department, Types::DepartmentType, null: true
+    field :policy_category, [String], null: true
 
     def activity_controls
       if object&.class == Hash

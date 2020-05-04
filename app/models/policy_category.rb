@@ -7,6 +7,8 @@ class PolicyCategory < ApplicationRecord
   paper_trail.on_create
   paper_trail.on_touch
   has_drafts
+
+  serialize :policy, Array
 	
 	validates :name, uniqueness: true
   has_many :policies , inverse_of: :policy_category,dependent: :nullify
