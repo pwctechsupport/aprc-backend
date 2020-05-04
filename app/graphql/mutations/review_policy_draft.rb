@@ -13,13 +13,50 @@ module Mutations
       if policy.is_submitted
         if current_user.present? && current_user.has_role?(:admin_reviewer)
           policy_draft = policy.draft
+          
+
           if args[:publish] === true
             if policy.user_reviewer_id.present? && (policy.user_reviewer_id != current_user.id)
               raise GraphQL::ExecutionError, "This Draft has been reviewed by another Admin."
             else
+              if policy&.policy_business_processes.where.not(draft_id: nil).present?
+                if policy&.policy_business_processes.where(draft_id: nil).present?
+                  policy&.policy_business_processes.where(draft_id: nil).destroy_all
+                end
+                policy&.policy_business_processes.where.not(draft_id: nil).each {|x| x.draft.publish!}
+
+              end
+    
+              if policy&.policy_controls.where.not(draft_id: nil).present?
+                if policy&.policy_controls.where(draft_id: nil).present?
+                  policy&.policy_controls.where(draft_id: nil).destroy_all
+                end
+                policy&.policy_controls.where.not(draft_id: nil).each {|x| x.draft.publish!}
+              end
+    
+              if policy&.policy_risks.where.not(draft_id: nil).present?
+                if policy&.policy_risks.where(draft_id: nil).present?
+                  policy&.policy_risks.where(draft_id: nil).destroy_all
+                end
+                policy&.policy_risks.where.not(draft_id: nil).each {|x| x.draft.publish!}
+              end
+
+              if policy&.policy_references.where.not(draft_id: nil).present?
+                if policy&.policy_references.where(draft_id: nil).present?
+                  policy&.policy_references.where(draft_id: nil).destroy_all
+                end
+                policy&.policy_references.where.not(draft_id: nil).each {|x| x.draft.publish!}
+              end
+
+              if policy&.policy_resources.where.not(draft_id: nil).present?
+                if policy&.policy_resources.where(draft_id: nil).present?
+                  policy&.policy_resources.where(draft_id: nil).destroy_all
+                end
+                policy&.policy_resources.where.not(draft_id: nil).each {|x| x.draft.publish!}
+              end
+
               policy_draft.publish!
-              policy.update(status: "release")
-              policy.update(user_reviewer_id: current_user.id)
+              policy.update_attributes(status: "release", user_reviewer_id: current_user.id)
             end
             admin_prep = User.with_role(:admin_preparer).pluck(:id)
             admin_rev = User.with_role(:admin_reviewer).pluck(:id)
@@ -51,9 +88,25 @@ module Mutations
               admin_prep = User.with_role(:admin_preparer).pluck(:id)
               Notification.send_notification(admin_prep, "Policy Draft titled #{policy.title} Has been Rejected", policy&.title,policy, current_user&.id, "request_draft_rejected")
               policy_draft.revert!
+              if policy&.policy_business_processes.where.not(draft_id: nil).present?
+                policy&.policy_business_processes.where.not(draft_id: nil).destroy_all
+              end
+              if policy&.policy_risks.where.not(draft_id: nil).present?
+                policy&.policy_risks.where.not(draft_id: nil).destroy_all
+              end
+              if policy&.policy_controls.where.not(draft_id: nil).present?
+                policy&.policy_controls.where.not(draft_id: nil).destroy_all
+              end
+              if policy&.policy_references.where.not(draft_id: nil).present?
+                policy&.policy_references.where.not(draft_id: nil).destroy_all
+              end
+              if policy&.policy_resources.where.not(draft_id: nil).present?
+                policy&.policy_resources.where.not(draft_id: nil).destroy_all
+              end
               if policy&.present? && policy&.request_edit&.present?
                 policy&.request_edit&.destroy
               end
+              
             end
           end 
         else
