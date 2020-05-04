@@ -40,9 +40,11 @@ module Mutations
             raise GraphQL::ExecutionError, "This Draft has been reviewed by another Admin."
           else
             Notification.send_notification(admin_prep, "Control Draft with owner #{control&.control_owner.join(", ")} Rejected", control&.description,control, current_user&.id, "request_draft_rejected")
+            control_owner_rejected = control&.control_owner
             control_draft.revert!
             if control&.present? && control&.request_edit&.present?
               control&.request_edit&.destroy
+              control.update(control_owner: control_owner_rejected)
             end
           end
         end 

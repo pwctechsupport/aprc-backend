@@ -22,6 +22,9 @@ module Types
     field :tags, [Types::TagType], null: true
     field :last_updated_by, String, null: true
     field :created_by, String, null: true
+    field :business_process, [String], null: true
+
+
     
 
     def request_edit

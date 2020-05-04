@@ -10,17 +10,22 @@ module Mutations
     argument :phone, String, required: false
     argument :status, Types::Enums::Status, required: false
     argument :department_id, ID, required: false
+    argument :policy_category, [ID], as: :policy_category_ids,required: false
+
 
     # return type from the mutation
     field :user, Types::UserType, null: true
 
     def resolve(args)
+      if args[:policy_category_ids].present?
+        args[:policy_category] = args[:policy_category_ids].map{|x| PolicyCategory.find(x&.to_i).name}
+      end
       user = User.new(args.to_h)
       user.save_draft
       current_user = context[:current_user]
       admin = User.with_role(:admin_reviewer).pluck(:id)
       if user.id.present?
-        Notification.send_notification(admin,user.email,"",user, current_user&.id, "request_draft")
+        Notification.send_notification(admin,"#{current_user&.name} Create a User with email #{user&.email}" ,user.email, user, current_user&.id, "request_draft")
       else
         raise GraphQL::ExecutionError, "The exact same draft cannot be duplicated"
       end
