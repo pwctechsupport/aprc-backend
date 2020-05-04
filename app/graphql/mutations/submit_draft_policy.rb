@@ -27,9 +27,119 @@ module Mutations
         args[:last_updated_by] = current_user&.name || "User with ID#{current_user&.id}"
         args[:last_updated_at] = Time.now
         args[:is_submitted] = true
+        prev_buspro = []
+        prev_risk = []
+        prev_control = []
+        prev_reference = []
+        prev_resource = []
+        if args[:business_process_ids].present?
+          buspro = args[:business_process_ids]
+          args.delete(:business_process_ids)
+          if policy&.policy_business_processes&.present? && (policy&.policy_business_processes.where(draft_id: nil).present? || policy&.policy_business_processes.where.not(draft_id: nil).present?)
+            policy.policy_business_processes.each do |pb|
+              if pb&.draft_id.present?
+                prev_buspro.push(pb&.id)
+              end
+            end
+          end
+        end
+        if args[:reference_ids].present?
+          reference = args[:reference_ids]
+          args.delete(:reference_ids)
+          if policy&.policy_references&.present? && (policy&.policy_references.where(draft_id: nil).present? || policy&.policy_references.where.not(draft_id: nil).present?)
+            policy.policy_references.each do |pb|
+              if pb&.draft_id.present?
+                prev_reference.push(pb&.id)
+              end
+            end
+          end
+        end
+        if args[:resource_ids].present?
+          resource = args[:resource_ids]
+          args.delete(:resource_ids)
+          if policy&.policy_resources&.present? && (policy&.policy_resources.where(draft_id: nil).present? || policy&.policy_resources.where.not(draft_id: nil).present?)
+            policy.policy_resources.each do |pb|
+              if pb&.draft_id.present?
+                prev_resource.push(pb&.id)
+              end
+            end
+          end
+        end
+        if args[:risk_ids].present?
+          risk = args[:risk_ids]
+          args.delete(:risk_ids)
+          if policy&.policy_risks&.present? && (policy&.policy_risks.where(draft_id: nil).present? || policy&.policy_risks.where.not(draft_id: nil).present?)
+            policy.policy_risks.each do |pb|
+              if pb&.draft_id.present?
+                prev_risk.push(pb&.id)
+              end
+            end
+          end
+        end
+        if args[:control_ids].present?
+          control = args[:control_ids]
+          args.delete(:control_ids)
+          if policy&.policy_controls&.present? && (policy&.policy_controls.where(draft_id: nil).present? || policy&.policy_controls.where.not(draft_id: nil).present?)
+            policy.policy_controls.each do |pb|
+              if pb&.draft_id.present?
+                prev_control.push(pb&.id)
+              end
+            end
+          end
+        end
         if policy.draft? == false
           policy.attributes = args
           policy.save_draft
+        end
+        if buspro.present?
+          buspro.each do |bus|
+            pol_bus = PolicyBusinessProcess.new(policy_id: policy&.id, business_process_id: bus )
+            pol_bus.save_draft
+            if prev_buspro.present?
+              polibus = PolicyBusinessProcess.where(id:prev_buspro)
+              polibus.destroy_all
+            end
+          end 
+        end
+        if risk.present?
+          risk.each do |ris|
+            pol_ris = PolicyRisk.new(policy_id: policy&.id, risk_id: ris )
+            pol_ris.save_draft
+            if prev_risk.present?
+              poliris = PolicyRisk.where(id:prev_risk)
+              poliris.destroy_all
+            end
+          end 
+        end
+        if control.present?
+          control.each do |con|
+            pol_con = PolicyControl.new(policy_id: policy&.id, control_id: con )
+            pol_con.save_draft
+            if prev_control.present?
+              policon = PolicyControl.where(id:prev_control)
+              policon.destroy_all
+            end
+          end 
+        end
+        if reference.present?
+          reference.each do |ref|
+            pol_ref = PolicyReference.new(policy_id: policy&.id, reference_id: ref )
+            pol_ref.save_draft
+            if prev_reference.present?
+              poliref = PolicyReference.where(id:prev_reference)
+              poliref.destroy_all
+            end
+          end 
+        end
+        if resource.present?
+          resource.each do |res|
+            pol_res = PolicyResource.new(policy_id: policy&.id, resource_id: res )
+            pol_res.save_draft
+            if prev_resource.present?
+              polires = PolicyResource.where(id:prev_resource)
+              polires.destroy_all
+            end
+          end 
         end
         policy.draft.reify.update_attributes(args.stringify_keys!)
         policy.draft.update_attributes(

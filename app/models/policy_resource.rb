@@ -6,6 +6,8 @@ class PolicyResource < ApplicationRecord
   paper_trail.on_update     # etc.
   paper_trail.on_create
   paper_trail.on_touch
+
+  has_drafts
   
   belongs_to :policy, optional: true
   belongs_to :resource, optional: true

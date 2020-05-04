@@ -7,6 +7,7 @@ class PolicyControl < ApplicationRecord
   paper_trail.on_create
   paper_trail.on_touch
   
+  has_drafts
   belongs_to :policy
   belongs_to :control
   def to_humanize
