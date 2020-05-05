@@ -2,7 +2,7 @@
 wb = xlsx_package.workbook
 
 
-wb.add_worksheet(name: "Exception Report for Unmapped Risks in Flowchart") do |sheet|
+wb.add_worksheet(name: "Exception Report") do |sheet|
   # Create the header row
   sheet.add_row ["name", "level of risk", "status", "type of risk", "business process"]
   # Create entries for each item

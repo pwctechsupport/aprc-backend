@@ -2,7 +2,7 @@
 wb = xlsx_package.workbook
 
 
-wb.add_worksheet(name: "Exception Report for Unmapped Control in Flowchart") do |sheet|
+wb.add_worksheet(name: "Exception Report") do |sheet|
   # Create the header row
   sheet.add_row ["control owner", "description", "type of control", "frequency", "nature", "assertion", "ipo", "status", "key control", "business process"]
   # Create entries for each item
