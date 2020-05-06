@@ -1,4 +1,4 @@
-module Types
+  module Types
   class ResourceType < BaseObject
     field :id, ID, null: false
     field :name, String, null: true
@@ -34,6 +34,7 @@ module Types
     field :last_updated_by, String, null: true
     field :created_by, String, null: true
     field :last_updated_at, String, null: true
+    field :base_64_file, String, null: true
     
 
     def request_edit

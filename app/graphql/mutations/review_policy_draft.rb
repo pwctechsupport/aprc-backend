@@ -56,7 +56,7 @@ module Mutations
               end
 
               policy_draft.publish!
-              policy.update_attributes(status: "release", user_reviewer_id: current_user.id)
+              policy.update_attributes(status: "release", user_reviewer_id: current_user.id, true_version: (policy&.true_version + 1.0))
             end
             admin_prep = User.with_role(:admin_preparer).pluck(:id)
             admin_rev = User.with_role(:admin_reviewer).pluck(:id)

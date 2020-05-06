@@ -74,7 +74,7 @@ module Mutations
       resource&.save_draft
       if args[:resupload].present?
         args[:resupload_file_name] = "#{args[:name]}" << resource.resource_file_type(resource)
-        resource.update_attributes(resupload: args[:resupload], resupload_file_name: args[:resupload_file_name])
+        resource.update_attributes(resupload: args[:resupload], resupload_file_name: args[:resupload_file_name], base_64_file: args[:resupload])
       
       end
       admin = User.with_role(:admin_reviewer).pluck(:id)
