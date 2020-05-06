@@ -51,6 +51,7 @@ module Types
     field :created_by, String, null: true
     field :last_updated_by, String, null: true
     field :last_updated_at, String, null: true
+    field :true_version, Float, null: true
 
 
     def versions_count
