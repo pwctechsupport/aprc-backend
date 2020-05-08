@@ -36,7 +36,7 @@ class Resource < ApplicationRecord
 
   def self.import(file)
     spreadsheet = open_spreadsheet(file)
-    allowed_attributes = ["name", "category", "status", "related control", "related policy"]
+    allowed_attributes = ["name", "category", "status", "related control", "related policy", "related control description", "related policy title"]
     header = spreadsheet.row(1)
     (2..spreadsheet.last_row).each do |i|
       row = Hash[[header, spreadsheet.row(i)].transpose]
