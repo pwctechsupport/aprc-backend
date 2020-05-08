@@ -270,6 +270,8 @@ module Types
     field :manuals, resolver: Resolvers::QueryType::ManualsResolver
     field :sidebar_policies, resolver: Resolvers::QueryType::SidebarPoliciesResolver
     field :departments, resolver: Resolvers::QueryType::DepartmentsResolver
-
+    field :user_policies, resolver: Resolvers::QueryType::UserPoliciesResolver
+    field :preparer_policies, resolver: Resolvers::QueryType::PreparerPoliciesResolver
+    field :reviewer_policies, resolver: Resolvers::QueryType::ReviewerPoliciesResolver
   end
 end
