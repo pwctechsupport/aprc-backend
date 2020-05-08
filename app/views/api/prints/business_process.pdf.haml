@@ -67,7 +67,7 @@
                 %span #{ris.level_of_risk.to_s.gsub(/_/, ' ').titlecase}
               -if ris.type_of_risk.present?
                 %span #{ris.type_of_risk.to_s.gsub(/_/, ' ').titlecase}
-        %h4 
+        %h4{style: "margin-bottom:0px;"} 
           %u Associated Control(s)
         -# %table.table.table-border
         -#   %thead
@@ -296,4 +296,4 @@
 
 
       %p{:style => "page-break-after:always;"}
-      %p{:style => "page-break-after:auto;"}
+      -# %p{:style => "page-break-after:auto;"}
