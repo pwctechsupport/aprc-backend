@@ -233,6 +233,17 @@ module Api
         end
       end
     end
+    
+    def business_process_control
+      @business_process = BusinessProcess.find(params[:id])
+      respond_to do |format|
+        format.json
+        format.pdf do
+          render pdf: 'business_process_control', layout: 'layouts/pdf.haml', template: 'api/prints/business_process_control.pdf.haml', dpi: 300, show_as_html: params.key?('debug'), javascript_delay: 3000, margin: {top: 20, bottom: 20, left: 15, right: 15 }, outline: {outline: true, outline_depth: 10 }, footer: {html: {template:'shared/_pdf_report_footer'}}, header: {html: {template:'shared/_pdf_header'}}
+        end
+      end
+    
+    end
 
     # def report
     #   @policy = Policy.find(params[:id])

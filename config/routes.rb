@@ -56,6 +56,8 @@ Rails.application.routes.draw do
         get :policy, to: "prints#policy", as: :policy
         get 'report', to: "prints#report", as: :report
         get 'business_process', to: "prints#business_process", as: :business_process
+        get 'business_process_control', to: "prints#business_process_control", as: :business_process_control
+
       end
     end
   end
