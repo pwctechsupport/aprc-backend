@@ -35,7 +35,7 @@ class Risk < ApplicationRecord
       if row["related business process"].class === String
         risk_id = Risk.find_or_create_by(name: row["name"], level_of_risk: row["level of risk"], status: row["status"], type_of_risk: row["type of risk"], business_process_ids:row["related business process"]&.split("|"))
       else 
-        risk_id = Risk.find_or_create_by(name: row["name"], level_of_risk: row["level of risk"], status: row["status"], type_of_risk: row["type of risk"], business_process_ids:row["related business process"]
+        risk_id = Risk.find_or_create_by(name: row["name"], level_of_risk: row["level of risk"], status: row["status"], type_of_risk: row["type of risk"], business_process_ids:row["related business process"])
       end
     end
   end
