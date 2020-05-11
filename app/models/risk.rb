@@ -28,15 +28,17 @@ class Risk < ApplicationRecord
 
   def self.import(file)
     spreadsheet = open_spreadsheet(file)
-    allowed_attributes = ["name", "level of risk", "status", "type of risk", "business process"]
+    allowed_attributes = ["name", "level of risk", "status", "type of risk", "related business process"]
     header = spreadsheet.row(1)
     (2..spreadsheet.last_row).each do |i|
       
       row = Hash[[header, spreadsheet.row(i)].transpose]
-      bp_id = row["business process"]
-      bispro = BusinessProcess.find_by(name: bp_id)
-      
-      risk_id = Risk.find_or_create_by(name: row["name"], level_of_risk: row["level of risk"], status: row["status"], type_of_risk: row["type of risk"], business_process_id: bispro&.id)
+      if row["related policy"].class === String
+        risk_id = Risk.find_or_create_by(name: row["name"], level_of_risk: row["level of risk"], status: row["status"], type_of_risk: row["type of risk"], business_process_ids:row["related business process"]&.split("|"))
+      else 
+        risk_id = Risk.find_or_create_by(name: row["name"], level_of_risk: row["level of risk"], status: row["status"], type_of_risk: row["type of risk"], business_process_ids:row["related business process"]
+
+      end
     end
   end
 
