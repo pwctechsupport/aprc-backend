@@ -18,6 +18,16 @@ module Types
     field :ancestors, [Types::BusinessProcessType], null: true
     field :last_updated_by, String, null: true
     field :created_by, String, null: true
+    field :bookmarked_by, Boolean, null: true
+
+
+    def bookmarked_by
+      if object.bookmarks.present?
+        true
+      else
+        false
+      end
+    end
 
     def ancestors
       object&.ancestors

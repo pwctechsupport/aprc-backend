@@ -52,7 +52,16 @@ module Types
     field :last_updated_by, String, null: true
     field :last_updated_at, String, null: true
     field :true_version, Float, null: true
+    field :bookmarked_by, Boolean, null: true
 
+
+    def bookmarked_by
+      if object.bookmarks.present?
+        true
+      else
+        false
+      end
+    end
 
     def versions_count
       ver = object.versions.count.to_f
