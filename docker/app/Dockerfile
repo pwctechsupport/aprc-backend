@@ -34,9 +34,6 @@ RUN cp /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
 # COPY Gemfile & Gemfil.lock
 COPY Gemfile* $APP_PATH/
-
-RUN gem install bundler:1.17.3
-RUN bundle update mimemagic
 # Run bundle
 RUN bundle install
 # Adding project files
