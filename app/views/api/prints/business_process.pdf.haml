@@ -69,20 +69,6 @@
                 %span #{ris.type_of_risk.to_s.gsub(/_/, ' ').titlecase}
         %h4{style: "margin-bottom:0px;"} 
           %u Associated Control(s)
-        -# %table.table.table-border
-        -#   %thead
-        -#     %tr
-        -#       %th{:scope => "col"} Risk Name
-        -#       %th{:scope => "col"} Level of Risk
-        -#       %th{:scope => "col"} Type of Risk
-        -#       %th{:scope => "col"} Business Process
-        -#   %tbody
-        -#     %tr
-        -#       %td #{ris.name}
-        -#       %td #{ris.level_of_risk.to_s.gsub(/_/, ' ').titlecase}
-        -#       %td #{ris.type_of_risk.to_s.gsub(/_/, ' ').titlecase}
-        -#       %td #{ris.business_process.name.capitalize}
-        -# %br
         %table.table.table-borderless
           %thead
             %tr
@@ -295,5 +281,5 @@
   
 
 
-      %p{:style => "page-break-after:always;"}
+      -# %p{:style => "page-break-after:always;"}
       -# %p{:style => "page-break-after:auto;"}
