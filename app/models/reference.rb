@@ -14,7 +14,7 @@ class Reference < ApplicationRecord
     header = spreadsheet.row(1)
     (2..spreadsheet.last_row).each do |i|
       row = Hash[[header, spreadsheet.row(i)].transpose]
-      if row["related policy"].class === String
+      if row["related policy"].class == String
         lovar= row["name"].count "#"
         if lovar >= 1
           refa= row["name"].gsub('#','')
