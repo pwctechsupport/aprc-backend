@@ -14,25 +14,20 @@
 #   last_name: "Herumurti"
 # )
 
+are_roles = ["admin_reviewer", "admin_preparer", "admin", "user", "staff", "supervisor", "manager", "high_level"]
 
-Role.create(
-  name: "admin"
-)
-
-Role.create(
-  name: "admin_preparer"
-)
-
-Role.create(
-  name: "admin_reviewer"
-)
-
+8.times do 
+  Role.create(
+    name:are_roles.first
+  )
+  are_roles.shift
+end
 
 roles = Role.all.map{|x| x.id}
 
 z = 0
 
-10.times do |t|
+10.times do
   roles.rotate!
   z+=1
   User.create(
