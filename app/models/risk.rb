@@ -1,5 +1,5 @@
 class Risk < ApplicationRecord
-  validates :name, uniqueness: true
+  # validates :name, uniqueness: true
   has_paper_trail
   has_drafts
   serialize :business_process, Array
