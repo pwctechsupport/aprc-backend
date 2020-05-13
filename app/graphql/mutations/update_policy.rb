@@ -38,8 +38,6 @@ module Mutations
           policy&.attributes = args
           policy&.save_draft
         end
-      elsif args[:resource_ids].present? && args.length == 2
-        policy.update(resource_ids: args[:resource_ids])
       else  
         raise GraphQL::ExecutionError, "Request not granted. Please Check Your Request Status"
       end
