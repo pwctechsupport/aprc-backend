@@ -100,6 +100,7 @@ module Types
     field :submit_draft_policy, mutation: Mutations::SubmitDraftPolicy
     field :create_role, mutation: Mutations::CreateRole
     field :destroy_role, mutation: Mutations::DestroyRole
+    field :remove_relation, mutation: Mutations::RemoveRelation
     
 
 
