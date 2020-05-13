@@ -33,6 +33,7 @@ module Types
     field :status, String, null: true
     field :department, Types::DepartmentType, null: true
     field :policy_category, [String], null: true
+    field :resource_rating, Types::ResourceRatingType, null: true
 
     def activity_controls
       if object&.class == Hash
