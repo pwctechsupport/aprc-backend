@@ -4,7 +4,7 @@ wb = xlsx_package.workbook
 
 wb.add_worksheet(name: "Resources") do |sheet|
   # Create the header row
-  sheet.add_row ["name", "file name", "file type", "file size", "category", "status", "related control", "related policy", "related control description", "related policy title]
+  sheet.add_row ["name", "file name", "file type", "file size", "category", "status", "related control", "related policy", "related control description", "related policy title"]
   # Create entries for each item
   def resource_file_type(object)
     content = object.resupload_content_type

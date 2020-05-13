@@ -1,17 +1,8 @@
 wb = xlsx_package.workbook
 
-defaults =  { :style => :thick, :color => "000000" }
-  borders = Hash.new do |hash, key|
-    hash[key] = wb.styles.add_style :border => defaults.merge( { :edges => key.to_s.split('_').map(&:to_sym) } )
-  end
-  top_row =  [0, borders[:top_bottom_left], borders[:top_bottom], borders[:top_bottom], borders[:top_bottom], borders[:top_bottom], borders[:top_bottom], borders[:top_bottom], borders[:top_bottom_right]]
-  middle_row = [0, borders[:left], nil, nil, borders[:right]]
-  bottom_row = [0, borders[:top_left_bottom], borders[:top_bottom], borders[:top_bottom], borders[:top_bottom], borders[:top_bottom], borders[:top_bottom], borders[:top_bottom], borders[:top_right_bottom],]
 
 wb.add_worksheet(name: "Business Processes") do |sheet|
-  sheet.add_row []
   sheet.add_row ["name", "ancestry"]
-  sheet.add_row []
   @business_processes.each do |business_process|
     sheet.add_row [business_process&.name, business_process&.parent&.name]
   end

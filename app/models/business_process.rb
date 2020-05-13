@@ -27,7 +27,7 @@ class BusinessProcess < ApplicationRecord
     (2..spreadsheet.last_row).each do |i|
       row = Hash[[header, spreadsheet.row(i)].transpose]
       if row["name"].present?
-        business_process_id = BusinessProcess.find_or_create_by(name: row["name"], ancestry: BusinessProcess&.find_by(name: row["ancestry"])&.id)
+        business_process_id = BusinessProcess.create(name: row["name"], parent_id: BusinessProcess&.find_by(name: row["ancestry"])&.id)
       end
     end
   end
