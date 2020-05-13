@@ -1,5 +1,6 @@
 class Risk < ApplicationRecord
   # validates :name, uniqueness: true
+  validates_uniqueness_of :name, scope: %i[level_of_risk type_of_risk]
   has_paper_trail
   has_drafts
   serialize :business_process, Array
