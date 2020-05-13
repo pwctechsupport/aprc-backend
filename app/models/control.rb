@@ -55,4 +55,48 @@ class Control < ApplicationRecord
       raise "Unknown file type: #{file.original_filename}"
     end
   end
+
+  def convert_ipo
+    if self.ipo.present?
+      converted_ipo = []
+      self.ipo.collect do |i|
+        if i == "completeness"
+          converted_ipo.push("C")
+        elsif i == "accuracy"
+          converted_ipo.push("A")
+        elsif i == "validation"
+          converted_ipo.push("V")
+        elsif i == "restriction"
+          converted_ipo.push("R")
+        end
+      end
+      converted_ipo
+    else
+      converted_ipo = []
+    end
+  end
+
+  def convert_assertion
+    if self.assertion.present?
+      converted_assertion =[]
+      self.assertion.each do |i|
+        if i == "completeness"
+          converted_assertion.push("C")
+        elsif i == "accuracy"
+          converted_assertion.push("A")
+        elsif i == "validation"
+          converted_assertion.push("V")
+        elsif i == "existence_and_occurence"
+          converted_assertion.push("E/O")
+        elsif i == "rights_and_obligation"
+          converted_assertion.push("R&O")
+        elsif i == "presentation_and_disclosure"
+          converted_assertion.push("P&D")
+        end
+      end
+      converted_assertion
+    else
+      converted_assertion = []
+    end
+  end
 end
