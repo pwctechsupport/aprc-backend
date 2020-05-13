@@ -3,9 +3,9 @@ module Mutations
   class RemoveRelation < Mutations::BaseMutation
     graphql_name "RemoveRelation"
 
-    argument :originator_id, ID, required: true
-    argument :resource_id, ID, required: true
-    argument :originator_type, String, required: true
+    argument :originator_id, ID, required: false
+    argument :resource_id, ID, required: false
+    argument :originator_type, String, required: false
 
     field :policy_resource, Types::PolicyResourceType, null: true
     field :resource, Types::ResourceType, null:true
