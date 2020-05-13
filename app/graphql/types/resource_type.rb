@@ -35,6 +35,7 @@
     field :created_by, String, null: true
     field :last_updated_at, String, null: true
     field :base_64_file, String, null: true
+    field :resource_rating, Types::ResourceRatingType, null: true
     
 
     def request_edit
