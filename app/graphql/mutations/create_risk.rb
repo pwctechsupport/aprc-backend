@@ -17,6 +17,7 @@ module Mutations
     field :risk, Types::RiskType, null: true
 
     def resolve(args)
+      
       current_user = context[:current_user]
       args[:created_by] = current_user&.name || "User with ID#{current_user&.id}"
       args[:last_updated_by] = current_user&.name || "User with ID#{current_user&.id}"
@@ -25,6 +26,8 @@ module Mutations
       end
       risk = Risk.new(args.to_h)
       risk.save_draft
+      risk.type_level_error
+
       admin = User.with_role(:admin_reviewer).pluck(:id)
       if risk.id.present?
         Notification.send_notification(admin, risk&.name, risk&.type_of_risk,risk, current_user&.id, "request_draft")

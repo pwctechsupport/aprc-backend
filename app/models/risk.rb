@@ -50,4 +50,11 @@ class Risk < ApplicationRecord
       raise "Unknown file type: #{file.original_filename}"
     end
   end
+  
+  def type_level_error
+    if self.errors.details[:name].first[:error] == :taken
+      raise GraphQL::ExecutionError, "The Level of Risk and Type of Risk combination for this Risk is not possible "
+    end
+  end
+
 end
