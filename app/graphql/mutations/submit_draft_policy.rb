@@ -26,6 +26,7 @@ module Mutations
       if policy.user_id == current_user&.id
         args[:last_updated_by] = current_user&.name || "User with ID#{current_user&.id}"
         args[:last_updated_at] = Time.now
+        policy.update(is_submitted: true)
         args[:is_submitted] = true
         prev_buspro = []
         prev_risk = []

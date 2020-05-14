@@ -88,6 +88,8 @@ module Mutations
               admin_prep = User.with_role(:admin_preparer).pluck(:id)
               Notification.send_notification(admin_prep, "Policy Draft titled #{policy.title} Has been Rejected", policy&.title,policy, current_user&.id, "request_draft_rejected")
               policy_draft.revert!
+              policy.update(is_submitted:false)
+
               if policy&.policy_business_processes.where.not(draft_id: nil).present?
                 policy&.policy_business_processes.where.not(draft_id: nil).destroy_all
               end
