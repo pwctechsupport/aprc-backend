@@ -142,7 +142,6 @@ module Mutations
             end
           end 
         end
-        policy.draft.reify.update_attributes(args.stringify_keys!)
         policy.draft.update_attributes(
           object_changes: JSON.parse(policy.draft.object_changes).update(args.stringify_keys!).to_json, 
           object:JSON.parse(policy.draft.object).update(args.stringify_keys!).to_json
