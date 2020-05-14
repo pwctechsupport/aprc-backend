@@ -34,6 +34,8 @@ module Mutations
           end
           risk.attributes = args
           risk.save_draft
+          risk.type_level_error
+
           admin = User.with_role(:admin_reviewer).pluck(:id)
           if risk.draft.present?
             Notification.send_notification(admin, risk&.name, risk&.type_of_risk,risk, current_user&.id, "request draft")
