@@ -12,4 +12,12 @@ class RequestEdit < ApplicationRecord
       transition to: :rejected, from: :requested
     end
   end
+
+  def to_name
+    if self&.originator&.title&.present?
+      self&.originator&.title
+    else
+      self&.originator&.name
+    end
+  end
 end

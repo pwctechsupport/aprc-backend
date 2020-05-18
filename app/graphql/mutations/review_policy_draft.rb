@@ -75,9 +75,8 @@ module Mutations
                 Notification.send_notification_to_all(admin ,"#{polisi.title} with #{r.name} has been updated. Consider review for other related policies with #{r.name} i.e.: #{nami}","#{nama}",policy, current_user&.id, "related_reference" ) 
                 #{polisi.title} with #{r.name} has been updated. Consider review other related policies with #{r.name} #{nama}. 
               end
-            else
-              Notification.send_notification(admin_prep, "Policy Draft titled #{policy.title} Approved", policy&.title,policy, current_user&.id, "request_draft_approved")
             end
+            Notification.send_notification(admin_prep, "Policy Draft titled #{policy.title} Approved", policy&.title,policy, current_user&.id, "request_draft_approved")
             if policy&.present? && policy&.request_edit&.present?
               policy&.request_edit&.destroy
             end
