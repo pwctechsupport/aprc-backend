@@ -12,11 +12,11 @@ module Mutations
       if request_edit.requested? && args[:approve]
         request_edit.approve!
         request_edit.update(approver_id: current_user&.id)
-        Notification.send_notification(admin_prep, "Request Edit Has been Approved By", request_edit&.to_name,request_edit, current_user&.id, "request_edit_approved")
+        Notification.send_notification(admin_prep, "Request Edit Has been Approved By #{current_user&.name}", request_edit&.to_name,request_edit, current_user&.id, "request_edit_approved")
       else
         request_edit.reject!
         request_edit.update(approver_id: current_user&.id)
-        Notification.send_notification(admin_prep, "Request Edit Has been Rejected By", request_edit&.to_name,request_edit, current_user&.id, "request_edit_rejected")
+        Notification.send_notification(admin_prep, "Request Edit Has been Rejected By #{current_user&.name}", request_edit&.to_name,request_edit, current_user&.id, "request_edit_rejected")
       end
       # request_edit = current_user.request_edit_risks.create!(args.to_h)
       MutationResult.call(
