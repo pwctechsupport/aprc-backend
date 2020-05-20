@@ -273,6 +273,18 @@ module Types
     field :departments, resolver: Resolvers::QueryType::DepartmentsResolver
     field :user_policies, resolver: Resolvers::QueryType::UserPoliciesResolver
     field :preparer_policies, resolver: Resolvers::QueryType::PreparerPoliciesResolver
+    field :preparer_controls, resolver: Resolvers::QueryType::PreparerControlsResolver
+    field :preparer_policy_categories, resolver: Resolvers::QueryType::PreparerPolicyCategoriesResolver
+    field :preparer_users, resolver: Resolvers::QueryType::PreparerUsersResolver
+    field :preparer_resources, resolver: Resolvers::QueryType::PreparerResourcesResolver
+    field :preparer_risks, resolver: Resolvers::QueryType::PreparerRisksResolver
+    field :preparer_created_policies, resolver: Resolvers::QueryType::PreparerCreatedPoliciesResolver
+    field :preparer_created_controls, resolver: Resolvers::QueryType::PreparerCreatedControlsResolver
+    field :preparer_created_risks, resolver: Resolvers::QueryType::PreparerCreatedRisksResolver
+    field :preparer_created_resources, resolver: Resolvers::QueryType::PreparerCreatedResourcesResolver
+    field :preparer_created_users, resolver: Resolvers::QueryType::PreparerCreatedUsersResolver
+    field :preparer_created_policy_categories, resolver: Resolvers::QueryType::PreparerCreatedRPolicyCategoriesResolver
+    field :preparer_policies, resolver: Resolvers::QueryType::PreparerPoliciesResolver
     field :reviewer_policies, resolver: Resolvers::QueryType::ReviewerPoliciesResolver
   end
 end
