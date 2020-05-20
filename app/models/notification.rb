@@ -26,4 +26,14 @@ class Notification < ApplicationRecord
       Notification.create(user_id: user&.to_i, title: title, body: body , originator: originator, sender_user_id: sender_user_id, data_type: data_type, is_general: true)
     end
   end
+
+  def self.send_notification_to_approve(arr_of_user, title, body, originator,sender_user_id, data_type= nil)
+    if arr_of_user.include? originator&.approver_id
+      Notification.create(user_id: originator.approver_id, title: title, body: body , originator: originator, sender_user_id: sender_user_id, data_type: data_type)
+    else
+      arr_of_user.each do |user|
+        Notification.create(user_id: user&.to_i, title: title, body: body , originator: originator, sender_user_id: sender_user_id, data_type: data_type)
+      end
+    end
+  end
 end
