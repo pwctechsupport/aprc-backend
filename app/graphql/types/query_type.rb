@@ -274,15 +274,26 @@ module Types
     field :user_policies, resolver: Resolvers::QueryType::UserPoliciesResolver
     field :preparer_policies, resolver: Resolvers::QueryType::Preparer::PreparerPoliciesResolver
     field :preparer_controls, resolver: Resolvers::QueryType::Preparer::PreparerControlsResolver
+    field :preparer_business_processes, resolver: Resolvers::QueryType::Preparer::PreparerBusinessProcessesResolver
+    field :preparer_references, resolver: Resolvers::QueryType::Preparer::PreparerReferencesResolver
     field :preparer_policy_categories, resolver: Resolvers::QueryType::Preparer::PreparerPolicyCategoriesResolver
     field :preparer_users, resolver: Resolvers::QueryType::Preparer::PreparerUsersResolver
     field :preparer_resources, resolver: Resolvers::QueryType::Preparer::PreparerResourcesResolver
     field :preparer_risks, resolver: Resolvers::QueryType::Preparer::PreparerRisksResolver
     field :preparer_created_controls, resolver: Resolvers::QueryType::Preparer::PreparerCreatedControlsResolver
     field :preparer_created_risks, resolver: Resolvers::QueryType::Preparer::PreparerCreatedRisksResolver
+    field :preparer_created_business_processes, resolver: Resolvers::QueryType::Preparer::PreparerCreatedBusinessProcessesResolver
+    field :preparer_created_references, resolver: Resolvers::QueryType::Preparer::PreparerCreatedReferencesResolver
     field :preparer_created_resources, resolver: Resolvers::QueryType::Preparer::PreparerCreatedResourcesResolver
     field :preparer_created_users, resolver: Resolvers::QueryType::Preparer::PreparerCreatedUsersResolver
     field :preparer_created_policy_categories, resolver: Resolvers::QueryType::Preparer::PreparerCreatedPolicyCategoriesResolver
     field :reviewer_policies, resolver: Resolvers::QueryType::ReviewerPoliciesResolver
+    field :navigator_business_processes, resolver: Resolvers::QueryType::Navigator::NavigatorBusinessProcessesResolver
+    field :navigator_controls, resolver: Resolvers::QueryType::Navigator::NavigatorControlsResolver
+    field :navigator_policy_categories, resolver: Resolvers::QueryType::Navigator::NavigatorPolicyCategoriesResolver
+    field :navigator_references, resolver: Resolvers::QueryType::Navigator::NavigatorReferencesResolver
+    field :navigator_resources, resolver: Resolvers::QueryType::Navigator::NavigatorResourcesResolver
+    field :navigator_risks, resolver: Resolvers::QueryType::Navigator::NavigatorRisksResolver
+    field :navigator_users, resolver: Resolvers::QueryType::Navigator::NavigatorUsersResolver
   end
 end
