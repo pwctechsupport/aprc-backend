@@ -272,19 +272,17 @@ module Types
     field :sidebar_policies, resolver: Resolvers::QueryType::SidebarPoliciesResolver
     field :departments, resolver: Resolvers::QueryType::DepartmentsResolver
     field :user_policies, resolver: Resolvers::QueryType::UserPoliciesResolver
-    field :preparer_policies, resolver: Resolvers::QueryType::PreparerPoliciesResolver
-    field :preparer_controls, resolver: Resolvers::QueryType::PreparerControlsResolver
-    field :preparer_policy_categories, resolver: Resolvers::QueryType::PreparerPolicyCategoriesResolver
-    field :preparer_users, resolver: Resolvers::QueryType::PreparerUsersResolver
-    field :preparer_resources, resolver: Resolvers::QueryType::PreparerResourcesResolver
-    field :preparer_risks, resolver: Resolvers::QueryType::PreparerRisksResolver
-    field :preparer_created_policies, resolver: Resolvers::QueryType::PreparerCreatedPoliciesResolver
-    field :preparer_created_controls, resolver: Resolvers::QueryType::PreparerCreatedControlsResolver
-    field :preparer_created_risks, resolver: Resolvers::QueryType::PreparerCreatedRisksResolver
-    field :preparer_created_resources, resolver: Resolvers::QueryType::PreparerCreatedResourcesResolver
-    field :preparer_created_users, resolver: Resolvers::QueryType::PreparerCreatedUsersResolver
-    field :preparer_created_policy_categories, resolver: Resolvers::QueryType::PreparerCreatedRPolicyCategoriesResolver
-    field :preparer_policies, resolver: Resolvers::QueryType::PreparerPoliciesResolver
+    field :preparer_policies, resolver: Resolvers::QueryType::Preparer::PreparerPoliciesResolver
+    field :preparer_controls, resolver: Resolvers::QueryType::Preparer::PreparerControlsResolver
+    field :preparer_policy_categories, resolver: Resolvers::QueryType::Preparer::PreparerPolicyCategoriesResolver
+    field :preparer_users, resolver: Resolvers::QueryType::Preparer::PreparerUsersResolver
+    field :preparer_resources, resolver: Resolvers::QueryType::Preparer::PreparerResourcesResolver
+    field :preparer_risks, resolver: Resolvers::QueryType::Preparer::PreparerRisksResolver
+    field :preparer_created_controls, resolver: Resolvers::QueryType::Preparer::PreparerCreatedControlsResolver
+    field :preparer_created_risks, resolver: Resolvers::QueryType::Preparer::PreparerCreatedRisksResolver
+    field :preparer_created_resources, resolver: Resolvers::QueryType::Preparer::PreparerCreatedResourcesResolver
+    field :preparer_created_users, resolver: Resolvers::QueryType::Preparer::PreparerCreatedUsersResolver
+    field :preparer_created_policy_categories, resolver: Resolvers::QueryType::Preparer::PreparerCreatedPolicyCategoriesResolver
     field :reviewer_policies, resolver: Resolvers::QueryType::ReviewerPoliciesResolver
   end
 end
