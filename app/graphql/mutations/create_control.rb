@@ -34,10 +34,30 @@ module Mutations
       if args[:department_ids].present?
         args[:control_owner] = args[:department_ids].map{|x| Department.find(x&.to_i).name}
       end
+      if args[:business_process_ids].present?
+        buspro = args[:business_process_ids]
+        args.delete(:business_process_ids)
+      end
+      if args[:risk_ids].present?
+        risk = args[:risk_ids]
+        args.delete(:risk_ids)
+      end
       control=Control.new(args)
       control&.save_draft
       admin = User.with_role(:admin_reviewer).pluck(:id)
       if control.id.present?
+        if buspro.present?
+          buspro.each do |bus|
+            con_bus = ControlBusinessProcess.new(control_id: control&.id, business_process_id: bus )
+            con_bus.save_draft
+          end 
+        end
+        if risk.present?
+          risk.each do |ris|
+            con_ris = ControlRisk.new(control_id: control&.id, risk_id: ris )
+            con_ris.save_draft
+          end 
+        end
         Notification.send_notification(admin, control&.description, control&.type_of_control,control, current_user&.id, "request_draft")
       else
         raise GraphQL::ExecutionError, "The exact same draft cannot be duplicated"

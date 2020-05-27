@@ -74,9 +74,22 @@ module Mutations
           
           args[:last_updated_by] = current_user&.name || "User with ID#{current_user&.id}"
           args[:last_updated_at] = Time.now
+          prev_control = []
+          if args[:control_ids].present?
+            control = args[:control_ids]
+            args.delete(:control_ids)
+            if resource&.resource_controls&.present? && (resource&.resource_controls.where(draft_id: nil).present? || resource&.resource_controls.where.not(draft_id: nil).present?)
+              resource.resource_controls.each do |pb|
+                if pb&.draft_id.present?
+                  prev_control.push(pb&.id)
+                end
+              end
+            end
+          end
           resource.attributes = args
           resource.save_draft
           resource.name = resource_name
+          
           if resource.resupload.present?
             if !(args[:resupload].present?) && args[:name].present?
               args[:resupload_file_name] = "#{args[:name]}" << resource.resource_file_type(resource)
@@ -85,6 +98,17 @@ module Mutations
               args[:resupload_file_name] = "#{args[:name]}" << resource.resource_file_type(resource)
               resource.update_attributes!(resupload: args[:resupload], resupload_file_name: args[:resupload_file_name],base_64_file: args[:resupload])
             end     
+          end
+
+          if control.present?
+            control.each do |con|
+              res_con = ResourceControl.new(resource_id: resource&.id, control_id: con )
+              res_con.save_draft
+              if prev_control.present?
+                resicon = ResourceControl.where(id:prev_control)
+                resicon.destroy_all
+              end
+            end 
           end
           
           admin = User.with_role(:admin_reviewer).pluck(:id)
