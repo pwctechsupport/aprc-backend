@@ -38,11 +38,34 @@ class Control < ApplicationRecord
 
   def self.import(file)
     spreadsheet = open_spreadsheet(file)
-    allowed_attributes = ["control owner", "description", "type of control", "frequency", "nature", "assertion", "ipo", "status", "key control"]
+    allowed_attributes = [ "description", "type of control", "frequency", "nature", "assertion", "ipo", "status", "key control", "related business process", "related business process name", "related risk", "related risk name", "related control owner", "related control owner name"]
     header = spreadsheet.row(1)
+    control_descriptions = []
+    risk_ids = []
+    bp_ids = []
+    co_ids = []
+    index_control = 0
     (2..spreadsheet.last_row).each do |i|
-      row = Hash[[header, spreadsheet.row(i)].transpose]      
-      control_id = Control.find_or_create_by(description: row["description"], control_owner: row["control owner"]&.split(","), status: row["status"]&.gsub(" ","_")&.downcase, type_of_control: row["type of control"]&.gsub(" ","_")&.downcase, frequency: row["frequency"]&.downcase, nature: row["nature"]&.downcase, assertion: row["assertion"]&.split(",")&.map {|x| x&.gsub(" ","_")&.downcase}, ipo: row["ipo"]&.split(",").map {|x| x&.gsub(" ","_")&.downcase}, key_control: row["key control"])
+      row = Hash[[header, spreadsheet.row(i)].transpose]
+      if row["description"].present? && !Control.find_by(description: row["description"]).present?
+        if control_descriptions.count != 0
+          control_id = Control&.find_by(description:control_descriptions[index_control-1]).update(risk_ids: risk_ids, business_process_ids: bp_ids, department_ids:co_ids)
+          if co_ids.count != 0
+            Control&.find_by(description:control_descriptions[index_control-1]).update(control_owner: co_ids.map{|x| Department.find(x).name})
+          end
+          risk_ids&.reject!{|x| x == x}
+          bp_ids&.reject!{|x| x == x}
+          co_ids&.reject!{|x| x == x}
+        end
+        if !Control.find_by(row["description"]).present?
+          control_descriptions.push(row["description"])
+        end
+        control_id = Control&.create(description: control_descriptions[index_control],status: row["status"]&.gsub(" ","_")&.downcase, type_of_control: row["type of control"]&.gsub(" ","_")&.downcase, frequency: row["frequency"]&.downcase, nature: row["nature"]&.downcase, assertion: row["assertion"]&.split(",")&.map {|x| x&.gsub(" ","_")&.downcase}, ipo: row["ipo"]&.split(",").map {|x| x&.gsub(" ","_")&.downcase}, key_control: row["key control"],risk_ids: row["related risk"], business_process_ids: row["related business process"], department_ids: row["related control owner"])
+        index_control+=1
+      end
+      risk_ids.push(row["related risk"])
+      bp_ids.push(row["related business process"])
+      co_ids.push(row["related control owner"])
     end
   end
 
