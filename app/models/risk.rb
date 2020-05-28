@@ -34,11 +34,16 @@ class Risk < ApplicationRecord
     risk_names = []
     bp_ids = []
     index_risk = 0
-    (2..spreadsheet.last_row).each do |i|
-      row = Hash[[header, spreadsheet.row(i)].transpose]
+    (2..spreadsheet.last_row).each do |k|
+      row = Hash[[header, spreadsheet.row(k)].transpose]
       if row["name"].present? && !Risk.find_by_name(row["name"]).present?
         if risk_names.count != 0
-          risk_id = Risk.find_by_name(risk_names[index_risk-1]).update(business_process_ids: bp_ids)
+          risk_obj = Risk.find_by_name(risk_names[index_risk-1])
+          risk_id = risk_obj.update(business_process_ids: bp_ids)
+          if risk_obj&.business_processes.present?
+            ris_bus = risk_obj&.business_processes&.map{|x| x.name}
+            risk_obj&.update(business_process: ris_bus)
+          end
           bp_ids.reject!{|x| x == x}
         end
         if !Risk.find_by_name(row["name"]).present?
@@ -47,7 +52,22 @@ class Risk < ApplicationRecord
         risk_id = Risk.create(name: risk_names[index_risk],business_process_ids: row["related business process"], level_of_risk: row["level of risk"], type_of_risk: row["type of risk"])
         index_risk+=1
       end
-      bp_ids.push(row["related business process"])
+      if !row["related business process"].nil?
+        bp_ids.push(row["related business process"])
+      end
+      if k == spreadsheet.last_row && Risk.find_by_name(row["name"]).present?
+        if row["name"].present?
+          if risk_names.count != 0
+            risk_obj = Risk.find_by_name(risk_names[index_risk-1])
+            risk_id = risk_obj.update(business_process_ids: bp_ids)
+            if risk_obj&.business_processes.present?
+              ris_bus = risk_obj&.business_processes&.map{|x| x.name}
+              risk_obj&.update(business_process: ris_bus)
+            end
+            bp_ids.reject!{|x| x == x}
+          end
+        end
+      end
     end
   end
 

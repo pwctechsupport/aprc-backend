@@ -33,11 +33,16 @@ class PolicyCategory < ApplicationRecord
     polcat_names = []
     pol_ids = []
     index_polcat = 0
-    (2..spreadsheet.last_row).each do |i|
-      row = Hash[[header, spreadsheet.row(i)].transpose]
+    (2..spreadsheet.last_row).each do |k|
+      row = Hash[[header, spreadsheet.row(k)].transpose]
       if row["name"].present? && !PolicyCategory.find_by_name(row["name"]).present?
         if polcat_names.count != 0
-          policy_category_id = PolicyCategory&.find_by_name(polcat_names[index_polcat-1]).update(policy_ids: pol_ids)
+          polcat_obj = PolicyCategory&.find_by_name(polcat_names[index_polcat-1])
+          policy_category_id = polcat_obj.update(policy_ids: pol_ids)
+          if polcat_obj&.policies.present?
+            polcat_pol = polcat_obj&.policies&.map{|x| x.title}
+            polcat_obj&.update(policy: polcat_pol)
+          end
           pol_ids.reject!{|x| x == x}
         end
         if !PolicyCategory.find_by_name(row["name"]).present?
@@ -46,7 +51,22 @@ class PolicyCategory < ApplicationRecord
         policy_category_id = PolicyCategory&.create(name: polcat_names[index_polcat],policy_ids: row["related policy"])
         index_polcat+=1
       end
-      pol_ids.push(row["related policy"])
+      if !row["related policy"].nil?
+        pol_ids.push(row["related policy"])
+      end
+      if k == spreadsheet.last_row && PolicyCategory.find_by_name(row["name"]).present?
+        if row["name"].present?
+          if polcat_names.count != 0
+            polcat_obj = PolicyCategory&.find_by_name(polcat_names[index_polcat-1])
+            policy_category_id = polcat_obj.update(policy_ids: pol_ids)
+            if polcat_obj&.policies.present?
+              polcat_pol = polcat_obj&.policies&.map{|x| x.title}
+              polcat_obj&.update(policy: polcat_pol)
+            end
+            pol_ids.reject!{|x| x == x}
+          end
+        end
+      end
     end
   end
 

@@ -37,29 +37,30 @@ wb.add_worksheet(name: "Resources") do |sheet|
   
   @resources.each do |resource|
     if resource.controls.present? || resource.policies.present?
-      
       z = 0
-      if resource.controls.count > resource.policies.count
+      if resource.controls.count >= resource.policies.count
         resource.controls.zip(resource.policies).each do |control, policy|
-          if z == 0
-            sheet.add_row [resource&.name, resource&.category, resource&.status, control&.id, policy&.id, control&.description, policy&.title]
+          if resource&.category == "Flowchart"
+            sheet.add_row [resource&.name, resource&.category, resource&.status, "", "","", "", resource&.business_process&.id, resource&.business_process&.name]
           else
-            sheet.add_row [resource&.name, resource&.category, resource&.status, control&.id, policy&.id, control&.description, policy&.title]
+            sheet.add_row [resource&.name, resource&.category, resource&.status, control&.id, policy&.id, control&.description, policy&.title, "", ""]
           end
-          z += 1
         end
       else
         resource.policies.zip(resource.controls).each do |policy, control|
-          if z == 0
-            sheet.add_row [resource&.name, resource&.category, resource&.status, control&.id, policy&.id, control&.description, policy&.title]
+          if resource&.category == "Flowchart"
+            sheet.add_row [resource&.name, resource&.category, resource&.status, "", "","", "", resource&.business_process&.id, resource&.business_process&.name]
           else
-            sheet.add_row [resource&.name, resource&.category, resource&.status, control&.id, policy&.id, control&.description, policy&.title]
+            sheet.add_row [resource&.name, resource&.category, resource&.status, control&.id, policy&.id, control&.description, policy&.title, "", ""]
           end
-          z += 1
         end
       end
     else
-      sheet.add_row [resource&.name, resource&.category, resource&.status,resource&.controls&.pluck(:id)&.join, resource&.policies&.pluck(:id)&.join(",")&.gsub(",", "|"), resource&.controls&.pluck(:description)&.join(","), resource&.policies&.pluck(:title)&.join(",")]
+      if resource&.category == "Flowchart"
+        sheet.add_row [resource&.name, resource&.category, resource&.status,"", "", "", "", resource&.business_process&.id, resource&.business_process&.name ]
+      else
+        sheet.add_row [resource&.name, resource&.category, resource&.status,resource&.controls&.pluck(:id)&.join, resource&.policies&.pluck(:id)&.join(",")&.gsub(",", "|"), resource&.controls&.pluck(:description)&.join(","), resource&.policies&.pluck(:title)&.join(","), "", "" ]
+      end
     end
   end
 end

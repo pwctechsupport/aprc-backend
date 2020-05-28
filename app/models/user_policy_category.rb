@@ -12,4 +12,7 @@ class UserPolicyCategory < ApplicationRecord
 
   belongs_to :user, optional: true
   belongs_to :policy_category, optional: true
+  def to_humanize
+    "#{self.user&.name} : #{self.policy_category&.name}"
+  end
 end

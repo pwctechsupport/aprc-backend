@@ -15,8 +15,8 @@ class Reference < ApplicationRecord
     ref_names = []
     ref_ids = []
     index_ref = 0
-    (2..spreadsheet.last_row).each do |i|
-      row = Hash[[header, spreadsheet.row(i)].transpose]
+    (2..spreadsheet.last_row).each do |k|
+      row = Hash[[header, spreadsheet.row(k)].transpose]
       if row["name"].present? && !Reference.find_by_name(row["name"]).present?
         if ref_names.count != 0
           reference_id = Reference&.find_by_name(ref_names[index_ref-1]).update(policy_ids: ref_ids)
@@ -26,18 +26,33 @@ class Reference < ApplicationRecord
         if lovar >= 1
           refa= row["name"].gsub('#','')
           refu = '#' << refa 
-          ref_names.push(refu)
+          if !Reference.find_by_name(refu).present?
+            ref_names.push(refu)
+          end
           reference_id = Reference&.create(name: ref_names[index_ref],policy_ids: row["related policy"])
         elsif lovar < 1
           refu = '#' << row["name"] 
-          ref_names.push(refu)
+          if !Reference.find_by_name(refu).present?
+            ref_names.push(refu)
+          end
+          byebug
           reference_id = Reference&.create(name: ref_names[index_ref],policy_ids: row["related policy"])
         else
-          ref_names.push(row["name"])
+          if !Reference.find_by_name(row["name"]).present?
+            ref_names.push(row["name"])
+          end
         end
         index_ref+=1
       end
       ref_ids.push(row["related policy"])
+      if k == spreadsheet.last_row && Reference.find_by_name(row["name"]).present?
+        if row["name"].present?
+          if ref_names.count != 0
+            reference_id = Reference&.find_by_name(ref_names[index_ref-1]).update(policy_ids: ref_ids)
+            ref_ids.reject!{|x| x == x}
+          end
+        end
+      end
     end
   end
 
