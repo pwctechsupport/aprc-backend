@@ -45,19 +45,21 @@ class Control < ApplicationRecord
     bp_ids = []
     co_ids = []
     index_control = 0
-    (2..spreadsheet.last_row).each do |i|
-      row = Hash[[header, spreadsheet.row(i)].transpose]
+    (2..spreadsheet.last_row).each do |k|
+      row = Hash[[header, spreadsheet.row(k)].transpose]
       if row["description"].present? && !Control.find_by(description: row["description"]).present?
         if control_descriptions.count != 0
-          control_id = Control&.find_by(description:control_descriptions[index_control-1]).update(risk_ids: risk_ids, business_process_ids: bp_ids, department_ids:co_ids)
-          if co_ids.count != 0
-            Control&.find_by(description:control_descriptions[index_control-1]).update(control_owner: co_ids.map{|x| Department.find(x).name})
+          control_obj = Control&.find_by(description:control_descriptions[index_control-1])
+          control_id = control_obj&.update(risk_ids: risk_ids, business_process_ids: bp_ids, department_ids:co_ids)
+          if control_obj&.departments.present?
+            con_dep = control_obj&.departments&.map{|x| x.name}
+            control_obj&.update(control_owner: con_dep)
           end
           risk_ids&.reject!{|x| x == x}
           bp_ids&.reject!{|x| x == x}
           co_ids&.reject!{|x| x == x}
         end
-        if !Control.find_by(row["description"]).present?
+        if !Control.find_by(description: row["description"]).present?
           control_descriptions.push(row["description"])
         end
         control_id = Control&.create(description: control_descriptions[index_control],status: row["status"]&.gsub(" ","_")&.downcase, type_of_control: row["type of control"]&.gsub(" ","_")&.downcase, frequency: row["frequency"]&.downcase, nature: row["nature"]&.downcase, assertion: row["assertion"]&.split(",")&.map {|x| x&.gsub(" ","_")&.downcase}, ipo: row["ipo"]&.split(",").map {|x| x&.gsub(" ","_")&.downcase}, key_control: row["key control"],risk_ids: row["related risk"], business_process_ids: row["related business process"], department_ids: row["related control owner"])
@@ -65,7 +67,24 @@ class Control < ApplicationRecord
       end
       risk_ids.push(row["related risk"])
       bp_ids.push(row["related business process"])
-      co_ids.push(row["related control owner"])
+      if !row["related control owner"].nil?
+        co_ids.push(row["related control owner"])
+      end
+      if k == spreadsheet.last_row && Control.find_by(description: row["description"]).present?
+        if row["description"].present?
+          if control_descriptions.count != 0
+            control_obj = Control&.find_by(description:control_descriptions[index_control-1])
+            control_id = control_obj&.update(risk_ids: risk_ids, business_process_ids: bp_ids, department_ids:co_ids)
+            if control_obj&.departments.present?
+              con_dep = control_obj&.departments&.map{|x| x.name}
+              control_obj&.update(control_owner: con_dep)
+            end
+            risk_ids&.reject!{|x| x == x}
+            bp_ids&.reject!{|x| x == x}
+            co_ids&.reject!{|x| x == x}
+          end
+        end
+      end
     end
   end
 

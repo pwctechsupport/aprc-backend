@@ -10,11 +10,11 @@ wb.add_worksheet(name: "Controls") do |sheet|
 
     if control.risks.present? || control.business_processes.present? || control.departments.present?
       z = 0
-      if control.risks.count > control.business_processes.count
+      if control.risks.count >= control.business_processes.count
         control.risks.zip(control.business_processes, control.departments).each do |risk, business_process, department|
           sheet.add_row [control&.description&.titlecase, control&.type_of_control&.gsub(/_/, ' ')&.titlecase, control&.frequency, control&.nature&.titlecase, control&.assertion&.join&.gsub(/_/, ' ')&.titlecase, control&.ipo.join&.gsub(/_/, ' ')&.titlecase, control&.status&.gsub(/_/, ' ')&.titlecase, control&.key_control, business_process&.id, business_process&.name, risk&.id, risk&.name,department&.id, department&.name]
         end
-      elsif control.risks.count < control.business_processes.count
+      elsif control.risks.count <= control.business_processes.count
         control.business_processes.zip(control.risks, control.departments).each do |business_process, risk, department|
           sheet.add_row [control&.description&.titlecase, control&.type_of_control&.gsub(/_/, ' ')&.titlecase, control&.frequency, control&.nature&.titlecase, control&.assertion&.join&.gsub(/_/, ' ')&.titlecase, control&.ipo.join&.gsub(/_/, ' ')&.titlecase, control&.status&.gsub(/_/, ' ')&.titlecase, control&.key_control, business_process&.id, business_process&.name, risk&.id, risk&.name,department&.id, department&.name]
         end

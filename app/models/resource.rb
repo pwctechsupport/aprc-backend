@@ -36,14 +36,14 @@ class Resource < ApplicationRecord
 
   def self.import(file)
     spreadsheet = open_spreadsheet(file)
-    allowed_attributes = ["name", "category", "status", "related control", "related policy", "related control description", "related policy title"]
+    allowed_attributes = ["name", "category", "status", "related control", "related policy", "related control description", "related policy title","related business process", "related business process name"]
     header = spreadsheet.row(1)
     resource_names = []
     pol_ids = []
     con_ids = []
     index_resource = 0
-    (2..spreadsheet.last_row).each do |i|
-      row = Hash[[header, spreadsheet.row(i)].transpose]
+    (2..spreadsheet.last_row).each do |k|
+      row = Hash[[header, spreadsheet.row(k)].transpose]
       if row["name"].present? && !Resource.find_by_name(row["name"]).present?
         if resource_names.count != 0
           resource_id = Resource&.find_by_name(resource_names[index_resource-1]).update(policy_ids: pol_ids, control_ids: con_ids)
@@ -53,11 +53,20 @@ class Resource < ApplicationRecord
         if !Resource.find_by_name(row["name"]).present?
           resource_names.push(row["name"])
         end
-        resource_id = Resource&.create(name: resource_names[index_resource],category: row["category"],policy_ids: row["related policy"], control_ids: row["related control"])
+        resource_id = Resource&.create(name: resource_names[index_resource],category: row["category"], policy_ids: row["related policy"], control_ids: row["related control"], business_process_id: row["related business process"])
         index_resource+=1
       end
       pol_ids.push(row["related policy"])
       con_ids.push(row["related control"])
+      if k == spreadsheet.last_row && Resource.find_by_name(row["name"]).present?
+        if row["name"].present?
+          if resource_names.count != 0
+            resource_id = Resource&.find_by_name(resource_names[index_resource-1]).update(policy_ids: pol_ids, control_ids: con_ids)
+            pol_ids.reject!{|x| x == x}
+            con_ids.reject!{|x| x == x}
+          end
+        end
+      end
     end
   end
 
