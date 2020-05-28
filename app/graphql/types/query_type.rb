@@ -295,5 +295,11 @@ module Types
     field :navigator_resources, resolver: Resolvers::QueryType::Navigator::NavigatorResourcesResolver
     field :navigator_risks, resolver: Resolvers::QueryType::Navigator::NavigatorRisksResolver
     field :navigator_users, resolver: Resolvers::QueryType::Navigator::NavigatorUsersResolver
+    field :reviewer_policies_status, resolver: Resolvers::QueryType::ReviewerPoliciesStatusResolver
+    field :reviewer_controls_status, resolver: Resolvers::QueryType::ReviewerControlsStatusResolver
+    field :reviewer_risks_status, resolver: Resolvers::QueryType::ReviewerRisksStatusResolver
+    field :reviewer_resources_status, resolver: Resolvers::QueryType::ReviewerResourcesStatusResolver
+    field :reviewer_policy_categories_status, resolver: Resolvers::QueryType::ReviewerPolicyCategoriesStatusResolver
+
   end
 end
