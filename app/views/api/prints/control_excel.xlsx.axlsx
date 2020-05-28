@@ -4,27 +4,13 @@ wb = xlsx_package.workbook
 
 wb.add_worksheet(name: "Controls") do |sheet|
   # Create the header row
-  sheet.add_row ["description", "type of control", "frequency", "nature", "assertion", "ipo", "status", "key control", "related business process", "related business process name", "related risk", "related risk name","related control owner","related control owner name"]
+  sheet.add_row ["control owner", "description", "type of control", "frequency", "nature", "assertion", "ipo", "status", "key control"]
   # Create entries for each item
   @controls.each do |control|
-
-    if control.risks.present? || control.business_processes.present? || control.departments.present?
-      z = 0
-      if control.risks.count > control.business_processes.count
-        control.risks.zip(control.business_processes, control.departments).each do |risk, business_process, department|
-          sheet.add_row [control&.description&.titlecase, control&.type_of_control&.gsub(/_/, ' ')&.titlecase, control&.frequency, control&.nature&.titlecase, control&.assertion&.join&.gsub(/_/, ' ')&.titlecase, control&.ipo.join&.gsub(/_/, ' ')&.titlecase, control&.status&.gsub(/_/, ' ')&.titlecase, control&.key_control, business_process&.id, business_process&.name, risk&.id, risk&.name,department&.id, department&.name]
-        end
-      elsif control.risks.count < control.business_processes.count
-        control.business_processes.zip(control.risks, control.departments).each do |business_process, risk, department|
-          sheet.add_row [control&.description&.titlecase, control&.type_of_control&.gsub(/_/, ' ')&.titlecase, control&.frequency, control&.nature&.titlecase, control&.assertion&.join&.gsub(/_/, ' ')&.titlecase, control&.ipo.join&.gsub(/_/, ' ')&.titlecase, control&.status&.gsub(/_/, ' ')&.titlecase, control&.key_control, business_process&.id, business_process&.name, risk&.id, risk&.name,department&.id, department&.name]
-        end
-      else
-        control.departments.zip(control.risks, control.business_processes).each do |department, risk, business_process|
-          sheet.add_row [control&.description&.titlecase, control&.type_of_control&.gsub(/_/, ' ')&.titlecase, control&.frequency, control&.nature&.titlecase, control&.assertion&.join&.gsub(/_/, ' ')&.titlecase, control&.ipo.join&.gsub(/_/, ' ')&.titlecase, control&.status&.gsub(/_/, ' ')&.titlecase, control&.key_control, business_process&.id, business_process&.name, risk&.id, risk&.name,department&.id, department&.name]
-        end
-      end
+    if control.assertion.count < 2
+      sheet.add_row [control&.control_owner.join(",")&.titlecase, control&.description&.titlecase, control&.type_of_control&.gsub(/_/, ' ')&.titlecase, control&.frequency, control&.nature&.titlecase, control&.assertion&.join&.gsub(/_/, ' ')&.titlecase, control&.ipo.join&.gsub(/_/, ' ')&.titlecase, control&.status&.gsub(/_/, ' ')&.titlecase, control&.key_control]
     else
-      sheet.add_row [control&.description&.titlecase, control&.type_of_control&.gsub(/_/, ' ')&.titlecase, control&.frequency, control&.nature&.titlecase, control&.assertion&.join&.gsub(/_/, ' ')&.titlecase, control&.ipo.join&.gsub(/_/, ' ')&.titlecase, control&.status&.gsub(/_/, ' ')&.titlecase, control&.key_control, control&.business_processes&.pluck(:id).join(","), control&.business_processes&.pluck(:name).join(","), control&.risks&.pluck(:id)&.join(","), control&.risks.pluck(:name).join(","),control&.departments.pluck(:id).join(","), control&.departments.pluck(:name).join(",")]
+      sheet.add_row [control&.control_owner.join(",")&.titlecase, control&.description&.titlecase, control&.type_of_control&.gsub(/_/, ' ')&.titlecase, control&.frequency, control&.nature&.titlecase, control&.assertion&.join(",")&.gsub(/_/, ' ')&.titlecase, control&.ipo&.join(",")&.gsub(/_/, ' ')&.titlecase, control&.status&.gsub(/_/, ' ')&.titlecase, control&.key_control]
     end
   end
 end

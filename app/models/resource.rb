@@ -38,26 +38,13 @@ class Resource < ApplicationRecord
     spreadsheet = open_spreadsheet(file)
     allowed_attributes = ["name", "category", "status", "related control", "related policy", "related control description", "related policy title"]
     header = spreadsheet.row(1)
-    resource_names = []
-    pol_ids = []
-    con_ids = []
-    index_resource = 0
     (2..spreadsheet.last_row).each do |i|
       row = Hash[[header, spreadsheet.row(i)].transpose]
-      if row["name"].present? && !Resource.find_by_name(row["name"]).present?
-        if resource_names.count != 0
-          resource_id = Resource&.find_by_name(resource_names[index_resource-1]).update(policy_ids: pol_ids, control_ids: con_ids)
-          pol_ids.reject!{|x| x == x}
-          con_ids.reject!{|x| x == x}
-        end
-        if !Resource.find_by_name(row["name"]).present?
-          resource_names.push(row["name"])
-        end
-        resource_id = Resource&.create(name: resource_names[index_resource],policy_ids: row["related policy"], control_ids: row["related control"])
-        index_resource+=1
+      if row["related policy"].class == String
+        resource_id = Resource.create(name: row["name"], category: row["category"], control_ids: [row["related control"]], policy_ids: row["related policy"]&.split("|"))     
+      else 
+        resource_id = Resource.create(name: row["name"], category: row["category"], control_ids: [row["related control"]], policy_ids: row["related policy"])
       end
-      pol_ids.push(row["related policy"])
-      con_ids.push(row["related control"])
     end
   end
 

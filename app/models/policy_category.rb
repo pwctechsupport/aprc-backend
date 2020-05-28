@@ -30,23 +30,13 @@ class PolicyCategory < ApplicationRecord
     spreadsheet = open_spreadsheet(file)
     allowed_attributes = ["name", "related policy", "related policy title"]
     header = spreadsheet.row(1)
-    polcat_names = []
-    pol_ids = []
-    index_polcat = 0
     (2..spreadsheet.last_row).each do |i|
       row = Hash[[header, spreadsheet.row(i)].transpose]
-      if row["name"].present? && !PolicyCategory.find_by_name(row["name"]).present?
-        if polcat_names.count != 0
-          policy_category_id = PolicyCategory&.find_by_name(polcat_names[index_polcat-1]).update(policy_ids: pol_ids)
-          pol_ids.reject!{|x| x == x}
-        end
-        if !PolicyCategory.find_by_name(row["name"]).present?
-          polcat_names.push(row["name"])
-        end
-        policy_category_id = PolicyCategory&.create(name: polcat_names[index_polcat],policy_ids: row["related policy"])
-        index_polcat+=1
+      if row["related policy"].class == String
+        policy_category_id = PolicyCategory&.create(name: row["name"],policy_ids: row["related policy"]&.split("|"))
+      else 
+        policy_category_id = PolicyCategory&.create(name: row["name"],policy_ids: row["related policy"])
       end
-      pol_ids.push(row["related policy"])
     end
   end
 
