@@ -12,29 +12,32 @@ class Reference < ApplicationRecord
     spreadsheet = open_spreadsheet(file)
     allowed_attributes = ["name", "related policy", "related policy title"]
     header = spreadsheet.row(1)
+    ref_names = []
+    ref_ids = []
+    index_ref = 0
     (2..spreadsheet.last_row).each do |i|
       row = Hash[[header, spreadsheet.row(i)].transpose]
-      if row["related policy"].class == String
+      if row["name"].present? && !Reference.find_by_name(row["name"]).present?
+        if ref_names.count != 0
+          reference_id = Reference&.find_by_name(ref_names[index_ref-1]).update(policy_ids: ref_ids)
+          ref_ids.reject!{|x| x == x}
+        end
         lovar= row["name"].count "#"
         if lovar >= 1
           refa= row["name"].gsub('#','')
           refu = '#' << refa 
-          reference_id = Reference&.create(name: refu,policy_ids: row["related policy"]&.split("|"))
+          ref_names.push(refu)
+          reference_id = Reference&.create(name: ref_names[index_ref],policy_ids: row["related policy"])
         elsif lovar < 1
           refu = '#' << row["name"] 
-          reference_id = Reference&.create(name: refu,policy_ids: row["related policy"]&.split("|"))
+          ref_names.push(refu)
+          reference_id = Reference&.create(name: ref_names[index_ref],policy_ids: row["related policy"])
+        else
+          ref_names.push(row["name"])
         end
-      else
-        lovar= row["name"].count "#"
-        if lovar >= 1
-          refa= row["name"].gsub('#','')
-          refu = '#' << refa
-          reference_id = Reference&.create(name: refu,policy_ids: row["related policy"])
-        elsif lovar < 1
-          refu = '#' << row["name"]
-          reference_id = Reference&.create(name: refu,policy_ids: row["related policy"])
-        end
+        index_ref+=1
       end
+      ref_ids.push(row["related policy"])
     end
   end
 
