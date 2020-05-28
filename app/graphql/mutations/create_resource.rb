@@ -70,10 +70,6 @@ module Mutations
 
       args[:created_by] = current_user&.name || "User with ID#{current_user&.id}"
       args[:last_updated_by] = current_user&.name || "User with ID#{current_user&.id}"
-      if args[:control_ids].present?
-        control = args[:control_ids]
-        args.delete(:control_ids)
-      end
       resource=Resource.new(args)
       resource&.save_draft
       if args[:resupload].present?
@@ -83,12 +79,6 @@ module Mutations
       end
       admin = User.with_role(:admin_reviewer).pluck(:id)
       if resource.id.present?
-        if control.present?
-          control.each do |con|
-            res_con = ResourceControl.new(resource_id: resource&.id, control_id: con )
-            res_con.save_draft
-          end 
-        end
         Notification.send_notification(admin, resource&.name, resource&.category,resource, current_user&.id, "request_draft")
       else
         raise GraphQL::ExecutionError, "The exact same draft cannot be duplicated"

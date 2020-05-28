@@ -18,20 +18,6 @@ module Mutations
           if control.user_reviewer_id.present? && (control.user_reviewer_id != current_user.id)
             raise GraphQL::ExecutionError, "This Draft has been reviewed by another Admin."
           else
-            if control&.control_business_processes.where.not(draft_id: nil).present?
-              if control&.control_business_processes.where(draft_id: nil).present?
-                control&.control_business_processes.where(draft_id: nil).destroy_all
-              end
-              control&.control_business_processes.where.not(draft_id: nil).each {|x| x.draft.publish!}
-            end
-
-            if control&.control_risks.where.not(draft_id: nil).present?
-              if control&.control_risks.where(draft_id: nil).present?
-                control&.control_risks.where(draft_id: nil).destroy_all
-              end
-              control&.control_risks.where.not(draft_id: nil).each {|x| x.draft.publish!}
-            end
-
             if control_draft.event == "update"
               serial = ["control_owner", "assertion", "ipo"]
               serial.each do |sif|
@@ -56,12 +42,6 @@ module Mutations
             Notification.send_notification(admin_prep, "Control Draft with owner #{control&.control_owner.join(", ")} Rejected", control&.description,control, current_user&.id, "request_draft_rejected")
             control_owner_rejected = control&.control_owner
             control_draft.revert!
-            if control&.control_business_processes.where.not(draft_id: nil).present?
-              control&.control_business_processes.where.not(draft_id: nil).destroy_all
-            end
-            if control&.control_risks.where.not(draft_id: nil).present?
-              control&.control_risks.where.not(draft_id: nil).destroy_all
-            end
             if control&.present? && control&.request_edit&.present?
               control&.request_edit&.destroy
               control.update(control_owner: control_owner_rejected)
