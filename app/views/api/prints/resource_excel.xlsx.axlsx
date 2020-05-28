@@ -4,7 +4,7 @@ wb = xlsx_package.workbook
 
 wb.add_worksheet(name: "Resources") do |sheet|
   # Create the header row
-  sheet.add_row ["name", "file name", "file type", "file size", "category", "status", "related control", "related policy", "related control description", "related policy title"]
+  sheet.add_row ["name", "category", "status", "related control", "related policy", "related control description", "related policy title"]
   # Create entries for each item
   def resource_file_type(object)
     content = object.resupload_content_type
@@ -34,7 +34,32 @@ wb.add_worksheet(name: "Resources") do |sheet|
       end
     end
   end
+  
   @resources.each do |resource|
-    sheet.add_row [resource&.name, resource&.resupload_file_name, resource_file_type(resource), resource&.resupload_file_size,resource&.category, resource&.status,resource&.controls&.pluck(:id)&.join, resource&.policies&.pluck(:id)&.join(",")&.gsub(",", "|"), resource&.controls&.pluck(:description)&.join(","), resource&.policies&.pluck(:title)&.join(",")]
+    if resource.controls.present? || resource.policies.present?
+      
+      z = 0
+      if resource.controls.count > resource.policies.count
+        resource.controls.zip(resource.policies).each do |control, policy|
+          if z == 0
+            sheet.add_row [resource&.name, resource&.category, resource&.status, control&.id, policy&.id, control&.description, policy&.title]
+          else
+            sheet.add_row [resource&.name, resource&.category, resource&.status, control&.id, policy&.id, control&.description, policy&.title]
+          end
+          z += 1
+        end
+      else
+        resource.policies.zip(resource.controls).each do |policy, control|
+          if z == 0
+            sheet.add_row [resource&.name, resource&.category, resource&.status, control&.id, policy&.id, control&.description, policy&.title]
+          else
+            sheet.add_row [resource&.name, resource&.category, resource&.status, control&.id, policy&.id, control&.description, policy&.title]
+          end
+          z += 1
+        end
+      end
+    else
+      sheet.add_row [resource&.name, resource&.category, resource&.status,resource&.controls&.pluck(:id)&.join, resource&.policies&.pluck(:id)&.join(",")&.gsub(",", "|"), resource&.controls&.pluck(:description)&.join(","), resource&.policies&.pluck(:title)&.join(",")]
+    end
   end
 end
