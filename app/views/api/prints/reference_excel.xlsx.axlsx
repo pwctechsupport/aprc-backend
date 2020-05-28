@@ -7,13 +7,9 @@ wb.add_worksheet(name: "References") do |sheet|
   sheet.add_row ["name", "related policy", "related policy title"]
   # Create entries for each item
   @references.each do |reference|
-    if risk&.business_processes.present?
+    if reference&.policies.present?
       reference&.policies&.each_with_index do |policy,z|
-        if z == 0
-          sheet.add_row [reference&.name, policy.id, policy.title]
-        else
-          sheet.add_row [reference&.name,policy.id, policy.title]
-        end
+        sheet.add_row [reference&.name, policy.id, policy.title]
       end
     else
       sheet.add_row [reference&.name, reference&.policies.pluck(:id).join(","), reference&.policies.pluck(:title).join(",")]

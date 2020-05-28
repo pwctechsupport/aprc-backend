@@ -7,13 +7,9 @@ wb.add_worksheet(name: "PolicyCategories") do |sheet|
   sheet.add_row ["name", "related policy", "related policy title"]
   # Create entries for each item
   @policy_categories.each do |policy_category|
-    if risk&.business_processes.present?
+    if policy_category&.policies.present?
       policy_category&.policies&.each_with_index do |policy,z|
-        if z == 0
-          sheet.add_row [policy_category&.name, policy.id, policy.title]
-        else
-          sheet.add_row [policy_category&.name,policy.id, policy.title]
-        end
+        sheet.add_row [policy_category&.name, policy.id, policy.title]
       end
     else
       sheet.add_row [policy_category&.name,policy_category&.policies.pluck(:id).join(","), policy_category&.policies.pluck(:title).join(",")]
