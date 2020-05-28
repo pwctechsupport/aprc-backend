@@ -29,25 +29,15 @@ class Risk < ApplicationRecord
 
   def self.import(file)
     spreadsheet = open_spreadsheet(file)
-    allowed_attributes = ["name", "level of risk", "status", "type of risk", "related business process", "related business process name"]
+    allowed_attributes = ["name", "level of risk", "status", "type of risk", "related business process"]
     header = spreadsheet.row(1)
-    risk_names = []
-    bp_ids = []
-    index_risk = 0
     (2..spreadsheet.last_row).each do |i|
       row = Hash[[header, spreadsheet.row(i)].transpose]
-      if row["name"].present? && !Risk.find_by_name(row["name"]).present?
-        if risk_names.count != 0
-          risk_id = Risk.find_by_name(risk_names[index_risk-1]).update(business_process_ids: bp_ids)
-          bp_ids.reject!{|x| x == x}
-        end
-        if !Risk.find_by_name(row["name"]).present?
-          risk_names.push(row["name"])
-        end
-        risk_id = Risk.create(name: risk_names[index_risk],business_process_ids: row["related business process"], level_of_risk: row["level of risk"], type_of_risk: row["type of risk"])
-        index_risk+=1
+      if row["related business process"].class === String
+        risk_id = Risk.find_or_create_by(name: row["name"], level_of_risk: row["level of risk"], status: row["status"], type_of_risk: row["type of risk"], business_process_ids:row["related business process"]&.split("|"))
+      else 
+        risk_id = Risk.find_or_create_by(name: row["name"], level_of_risk: row["level of risk"], status: row["status"], type_of_risk: row["type of risk"], business_process_ids:row["related business process"])
       end
-      bp_ids.push(row["related business process"])
     end
   end
 

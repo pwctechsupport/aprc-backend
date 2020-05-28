@@ -27,6 +27,7 @@ module Mutations
       current_user = context[:current_user]
       control = Control.find(id)
       if control&.request_edits&.last&.approved?
+        
         if control.draft?
           raise GraphQL::ExecutionError, "Draft Cannot be created until another Draft is Approved/Rejected by an Admin"
         else
@@ -43,52 +44,8 @@ module Mutations
             args[:control_owner] = args[:department_ids].map{|x| Department.find(x&.to_i).name}
           end
           args[:last_updated_by] = current_user&.name || "User with ID#{current_user&.id}"
-          prev_buspro = []
-          prev_risk = []
-          if args[:business_process_ids].present?
-            buspro = args[:business_process_ids]
-            args.delete(:business_process_ids)
-            if control&.control_business_processes&.present? && (control&.control_business_processes.where(draft_id: nil).present? || control&.control_business_processes.where.not(draft_id: nil).present?)
-              control.control_business_processes.each do |pb|
-                if pb&.draft_id.present?
-                  prev_buspro.push(pb&.id)
-                end
-              end
-            end
-          end
-          if args[:risk_ids].present?
-            risk = args[:risk_ids]
-            args.delete(:risk_ids)
-            if control&.control_risks&.present? && (control&.control_risks.where(draft_id: nil).present? || control&.control_risks.where.not(draft_id: nil).present?)
-              control.control_risks.each do |pb|
-                if pb&.draft_id.present?
-                  prev_risk.push(pb&.id)
-                end
-              end
-            end
-          end
           control&.attributes = args
           control&.save_draft
-          if buspro.present?
-            buspro.each do |bus|
-              con_bus = ControlBusinessProcess.new(control_id: control&.id, business_process_id: bus )
-              con_bus.save_draft
-              if prev_buspro.present?
-                contbus = ControlBusinessProcess.where(id:prev_buspro)
-                contbus.destroy_all
-              end
-            end 
-          end
-          if risk.present?
-            risk.each do |ris|
-              con_ris = ControlRisk.new(control_id: control&.id, risk_id: ris )
-              con_ris.save_draft
-              if prev_risk.present?
-                contris = ControlRisk.where(id:prev_risk)
-                contris.destroy_all
-              end
-            end 
-          end
           admin = User.with_role(:admin_reviewer).pluck(:id)
           if control.draft.present?
             Notification.send_notification(admin, control&.description, control&.type_of_control,control, current_user&.id, "request_draft")

@@ -6,9 +6,6 @@ class ControlBusinessProcess < ApplicationRecord
   paper_trail.on_update     # etc.
   paper_trail.on_create
   paper_trail.on_touch
-
-  has_drafts
-
   
   belongs_to :control, optional: true
   belongs_to :business_process, optional: true
