@@ -39,7 +39,7 @@ module Mutations
           admin = User.with_role(:admin_reviewer).pluck(:id)
           if risk.draft.present?
             Notification.send_notification(admin, risk&.name, risk&.type_of_risk,risk, current_user&.id, "request draft")
-          else
+            risk.update(status:"waiting_for_review")
           end
         end
       else

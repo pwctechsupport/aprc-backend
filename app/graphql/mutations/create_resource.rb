@@ -89,6 +89,7 @@ module Mutations
             res_con.save_draft
           end 
         end
+        resource.update(status: "waiting_for_review" )
         Notification.send_notification(admin, resource&.name, resource&.category,resource, current_user&.id, "request_draft")
       else
         raise GraphQL::ExecutionError, "The exact same draft cannot be duplicated"

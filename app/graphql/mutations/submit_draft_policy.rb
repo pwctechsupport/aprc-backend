@@ -154,6 +154,7 @@ module Mutations
       admin = User.with_role(:admin_reviewer).pluck(:id)
       if policy.id.present?
         Notification.send_notification(admin, "Policy #{policy.title} Has Been Submitted", policy.title, policy, current_user.id, "request_draft")
+        policy.update(status:"waiting_for_review")
       else
         raise GraphQL::ExecutionError, "The exact same draft cannot be duplicated"
       end

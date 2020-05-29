@@ -114,6 +114,7 @@ module Mutations
           admin = User.with_role(:admin_reviewer).pluck(:id)
           if resource.draft.present?
             Notification.send_notification(admin, resource&.name, resource&.name,resource, current_user&.id, "request_draft")
+            resource.update(status:"waiting_for_review")
           end
         end
       else
