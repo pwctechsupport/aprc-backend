@@ -25,7 +25,10 @@ module Resolvers
         @q5 = @q.result.where(status:"release")
         @q5 = @q5.sort_by(&:updated_at).reverse
 
-        @q_final = @q1.push(*@q2,*@q3,*@q4,*@q5)
+        @q6 = @q.result.where(status:nil)
+        @q6 = @q6.sort_by(&:updated_at).reverse
+
+        @q_final = @q1.push(*@q2,*@q3,*@q4,*@q5, *@q6)
         ids = @q_final.map(&:id)
         if ids.count != 0
           @q = PolicyCategory.where(id: ids).order("FIELD(id, #{ids.join(',')})").all.ransack(filter.as_json)
