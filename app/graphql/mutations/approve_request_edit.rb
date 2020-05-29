@@ -12,6 +12,7 @@ module Mutations
       if request_edit.requested? && args[:approve]
         request_edit.approve!
         request_edit.update(approver_id: current_user&.id)
+        request_edit&.originator.update(status: "ready_for_edit")
         Notification.send_notification(admin_prep, request_edit&.to_name, "Request Edit Has been Approved By #{current_user&.name}",request_edit&.originator, current_user&.id, "request_edit_approved")
       else
         request_edit.reject!

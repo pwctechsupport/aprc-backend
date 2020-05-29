@@ -28,7 +28,7 @@ module Mutations
             end
             user_draft.reify
             user_draft.publish!
-            user.update(user_reviewer_id: current_user.id)
+            user.update(user_reviewer_id: current_user.id, status: "release")
             Notification.send_notification(admin_prep, "User Draft named #{user&.name} Approved", user&.name,user, current_user&.id, "request_draft_approved")
           end
           if user&.present? && user&.request_edit&.present?

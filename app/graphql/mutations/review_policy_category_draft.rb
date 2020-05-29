@@ -28,7 +28,7 @@ module Mutations
             end
             policy_category_draft.reify
             policy_category_draft.publish!
-            policy_category.update(user_reviewer_id: current_user.id)
+            policy_category.update(user_reviewer_id: current_user.id, status: "release")
             Notification.send_notification(admin_prep, "Policy Category Draft named #{policy_category.name} Approved", policy_category&.name,policy_category, current_user&.id, "request_draft_approved")
           end
           if policy_category&.present? && policy_category&.request_edit&.present?

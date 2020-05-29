@@ -29,7 +29,7 @@ module Mutations
 
             resource_draft.publish!
 
-            resource.update_attributes(user_reviewer_id: current_user.id)
+            resource.update_attributes(user_reviewer_id: current_user.id, status: "release")
             Notification.send_notification(admin_prep, "Resource Draft named #{resource&.name} Approved", resource&.name,resource, current_user&.id, "request_draft_approved")
 
           end
