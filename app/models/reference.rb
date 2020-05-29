@@ -35,7 +35,6 @@ class Reference < ApplicationRecord
           if !Reference.find_by_name(refu).present?
             ref_names.push(refu)
           end
-          byebug
           reference_id = Reference&.create(name: ref_names[index_ref],policy_ids: row["related policy"])
         else
           if !Reference.find_by_name(row["name"]).present?
