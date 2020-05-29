@@ -79,7 +79,7 @@ module Mutations
             pol_res.save_draft
           end 
         end
-        policy.update(created_by: policy&.user&.name)
+        policy.update(created_by: policy&.user&.name, status: "waiting_for_review")
         Notification.send_notification(admin, policy&.title, policy&.title, policy, current_user&.id, "request_draft")
       else
         raise GraphQL::ExecutionError, "The exact same draft cannot be duplicated"

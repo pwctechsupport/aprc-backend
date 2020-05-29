@@ -27,7 +27,9 @@ module Resolvers
 
         @q_final = @q1.push(*@q2,*@q3,*@q4,*@q5)
         ids = @q_final.map(&:id)
-        @q = Policy.where(id: ids).order("FIELD(id, #{ids.join(',')})").all.ransack(filter.as_json)
+        if ids.count != 0
+          @q = Policy.where(id: ids).order("FIELD(id, #{ids.join(',')})").all.ransack(filter.as_json)
+        end
         @q.result(distinct: true).page(page).per(limit)
         # ::context[:current_user].page(page).per(limit)
       end

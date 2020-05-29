@@ -59,6 +59,7 @@ module Mutations
           end 
         end
         Notification.send_notification(admin, control&.description, control&.type_of_control,control, current_user&.id, "request_draft")
+        control.update(status: "waiting_for_review" )
       else
         raise GraphQL::ExecutionError, "The exact same draft cannot be duplicated"
       end
