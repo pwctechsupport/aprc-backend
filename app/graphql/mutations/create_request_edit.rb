@@ -15,6 +15,7 @@ module Mutations
           raise GraphQL::ExecutionError, "Request not permitted. Another Request exist"
         else
           request_edit = RequestEdit.create!(args.to_h)
+          policy.update(status: "waiting_for_approval")
           admin = User.with_role(:admin_reviewer).pluck(:id)
           Notification.send_notification(admin, policy.title, "Request Edit Policy", policy, current_user.id, "request_edit")
         end
@@ -24,6 +25,7 @@ module Mutations
           raise GraphQL::ExecutionError, "Request not permitted. Another Request exist"
         else
           request_edit = RequestEdit.create!(args.to_h)
+          user.update(status: "waiting_for_approval")
           admin = User.with_role(:admin_reviewer).pluck(:id)
           Notification.send_notification(admin, user.name, "Request Edit User", user, current_user.id, "request_edit")
         end
@@ -33,6 +35,7 @@ module Mutations
           raise GraphQL::ExecutionError, "Request not permitted. Another Request exist"
         else
           request_edit = RequestEdit.create!(args.to_h)
+          risk.update(status: "waiting_for_approval")
           admin = User.with_role(:admin_reviewer).pluck(:id)
           Notification.send_notification(admin, risk.name, "Request Edit Risk", risk, current_user.id, "request_edit")
         end
@@ -42,6 +45,7 @@ module Mutations
           raise GraphQL::ExecutionError, "Request not permitted. Another Request exist"
         else
           request_edit = RequestEdit.create!(args.to_h)
+          control.update(status: "waiting_for_approval")
           admin = User.with_role(:admin_reviewer).pluck(:id)
           Notification.send_notification(admin, control.description, "Request Edit Control", control, current_user.id, "request_edit")
         end
@@ -51,6 +55,7 @@ module Mutations
           raise GraphQL::ExecutionError, "Request not permitted. Another Request exist"
         else
           request_edit = RequestEdit.create!(args.to_h)
+          policy_category.update(status: "waiting_for_approval")
           admin = User.with_role(:admin_reviewer).pluck(:id)
           Notification.send_notification(admin, policy_category.name, "Request Edit Policy Category", policy_category, current_user.id, "request_edit")
         end
@@ -60,6 +65,7 @@ module Mutations
           raise GraphQL::ExecutionError, "Request not permitted. Another Request exist"
         else
           request_edit = RequestEdit.create!(args.to_h)
+          resource.update(status: "waiting_for_approval")
           admin = User.with_role(:admin_reviewer).pluck(:id)
           Notification.send_notification(admin, resource.name, "Request Edit Resource", resource, current_user.id, "request_edit")
         end
