@@ -26,7 +26,6 @@ module Mutations
       if policy.user_id == current_user&.id
         args[:last_updated_by] = current_user&.name || "User with ID#{current_user&.id}"
         args[:last_updated_at] = Time.now
-        policy.update(is_submitted: true)
         args[:is_submitted] = true
         prev_buspro = []
         prev_risk = []
@@ -88,10 +87,6 @@ module Mutations
             end
           end
         end
-        if policy.draft? == false
-          policy.attributes = args
-          policy.save_draft
-        end
         if buspro.present?
           buspro.each do |bus|
             pol_bus = PolicyBusinessProcess.new(policy_id: policy&.id, business_process_id: bus )
@@ -142,15 +137,31 @@ module Mutations
             end
           end 
         end
+        if policy.draft? == false
+          policy.attributes = args
+          if policy&.parent&.present?
+            if !policy&.parent&.published? || policy&.parent&.is_submitted
+              raise GraphQL::ExecutionError, "You cannot submit this draft. The Parent of this Policy has not been submitted"
+            end
+          else
+            policy.save_draft
+          end
+          if policy.draft.event == "update"
+            pre_pol = policy.draft.changeset.map {|x,y| Hash[x, y[0]]}
+            pre_pol.map {|x| policy.update(x)}
+          end
+        end
+        policy.update(is_submitted: true)
         policy.draft.update_attributes(
           object_changes: JSON.parse(policy.draft.object_changes).update(args.stringify_keys!).to_json, 
           object:JSON.parse(policy.draft.object).update(args.stringify_keys!).to_json
         )
+        
       else
         raise GraphQL::ExecutionError, "You cannot submit this draft. This Draft belongs to another User"
       end
       
-
+      
       admin = User.with_role(:admin_reviewer).pluck(:id)
       if policy.id.present?
         Notification.send_notification(admin, "Policy #{policy.title} Has Been Submitted", policy.title, policy, current_user.id, "request_draft")

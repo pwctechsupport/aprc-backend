@@ -6,8 +6,6 @@ module Mutations
 
       argument :email, String, required: false
       argument :phone, String, required: false
-      argument :password, String, required: false
-      argument :password_confirmation, String, required: false
       argument :name, String, required: false
       argument :first_name, String, required: false
       argument :last_name, String, required: false
@@ -24,7 +22,7 @@ module Mutations
         
         if args[:notif_show].present?
           user.update!(notif_show: args[:notif_show])
-        elsif args[:password].present? && args[:password_confirmation].present?
+        else
           user.update_attributes(args.to_h)
         end
 

@@ -190,7 +190,9 @@ module Types
 
     def policy(id:)
       pol = Policy&.find_by(id:id)
-      pol&.update(recent_visit: Time.now)
+      if pol&.visit != 0
+        pol&.update(recent_visit: Time.now)
+      end
       pol
     end
 
@@ -204,7 +206,9 @@ module Types
 
     def resource(id:)
       res = Resource&.find_by(id:id)
-      res&.update(recent_visit: Time.now)
+      if res&.visit != 0
+        res&.update(recent_visit: Time.now)
+      end
       res
     end
 
