@@ -190,9 +190,6 @@ module Types
 
     def policy(id:)
       pol = Policy&.find_by(id:id)
-      if pol&.visit != 0
-        pol&.update(recent_visit: Time.now)
-      end
       pol
     end
 
@@ -206,9 +203,6 @@ module Types
 
     def resource(id:)
       res = Resource&.find_by(id:id)
-      if res&.visit != 0
-        res&.update(recent_visit: Time.now)
-      end
       res
     end
 
@@ -276,6 +270,8 @@ module Types
     field :sidebar_policies, resolver: Resolvers::QueryType::SidebarPoliciesResolver
     field :departments, resolver: Resolvers::QueryType::DepartmentsResolver
     field :user_policies, resolver: Resolvers::QueryType::UserPoliciesResolver
+    field :user_policy_visits, resolver: Resolvers::QueryType::UserPolicyVisitsResolver
+    field :user_resource_visits, resolver: Resolvers::QueryType::UserResourceVisitsResolver
     field :preparer_policies, resolver: Resolvers::QueryType::Preparer::PreparerPoliciesResolver
     field :preparer_controls, resolver: Resolvers::QueryType::Preparer::PreparerControlsResolver
     field :preparer_business_processes, resolver: Resolvers::QueryType::Preparer::PreparerBusinessProcessesResolver

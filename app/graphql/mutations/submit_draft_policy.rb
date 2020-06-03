@@ -139,13 +139,7 @@ module Mutations
         end
         if policy.draft? == false
           policy.attributes = args
-          if policy&.parent&.present?
-            if !policy&.parent&.published? || policy&.parent&.is_submitted
-              raise GraphQL::ExecutionError, "You cannot submit this draft. The Parent of this Policy has not been submitted"
-            end
-          else
-            policy.save_draft
-          end
+          policy.save_draft
           if policy.draft.event == "update"
             pre_pol = policy.draft.changeset.map {|x,y| Hash[x, y[0]]}
             pre_pol.map {|x| policy.update(x)}
