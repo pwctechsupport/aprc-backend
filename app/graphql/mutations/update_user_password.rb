@@ -10,7 +10,7 @@ module Mutations
     def resolve(args)
       current_user = context[:current_user]
       if current_user&.valid_password?(args[:old_password])
-        user = current_user.update_attributes!(args)
+        user = current_user.update_attributes!(password: args[:password], password_confirmation: args[:password_confirmation])
         message = "Your Password Changed Successfully"
         errori = "Password confirmation mismatch"
       else
