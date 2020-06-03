@@ -43,6 +43,9 @@ module Types
     field :destroy_bulk_notification, mutation: Mutations::DestroyBulkNotification
     field :destroy_notification, mutation: Mutations::DestroyNotification
 
+    field :create_user_policy_visit, mutation: Mutations::CreateUserPolicyVisit
+    field :create_resource_policy_visit, mutation: Mutations::CreateResourcePolicyVisit
+
 
     # Attributes CRUD
     field :create_resource, mutation: Mutations::CreateResource
