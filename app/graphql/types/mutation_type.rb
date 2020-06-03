@@ -44,7 +44,7 @@ module Types
     field :destroy_notification, mutation: Mutations::DestroyNotification
 
     field :create_user_policy_visit, mutation: Mutations::CreateUserPolicyVisit
-    field :create_resource_policy_visit, mutation: Mutations::CreateResourcePolicyVisit
+    field :create_user_resource_visit, mutation: Mutations::CreateUserResourceVisit
 
 
     # Attributes CRUD
