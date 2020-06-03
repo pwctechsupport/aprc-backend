@@ -88,9 +88,12 @@ module Mutations
           end
         end
         if policy.draft? == false
-          
           policy.attributes = args
           policy.save_draft
+          if policy.draft.event == "update"
+            pre_pol = policy.draft.changeset.map {|x,y| Hash[x, y[0]]}
+            pre_pol.map {|x| policy.update(x)}
+          end
         end
         if buspro.present?
           buspro.each do |bus|
