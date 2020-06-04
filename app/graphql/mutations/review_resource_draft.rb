@@ -15,7 +15,7 @@ module Mutations
         resource_draft = resource.draft
         rodi_res = resource.resupload
         rodi_name = resource.resupload_file_name
-        admin_prep = User.with_role(:admin_preparer).pluck(:id)
+        admin_prep = User.without_role(:admin_reviewer).pluck(:id)
         if args[:publish] === true
           if resource.user_reviewer_id.present? && (resource.user_reviewer_id != current_user.id)
             raise GraphQL::ExecutionError, "This Draft has been reviewed by another Admin."

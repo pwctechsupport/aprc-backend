@@ -9,18 +9,18 @@ class User < ApplicationRecord
   serialize :policy_category, Array
 
   has_many :request_edits, class_name: "RequestEdit", as: :originator, dependent: :destroy
-  has_many :file_attachments
-  has_many :policies
+  has_many :file_attachments, dependent: :destroy
+  has_many :policies, dependent: :destroy
   has_many :user_policy_categories
-  has_many :policy_categories, through: :user_policy_categories
+  has_many :policy_categories, through: :user_policy_categories, dependent: :destroy
   has_many :resource_ratings, class_name: "ResourceRating", foreign_key: "user_id", dependent: :destroy
-  has_many :risks
-  has_many :controls
-  has_many :business_process
-  has_many :bookmark
-  has_many :notifications
-  has_many :activity_controls
-  has_many :manuals
+  has_many :risks, dependent: :destroy
+  has_many :controls, dependent: :destroy
+  has_many :business_process, dependent: :destroy
+  has_many :bookmark, dependent: :destroy
+  has_many :notifications, dependent: :destroy
+  has_many :activity_controls, dependent: :destroy
+  has_many :manuals, dependent: :destroy
   belongs_to :user_reviewer, class_name: "User", foreign_key:"user_reviewer_id", optional: true
   belongs_to :department, optional: true
   devise :database_authenticatable,
