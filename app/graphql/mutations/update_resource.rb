@@ -34,6 +34,9 @@ module Mutations
         if resource.draft?
           raise GraphQL::ExecutionError, "Draft Cannot be created until another Draft is Approved/Rejected by an Admin"
         else
+          if args[:control_ids].present? || args[:policy_ids].present?
+            args[:is_related] = true
+          end
           if args[:resupload_link].present?
             url = URI.parse(args[:resupload_link])
             http = Net::HTTP.new(url.host, url.port)

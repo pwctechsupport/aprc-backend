@@ -42,7 +42,7 @@ module Mutations
             end
             control_draft.reify
             control_draft.publish!
-            control.update(user_reviewer_id: current_user.id)
+            control.update(user_reviewer_id: current_user.id, is_related: false)
             control.update(status: "release")
             Notification.send_notification(admin_prep, "Control Draft with owner #{control&.control_owner.join(", ")} Approved", control&.description,control, current_user&.id, "request_draft_approved")
           end
@@ -56,6 +56,9 @@ module Mutations
             Notification.send_notification(admin_prep, "Control Draft with owner #{control&.control_owner.join(", ")} Rejected", control&.description,control, current_user&.id, "request_draft_rejected")
             control_owner_rejected = control&.control_owner
             control_draft.revert!
+            if control&.present?
+              control.update(is_related:false)
+            end
             if control&.control_business_processes.where.not(draft_id: nil).present?
               control&.control_business_processes.where.not(draft_id: nil).destroy_all
             end

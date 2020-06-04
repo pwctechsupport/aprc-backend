@@ -52,5 +52,14 @@ module Types
     def risks_bookmarked_by
       bookmark = object.bookmark_risks
     end
+
+    def business_process
+      if object.class == Hash
+        YAML.load(object["business_process"])
+      else
+        object&.business_process
+      end
+    end
+
   end
 end

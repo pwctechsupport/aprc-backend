@@ -97,5 +97,12 @@ module Types
       end
     end
 
+    def control_owner
+      if object.class == Hash
+        YAML.load(object["control_owner"])
+      else
+        object&.control_owner
+      end
+    end
   end
 end

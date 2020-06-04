@@ -30,6 +30,9 @@ module Mutations
         if control.draft?
           raise GraphQL::ExecutionError, "Draft Cannot be created until another Draft is Approved/Rejected by an Admin"
         else
+          if args[:business_process_ids].present? || args[:risk_ids].present?
+            args[:is_related] = true
+          end
           if args[:activity_controls_attributes].present?
             act = args[:activity_controls_attributes]
             if act&.first&.class == ActionController::Parameters
@@ -69,6 +72,18 @@ module Mutations
           end
           control&.attributes = args
           control&.save_draft
+          if control.draft.event == "update"
+            if args[:control_owner].present? || args[:ipo].present? || args[:assertion].present?
+              serial = ["control_owner", "assertion", "ipo"]
+              serial.each do |sif|
+                if control.draft.changeset[sif].present?
+                  control.draft.changeset[sif].map!{|x| JSON.parse(x)}
+                end
+              end
+            end
+            pre_con = control.draft.changeset.map {|x,y| Hash[x, y[0]]}
+            pre_con.map {|x| control.update(x)}
+          end
           if buspro.present?
             buspro.each do |bus|
               con_bus = ControlBusinessProcess.new(control_id: control&.id, business_process_id: bus )
