@@ -80,7 +80,6 @@ module Mutations
           end 
         end
         policy.update(created_by: policy&.user&.name, status: "waiting_for_review")
-        Notification.send_notification(admin, policy&.title, policy&.title, policy, current_user&.id, "request_draft")
       else
         raise GraphQL::ExecutionError, "The exact same draft cannot be duplicated"
       end
