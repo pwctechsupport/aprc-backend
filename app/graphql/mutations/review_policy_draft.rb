@@ -63,7 +63,6 @@ module Mutations
             admin_main = User.with_role(:admin).pluck(:id)
             all_admin = admin_prep + admin_rev + admin_main
             admin = all_admin.uniq
-            byebug
             policy.update_attributes(is_submitted:false, is_related: false)
             if policy.references.present?
               ref= policy&.references
