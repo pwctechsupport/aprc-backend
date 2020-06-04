@@ -300,6 +300,7 @@ module Types
     field :reviewer_risks_status, resolver: Resolvers::QueryType::ReviewerRisksStatusResolver
     field :reviewer_resources_status, resolver: Resolvers::QueryType::ReviewerResourcesStatusResolver
     field :reviewer_policy_categories_status, resolver: Resolvers::QueryType::ReviewerPolicyCategoriesStatusResolver
+    field :reviewer_users_status, resolver: Resolvers::QueryType::ReviewerUsersStatusResolver
 
   end
 end

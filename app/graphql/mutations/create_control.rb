@@ -21,6 +21,7 @@ module Mutations
     
     def resolve(args)
       current_user = context[:current_user]
+      actor_control_id = []
       if args[:activity_controls_attributes].present?
         act = args[:activity_controls_attributes]
         if act&.first&.class == ActionController::Parameters
@@ -29,6 +30,12 @@ module Mutations
           args[:activity_controls_attributes]= activities.collect{|x| x.to_h}
           args[:created_by] = current_user&.name || "User with ID#{current_user&.id}"
         end
+        args[:activity_controls_attributes].each do |aca|
+          act_control = ActivityControl.new(aca)
+          act_control.save_draft
+          actor_control_id.push(act_control&.id)
+        end
+        args.delete(:activity_controls_attributes)
       end
       args[:last_updated_by] = current_user&.name || "User with ID#{current_user&.id}"
       if args[:department_ids].present?
@@ -44,6 +51,9 @@ module Mutations
       end
       control=Control.new(args)
       control&.save_draft
+      if actor_control_id.count != 0
+        actor_control_id.map{|x| ActivityControl.find(x).update(control_id: control&.id)}
+      end
       admin = User.with_role(:admin_reviewer).pluck(:id)
       if control.id.present?
         if buspro.present?

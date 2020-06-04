@@ -26,6 +26,12 @@ module Mutations
               end
               resource&.resource_controls.where.not(draft_id: nil).each {|x| x.draft.publish!}
             end
+            if resource&.policy_resources.where.not(draft_id: nil).present?
+              if resource&.policy_resources.where(draft_id: nil).present?
+                resource&.policy_resources.where(draft_id: nil).destroy_all
+              end
+              resource&.policy_resources.where.not(draft_id: nil).each {|x| x.draft.publish!}
+            end
 
             resource_draft.publish!
 
@@ -47,6 +53,9 @@ module Mutations
             resource_draft.revert!
             if resource&.resource_controls.where.not(draft_id: nil).present?
               resource&.resource_controls.where.not(draft_id: nil).destroy_all
+            end
+            if resource&.policy_resources.where.not(draft_id: nil).present?
+              resource&.policy_resources.where.not(draft_id: nil).destroy_all
             end
             if resource&.present?
               resource.update(is_related: false)

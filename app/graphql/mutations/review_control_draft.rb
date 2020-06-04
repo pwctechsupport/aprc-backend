@@ -42,6 +42,10 @@ module Mutations
             end
             control_draft.reify
             control_draft.publish!
+            if control.activity_controls.where.not(draft_id: nil).present?
+              control&.activity_controls.where.not(draft_id: nil).each{|x| x.draft.publish!}
+            end
+
             control.update_attributes(user_reviewer_id: current_user.id, is_related: false)
             control.update(status: "release")
             Notification.send_notification(admin_prep, "Control Draft with owner #{control&.control_owner.join(", ")} Approved", control&.description,control, current_user&.id, "request_draft_approved")
@@ -58,6 +62,9 @@ module Mutations
             control_draft.revert!
             if control&.present?
               control.update(is_related:false)
+              if control.activity_controls.where.not(draft_id: nil).present?
+                control&.activity_controls.where.not(draft_id: nil).each{|x| x.draft.revert!}
+              end
             end
             if control&.control_business_processes.where.not(draft_id: nil).present?
               control&.control_business_processes.where.not(draft_id: nil).destroy_all
