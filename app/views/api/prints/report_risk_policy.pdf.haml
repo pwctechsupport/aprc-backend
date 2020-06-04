@@ -1,0 +1,101 @@
+!!!
+%html
+  %head
+    %meta{:content => "text/html; charset=UTF-8", "http-equiv" => "Content-Type"}/
+    %meta{:charset => "utf-8"}/
+    %meta{:content => "IE=edge", "http-equiv" => "X-UA-Compatible"}/
+    %title Report Risk without Control
+    :css
+      .table.table-borderless {border:10px !important;}
+      .apo{max-width: 30%;}
+      .ape{max-width: 250px;}
+      .aha{border:none;}
+    :javascript
+      $(window).load(function () {
+        var vars={};
+        var x=window.location.search.substring(1).split('&');
+        for (var i in x) {
+          var z=x[i].split('=',2);
+          vars[z[0]] = unescape(z[1]);
+        }
+        document.getElementById('page').innerHTML = vars.page; 
+        document.getElementById('topage').innerHTML = vars.topage;
+      });
+
+  %body
+    %center
+      %h2 Exception Report Risk without Control
+    %table.table.table-borderless.aha{style:"display:block;"}
+      %tr.aha
+        %td.aha Printed On
+        %td.aha :
+        %td.aha #{Time.now.strftime("%d %B %Y")}
+        
+
+      %tr.aha
+        %td.aha Printed By
+        %td.aha :
+        %td.aha= current_user&.name
+    %center
+      %table.table.table-borderless
+        %thead
+          %tr
+            %th.text-center{:scope => "col"} #
+            %th.text-center.apo{:scope => "col"} Name
+            %th.text-center.apo{:scope => "col"} Level of Risk
+            %th.text-center.apo{:scope => "col"} Type of Risk
+            %th.text-center.apo{:scope => "col"} Business Processes
+            %th.text-center.apo{:scope => "col"} Related Policy
+        -z = 1
+        -x=1
+        -@risks.each do |ris| 
+          -if ris.business_processes.present?
+            -ris&.business_processes.each do |bus|
+              -if ris.policies.present?
+                -ris.policies.each do |pol|
+                  %tbody
+                    %tr
+                      %td.text-center{:scope => "row"} #{z}
+                      %td.text-center.ape #{ris.name.to_s.gsub(/[^0-9A-Za-z]/, ' ').titlecase.html_safe}
+                      %td.text-center.apo #{ris.level_of_risk.to_s.gsub(/[^0-9A-Za-z]/, ' ').titlecase.html_safe}
+                      %td.text-center.apo #{ris.type_of_risk.to_s.gsub(/[^0-9A-Za-z]/, ' ').titlecase.html_safe}
+                      %td.text-center.apo #{bus&.name&.titlecase}
+                      %td.text-center.apo #{pol&.title&.titlecase&.html_safe}
+                      -z+=1
+              -else
+                %tbody
+                  %tr
+                    %td.text-center{:scope => "row"} #{z}
+                    %td.text-center.ape #{ris.name.to_s.gsub(/[^0-9A-Za-z]/, ' ').titlecase.html_safe}
+                    %td.text-center.apo #{ris.level_of_risk.to_s.gsub(/[^0-9A-Za-z]/, ' ').titlecase.html_safe}
+                    %td.text-center.apo #{ris.type_of_risk.to_s.gsub(/[^0-9A-Za-z]/, ' ').titlecase.html_safe}
+                    %td.text-center.apo #{bus&.name&.titlecase}
+                    %td.text-center.apo No Related Policies
+                    -z+=1
+          -else
+            -if ris.policies.present?
+              -ris.policies.each do |pol|
+                %tbody
+                  %tr
+                    %td.text-center{:scope => "row"} #{z}
+                    %td.text-center.ape #{ris.name.to_s.gsub(/[^0-9A-Za-z]/, ' ').titlecase.html_safe}
+                    %td.text-center.apo #{ris.level_of_risk.to_s.gsub(/[^0-9A-Za-z]/, ' ').titlecase.html_safe}
+                    %td.text-center.apo #{ris.type_of_risk.to_s.gsub(/[^0-9A-Za-z]/, ' ').titlecase.html_safe}
+                    %td.text-center.apo No Business Process
+                    %td.text-center.apo #{pol&.title&.titlecase&.html_safe}
+                    -z+=1
+            -else
+              %tbody
+                %tr
+                  %td.text-center{:scope => "row"} #{z}
+                  %td.text-center.ape #{ris.name.to_s.gsub(/[^0-9A-Za-z]/, ' ').titlecase.html_safe}
+                  %td.text-center.apo #{ris.level_of_risk.to_s.gsub(/[^0-9A-Za-z]/, ' ').titlecase.html_safe}
+                  %td.text-center.apo #{ris.type_of_risk.to_s.gsub(/[^0-9A-Za-z]/, ' ').titlecase.html_safe}
+                  %td.text-center.apo No Business Process
+                  %td.text-center.apo No Related Policies
+                  -z+=1
+
+      %p{:style => "page-break-after:always;"}
+      %p{:style => "page-break-after:auto;"}
+      -x+=1 
+

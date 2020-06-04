@@ -8,12 +8,11 @@ module Types
     field :token, String, null: false
     field :phone, String, null: true
     field :role, [Int], null: true
-    field :department, String, null: true
     field :jobPosition, String, null: true
     field :policies, [Types::PolicyType], null: true
     field :policy_categories, [Types::PolicyCategoryType], null: true 
-    field :created_at, GraphQL::Types::ISO8601DateTime, null: true
-    field :updated_at, GraphQL::Types::ISO8601DateTime, null: true
+    field :created_at, String, null: true
+    field :updated_at, String, null: true
     field :bookmark_policies_user, [Types::BookmarkPolicyType], null: true
     field :resource_ratings, [Types::ResourceRatingType], null: true
     field :risks, [Types::RiskType], null: true
@@ -24,13 +23,61 @@ module Types
     field :draft, Types::VersionType, null: true
     field :user_reviewer_id, ID, null: true
     field :user_reviewer, Types::UserType, null: true
-    
+    field :has_edit_access, Boolean, null: true
+    field :request_status, String, null: true
+    field :request_edits, [Types::RequestEditType], null: true
+    field :request_edit, Types::RequestEditType, null: true
+    field :file_attachments, [Types::FileAttachmentType], null: true
+    field :activity_controls, [Types::ActivityControlType], null: true
+    field :notif_show, Boolean, null: true
+    field :status, String, null: true
+    field :department, Types::DepartmentType, null: true
+    field :policy_category, [String], null: true
+    field :resource_rating, Types::ResourceRatingType, null: true
+
+    def activity_controls
+      if object&.class == Hash
+        empty = []
+      else
+        object&.activity_controls
+      end 
+    end
+
+    def file_attachments
+      if object&.class == Hash
+        empty = []
+      else
+        object&.file_attachments
+      end  
+    end
+
+    def request_edit
+      object&.request_edit
+    end
+
+    def has_edit_access
+      current_user = context[:current_user]
+      if object.class == Hash
+        empty = [] 
+      else
+        object&.request_edits&.where(user_id: current_user&.id)&.last&.state == "approved"
+      end
+    end
+
+    def request_status
+      current_user = context[:current_user]
+      if object.class == Hash
+        empty = []
+      else
+        object&.request_edits&.where(user_id: current_user&.id)&.last&.state
+      end
+    end
+
     # field :controls, [Types::ControlType], null: true
     # field :risks, [Types::RiskType], null: true
     # field :references, [Types::ReferenceType], null: true
     # field :business_processes, [Types::BusinessProcessType], null: true
     # field :resources, [Types::ResourceType], null: true
-    
     def bookmark_policies_user
       bookmark = object.bookmark_policies
     end

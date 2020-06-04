@@ -2,7 +2,7 @@ module Types
 	class Types::OriginatorType < Types::BaseUnion
 		description "Types of an Originator"
 
-		possible_types Types::PolicyType, Types::BusinessProcessType, Types::ControlType, Types::RiskType, Types::UserType, Types::UserPolicyCategoryType
+		possible_types Types::PolicyType, Types::BusinessProcessType, Types::ControlType, Types::RiskType, Types::UserType, Types::PolicyCategoryType, Types::ResourceType, Types::DepartmentType, Types::RequestEditType
 		
 		def self.resolve_type(object,context)
 			if object.is_a?(Policy)
@@ -15,8 +15,14 @@ module Types
 				Types::RiskType
 			elsif object.is_a?(User)
 				Types::UserType
-			elsif object.is_a?(UserPolicyCategory)
-				Types::UserPolicyCategoryType
+			elsif object.is_a?(PolicyCategory)
+				Types::PolicyCategoryType
+			elsif object.is_a?(Resource)
+				Types::ResourceType
+			elsif object.is_a?(Department)
+				Types::DepartmentType
+			elsif object.is_a?(RequestEdit)
+				Types::RequestEditType
 			end
 		end
 		

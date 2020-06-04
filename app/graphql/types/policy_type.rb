@@ -27,8 +27,8 @@ module Types
     field :ancestors, [Types::PolicyType], null: true
     field :status, String, null: true
     field :visit, Int, null: true
-    field :created_at, GraphQL::Types::ISO8601DateTime, null: false
-    field :updated_at, GraphQL::Types::ISO8601DateTime, null: false
+    field :created_at, String, null: false
+    field :updated_at, String, null: false
     field :policies_bookmarked_by, [Types::BookmarkPolicyType] , null: true
     field :user, Types::UserType, null:true
     field :sub_count, Types::BaseScalar, null: true
@@ -37,14 +37,83 @@ module Types
     field :draft, Types::VersionType, null: true
     field :user_reviewer_id, ID, null: true
     field :user_reviewer, Types::UserType, null: true
-    
+    field :has_edit_access, Boolean, null: true
+    field :request_status, String, null: true
+    field :request_edits, [Types::RequestEditType], null: true
+    field :request_edit, Types::RequestEditType, null: true
+    field :file_attachments, [Types::FileAttachmentType], null: true
+    field :ancestors, [Types::PolicyType], null: true
+    field :recent_visit, String, null: true
+    field :versions_count, String, null: true
+    field :descendants_controls, [Types::ControlType], null: true
+    field :descendants_risks, [Types::RiskType], null: true
+    field :is_submitted, Boolean, null: true
+    field :created_by, String, null: true
+    field :last_updated_by, String, null: true
+    field :last_updated_at, String, null: true
+    field :true_version, Float, null: true
+    field :bookmarked_by, Boolean, null: true
+
+
+    def bookmarked_by
+      if object.bookmarks.present?
+        true
+      else
+        false
+      end
+    end
+
+    def versions_count
+      ver = object.versions.count.to_f
+      ver.to_s
+    end
+
+    def descendants_controls
+      object.descendants.map {|x| x.controls}.flatten
+    end
+
+    def descendants_risks
+      object.descendants.map {|x| x.risks}.flatten
+    end
+
+    def ancestors
+      object&.ancestors
+    end
+
+    def file_attachments
+      if object&.class == Hash
+        empty = []
+      else
+        object&.file_attachments
+      end  
+    end
+
+    def request_edit
+      object&.request_edit
+    end
+
+    def has_edit_access
+      current_user = context[:current_user]
+      if object.class == Hash
+        empty = []
+      else
+        object&.request_edits&.where(user_id: current_user&.id)&.last&.state == "approved"
+      end
+    end
+
+    def request_status
+      current_user = context[:current_user]
+      if object.class == Hash
+        empty = []
+      else
+        object&.request_edits&.where(user_id: current_user&.id)&.last&.state
+      end  
+    end
 
     
     def policies_bookmarked_by
       bookmark = object.bookmark_policies
     end
-
-
 
     def control_count
       data = object.controls

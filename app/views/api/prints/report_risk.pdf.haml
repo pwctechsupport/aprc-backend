@@ -9,32 +9,90 @@
       .table.table-borderless {border:10px !important;}
       .apo{max-width: 30%;}
       .ape{max-width: 250px;}
+      .aih{font-size:20px}
+      .aha{border:none;}
 
   %body
-  -@risks.each do |ris|
-    -if ris.controls.present? == false
-      
-    -else 
-      %center
-        %h2=ris.name.titlecase.html_safe  
-      %table.table.table-borderless
-        %thead
-          %tr
-            %th.text-center{:scope => "col"} #
-            %th.text-center.apo{:scope => "col"} Business Process
-            %th.text-center.apo{:scope => "col"} Control Owner
-            %th.text-center.apo{:scope => "col"} Type of Control
-            %th.text-center.apo{:scope => "col"} Description
-        -ris.controls.each_with_index do |bis,i|
+    %center
+      %h2.aih Exception Report Risk Without Policy 
+    %table.table.table-borderless.aha{style:"display:block;"}
+      %tr.aha
+        %td.aha Printed On
+        %td.aha :
+        %td.aha #{Time.now.strftime("%d %B %Y")}
+        
+
+      %tr.aha
+        %td.aha Printed By
+        %td.aha :
+        %td.aha= current_user&.name
+    %table.table.table-borderless
+      %thead
+        %tr
+          %th.text-center{:scope => "col"} #
+          %th.text-center.apo{:scope => "col"} Business Process
+          %th.text-center.apo{:scope => "col"} Risk
+          %th.text-center.apo{:scope => "col"} Type of Risk
+          %th.text-center.apo{:scope => "col"} Level of Risk
+          %th.text-center.apo{:scope => "col"} Created By
+          %th.text-center.apo{:scope => "col"} Created On
+          %th.text-center.apo{:scope => "col"} Last Update On
+          %th.text-center.apo{:scope => "col"} Last Update By
+      -z = 1
+      -@risks.each do |ris|
+        -if ris.business_processes.present?
+          -ris.business_processes.each do |bus|
+            %tbody
+              %tr
+                %td.text-center{:scope => "row"} #{z}
+                %td.text-center.apo=bus&.name&.titlecase 
+                %td.text-center.apo=ris.name.titlecase.html_safe 
+                %td.text-center.apo #{ris.type_of_risk.to_s.gsub(/[^0-9A-Za-z]/, ' ').titlecase.html_safe}
+                %td.text-center.apo #{ris.level_of_risk.to_s.gsub(/[^0-9A-Za-z]/, ' ').titlecase.html_safe}
+                -if ris&.versions&.find_by(event:"create")&.whodunnit.present?
+                  %td.text-center.apo=User&.find(ris&.versions&.find_by(event:"create")&.whodunnit).name
+                -else
+                  %td.text-center.apo
+                -if ris&.versions&.find_by(event:"create")&.present?
+                  %td.text-center.apo=ris&.versions&.find_by(event:"create")&.created_at
+                -else
+                  %td.text-center.apo
+                -if ris&.updated_at.present?
+                  %td.text-center.ape=ris&.updated_at
+                -else
+                  %td.text-center.apo
+                -if ris&.versions&.last&.whodunnit.present?
+                  %td.text-center.ape=User&.find(ris&.versions&.last&.whodunnit)&.name
+                -else
+                  %td.text-center.apo
+                -z+=1
+        -else 
           %tbody
             %tr
-              %td.text-center{:scope => "row"} #{i+1}
-              %td.text-center.apo #{ris.business_process.name}
-              %td.text-center.apo #{bis.control_owner.to_s.gsub(/[^0-9A-Za-z]/, ' ').titlecase.html_safe}
-              %td.text-center.apo #{bis.type_of_control.to_s.gsub(/[^0-9A-Za-z]/, ' ').titlecase.html_safe}
-              %td.text-center.ape #{bis.description.to_s.gsub(/[^0-9A-Za-z]/, ' ').titlecase.html_safe}
-      %p{:style => "page-break-after:always;"}
-      %p{:style => "page-break-after:auto;"}
+              %td.text-center{:scope => "row"} #{z}
+              %td.text-center.apo No Business Process
+              %td.text-center.apo=ris.name.titlecase.html_safe 
+              %td.text-center.apo #{ris.type_of_risk.to_s.gsub(/[^0-9A-Za-z]/, ' ').titlecase.html_safe}
+              %td.text-center.apo #{ris.level_of_risk.to_s.gsub(/[^0-9A-Za-z]/, ' ').titlecase.html_safe}
+              -if ris&.versions&.find_by(event:"create")&.whodunnit.present?
+                %td.text-center.apo=User&.find(ris&.versions&.find_by(event:"create")&.whodunnit).name
+              -else
+                %td.text-center.apo
+              -if ris&.versions&.find_by(event:"create")&.present?
+                %td.text-center.apo=ris&.versions&.find_by(event:"create")&.created_at
+              -else
+                %td.text-center.apo
+              -if ris&.updated_at.present?
+                %td.text-center.ape=ris&.updated_at
+              -else
+                %td.text-center.apo
+              -if ris&.versions&.last&.whodunnit.present?
+                %td.text-center.ape=User&.find(ris&.versions&.last&.whodunnit)&.name
+              -else
+                %td.text-center.apo
+              -z+=1
+    %p{:style => "page-break-after:always;"}
+    %p{:style => "page-break-after:auto;"}
 
 
     

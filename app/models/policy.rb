@@ -1,6 +1,6 @@
 class Policy < ApplicationRecord
   validates :title, uniqueness: true
-  has_paper_trail ignore: [:visit]
+  has_paper_trail ignore: [:visit, :recent_visit]
   has_drafts
   belongs_to :policy_category, optional: true
   belongs_to :user, optional: true
@@ -10,6 +10,7 @@ class Policy < ApplicationRecord
   has_many :resources, through: :policy_resources
   has_many :it_systems, through: :policy_it_systems
   has_many :business_processes, through: :policy_business_processes
+  has_many :request_edits, class_name: "RequestEdit", as: :originator, dependent: :destroy
   has_ancestry
   has_many :policy_references, dependent: :destroy
   has_many :references, through: :policy_references
@@ -20,9 +21,14 @@ class Policy < ApplicationRecord
   has_many :bookmark_policies, dependent: :destroy
   has_many :users, as: :versions
   has_many :bookmarks, class_name: "Bookmark", as: :originator, dependent: :destroy
+  has_many :file_attachments, class_name: "FileAttachment", as: :originator, dependent: :destroy
   belongs_to :user_reviewer, class_name: "User", foreign_key:"user_reviewer_id", optional: true
 
   def to_humanize
     "#{self.title.titlecase}"
+  end
+
+  def request_edit
+    request_edits.last
   end
 end

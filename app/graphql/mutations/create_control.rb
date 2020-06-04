@@ -1,31 +1,68 @@
 module Mutations
   class CreateControl < Mutations::BaseMutation
-    # arguments passed to the `resolved` method
-    # argument :type_of_control, String, required: false
-    # argument :frequency, String, required: false
-    # argument :nature, String, required: false 
-    # argument :assertion, String, required: false
-    # argument :ipo, String, required: false
-    argument :control_owner, String, required: false
-    argument :description, String, required: false
+    argument :control_owner, [ID], as: :department_ids,required: true
     argument :fte_estimate, Int, required: false 
-    argument :description, String, required: false
-    argument :type_of_control, Types::Enums::TypeOfControl, required: false
-    argument :frequency, Types::Enums::Frequency, required: false
-    argument :nature, Types::Enums::Nature, required: false 
-    argument :assertion, [Types::Enums::Assertion], required: false
-    argument :ipo, [Types::Enums::Ipo], required: false
+    argument :description, String, required: true
+    argument :type_of_control, Types::Enums::TypeOfControl, required: true
+    argument :activity_controls_attributes, [Types::BaseScalar], required: true
+    argument :frequency, Types::Enums::Frequency, required: true
+    argument :nature, Types::Enums::Nature, required: true 
+    argument :assertion, [Types::Enums::Assertion], required: true
+    argument :ipo, [Types::Enums::Ipo], required: true
     argument :business_process_ids, [ID], required: false
     argument :description_ids, [ID], required: false
     argument :status, Types::Enums::Status, required: false
     argument :risk_ids, [ID], required: false
     argument :key_control, Boolean, required: false
+    argument :created_by, String, required: false
+    argument :last_updated_by, String, required: false
 
-    # return type from the mutation
     field :control, Types::ControlType, null: true
-
+    
     def resolve(args)
-      control=Control.create!(args.to_h)
+      current_user = context[:current_user]
+      if args[:activity_controls_attributes].present?
+        act = args[:activity_controls_attributes]
+        if act&.first&.class == ActionController::Parameters
+          activities = act.collect {|x| x.permit(:id,:activity,:guidance,:control_id,:resuploadBase64,:resuploadFileName,:_destroy,:resupload,:user_id,:resupload_file_name)}
+          args.delete(:activity_controls_attributes)
+          args[:activity_controls_attributes]= activities.collect{|x| x.to_h}
+          args[:created_by] = current_user&.name || "User with ID#{current_user&.id}"
+        end
+      end
+      args[:last_updated_by] = current_user&.name || "User with ID#{current_user&.id}"
+      if args[:department_ids].present?
+        args[:control_owner] = args[:department_ids].map{|x| Department.find(x&.to_i).name}
+      end
+      if args[:business_process_ids].present?
+        buspro = args[:business_process_ids]
+        args.delete(:business_process_ids)
+      end
+      if args[:risk_ids].present?
+        risk = args[:risk_ids]
+        args.delete(:risk_ids)
+      end
+      control=Control.new(args)
+      control&.save_draft
+      admin = User.with_role(:admin_reviewer).pluck(:id)
+      if control.id.present?
+        if buspro.present?
+          buspro.each do |bus|
+            con_bus = ControlBusinessProcess.new(control_id: control&.id, business_process_id: bus )
+            con_bus.save_draft
+          end 
+        end
+        if risk.present?
+          risk.each do |ris|
+            con_ris = ControlRisk.new(control_id: control&.id, risk_id: ris )
+            con_ris.save_draft
+          end 
+        end
+        Notification.send_notification(admin, control&.description, control&.type_of_control,control, current_user&.id, "request_draft")
+        control.update(status: "waiting_for_review" )
+      else
+        raise GraphQL::ExecutionError, "The exact same draft cannot be duplicated"
+      end
 
       MutationResult.call(
           obj: { control: control },

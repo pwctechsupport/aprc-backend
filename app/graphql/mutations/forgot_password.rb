@@ -12,13 +12,15 @@ module Mutations
         user.send_reset_password_instructions
         message = "You will receive an email with instructions on how to reset your password in a few minutes."
       else
-        message = "email did not found!"
+        return GraphQL::ExecutionError.new(
+          "email did not found!"
+        )
       end
 
       MutationResult.call(
         obj: { user: message },
         success: user.present?,
-        errors: [message]
+        errors: user.errors.full_messages
       )
     rescue ActiveRecord::RecordInvalid => invalid
       GraphQL::ExecutionError.new(

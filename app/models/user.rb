@@ -9,6 +9,10 @@ class User < ApplicationRecord
   # :confirmable, :lockable, :timeoutable, :trackable and :omniauthable
   has_paper_trail ignore: [:current_sign_in_at,:last_sign_in_at, :sign_in_count, :updated_at]
   has_drafts
+  serialize :policy_category, Array
+
+  has_many :request_edits, class_name: "RequestEdit", as: :originator, dependent: :destroy
+  has_many :file_attachments
   has_many :policies
   has_many :user_policy_categories
   has_many :policy_categories, through: :user_policy_categories
@@ -20,7 +24,10 @@ class User < ApplicationRecord
   has_many :business_process
   has_many :bookmark
   has_many :notifications
+  has_many :activity_controls
+  has_many :manuals
   belongs_to :user_reviewer, class_name: "User", foreign_key:"user_reviewer_id", optional: true
+  belongs_to :department, optional: true
   devise :database_authenticatable,
          :registerable,
          :recoverable, 
@@ -31,6 +38,12 @@ class User < ApplicationRecord
          jwt_revocation_strategy: self
 
   has_many :versions, class_name: "PaperTrail::Version", foreign_key: "whodunnit"
+  has_many :tags, dependent: :destroy
+
+  
+  def request_edit
+    request_edits.last
+  end
 
   def to_humanize
     "#{self.name} : #{self.email}"

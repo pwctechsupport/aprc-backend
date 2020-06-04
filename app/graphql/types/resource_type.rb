@@ -1,10 +1,9 @@
-module Types
+  module Types
   class ResourceType < BaseObject
     field :id, ID, null: false
-    field :name, String, null: false
+    field :name, String, null: true
     field :resuploadUrl, String, null: true
     field :category, String, null: true
-    field :policy, Types::PolicyType, null: true
     field :control, Types::ControlType, null: true
     field :policy_ids, [Types::PolicyType], null: true
     field :policies, [Types::PolicyType], null: true
@@ -14,14 +13,56 @@ module Types
     field :business_process, Types::BusinessProcessType, null: true
     field :rating, Float, null: true
     field :total_rating, Int, null: true
-    field :visit,Int, null: false
+    field :visit,Int, null: true
     field :resource_file_type, String, null: true
     field :resource_file_size, Integer, null: true
     field :resource_file_name, String, null: true
     field :status, String, null: true
-    field :created_at, GraphQL::Types::ISO8601DateTime, null: false
-    field :updated_at, GraphQL::Types::ISO8601DateTime, null: false
+    field :created_at, String, null: false
+    field :updated_at, String, null: false
+    field :tags, [Types::TagType], null: true
+    field :enum_list, Types::EnumListType, null: true
+    field :resupload_link, String, null: true
+    field :draft, Types::VersionType, null: true
+    field :user_reviewer_id, ID, null: true
+    field :user_reviewer, Types::UserType, null: true
+    field :has_edit_access, Boolean, null: true
+    field :request_status, String, null: true
+    field :request_edits, [Types::RequestEditType], null: true
+    field :request_edit, Types::RequestEditType, null: true
+    field :recent_visit, String, null: true
+    field :last_updated_by, String, null: true
+    field :created_by, String, null: true
+    field :last_updated_at, String, null: true
+    field :base_64_file, String, null: true
+    field :resource_rating, Types::ResourceRatingType, null: true
     
+
+    def request_edit
+      object&.request_edit
+    end
+
+    def has_edit_access
+      current_user = context[:current_user]
+      if object.class == Hash
+        empty = []
+      else
+        object&.request_edits&.where(user_id: current_user&.id)&.last&.state == "approved"
+      end
+    end
+
+    def request_status
+      current_user = context[:current_user]
+      if object.class == Hash
+        empty = []
+      else
+        object&.request_edits&.where(user_id: current_user&.id)&.last&.state
+      end  
+    end
+
+    def enum_list
+      enum_list = EnumList.find_by(code: object&.category)
+    end
     def  resupload_url
       attachment = object.resupload.url
     end
@@ -40,6 +81,9 @@ module Types
           content_true
         elsif content_true.include? "presentation"
           content_true = ".pptx"
+          content_true
+        elsif content_true.include? "plain"
+          content_true = ".txt"
           content_true
         else
           if content_true == nil

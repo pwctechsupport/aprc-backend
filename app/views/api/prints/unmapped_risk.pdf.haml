@@ -1,0 +1,110 @@
+
+!!!
+%html
+  %head
+    %meta{:content => "text/html; charset=UTF-8", "http-equiv" => "Content-Type"}/
+    %meta{:charset => "utf-8"}/
+    %meta{:content => "IE=edge", "http-equiv" => "X-UA-Compatible"}/
+    %title Flowchart Unmapped Risk
+    :css
+      input[type=checkbox]{
+      \/* Double-sized Checkboxes */
+      \-ms-transform: scale(3.5); /* IE */
+      \-moz-transform: scale(3.5); /* FF */
+      \-webkit-transform: scale(3.5); /* Safari and Chrome */
+      \-o-transform: scale(3.5); /* Opera */
+      transform: scale(3.5);
+      padding: 1px;}
+    :css
+      .table.table-borderless {border:10px !important;}
+      .risk {margin-top:15px;}
+      hr.new5 {
+      border: 2px solid #D85604;
+      border-radius: 5px;}
+      th,td{max-width: 50%;}
+
+      
+    :css
+      .apo{font-size:13px;}
+      th{font-size:12px;}
+      td{font-size:12px;}
+      .tab{ margin-left:40px;}
+      .ape{%font-size:24px; text-align:left;}
+      .aps{font-size:20px;}
+      .aha{border:none;}
+
+
+    :css
+      span {position:relative; bottom:1.7px; background:#F32013; border-radius:6px; font-size:15px; color:white; font-family:Arial; text-shadow: 0.5px 0.5px black; padding:1px 5px 4px;}
+
+
+    %h1.text-center.aps Exception Report for Flowchart Unmapped Risk
+    %h2.ape 
+    %table.table.table-borderless.aha{style:"display:block;"}
+      %tr.aha
+        %td.aha Printed On
+        %td.aha :
+        %td.aha #{Time.now.strftime("%d %B %Y")}
+        
+
+      %tr.aha
+        %td.aha Printed By
+        %td.aha :
+        %td.aha= current_user&.name
+    
+    
+
+
+        
+      
+     
+    -# %table.table.table-border
+    -#   %thead
+    -#     %tr
+    -#       %th{:scope => "col"} Risk Name
+    -#       %th{:scope => "col"} Level of Risk
+    -#       %th{:scope => "col"} Type of Risk
+    -#       %th{:scope => "col"} Business Process
+    -#   %tbody
+    -#     %tr
+    -#       %td #{ris.name}
+    -#       %td #{ris.level_of_risk.to_s.gsub(/_/, ' ').titlecase}
+    -#       %td #{ris.type_of_risk.to_s.gsub(/_/, ' ').titlecase}
+    -#       %td #{ris.business_process.name.capitalize}
+    -# %br
+    %table.table.table-borderless
+      %thead
+        %tr
+          %th.text-center{:scope => "col"} #
+          %th.text-center{:scope => "col"} Name
+          %th.text-center{:scope => "col"} Level of Risk
+          %th.text-center{:scope => "col"} Type of Risk
+          %th.text-center{:scope => "col"} Business Processes
+      -collect_risk=[]
+      -ris =  @tags.pluck(:risk_id).group_by(&:itself).reject{|k,v| v.count>1}.keys
+      -ris.reject!{|x| x == nil} if ris.count(nil) >= 1
+      -ris.each_with_index do |ras,i|
+        -rus = Risk.find(ras)
+        -if rus.business_processes.present?
+          -rus.business_processes.each do |bus|
+            %tr
+              %td.text-center{:scope => "row"} #{i+1}
+              %td.text-center.ape #{rus.name.to_s.gsub(/[^0-9A-Za-z]/, ' ').titlecase.html_safe}
+              %td.text-center #{rus.level_of_risk.to_s.gsub(/[^0-9A-Za-z]/, ' ').titlecase.html_safe}
+              %td.text-center #{rus.type_of_risk.to_s.gsub(/[^0-9A-Za-z]/, ' ').titlecase.html_safe}
+              %td.text-center #{bus&.name&.titlecase}
+        -else
+          %tr
+            %td.text-center{:scope => "row"} #{i+1}
+            %td.text-center.ape #{rus.name.to_s.gsub(/[^0-9A-Za-z]/, ' ').titlecase.html_safe}
+            %td.text-center #{rus.level_of_risk.to_s.gsub(/[^0-9A-Za-z]/, ' ').titlecase.html_safe}
+            %td.text-center #{rus.type_of_risk.to_s.gsub(/[^0-9A-Za-z]/, ' ').titlecase.html_safe}
+            %td.text-center No Business Process
+    %br
+    %br
+
+
+
+
+    / %p{:style => "page-break-after:always;"}
+    / / %p{:style => "page-break-after:auto;"}

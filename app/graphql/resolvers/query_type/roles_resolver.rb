@@ -9,12 +9,12 @@ module Resolvers
       def resolve(filter:, page: nil,limit: nil)
         Role.page(page).per(limit)
         @q = Role.ransack(filter.as_json)
-        @q.result.page(page).per(limit)  
+        @q.result(distinct: true).page(page).per(limit)
       end
 
-      # def ready?(args)
-      #   authorize_user
-      # end
+      def ready?(args)
+        authorize_user
+      end
     end
   end
 end

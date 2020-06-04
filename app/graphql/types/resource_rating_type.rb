@@ -1,9 +1,11 @@
 module Types
   class ResourceRatingType < BaseObject
     field :id, ID, null: false
-    field :resource_id, ID, null: false
+    field :resource_id, ID, null: true
+    field :resource, Types::ResourceType, null: true
     field :rating, Float, null: true
-    field :user_id, ID, null: false
+    field :user_id, ID, null: true
+    field :user, Types::UserType, null: true
     field :created_at, GraphQL::Types::ISO8601DateTime, null: false
     field :updated_at, GraphQL::Types::ISO8601DateTime, null: false
     # field :rating_avg, ID, null: true do

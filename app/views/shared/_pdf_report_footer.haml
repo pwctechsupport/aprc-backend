@@ -1,0 +1,55 @@
+!!!
+%html
+  %head
+    %meta{:content => "text/html; charset=UTF-8", "http-equiv" => "Content-Type"}/
+
+    :css
+      hr.new5 {
+      border: 1px solid black;
+      border-radius: 5px;}
+      td.abe {
+        border: none;
+        position: relative;
+        padding-left: 5px;
+        
+      }
+      ul {
+        list-style-type: none;
+        margin: 0;
+        padding: 0;
+        overflow: hidden;
+      }
+
+      li{
+        display: inline-block;
+        font-family: Georgia,-apple-system,BlinkMacSystemFont,"Segoe UI","Roboto","Oxygen","Ubuntu","Cantarell","Fira Sans","Droid Sans","Helvetica Neue",sans-serif!important;
+        -webkit-font-smoothing: antialiased;
+        font-size: 12px;
+      }
+
+      li:last-child {
+        border-right: none;
+        margin-bottom:50px;
+        
+      }   
+
+  %body{:onload => "number_pages()"}
+    %hr.new5
+    %ul
+      %li Accounting Policy
+      %li{style:"float:center; margin-left: 240px;"} Printed on #{Time.now.strftime("%d %m %Y")}
+      %li{style:"float:right"}
+        Page
+        %span#page
+        of
+        %span#topage
+        :javascript
+          var vars={};
+          var x=window.location.search.substring(1).split('&');
+          for (var i in x) {
+            var z=x[i].split('=',2);
+            vars[z[0]] = unescape(z[1]);
+          }
+          document.getElementById('page').innerHTML = vars.page; 
+          document.getElementById('topage').innerHTML = vars.topage;
+        

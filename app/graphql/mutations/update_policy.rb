@@ -16,20 +16,30 @@ module Mutations
     argument :reference_ids, [ID], required: false
     argument :risk_ids, [ID], required: false
     argument :control_ids, [ID], required: false
+    argument :last_updated_by, String, required: false
+    argument :user_id, ID, required: false
+    argument :last_updated_at, String, required: false
+    argument :is_submitted, Boolean, required: false
 
-    
+
+
     field :policy, Types::PolicyType, null: false
 
     def resolve(id:, **args)
       current_user = context[:current_user]
+      args[:user_id] = current_user.id
       policy = Policy.find(id)
-      if policy.draft?
-        raise GraphQL::ExecutionError, "Draft Cannot be created until another Draft is Approved/Rejected by an Admin"
-      else
-        policy.attributes = args
-        policy.save_draft
-        admin = User.with_role(:admin).pluck(:id)
-        Notification.send_notification(admin, policy&.title, policy&.description,policy, current_user&.id)
+      if policy&.request_edits&.last&.approved?
+        if policy&.draft?
+          raise GraphQL::ExecutionError, "Draft Cannot be created until another Draft is Approved/Rejected by an Admin"
+        else
+          args[:last_updated_by] = current_user&.name || "User with ID#{current_user&.id}"
+          args[:last_updated_at] = Time.now
+          policy&.attributes = args
+          policy&.save_draft
+        end
+      else  
+        raise GraphQL::ExecutionError, "Request not granted. Please Check Your Request Status"
       end
 
       MutationResult.call(

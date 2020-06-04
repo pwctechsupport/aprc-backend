@@ -1,0 +1,9 @@
+wb = xlsx_package.workbook
+
+
+wb.add_worksheet(name: "Business Processes") do |sheet|
+  sheet.add_row ["name", "ancestry"]
+  @business_processes.each do |business_process|
+    sheet.add_row [business_process&.name, business_process&.parent&.name]
+  end
+end

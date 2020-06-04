@@ -6,11 +6,14 @@ class ResourceControl < ApplicationRecord
   paper_trail.on_update     # etc.
   paper_trail.on_create
   paper_trail.on_touch
+
+  has_drafts
+
   
   belongs_to :resource
   belongs_to :control
 
   def to_humanize
-    "#{self.control.description}: #{self.resource.name}"
+    "#{self.control&.description}: #{self.resource.name}"
   end
 end

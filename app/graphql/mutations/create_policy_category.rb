@@ -3,17 +3,34 @@ module Mutations
     # arguments passed to the `resolved` method
     argument :name, String, required: true
     argument :policy_ids, [ID], required: false
+    argument :created_by, String, required: false
+    argument :last_updated_by, String, required: false
+    argument :status, Types::Enums::Status, required: false
+    argument :policy, [ID], as: :policy_ids,required: false
+
+
 
 
     # return type from the mutation
     field :policy_category, Types::PolicyCategoryType, null: true
 
     def resolve(args)
-      policy_category = PolicyCategory.find_by(name: args[:name])
-      if policy_category.present?
-        policy_category.update_attributes(args.to_h)
+      current_user = context[:current_user]
+
+      args[:created_by] = current_user&.name || "User with ID#{current_user&.id}"
+      args[:last_updated_by] = current_user&.name || "User with ID#{current_user&.id}"
+      if args[:policy_ids].present?
+        args[:policy] = args[:policy_ids].map{|x| Policy.find(x&.to_i).title}
+      end
+
+      policy_category = current_user&.policy_categories&.new(args.to_h)
+      policy_category&.save_draft
+      admin = User.with_role(:admin_reviewer).pluck(:id)
+      if policy_category.id.present?
+        Notification.send_notification(admin, policy_category&.name, policy_category&.name,policy_category, current_user&.id, "request_draft")
+        policy_category.update(status: "waiting_for_review" )
       else
-      policy_category = PolicyCategory.create!(args.to_h)
+        raise GraphQL::ExecutionError, "The exact same draft cannot be duplicated"
       end
       MutationResult.call(
           obj: { policy_category: policy_category },

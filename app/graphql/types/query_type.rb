@@ -17,7 +17,25 @@ module Types
       description 'Returns the notification of an object'
     end
 
+    field :file_attachment, Types::FileAttachmentType, null: true do
+      argument :id, ID, required: true
+      description 'Returns the File Attachment of an Object'
+    end 
 
+    field :activity_control, Types::ActivityControlType, null: true do
+      argument :id, ID, required: true
+      description 'Returns the Activity Control and its Guidance of an Object'
+    end
+
+    field :manual, Types::ManualType, null: true do
+      argument :id, ID, required: true
+      description 'Returns the User Manuals'
+    end
+
+    field :department, Types::DepartmentType, null: true do
+      argument :id, ID, required: true
+      description 'Returns the User Department'
+    end
 
     # field :res, [Types::ResourceType], null: true do
     #   description 'Returns Resources Attributes'
@@ -100,6 +118,20 @@ module Types
       description 'Returns the Current Resource Rating and Rating Calculation'
     end
     
+    field :request_edit, Types::RequestEditType, null: true do 
+      argument :id, ID, required: true
+      description 'Returns the Current Edit Request'
+    end
+
+    field :tag, Types::TagType, null: true do
+      argument :id, ID, required: true
+      description 'Returns the Current image tag location'
+    end
+
+    field :enum_list, Types::EnumListType, null: true do
+      argument :id, ID, required: true
+      description 'Returns the current Enumerated List'
+    end
 
 
     def me(demo: false)
@@ -116,6 +148,21 @@ module Types
       Notification.find_by(id:id)
     end
 
+    def department(id:)
+      Department.find_by(id:id)
+    end
+
+    def request_edit(id:)
+      RequestEdit.find_by(id:id)
+    end
+
+    def file_attachment(id:)
+      FileAttachment.find_by(id:id)
+    end
+
+    def activity_control(id:)
+      ActivityControl.find_by(id:id)  
+    end
     # def res(demo: false)
     #   Resource.all
     # end
@@ -142,9 +189,7 @@ module Types
     end
 
     def policy(id:)
-      pol = Policy.find_by(id:id)
-      vieu = pol.visit+1
-      pol.update(visit: vieu)
+      pol = Policy&.find_by(id:id)
       pol
     end
 
@@ -157,9 +202,7 @@ module Types
     end
 
     def resource(id:)
-      res = Resource.find_by(id:id)
-      view = res.visit+1
-      res.update(visit: view)
+      res = Resource&.find_by(id:id)
       res
     end
 
@@ -191,6 +234,13 @@ module Types
       ResourceRating.find_by(id:id)
     end
 
+    def tag(id:)
+      Tag.find_by(id:id)
+    end
+
+    def enum_list(id:)
+      EnumList.find_by(id:id)
+    end
 
     field :users, resolver: Resolvers::QueryType::UsersResolver
     field :policies, resolver: Resolvers::QueryType::PoliciesResolver
@@ -206,5 +256,50 @@ module Types
     field :versions, resolver: Resolvers::QueryType::VersionsResolver
     field :roles, resolver: Resolvers::QueryType::RolesResolver
     field :notifications, resolver: Resolvers::QueryType::NotificationsResolver
+    field :request_edits, resolver: Resolvers::QueryType::RequestEditsResolver
+    field :file_attachments, resolver: Resolvers::QueryType::FileAttachmentsResolver
+    field :activity_controls, resolver: Resolvers::QueryType::ActivityControlsResolver
+    field :tags, resolver: Resolvers::QueryType::TagsResolver
+    field :enum_lists, resolver: Resolvers::QueryType::EnumListsResolver
+    field :recently_added_policies, resolver: Resolvers::QueryType::RecentlyAddedPoliciesResolver
+    field :popular_policies, resolver: Resolvers::QueryType::PopularPoliciesResolver
+    field :recently_visited_policies, resolver: Resolvers::QueryType::RecentlyVisitedPoliciesResolver
+    field :popular_resources, resolver: Resolvers::QueryType::PopularResourcesResolver
+    field :recent_resources, resolver: Resolvers::QueryType::RecentResourcesResolver
+    field :manuals, resolver: Resolvers::QueryType::ManualsResolver
+    field :sidebar_policies, resolver: Resolvers::QueryType::SidebarPoliciesResolver
+    field :departments, resolver: Resolvers::QueryType::DepartmentsResolver
+    field :user_policies, resolver: Resolvers::QueryType::UserPoliciesResolver
+    field :user_policy_visits, resolver: Resolvers::QueryType::UserPolicyVisitsResolver
+    field :user_resource_visits, resolver: Resolvers::QueryType::UserResourceVisitsResolver
+    field :preparer_policies, resolver: Resolvers::QueryType::Preparer::PreparerPoliciesResolver
+    field :preparer_controls, resolver: Resolvers::QueryType::Preparer::PreparerControlsResolver
+    field :preparer_business_processes, resolver: Resolvers::QueryType::Preparer::PreparerBusinessProcessesResolver
+    field :preparer_references, resolver: Resolvers::QueryType::Preparer::PreparerReferencesResolver
+    field :preparer_policy_categories, resolver: Resolvers::QueryType::Preparer::PreparerPolicyCategoriesResolver
+    field :preparer_users, resolver: Resolvers::QueryType::Preparer::PreparerUsersResolver
+    field :preparer_resources, resolver: Resolvers::QueryType::Preparer::PreparerResourcesResolver
+    field :preparer_risks, resolver: Resolvers::QueryType::Preparer::PreparerRisksResolver
+    field :preparer_created_controls, resolver: Resolvers::QueryType::Preparer::PreparerCreatedControlsResolver
+    field :preparer_created_risks, resolver: Resolvers::QueryType::Preparer::PreparerCreatedRisksResolver
+    field :preparer_created_business_processes, resolver: Resolvers::QueryType::Preparer::PreparerCreatedBusinessProcessesResolver
+    field :preparer_created_references, resolver: Resolvers::QueryType::Preparer::PreparerCreatedReferencesResolver
+    field :preparer_created_resources, resolver: Resolvers::QueryType::Preparer::PreparerCreatedResourcesResolver
+    field :preparer_created_users, resolver: Resolvers::QueryType::Preparer::PreparerCreatedUsersResolver
+    field :preparer_created_policy_categories, resolver: Resolvers::QueryType::Preparer::PreparerCreatedPolicyCategoriesResolver
+    field :reviewer_policies, resolver: Resolvers::QueryType::ReviewerPoliciesResolver
+    field :navigator_business_processes, resolver: Resolvers::QueryType::Navigator::NavigatorBusinessProcessesResolver
+    field :navigator_controls, resolver: Resolvers::QueryType::Navigator::NavigatorControlsResolver
+    field :navigator_policy_categories, resolver: Resolvers::QueryType::Navigator::NavigatorPolicyCategoriesResolver
+    field :navigator_references, resolver: Resolvers::QueryType::Navigator::NavigatorReferencesResolver
+    field :navigator_resources, resolver: Resolvers::QueryType::Navigator::NavigatorResourcesResolver
+    field :navigator_risks, resolver: Resolvers::QueryType::Navigator::NavigatorRisksResolver
+    field :navigator_users, resolver: Resolvers::QueryType::Navigator::NavigatorUsersResolver
+    field :reviewer_policies_status, resolver: Resolvers::QueryType::ReviewerPoliciesStatusResolver
+    field :reviewer_controls_status, resolver: Resolvers::QueryType::ReviewerControlsStatusResolver
+    field :reviewer_risks_status, resolver: Resolvers::QueryType::ReviewerRisksStatusResolver
+    field :reviewer_resources_status, resolver: Resolvers::QueryType::ReviewerResourcesStatusResolver
+    field :reviewer_policy_categories_status, resolver: Resolvers::QueryType::ReviewerPolicyCategoriesStatusResolver
+
   end
 end

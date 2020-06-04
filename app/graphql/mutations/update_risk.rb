@@ -9,7 +9,11 @@ module Mutations
     argument :status, Types::Enums::Status, required: false
     argument :level_of_risk, Types::Enums::LevelOfRisk, required: false
     argument :type_of_risk, Types::Enums::TypeOfRisk, required: false 
-    argument :business_process_id, ID, required: false
+    argument :business_process_ids, [ID], required: false
+    argument :control_ids, [ID], required: false
+    argument :last_updated_by, String, required: false
+    argument :business_process, [ID], as: :business_process_ids,required: false
+
 
 
 
@@ -17,12 +21,35 @@ module Mutations
     field :risk, Types::RiskType, null: false
 
     def resolve(id:, **args)
+      current_user = context[:current_user]
       risk = Risk.find(id)
-      risk.update_attributes!(args.to_h)
+      if risk&.request_edits&.last&.approved?
+        if risk.draft?
+          raise GraphQL::ExecutionError, "Draft Cannot be created until another Draft is Approved/Rejected by an Admin"
+        else
+          args[:created_by] = current_user&.name || "User with ID#{current_user&.id}"
+          args[:last_updated_by] = current_user&.name || "User with ID#{current_user&.id}"
+          if args[:business_process_ids].present?
+            args[:business_process] = args[:business_process_ids].map{|x| BusinessProcess.find(x&.to_i).name}
+          end
+          risk.attributes = args
+          risk.save_draft
+          risk.type_level_error
+
+          admin = User.with_role(:admin_reviewer).pluck(:id)
+          if risk.draft.present?
+            Notification.send_notification(admin, risk&.name, risk&.type_of_risk,risk, current_user&.id, "request draft")
+            risk.update(status:"waiting_for_review")
+          end
+        end
+      else
+        raise GraphQL::ExecutionError, "Request not granted. Please Check Your Request Status"
+      end
+      
 
       MutationResult.call(
         obj: { risk: risk },
-        success: success,
+        success: risk.persisted?,
         errors: risk.errors
       )
     rescue ActiveRecord::RecordInvalid => invalid

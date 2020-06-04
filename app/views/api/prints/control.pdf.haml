@@ -4,7 +4,7 @@
     %meta{:content => "text/html; charset=UTF-8", "http-equiv" => "Content-Type"}/
     %meta{:charset => "utf-8"}/
     %meta{:content => "IE=edge", "http-equiv" => "X-UA-Compatible"}/
-    %title #{@control.control_owner}
+    %title #{@control.id}
     :css
       input[type=checkbox]{
       \/* Double-sized Checkboxes */
@@ -14,13 +14,33 @@
       \-o-transform: scale(4); /* Opera */
       transform: scale(4);
       padding: 10px;
-      display: inline;
-    }
+      display: inline;}
+
+    :css
+      .table.table-borderless {border:10px !important;}
+      .apo{max-width: 30%;}
+      .ape{max-width: 250px;}
+      .aih{font-size:20px}
+      .aha{border:none;}
+
+
+
 
   %body
+  %table.table.table-borderless.aha{style:"display:block;"}
+    %tr.aha
+      %td.aha Printed On
+      %td.aha :
+      %td.aha #{Time.now.strftime("%d %B %Y")}
+      
+
+    %tr.aha
+      %td.aha Printed By
+      %td.aha :
+      %td.aha= current_user&.name
   .row.m-t-10.text-center
     .col-md-12
-      %h1 #{@control.control_owner}
+      %h1 Control
   %ul   
     .row.m-t-10
       .col-md-12
@@ -37,11 +57,29 @@
     .row.m-t-10
       .col-md-12
         %li
-          %h3 Assertion : #{@control.assertion.to_s.gsub(/[^0-9A-Za-z]/, ' ').titlecase}
+          %h3 Control Owner         : #{@control.control_owner.join(",").titlecase}
     .row.m-t-10
       .col-md-12
         %li
-          %h3 Ipo : #{@control.ipo.to_s.gsub(/[^0-9A-Za-z]/, ' ').titlecase}
+          %h3 Assertion  : 
+        -if @control.assertion.count > 1
+          %ul
+            -@control.assertion.each do |cop|
+              %li=cop.to_s.gsub(/[^0-9A-Za-z]/, ' ').titlecase
+        -else
+          %ul
+            %li=@control.assertion.to_s.gsub(/[^0-9A-Za-z]/, ' ').titlecase
+    .row.m-t-10
+      .col-md-12
+        %li
+          %h3 Ipo : 
+        -if @control.ipo.count > 1
+          %ul
+            -@control.ipo.each do |cop|
+              %li=cop.to_s.gsub(/[^0-9A-Za-z]/, ' ').titlecase
+        -else
+          %ul
+            %li=@control.ipo.to_s.gsub(/[^0-9A-Za-z]/, ' ').titlecase
     .row.m-t-10
       .col-md-12
         %li

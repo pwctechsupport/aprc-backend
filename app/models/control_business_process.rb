@@ -6,10 +6,13 @@ class ControlBusinessProcess < ApplicationRecord
   paper_trail.on_update     # etc.
   paper_trail.on_create
   paper_trail.on_touch
+
+  has_drafts
+
   
   belongs_to :control, optional: true
   belongs_to :business_process, optional: true
   def to_humanize
-    "#{self.control.control_owner} : #{self.business_process.name}"
+    "#{self.control&.description} : #{self.business_process&.name}"
   end
 end

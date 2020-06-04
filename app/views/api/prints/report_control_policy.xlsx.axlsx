@@ -1,0 +1,53 @@
+
+wb = xlsx_package.workbook
+
+
+wb.add_worksheet(name: "Exception Report") do |sheet|
+  # Create the header row
+  sheet.add_row ["control owner", "description", "type of control", "frequency", "nature", "assertion", "ipo", "status", "key control", "business process", "related policy"]
+  # Create entries for each item
+  @controls.each do |control|
+    if control.assertion.count < 2
+      if control.business_processes.present?
+        control&.business_processes.each do |bis|
+          if control.policies.present?
+            control.policies.each do |pol|
+              sheet.add_row [control&.control_owner.join(",")&.titlecase, control&.description&.titlecase, control&.type_of_control&.gsub(/_/, ' ')&.titlecase, control&.frequency, control&.nature&.titlecase, control&.assertion&.join&.gsub(/_/, ' ')&.titlecase, control&.ipo.join&.gsub(/_/, ' ')&.titlecase, control&.status&.gsub(/_/, ' ')&.titlecase, control&.key_control,bis&.name,pol&.title]
+            end
+          else
+            sheet.add_row [control&.control_owner.join(",")&.titlecase, control&.description&.titlecase, control&.type_of_control&.gsub(/_/, ' ')&.titlecase, control&.frequency, control&.nature&.titlecase, control&.assertion&.join&.gsub(/_/, ' ')&.titlecase, control&.ipo.join&.gsub(/_/, ' ')&.titlecase, control&.status&.gsub(/_/, ' ')&.titlecase, control&.key_control,bis&.name,"No Related Policies"]
+          end
+        end
+      else
+        if control.policies.present?
+          control.policies.each do |pol|
+            sheet.add_row [control&.control_owner.join(",")&.titlecase, control&.description&.titlecase, control&.type_of_control&.gsub(/_/, ' ')&.titlecase, control&.frequency, control&.nature&.titlecase, control&.assertion&.join&.gsub(/_/, ' ')&.titlecase, control&.ipo.join&.gsub(/_/, ' ')&.titlecase, control&.status&.gsub(/_/, ' ')&.titlecase, control&.key_control,"No Business Process",pol&.title]
+          end
+        else
+          sheet.add_row [control&.control_owner.join(",")&.titlecase, control&.description&.titlecase, control&.type_of_control&.gsub(/_/, ' ')&.titlecase, control&.frequency, control&.nature&.titlecase, control&.assertion&.join&.gsub(/_/, ' ')&.titlecase, control&.ipo.join&.gsub(/_/, ' ')&.titlecase, control&.status&.gsub(/_/, ' ')&.titlecase, control&.key_control,"No Business Process","No Related Policies"]
+        end
+      end
+    else
+      if control.business_processes.present?
+        control&.business_processes.each do |bis|
+          if control.policies.present?
+            control.policies.each do |pol|
+              sheet.add_row [control&.control_owner.join(",")&.titlecase, control&.description&.titlecase, control&.type_of_control&.gsub(/_/, ' ')&.titlecase, control&.frequency, control&.nature&.titlecase, control&.assertion&.join(",")&.gsub(/_/, ' ')&.titlecase, control&.ipo&.join(",")&.gsub(/_/, ' ')&.titlecase, control&.status&.gsub(/_/, ' ')&.titlecase, control&.key_control,bis&.name,pol&.title]
+            end
+          else
+            sheet.add_row [control&.control_owner.join(",")&.titlecase, control&.description&.titlecase, control&.type_of_control&.gsub(/_/, ' ')&.titlecase, control&.frequency, control&.nature&.titlecase, control&.assertion&.join(",")&.gsub(/_/, ' ')&.titlecase, control&.ipo&.join(",")&.gsub(/_/, ' ')&.titlecase, control&.status&.gsub(/_/, ' ')&.titlecase, control&.key_control,bis&.name,"No Related Policies"]
+          end
+        end
+      else
+        if control.policies.present?
+          control.policies.each do |pol|
+            sheet.add_row [control&.control_owner.join(",")&.titlecase, control&.description&.titlecase, control&.type_of_control&.gsub(/_/, ' ')&.titlecase, control&.frequency, control&.nature&.titlecase, control&.assertion&.join(",")&.gsub(/_/, ' ')&.titlecase, control&.ipo&.join(",")&.gsub(/_/, ' ')&.titlecase, control&.status&.gsub(/_/, ' ')&.titlecase, control&.key_control,"No Business Process",pol&.title]
+          end
+        else
+          sheet.add_row [control&.control_owner.join(",")&.titlecase, control&.description&.titlecase, control&.type_of_control&.gsub(/_/, ' ')&.titlecase, control&.frequency, control&.nature&.titlecase, control&.assertion&.join(",")&.gsub(/_/, ' ')&.titlecase, control&.ipo&.join(",")&.gsub(/_/, ' ')&.titlecase, control&.status&.gsub(/_/, ' ')&.titlecase, control&.key_control,"No Business Process","No Related Policies"]
+        end
+      end
+    end
+  end
+end
+

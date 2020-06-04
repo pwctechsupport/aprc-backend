@@ -6,10 +6,13 @@ class ControlRisk < ApplicationRecord
   paper_trail.on_update     # etc.
   paper_trail.on_create
   paper_trail.on_touch
+
+  has_drafts
+
   
   belongs_to :control, optional: true
   belongs_to :risk, class_name: "Risk", foreign_key: "risk_id", optional: true
   def to_humanize
-    "#{self.control.control_owner} : #{self.risk.name}"
+    "#{self.control&.description} : #{self.risk.name}"
   end
 end

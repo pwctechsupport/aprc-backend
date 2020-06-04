@@ -7,6 +7,8 @@ class PolicyRisk < ApplicationRecord
   paper_trail.on_create
   paper_trail.on_touch
   
+  has_drafts
+
   belongs_to :policy
   belongs_to :risk
   def to_humanize

@@ -1,0 +1,21 @@
+
+wb = xlsx_package.workbook
+
+
+wb.add_worksheet(name: "Exception Report") do |sheet|
+  # Create the header row
+  sheet.add_row ["name", "level of risk", "status", "type of risk", "business process"]
+  # Create entries for each item
+  ris =  @tags.pluck(:risk_id).group_by(&:itself).reject{|k,v| v.count>1}.keys
+  ris.reject!{|x| x == nil} if ris.count(nil) >= 1
+  ris.each do |ras|
+    risk = Risk.find(ras)
+    if risk.business_processes.present?
+      risk&.business_processes.each do |bis|
+        sheet.add_row [risk&.name, risk&.level_of_risk, risk&.status, risk&.type_of_risk,bis&.name]
+      end
+    else
+      sheet.add_row [risk&.name, risk&.level_of_risk, risk&.status, risk&.type_of_risk,"No Business Process"] 
+    end
+  end
+end

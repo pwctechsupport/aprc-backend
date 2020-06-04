@@ -10,7 +10,7 @@ module Resolvers
 
     def authorize_admin
       if context[:current_user].present?
-        return true if context[:current_user].has_role?(:admin)
+        return true if context[:current_user].has_role?(:admin_reviewer)
         raise GraphQL::ExecutionError, "You are not authorized to access this page."
       else
         raise GraphQL::ExecutionError, "User not signed in."

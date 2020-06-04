@@ -11,53 +11,40 @@ module Mutations
       current_user = context[:current_user]
       user = User.find(args[:id])
 
-      if current_user.present? && current_user.has_role?(:admin)
-        user_draft= user.draft.reify
+      if current_user.present? && current_user.has_role?(:admin_reviewer)
+        user_draft= user.draft
+        admin_prep = User.with_role(:admin_preparer).pluck(:id)
         if args[:publish] === true
           if user.user_reviewer_id.present? && (user.user_reviewer_id != current_user.id)
             raise GraphQL::ExecutionError, "This Draft has been reviewed by another Admin."
-          elsif !user.user_reviewer_id.present?
-            if user.user_policy_categories.drafted.present?
-              if !user.user_policy_categories.published.present?
-                user.deep_publish!
-                user.update(user_reviewer_id: current_user.id)
-                User.change_role(user.id, user_draft.role)
-              else
-                polcat_id = user.user_policy_categories.published.pluck(:policy_category_id)
-                user.user_policy_categories.published.where(policy_category_id: polcat_id).destroy_all
-                user.deep_publish!
-                user.update(user_reviewer_id: current_user.id)
-                User.change_role(user.id, user_draft.role)
-              end
-            else
-              user.deep_publish!
-              user.update(user_reviewer_id: current_user.id)
-              User.change_role(user.id, user_draft.role)
-            end
           else
-            if user.user_policy_categories.drafted.present?
-              if !user.user_policy_categories.published.present?
-                user.deep_publish!
-                User.change_role(user.id, user_draft.role)
-              else
-                polcat_id = user.user_policy_categories.published.pluck(:policy_category_id)
-                user.user_policy_categories.published.where(policy_category_id: polcat_id).destroy_all
-                user.deep_publish!
-                User.change_role(user.id, user_draft.role)
+            if user_draft.event == "update"
+              serial = ["policy_category"]
+              serial.each do |sif|
+                if user_draft.changeset[sif].present?
+                  user_draft.changeset[sif].map!{|x| JSON.parse(x)}
+                end
               end
-            else
-              user.deep_publish!
-              User.change_role(user.id, user_draft.role)
             end
+            user_draft.reify
+            user_draft.publish!
+            user.update(user_reviewer_id: current_user.id, status: "release")
+            Notification.send_notification(admin_prep, "User Draft named #{user&.name} Approved", user&.name,user, current_user&.id, "request_draft_approved")
+          end
+          if user&.present? && user&.request_edit&.present?
+            user&.request_edit&.destroy
           end
         else
           if user.user_reviewer_id.present? && (user.user_reviewer_id != current_user.id)
             raise GraphQL::ExecutionError, "This Draft has been reviewed by another Admin."
-          elsif user.user_policy_categories.drafted.present?
-            user.user_policy_categories.drafted.destroy_all
-            user.draft.revert!
           else
-            user.draft.revert!
+            Notification.send_notification(admin_prep, "User Draft named #{user&.name} Rejected", user&.name,user, current_user&.id, "request_draft_rejected")
+            policy_category_rejected = user&.policy_category
+            user_draft.revert!
+            if user&.present? && user&.request_edit&.present?
+              user&.request_edit&.destroy
+              user.update(policy_category: policy_category_rejected)
+            end
           end
         end 
       else

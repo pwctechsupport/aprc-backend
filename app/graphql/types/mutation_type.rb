@@ -43,6 +43,9 @@ module Types
     field :destroy_bulk_notification, mutation: Mutations::DestroyBulkNotification
     field :destroy_notification, mutation: Mutations::DestroyNotification
 
+    field :create_user_policy_visit, mutation: Mutations::CreateUserPolicyVisit
+    field :create_user_resource_visit, mutation: Mutations::CreateUserResourceVisit
+
 
     # Attributes CRUD
     field :create_resource, mutation: Mutations::CreateResource
@@ -56,6 +59,8 @@ module Types
     field :update_reference, mutation: Mutations::UpdateReference
 
     field :destroy_resource, mutation: Mutations::DestroyResource
+    field :destroy_resource_attachment, mutation: Mutations::DestroyResourceAttachment
+    field :destroy_manual_attachment, mutation: Mutations::DestroyManualAttachment
     field :destroy_it_system, mutation: Mutations::DestroyItSystem
     field :destroy_business_process, mutation: Mutations::DestroyBusinessProcess
     field :destroy_reference, mutation: Mutations::DestroyReference
@@ -64,9 +69,42 @@ module Types
 
     field :admin_update_user, mutation: Mutations::AdminUpdateUser
     field :review_policy_draft, mutation: Mutations::ReviewPolicyDraft
+    field :review_policy_category_draft, mutation: Mutations::ReviewPolicyCategoryDraft
     field :review_user_draft, mutation: Mutations::ReviewUserDraft
+    field :review_risk_draft, mutation: Mutations::ReviewRiskDraft
+    field :review_control_draft, mutation: Mutations::ReviewControlDraft
     field :is_read, mutation: Mutations::IsRead
     field :update_user_password, mutation: Mutations::UpdateUserPassword
+    field :create_request_edit, mutation: Mutations::CreateRequestEdit
+    field :approve_request_edit, mutation: Mutations::ApproveRequestEdit
+    field :create_file_attachment, mutation: Mutations::CreateFileAttachment
+    field :update_file_attachment, mutation: Mutations::UpdateFileAttachment
+    field :destroy_file_attachment, mutation: Mutations::DestroyFileAttachment
+    field :create_activity_control, mutation: Mutations::CreateActivityControl
+    field :update_activity_control, mutation: Mutations::UpdateActivityControl
+    field :destroy_activity_control, mutation: Mutations::DestroyActivityControl
+    field :create_tag, mutation: Mutations::CreateTag
+    field :update_tag, mutation: Mutations::UpdateTag
+    field :destroy_tag, mutation: Mutations::DestroyTag
+    field :create_enum_list, mutation: Mutations::CreateEnumList
+    field :update_enum_list, mutation: Mutations::UpdateEnumList
+    field :destroy_enum_list, mutation: Mutations::DestroyEnumList
+    field :create_department, mutation: Mutations::CreateDepartment
+    field :update_department, mutation: Mutations::UpdateDepartment
+    field :destroy_department, mutation: Mutations::DestroyDepartment
+    field :create_manual, mutation: Mutations::CreateManual
+    field :update_manual, mutation: Mutations::UpdateManual
+    field :destroy_manual, mutation: Mutations::DestroyManual
+    field :push_notification, mutation: Mutations::PushNotification
+    field :notif_badges, mutation: Mutations::NotifBadges
+    field :review_resource_draft, mutation: Mutations::ReviewResourceDraft
+    field :is_visit, mutation: Mutations::IsVisit
+    field :update_draft_policy, mutation: Mutations::UpdateDraftPolicy
+    field :submit_draft_policy, mutation: Mutations::SubmitDraftPolicy
+    field :create_role, mutation: Mutations::CreateRole
+    field :destroy_role, mutation: Mutations::DestroyRole
+    field :remove_relation, mutation: Mutations::RemoveRelation
+    
 
 
 
