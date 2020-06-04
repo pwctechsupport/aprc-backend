@@ -14,12 +14,12 @@ class RequestEdit < ApplicationRecord
   end
 
   def to_name
-    if self.originator_type == ("User" && "Risk" && "Resource" && "PolicyCategory")
-      self&.originator&.name
+    if self.originator_type == "Policy"
+      self&.originator&.title
     elsif self.originator_type == "Control"
       self&.originator&.description
     else
-      self&.originator&.title
+      self&.originator&.name
     end
   end
 end

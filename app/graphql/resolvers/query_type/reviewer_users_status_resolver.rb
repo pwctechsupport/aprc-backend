@@ -1,14 +1,14 @@
 module Resolvers
   module QueryType
-    class ReviewerPolicyCategoriesStatusResolver < Resolvers::BaseResolver
-      type Types::PolicyCategoryType.collection_type, null: true
+    class ReviewerUsersStatusResolver < Resolvers::BaseResolver
+      type Types::UserType.collection_type, null: true
       argument :filter, Types::BaseScalar, required: false
       argument :page, Int, required: false
       argument :limit, Int, required: false
 
       def resolve(filter:, page: nil,limit: nil)
-        PolicyCategory.page(page).per(limit)
-        @q = PolicyCategory.ransack(filter.as_json)
+        User.page(page).per(limit)
+        @q = User.ransack(filter.as_json)
         
         @q1 = @q.result.where(status:"waiting_for_review")
         @q1 = @q1.sort_by(&:updated_at).reverse
@@ -24,14 +24,14 @@ module Resolvers
 
         @q5 = @q.result.where(status:"release")
         @q5 = @q5.sort_by(&:updated_at).reverse
-
+        
         @q6 = @q.result.where(status:nil)
         @q6 = @q6.sort_by(&:updated_at).reverse
 
         @q_final = @q1.push(*@q2,*@q3,*@q4,*@q5, *@q6)
         ids = @q_final.map(&:id)
         if ids.count != 0
-          @q = PolicyCategory.where(id: ids).order("FIELD(id, #{ids.join(',')})").all.ransack
+          @q = User.where(id: ids).order("FIELD(id, #{ids.join(',')})").all.ransack
         end
         @q.result(distinct: true).page(page).per(limit)
         # ::context[:current_user].page(page).per(limit)

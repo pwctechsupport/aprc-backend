@@ -2,7 +2,7 @@ module Types
 	class Types::ItemType < Types::BaseUnion
 		description "Types of an Items"
 
-		possible_types Types::PolicyRiskType, Types::PolicyType, Types::BookmarkBusinessProcessType, Types::BookmarkControlType, Types::BookmarkPolicyType, Types::BookmarkRiskType, Types::BusinessProcessType, Types::ControlType, Types::PolicyCategoryType, Types::ReferenceType, Types::ResourceRatingType, Types::ResourceType, Types::RiskType, Types::UserType
+		possible_types Types::PolicyRiskType, Types::PolicyType, Types::BookmarkBusinessProcessType, Types::BookmarkControlType, Types::BookmarkPolicyType, Types::BookmarkRiskType, Types::BusinessProcessType, Types::ControlType, Types::PolicyCategoryType, Types::ReferenceType, Types::ResourceRatingType, Types::ResourceType, Types::RiskType, Types::UserType, Types::ActivityControlType
 		
 		def self.resolve_type(object,context)
 			if object.is_a?(Policy)
@@ -33,6 +33,8 @@ module Types
 				Types::RiskType
 			elsif object.is_a?(User)
 				Types::UserType
+			elsif object.is_a?(ActivityControl)
+				Types::ActivityControlType
 			end
 		end
 		

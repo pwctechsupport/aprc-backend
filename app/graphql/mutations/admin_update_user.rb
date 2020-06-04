@@ -35,6 +35,7 @@ module Mutations
           
           admin = User.with_role(:admin_reviewer).pluck(:id)
           if user.draft.present?
+            user.update(status:"waiting_for_review")
             Notification.send_notification(admin,"Updated User #{user&.name}\'s data " , user&.email, user, current_user&.id, "request_draft")
           end
         end

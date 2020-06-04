@@ -78,6 +78,7 @@ module Mutations
           args[:last_updated_by] = current_user&.name || "User with ID#{current_user&.id}"
           args[:last_updated_at] = Time.now
           prev_control = []
+          prev_policy = []
           if args[:control_ids].present?
             control = args[:control_ids]
             args.delete(:control_ids)
@@ -89,8 +90,25 @@ module Mutations
               end
             end
           end
+          if args[:policy_ids].present?
+            policy = args[:policy_ids]
+            args.delete(:policy_ids)
+            if resource&.policy_resources&.present? && (resource&.policy_resources.where(draft_id: nil).present? || resource&.policy_resources.where.not(draft_id: nil).present?)
+              resource.policy_resources.each do |pb|
+                if pb&.draft_id.present?
+                  prev_policy.push(pb&.id)
+                end
+              end
+            end
+          end
           resource.attributes = args
           resource.save_draft
+          if resource&.draft_id.present?
+            if resource.draft.event == "update"
+              pre_res = resource.draft.changeset.map {|x,y| Hash[x, y[0]]}
+              pre_res.map {|x| resource.update(x)}
+            end
+          end
           resource.name = resource_name
           
           if resource.resupload.present?
@@ -110,6 +128,16 @@ module Mutations
               if prev_control.present?
                 resicon = ResourceControl.where(id:prev_control)
                 resicon.destroy_all
+              end
+            end 
+          end
+          if policy.present?
+            policy.each do |con|
+              res_pol = PolicyResource.new(resource_id: resource&.id, policy_id: con )
+              res_pol.save_draft
+              if prev_policy.present?
+                resipol = PolicyResource.where(id:prev_policy)
+                resipol.destroy_all
               end
             end 
           end

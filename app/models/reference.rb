@@ -1,7 +1,7 @@
 class Reference < ApplicationRecord
   validates :name, uniqueness: true
   has_paper_trail
-  has_many :policy_references
+  has_many :policy_references, dependent: :destroy
   has_many :policies, through: :policy_references
   accepts_nested_attributes_for :policies, allow_destroy: true
   def to_humanize

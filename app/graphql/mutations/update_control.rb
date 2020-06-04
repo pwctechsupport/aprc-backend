@@ -25,22 +25,40 @@ module Mutations
     def resolve(id:, **args)
       Control.serialize(:control_owner, Array)
       current_user = context[:current_user]
+      actor_control_id = []
       control = Control.find(id)
       if control&.request_edits&.last&.approved?
         if control.draft?
           raise GraphQL::ExecutionError, "Draft Cannot be created until another Draft is Approved/Rejected by an Admin"
         else
           if args[:business_process_ids].present? || args[:risk_ids].present?
+            
             args[:is_related] = true
           end
           if args[:activity_controls_attributes].present?
             act = args[:activity_controls_attributes]
             if act&.first&.class == ActionController::Parameters
               activities = act.collect {|x| x.permit(:id,:activity,:guidance,:control_id,:resuploadBase64,:resuploadFileName,:_destroy,:resupload,:user_id,:resupload_file_name)}
-              
               args.delete(:activity_controls_attributes)
               args[:activity_controls_attributes]= activities.collect{|x| x.to_h}
             end
+            args[:activity_controls_attributes].each do |aca|
+              if aca["id"].present?
+                act_control = ActivityControl.find(aca["id"])
+                if aca["_destroy"].present?
+                  act_control.destroy
+                else
+                  act_control.attributes = aca
+                  act_control.save_draft
+                  actor_control_id.push(act_control&.id)
+                end
+              else
+                act_control = ActivityControl.new(aca)
+                act_control.save_draft
+                actor_control_id.push(act_control&.id)
+              end
+            end
+            args.delete(:activity_controls_attributes)
           end
           if args[:department_ids].present?
             args[:control_owner] = args[:department_ids].map{|x| Department.find(x&.to_i).name}
@@ -72,6 +90,9 @@ module Mutations
           end
           control&.attributes = args
           control&.save_draft
+          if actor_control_id.count != 0
+            actor_control_id.map{|x| ActivityControl.find(x).update(control_id: control&.id)}
+          end
           if control&.draft_id.present?
             if control.draft.event == "update"
               if args[:control_owner].present? || args[:ipo].present? || args[:assertion].present?

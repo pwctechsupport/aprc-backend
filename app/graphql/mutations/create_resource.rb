@@ -74,6 +74,10 @@ module Mutations
         control = args[:control_ids]
         args.delete(:control_ids)
       end
+      if args[:policy_ids].present?
+        policy = args[:policy_ids]
+        args.delete(:policy_ids)
+      end
       resource=Resource.new(args)
       resource&.save_draft
       if args[:resupload].present?
@@ -87,6 +91,12 @@ module Mutations
           control.each do |con|
             res_con = ResourceControl.new(resource_id: resource&.id, control_id: con )
             res_con.save_draft
+          end 
+        end
+        if policy.present?
+          policy.each do |con|
+            res_pol = PolicyResource.new(resource_id: resource&.id, policy_id: con )
+            res_pol.save_draft
           end 
         end
         resource.update(status: "waiting_for_review" )
