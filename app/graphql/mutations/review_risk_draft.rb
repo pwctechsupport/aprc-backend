@@ -35,7 +35,6 @@ module Mutations
           if risk&.present? && risk&.request_edit&.present?
             risk&.request_edit&.destroy
           end
-          risk&.update(is_related:false)
         else
           if risk.user_reviewer_id.present? && (risk.user_reviewer_id != current_user.id)
             raise GraphQL::ExecutionError, "This Draft has been reviewed by another Admin."
@@ -43,9 +42,6 @@ module Mutations
             Notification.send_notification(admin_prep, "Risk Draft named #{risk&.name} Rejected", risk&.name,risk, current_user&.id, "request_draft_rejected")
             business_process_rejected = risk&.business_process
             risk_draft.revert!
-            if risk.present?
-              risk&.update(is_related:false)
-            end
             if risk&.present? && risk&.request_edit&.present?
               risk&.request_edit&.destroy
               risk&.update(business_process: business_process_rejected)
