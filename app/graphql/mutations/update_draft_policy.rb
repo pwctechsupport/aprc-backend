@@ -25,6 +25,9 @@ module Mutations
       current_user = context[:current_user]
       policy = Policy.find(id)
       if policy.user_id == current_user&.id
+        if args[:business_process_ids].present? || args[:risk_ids].present? || args[:reference_ids].present? || args[:control_ids].present? || args[:resource_ids].present?
+          args[:is_related] = true
+        end
         args[:last_updated_by] = current_user&.name || "User with ID#{current_user&.id}"
         args[:last_updated_at] = Time.now
         prev_buspro = []

@@ -27,6 +27,9 @@ module Mutations
         if risk.draft?
           raise GraphQL::ExecutionError, "Draft Cannot be created until another Draft is Approved/Rejected by an Admin"
         else
+          if args[:control_ids].present?
+            args[:is_related] = true
+          end
           args[:created_by] = current_user&.name || "User with ID#{current_user&.id}"
           args[:last_updated_by] = current_user&.name || "User with ID#{current_user&.id}"
           if args[:business_process_ids].present?
@@ -34,7 +37,18 @@ module Mutations
           end
           risk.attributes = args
           risk.save_draft
-          risk.type_level_error
+          if risk.draft.event == "update"
+            if args[:business_process].present? 
+              serial = ["business_process"]
+              serial.each do |sif|
+                if risk.draft.changeset[sif].present?
+                  risk.draft.changeset[sif].map!{|x| JSON.parse(x)}
+                end
+              end
+            end
+            pre_ris = risk.draft.changeset.map {|x,y| Hash[x, y[0]]}
+            pre_ris.map {|x| risk.update(x)}
+          end
 
           admin = User.with_role(:admin_reviewer).pluck(:id)
           if risk.draft.present?

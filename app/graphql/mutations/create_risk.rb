@@ -26,7 +26,6 @@ module Mutations
       end
       risk = Risk.new(args.to_h)
       risk.save_draft
-      risk.type_level_error
 
       admin = User.with_role(:admin_reviewer).pluck(:id)
       if risk.id.present?

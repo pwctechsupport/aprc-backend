@@ -39,6 +39,7 @@ module Mutations
           if resource&.present? && resource&.request_edit&.present?
             resource&.request_edit&.destroy
           end
+          resource.update(is_related: false)
         else
           if resource.user_reviewer_id.present? && (resource.user_reviewer_id != current_user.id)
             raise GraphQL::ExecutionError, "This Draft has been reviewed by another Admin."
@@ -47,6 +48,9 @@ module Mutations
             resource_draft.revert!
             if resource&.resource_controls.where.not(draft_id: nil).present?
               resource&.resource_controls.where.not(draft_id: nil).destroy_all
+            end
+            if resource&.present?
+              resource.update(is_related: false)
             end
             if resource&.present? && resource&.request_edit&.present?
               resource&.request_edit&.destroy
