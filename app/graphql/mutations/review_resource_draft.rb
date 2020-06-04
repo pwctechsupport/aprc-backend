@@ -29,7 +29,7 @@ module Mutations
 
             resource_draft.publish!
 
-            resource.update_attributes(user_reviewer_id: current_user.id, status: "release")
+            resource.update_attributes(user_reviewer_id: current_user.id, status: "release", is_related: false)
             Notification.send_notification(admin_prep, "Resource Draft named #{resource&.name} Approved", resource&.name,resource, current_user&.id, "request_draft_approved")
 
           end
@@ -39,7 +39,6 @@ module Mutations
           if resource&.present? && resource&.request_edit&.present?
             resource&.request_edit&.destroy
           end
-          resource.update(is_related: false)
         else
           if resource.user_reviewer_id.present? && (resource.user_reviewer_id != current_user.id)
             raise GraphQL::ExecutionError, "This Draft has been reviewed by another Admin."
