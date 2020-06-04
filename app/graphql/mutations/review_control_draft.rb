@@ -42,7 +42,7 @@ module Mutations
             end
             control_draft.reify
             control_draft.publish!
-            control.update(user_reviewer_id: current_user.id, is_related: false)
+            control.update_attributes(user_reviewer_id: current_user.id, is_related: false)
             control.update(status: "release")
             Notification.send_notification(admin_prep, "Control Draft with owner #{control&.control_owner.join(", ")} Approved", control&.description,control, current_user&.id, "request_draft_approved")
           end
