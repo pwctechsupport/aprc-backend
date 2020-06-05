@@ -10,8 +10,8 @@ class ResourceControl < ApplicationRecord
   has_drafts
 
   
-  belongs_to :resource
-  belongs_to :control
+  belongs_to :resource, class_name: "Resource", foreign_key: "resource_id", optional: true
+  belongs_to :control, class_name: "Control", foreign_key: "control_id", optional: true
 
   def to_humanize
     "#{self.control&.description}: #{self.resource.name}"
