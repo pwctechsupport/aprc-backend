@@ -53,7 +53,7 @@ class Resource < ApplicationRecord
         if !Resource.find_by_name(row["name"]).present?
           resource_names.push(row["name"])
         end
-        resource_id = Resource&.create(name: resource_names[index_resource],category: row["category"], policy_ids: row["related policy"], control_ids: row["related control"], business_process_id: row["related business process"])
+        resource_id = Resource&.create(name: resource_names[index_resource],category: row["category"], policy_ids: row["related policy"], control_ids: row["related control"], business_process_id: row["related business process"], status: "release")
         index_resource+=1
       end
       pol_ids.push(row["related policy"])

@@ -48,7 +48,7 @@ class PolicyCategory < ApplicationRecord
         if !PolicyCategory.find_by_name(row["name"]).present?
           polcat_names.push(row["name"])
         end
-        policy_category_id = PolicyCategory&.create(name: polcat_names[index_polcat],policy_ids: row["related policy"])
+        policy_category_id = PolicyCategory&.create(name: polcat_names[index_polcat],policy_ids: row["related policy"], status: "release")
         index_polcat+=1
       end
       if !row["related policy"].nil?
