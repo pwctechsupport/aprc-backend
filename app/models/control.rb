@@ -50,7 +50,7 @@ class Control < ApplicationRecord
       if row["description"].present? && !Control.find_by(description: row["description"]).present?
         if control_descriptions.count != 0
           control_obj = Control&.find_by(description:control_descriptions[index_control-1])
-          control_id = control_obj&.update(risk_ids: risk_ids, business_process_ids: bp_ids, department_ids:co_ids)
+          control_id = control_obj&.update(risk_ids: risk_ids, business_process_ids: bp_ids, department_ids:co_ids, status: "release")
           if control_obj&.departments.present?
             con_dep = control_obj&.departments&.map{|x| x.name}
             control_obj&.update(control_owner: con_dep)

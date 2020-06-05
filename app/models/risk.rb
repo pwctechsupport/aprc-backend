@@ -49,7 +49,7 @@ class Risk < ApplicationRecord
         if !Risk.find_by_name(row["name"]).present?
           risk_names.push(row["name"])
         end
-        risk_id = Risk.create(name: risk_names[index_risk],business_process_ids: row["related business process"], level_of_risk: row["level of risk"], type_of_risk: row["type of risk"])
+        risk_id = Risk.create(name: risk_names[index_risk],business_process_ids: row["related business process"], level_of_risk: row["level of risk"], type_of_risk: row["type of risk"], status: "release")
         index_risk+=1
       end
       if !row["related business process"].nil?
