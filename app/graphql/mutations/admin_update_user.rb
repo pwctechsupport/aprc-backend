@@ -32,6 +32,20 @@ module Mutations
           end
           user&.attributes = args
           user&.save_draft
+          if user&.draft_id.present?
+            if user.draft.event == "update"
+              if args[:policy_category].present?
+                serial = ["policy_category"]
+                serial.each do |sif|
+                  if user.draft.changeset[sif].present?
+                    user.draft.changeset[sif].map!{|x| JSON.parse(x)}
+                  end
+                end
+              end
+              pre_user = user.draft.changeset.map {|x,y| Hash[x, y[0]]}
+              pre_user.map {|x| user.update(x)}
+            end
+          end
           
           admin = User.with_role(:admin_reviewer).pluck(:id)
           if user.draft.present?
