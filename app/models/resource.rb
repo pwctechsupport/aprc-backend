@@ -2,11 +2,11 @@ class Resource < ApplicationRecord
   validates :name, uniqueness: true
   has_paper_trail ignore: [:visit, :recent_visit]
   has_drafts
-  belongs_to :policy, optional: true
+  # belongs_to :policy, optional: true
   belongs_to :control, optional: true
-  has_many :policy_resources, dependent: :destroy
+  has_many :policy_resources,  class_name: "PolicyResource", foreign_key: "resource_id", dependent: :destroy
   has_many :policies, through: :policy_resources
-  has_many :resource_controls, dependent: :destroy
+  has_many :resource_controls ,  class_name: "ResourceControl", foreign_key: "resource_id", dependent: :destroy
   has_many :controls, through: :resource_controls
   attr_reader :resupload_remote_url
   has_attached_file :resupload
