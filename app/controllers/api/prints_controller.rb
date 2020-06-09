@@ -32,7 +32,7 @@ module Api
       respond_to do |format|
         format.json
         format.pdf do
-          render pdf: 'report_risk', layout: 'layouts/pdf.haml', template: 'api/prints/report_risk.pdf.haml', dpi: 300, show_as_html: params.key?('debug'), javascript_delay: 3000, margin: {top: 20, bottom: 20, left: 15, right: 15 }, outline: {outline: true, outline_depth: 10 }, footer: {html: {template:'shared/_pdf_report_footer'}}, header: {html: {template:'shared/_pdf_header'}}
+          render pdf: 'report_risk', layout: 'layouts/pdf.haml', template: 'api/prints/report_risk.pdf.haml', dpi: 300, show_as_html: params.key?('debug'), javascript_delay: 3000, margin: {top: 30, bottom: 20, left: 15, right: 15 }, outline: {outline: true, outline_depth: 10 }, footer: {html: {template:'shared/_pdf_report_footer'}}, header: {html: {template:'shared/_pdf_header_report_risk'}}
         end
         format.xlsx {
           response.headers[
@@ -47,7 +47,7 @@ module Api
       respond_to do |format|
         format.json
         format.pdf do
-          render pdf: 'report_risk_policy', layout: 'layouts/pdf.haml', template: 'api/prints/report_risk_policy.pdf.haml', dpi: 300, show_as_html: params.key?('debug'), javascript_delay: 3000, margin: {top: 20, bottom: 20, left: 15, right: 15 }, outline: {outline: true, outline_depth: 10 }, footer: {html: {template:'shared/_pdf_report_footer'}}, header: {html: {template:'shared/_pdf_header'}}
+          render pdf: 'report_risk_policy', layout: 'layouts/pdf.haml', template: 'api/prints/report_risk_policy.pdf.haml', dpi: 300, show_as_html: params.key?('debug'), javascript_delay: 3000, margin: {top: 30, bottom: 20, left: 15, right: 15 }, outline: {outline: true, outline_depth: 10 }, footer: {html: {template:'shared/_pdf_report_footer'}}, header: {html: {template:'shared/_pdf_header_report_risk_policy'}}
         end
         format.xlsx {
           response.headers[
@@ -62,7 +62,7 @@ module Api
       respond_to do |format|
         format.json
         format.pdf do
-          render pdf: 'report_resource_rating', layout: 'layouts/pdf.haml', template: 'api/prints/report_resource_rating.pdf.haml', dpi: 300, show_as_html: params.key?('debug'), javascript_delay: 3000, margin: {top: 20, bottom: 20, left: 15, right: 15 }, outline: {outline: true, outline_depth: 10 }, footer: {html: {template:'shared/_pdf_report_footer'}}, header: {html: {template:'shared/_pdf_header'}}
+          render pdf: 'report_resource_rating', layout: 'layouts/pdf.haml', template: 'api/prints/report_resource_rating.pdf.haml', dpi: 300, show_as_html: params.key?('debug'), javascript_delay: 3000, margin: {top: 30, bottom: 20, left: 15, right: 15 }, outline: {outline: true, outline_depth: 10 }, footer: {html: {template:'shared/_pdf_report_footer'}}, header: {html: {template:'shared/_pdf_header_report_resource_rating'}}
         end
         format.xlsx {
           response.headers[
@@ -77,7 +77,7 @@ module Api
       respond_to do |format|
         format.json
         format.pdf do
-          render pdf: 'unmapped_risk', layout: 'layouts/pdf.haml', template: 'api/prints/unmapped_risk.pdf.haml', dpi: 300, show_as_html: params.key?('debug'), javascript_delay: 3000, margin: {top: 20, bottom: 20, left: 15, right: 15 }, outline: {outline: true, outline_depth: 10 }, footer: {html: {template:'shared/_pdf_report_footer'}}, header: {html: {template:'shared/_pdf_header'}}
+          render pdf: 'unmapped_risk', layout: 'layouts/pdf.haml', template: 'api/prints/unmapped_risk.pdf.haml', dpi: 300, show_as_html: params.key?('debug'), javascript_delay: 3000, margin: {top: 30, bottom: 20, left: 15, right: 15 }, outline: {outline: true, outline_depth: 10 }, footer: {html: {template:'shared/_pdf_report_footer'}}, header: {html: {template:'shared/_pdf_header_unmapped_risk'}}
         end
         format.xlsx {
           response.headers[
@@ -92,7 +92,7 @@ module Api
       respond_to do |format|
         format.json
         format.pdf do
-          render pdf: 'unmapped_control', layout: 'layouts/pdf.haml', template: 'api/prints/unmapped_control.pdf.haml', dpi: 300, show_as_html: params.key?('debug'), javascript_delay: 3000, margin: {top: 20, bottom: 20, left: 15, right: 15 }, outline: {outline: true, outline_depth: 10 }, footer: {html: {template:'shared/_pdf_report_footer'}}, header: {html: {template:'shared/_pdf_header'}}
+          render pdf: 'unmapped_control', layout: 'layouts/pdf.haml', template: 'api/prints/unmapped_control.pdf.haml', dpi: 300, show_as_html: params.key?('debug'), javascript_delay: 3000, margin: {top: 30, bottom: 20, left: 15, right: 15 }, outline: {outline: true, outline_depth: 10 }, footer: {html: {template:'shared/_pdf_report_footer'}}, header: {html: {template:'shared/_pdf_header_unmapped_control'}}
         end
         format.xlsx {
           response.headers[
@@ -108,7 +108,7 @@ module Api
       respond_to do |format|
         format.json
         format.pdf do
-          render pdf: 'report_control_policy', layout: 'layouts/pdf.haml', template: 'api/prints/report_control_policy.pdf.haml', dpi: 300, show_as_html: params.key?('debug'), javascript_delay: 3000, margin: {top: 20, bottom: 20, left: 15, right: 15 }, outline: {outline: true, outline_depth: 10 }, footer: {html: {template:'shared/_pdf_report_footer'}}, header: {html: {template:'shared/_pdf_header'}}
+          render pdf: 'report_control_policy', layout: 'layouts/pdf.haml', template: 'api/prints/report_control_policy.pdf.haml', dpi: 300, show_as_html: params.key?('debug'), javascript_delay: 3000, margin: {top: 30, bottom: 20, left: 15, right: 15 }, outline: {outline: true, outline_depth: 10 }, footer: {html: {template:'shared/_pdf_report_footer'}}, header: {html: {template:'shared/_pdf_header_report_control_policy'}}
         end
         format.xlsx {
           response.headers[
@@ -135,7 +135,7 @@ module Api
     end
 
     def risk_excel
-      @risks = Risk.where(id: params[:risk_ids])
+      @risks = Risk.all
       respond_to do |format|
         format.json
         format.pdf do
@@ -151,7 +151,7 @@ module Api
     end
 
     def control_excel
-      @controls = Control.where(id: params[:control_ids])
+      @controls = Control.all
       respond_to do |format|
         format.json
         format.pdf do
@@ -167,7 +167,7 @@ module Api
     end
 
     def resource_excel
-      @resources = Resource.where(id: params[:resource_ids])
+      @resources = Resource.all
       respond_to do |format|
         format.json
         format.pdf do
@@ -183,7 +183,7 @@ module Api
     end
     
     def policy_category_excel
-      @policy_categories = PolicyCategory.where(id: params[:policy_category_ids])
+      @policy_categories = PolicyCategory.all
       respond_to do |format|
         format.json
         format.pdf do
