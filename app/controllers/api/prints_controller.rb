@@ -135,7 +135,7 @@ module Api
     end
 
     def risk_excel
-      @risks = Risk.all
+      @risks = Risk.where(id: params[:risk_ids])
       respond_to do |format|
         format.json
         format.pdf do
@@ -151,7 +151,7 @@ module Api
     end
 
     def control_excel
-      @controls = Control.all
+      @controls = Control.where(id: params[:control_ids])
       respond_to do |format|
         format.json
         format.pdf do
@@ -167,7 +167,7 @@ module Api
     end
 
     def resource_excel
-      @resources = Resource.all
+      @resources = Resource.where(id: params[:resource_ids])
       respond_to do |format|
         format.json
         format.pdf do
@@ -183,7 +183,7 @@ module Api
     end
     
     def policy_category_excel
-      @policy_categories = PolicyCategory.all
+      @policy_categories = PolicyCategory.where(id: params[:policy_category_ids])
       respond_to do |format|
         format.json
         format.pdf do

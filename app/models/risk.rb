@@ -39,7 +39,7 @@ class Risk < ApplicationRecord
       if row["name"].present? && !Risk.find_by_name(row["name"]).present?
         if risk_names.count != 0
           risk_obj = Risk.find_by_name(risk_names[index_risk-1])
-          risk_id = risk_obj.update(business_process_ids: bp_ids)
+          risk_id = risk_obj.update(business_process_ids: bp_ids.uniq)
           if risk_obj&.business_processes.present?
             ris_bus = risk_obj&.business_processes&.map{|x| x.name}
             risk_obj&.update(business_process: ris_bus)
@@ -59,7 +59,7 @@ class Risk < ApplicationRecord
         if row["name"].present?
           if risk_names.count != 0
             risk_obj = Risk.find_by_name(risk_names[index_risk-1])
-            risk_id = risk_obj.update(business_process_ids: bp_ids)
+            risk_id = risk_obj.update(business_process_ids: bp_ids.uniq)
             if risk_obj&.business_processes.present?
               ris_bus = risk_obj&.business_processes&.map{|x| x.name}
               risk_obj&.update(business_process: ris_bus)
