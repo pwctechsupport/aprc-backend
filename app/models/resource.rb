@@ -46,7 +46,7 @@ class Resource < ApplicationRecord
       row = Hash[[header, spreadsheet.row(k)].transpose]
       if row["name"].present? && !Resource.find_by_name(row["name"]).present?
         if resource_names.count != 0
-          resource_id = Resource&.find_by_name(resource_names[index_resource-1]).update(policy_ids: pol_ids, control_ids: con_ids)
+          resource_id = Resource&.find_by_name(resource_names[index_resource-1]).update(policy_ids: pol_ids.uniq, control_ids: con_ids.uniq)
           pol_ids.reject!{|x| x == x}
           con_ids.reject!{|x| x == x}
         end
@@ -61,7 +61,7 @@ class Resource < ApplicationRecord
       if k == spreadsheet.last_row && Resource.find_by_name(row["name"]).present?
         if row["name"].present?
           if resource_names.count != 0
-            resource_id = Resource&.find_by_name(resource_names[index_resource-1]).update(policy_ids: pol_ids, control_ids: con_ids)
+            resource_id = Resource&.find_by_name(resource_names[index_resource-1]).update(policy_ids: pol_ids.uniq, control_ids: con_ids.uniq)
             pol_ids.reject!{|x| x == x}
             con_ids.reject!{|x| x == x}
           end

@@ -19,7 +19,7 @@ class Reference < ApplicationRecord
       row = Hash[[header, spreadsheet.row(k)].transpose]
       if row["name"].present? && !Reference.find_by_name(row["name"]).present?
         if ref_names.count != 0
-          reference_id = Reference&.find_by_name(ref_names[index_ref-1]).update(policy_ids: ref_ids)
+          reference_id = Reference&.find_by_name(ref_names[index_ref-1]).update(policy_ids: ref_ids.uniq)
           ref_ids.reject!{|x| x == x}
         end
         lovar= row["name"].count "#"
@@ -47,7 +47,7 @@ class Reference < ApplicationRecord
       if k == spreadsheet.last_row && Reference.find_by_name(row["name"]).present?
         if row["name"].present?
           if ref_names.count != 0
-            reference_id = Reference&.find_by_name(ref_names[index_ref-1]).update(policy_ids: ref_ids)
+            reference_id = Reference&.find_by_name(ref_names[index_ref-1]).update(policy_ids: ref_ids.uniq)
             ref_ids.reject!{|x| x == x}
           end
         end
