@@ -25,8 +25,8 @@
       
     :css
       .apo{font-size:13px;}
-      th{font-size:15px;}
-      td{font-size:15px;}
+      th{font-size:14px;}
+      td{font-size:13px;}
       .tab{ margin-left:40px;}
       .ape{font-size:24px; text-align:left;}
       .aps{font-size:38px;}
@@ -37,18 +37,18 @@
     
 
     -# %h1.text-center.aps Exception Report Control Without Risk
-    %h2.ape 
-    %table.table.table-borderless.aha{style:"display:block;"}
-      %tr.aha
-        %td.aha Printed On
-        %td.aha :
-        %td.aha #{Time.now.strftime("%d %B %Y")}
+    -# %h2.ape 
+    -# %table.table.table-borderless.aha{style:"display:block;"}
+    -#   %tr.aha
+    -#     %td.aha Printed On
+    -#     %td.aha :
+    -#     %td.aha #{Time.now.strftime("%d %B %Y")}
         
 
-      %tr.aha
-        %td.aha Printed By
-        %td.aha :
-        %td.aha= current_user&.name
+    -#   %tr.aha
+    -#     %td.aha Printed By
+    -#     %td.aha :
+    -#     %td.aha= current_user&.name
     
     
     -# %table.table.table-border
@@ -68,17 +68,7 @@
     
     %table.table.table-borderless
       %thead
-        %tr
-          %th.text-center{:scope => "col"} No
-          %th.text-center{:scope => "col"} Description
-          %th.text-center{:scope => "col"} Type of Control
-          %th.text-center{:scope => "col"} Control Owner
-          %th.text-center{:scope => "col"} Frequency
-          %th.text-center{:scope => "col"} Nature
-          %th.text-center{:scope => "col"} Status
-          %th.text-center{:scope => "col"} Related Policy
-          %th.text-center{:scope => "col"} Business Process 
-          %th.text-center{:scope => "col"} Key Control
+      
       -z = 1
       -@controls.each do |con|
         -if con.business_processes.present?
@@ -87,16 +77,15 @@
               -con.policies.each do |pol|
                 %tbody
                   %tr
-                    %td.text-center{:scope => "row"} #{z}
-                    %td.text-center{:scope => "row"} #{con&.description&.titlecase&.html_safe}
-                    %td.text-center{:scope => "row"} #{con.type_of_control.to_s.gsub(/[^0-9A-Za-z]/, ' ').titlecase.html_safe}
-                    %td.text-center{:scope => "row"} #{con.control_owner.join(",").to_s.gsub(/[^0-9A-Za-z]/, ' ').titlecase.html_safe}
-                    %td.text-center{:scope => "row"} #{con.frequency.to_s.gsub(/[^0-9A-Za-z]/, ' ').titlecase.html_safe}
-                    %td.text-center{:scope => "row"} #{con.nature.to_s.gsub(/[^0-9A-Za-z]/, ' ').titlecase.html_safe}
-                    %td.text-center{:scope => "row"} #{con.status.to_s.gsub(/[^0-9A-Za-z]/, ' ').titlecase}
-                    %td.text-center{:scope => "row"} #{pol&.title&.titlecase&.html_safe}
-                    %td.text-center{:scope => "row"} #{bis&.name}
-                    %td 
+                    %td.text-center{:scope => "row",:style => "width: 6%"} #{z}
+                    %td.text-center{:scope => "row",:style => "width: 12%"} #{con&.description&.titlecase&.html_safe}
+                    %td.text-center{:scope => "row",:style => "width: 10%"} #{con.type_of_control.to_s.gsub(/[^0-9A-Za-z]/, ' ').titlecase.html_safe}
+                    %td.text-center{:scope => "row",:style => "width: 16%"} #{con.control_owner.join(",").to_s.titlecase.html_safe}
+                    %td.text-center{:scope => "row",:style => "width: 10%"} #{con.frequency.to_s.gsub(/[^0-9A-Za-z]/, ' ').titlecase.html_safe}
+                    %td.text-center{:scope => "row",:style => "width: 10%"} #{con.nature.to_s.gsub(/[^0-9A-Za-z]/, ' ').titlecase.html_safe}
+                    %td.text-center{:scope => "row",:style => "width: 14%"} #{pol&.title&.titlecase&.html_safe}
+                    %td.text-center{:scope => "row",:style => "width: 14%"} #{bis&.name}
+                    %td{:scope => "row",:style => "width: 8%"}
                       -if con&.key_control == true
                         .risk.text-center
                           %input#checkboxG5.css-checkbox{:checked => "checked", :name => "checkboxG5", :type => "checkbox"}/
@@ -109,16 +98,15 @@
             -else
               %tbody
                 %tr
-                  %td.text-center{:scope => "row"} #{z}
-                  %td.text-center{:scope => "row"} #{con&.description&.titlecase&.html_safe}
-                  %td.text-center{:scope => "row"} #{con.type_of_control.to_s.gsub(/[^0-9A-Za-z]/, ' ').titlecase.html_safe}
-                  %td.text-center{:scope => "row"} #{con.control_owner.join(",").to_s.gsub(/[^0-9A-Za-z]/, ' ').titlecase.html_safe}
-                  %td.text-center{:scope => "row"} #{con.frequency.to_s.gsub(/[^0-9A-Za-z]/, ' ').titlecase.html_safe}
-                  %td.text-center{:scope => "row"} #{con.nature.to_s.gsub(/[^0-9A-Za-z]/, ' ').titlecase.html_safe}
-                  %td.text-center{:scope => "row"} #{con.status.to_s.gsub(/[^0-9A-Za-z]/, ' ').titlecase}
-                  %td.text-center{:scope => "row"} No Related Policies
-                  %td.text-center{:scope => "row"} #{bis&.name}
-                  %td 
+                  %td.text-center{:scope => "row",:style => "width: 6%"} #{z}
+                  %td.text-center{:scope => "row",:style => "width: 12%"} #{con&.description&.titlecase&.html_safe}
+                  %td.text-center{:scope => "row",:style => "width: 10%"} #{con.type_of_control.to_s.gsub(/[^0-9A-Za-z]/, ' ').titlecase.html_safe}
+                  %td.text-center{:scope => "row",:style => "width: 16%"} #{con.control_owner.join(",").to_s.titlecase.html_safe}
+                  %td.text-center{:scope => "row",:style => "width: 10%"} #{con.frequency.to_s.gsub(/[^0-9A-Za-z]/, ' ').titlecase.html_safe}
+                  %td.text-center{:scope => "row",:style => "width: 10%"} #{con.nature.to_s.gsub(/[^0-9A-Za-z]/, ' ').titlecase.html_safe}
+                  %td.text-center{:scope => "row",:style => "width: 14%"} No Related Policies
+                  %td.text-center{:scope => "row",:style => "width: 14%"} #{bis&.name}
+                  %td{:scope => "row",:style => "width: 8%"}
                     -if con&.key_control == true
                       .risk.text-center
                         %input#checkboxG5.css-checkbox{:checked => "checked", :name => "checkboxG5", :type => "checkbox"}/
@@ -133,16 +121,15 @@
             -con.policies.each do |pol|
               %tbody
                 %tr
-                  %td.text-center{:scope => "row"} #{z}
-                  %td.text-center{:scope => "row"} #{con&.description&.titlecase&.html_safe}
-                  %td.text-center{:scope => "row"} #{con.type_of_control.to_s.gsub(/[^0-9A-Za-z]/, ' ').titlecase.html_safe}
-                  %td.text-center{:scope => "row"} #{con.control_owner.join(",").to_s.gsub(/[^0-9A-Za-z]/, ' ').titlecase.html_safe}
-                  %td.text-center{:scope => "row"} #{con.frequency.to_s.gsub(/[^0-9A-Za-z]/, ' ').titlecase.html_safe}
-                  %td.text-center{:scope => "row"} #{con.nature.to_s.gsub(/[^0-9A-Za-z]/, ' ').titlecase.html_safe}
-                  %td.text-center{:scope => "row"} #{con.status.to_s.gsub(/[^0-9A-Za-z]/, ' ').titlecase}
-                  %td.text-center{:scope => "row"} #{pol&.title&.titlecase&.html_safe}
-                  %td.text-center{:scope => "row"} No Business Process
-                  %td 
+                  %td.text-center{:scope => "row",:style => "width: 6%"} #{z}
+                  %td.text-center{:scope => "row",:style => "width: 12%"} #{con&.description&.titlecase&.html_safe}
+                  %td.text-center{:scope => "row",:style => "width: 10%"} #{con.type_of_control.to_s.gsub(/[^0-9A-Za-z]/, ' ').titlecase.html_safe}
+                  %td.text-center{:scope => "row",:style => "width: 16%"} #{con.control_owner.join(",").to_s.titlecase.html_safe}
+                  %td.text-center{:scope => "row",:style => "width: 10%"} #{con.frequency.to_s.gsub(/[^0-9A-Za-z]/, ' ').titlecase.html_safe}
+                  %td.text-center{:scope => "row",:style => "width: 10%"} #{con.nature.to_s.gsub(/[^0-9A-Za-z]/, ' ').titlecase.html_safe}
+                  %td.text-center{:scope => "row",:style => "width: 14%"} #{pol&.title&.titlecase&.html_safe}
+                  %td.text-center{:scope => "row",:style => "width: 14%"} No Business Process
+                  %td{:scope => "row",:style => "width: 8%"}
                     -if con&.key_control == true
                       .risk.text-center
                         %input#checkboxG5.css-checkbox{:checked => "checked", :name => "checkboxG5", :type => "checkbox"}/
@@ -155,16 +142,15 @@
           -else
             %tbody
               %tr
-                %td.text-center{:scope => "row"} #{z}
-                %td.text-center{:scope => "row"} #{con&.description&.titlecase&.html_safe}
-                %td.text-center{:scope => "row"} #{con.type_of_control.to_s.gsub(/[^0-9A-Za-z]/, ' ').titlecase.html_safe}
-                %td.text-center{:scope => "row"} #{con.control_owner.join(",").to_s.gsub(/[^0-9A-Za-z]/, ' ').titlecase.html_safe}
-                %td.text-center{:scope => "row"} #{con.frequency.to_s.gsub(/[^0-9A-Za-z]/, ' ').titlecase.html_safe}
-                %td.text-center{:scope => "row"} #{con.nature.to_s.gsub(/[^0-9A-Za-z]/, ' ').titlecase.html_safe}
-                %td.text-center{:scope => "row"} #{con.status.to_s.gsub(/[^0-9A-Za-z]/, ' ').titlecase}
-                %td.text-center{:scope => "row"} No Related Policies
-                %td.text-center{:scope => "row"} No Business Process
-                %td 
+                %td.text-center{:scope => "row",:style => "width: 6%"} #{z}
+                %td.text-center{:scope => "row",:style => "width: 12%"} #{con&.description&.titlecase&.html_safe}
+                %td.text-center{:scope => "row",:style => "width: 10%"} #{con.type_of_control.to_s.gsub(/[^0-9A-Za-z]/, ' ').titlecase.html_safe}
+                %td.text-center{:scope => "row",:style => "width: 16%"} #{con.control_owner.join(",").to_s.titlecase.html_safe}
+                %td.text-center{:scope => "row",:style => "width: 10%"} #{con.frequency.to_s.gsub(/[^0-9A-Za-z]/, ' ').titlecase.html_safe}
+                %td.text-center{:scope => "row",:style => "width: 10%"} #{con.nature.to_s.gsub(/[^0-9A-Za-z]/, ' ').titlecase.html_safe}
+                %td.text-center{:scope => "row",:style => "width: 14%"} No Related Policies
+                %td.text-center{:scope => "row",:style => "width: 14%"} No Business Process
+                %td{:scope => "row",:style => "width: 8%"} 
                   -if con&.key_control == true
                     .risk.text-center
                       %input#checkboxG5.css-checkbox{:checked => "checked", :name => "checkboxG5", :type => "checkbox"}/
@@ -180,6 +166,5 @@
 
 
 
-  / %p{:style => "page-break-after:always;"}
-  / / %p{:style => "page-break-after:auto;"}
-
+    -# %p{:style => "page-break-after:always;"}
+    -# %p{:style => "page-break-after:auto;"}

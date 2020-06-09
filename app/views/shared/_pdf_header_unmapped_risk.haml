@@ -11,6 +11,10 @@
         font-size:20px;
         margin-bottom:5px;
         }
+      .aha{border:none;}
+      th{font-size:14px;}
+
+      
 
   %body
     %table{style:"border:none;"}
@@ -20,7 +24,41 @@
           %hr.new5
     %center
       %h2.aih Flowchart Unmapped Risk
-      %br
-      %br
-    
+    %table.table.table-borderless.aha{style:"display:block;"}
+      %tr.aha
+        %td.aha Printed On
+        %td.aha :
+        %td.aha #{Time.now.strftime("%d %B %Y")}
+        
+
+      %tr.aha
+        %td.aha Printed By
+        %td.aha :
+        %td.aha= current_user&.name
+      %tr.aha
+        %td.aha No. of page
+        %td.aha :
+        %td.aha
+          Page
+          %span#page
+          of
+          %span#topage
+          :javascript
+            var vars={};
+            var x=window.location.search.substring(1).split('&');
+            for (var i in x) {
+              var z=x[i].split('=',2);
+              vars[z[0]] = unescape(z[1]);
+            }
+            document.getElementById('page').innerHTML = vars.page; 
+            document.getElementById('topage').innerHTML = vars.topage;
+    %table.table.table-borderless
+      %thead
+        %tr
+          %th.text-center{:scope => "col", :style => "width: 10%"} No
+          %th.text-center{:scope => "col", :style => "width: 30%"} Name
+          %th.text-center{:scope => "col", :style => "width: 30%"} Level of Risk
+          %th.text-center{:scope => "col", :style => "width: 30%"} Type of Risk
+          %th.text-center{:scope => "col", :style => "width: 30%"} Business Processes
+
     

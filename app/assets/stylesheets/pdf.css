@@ -1,8 +1,11 @@
+body { margin: 0; padding: 0; }
+
 table {
   width: 100%;
   border: 1px solid #999999;
   border-collapse: collapse;
-  table-layout: auto;
+  table-layout: fixed;
+  word-wrap:break-word;
 }
 
 th,

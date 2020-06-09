@@ -39,18 +39,18 @@
 
     
     -# %h1.text-center.aps Exception Report Resource with Rating
-    %h2.ape 
-    %table.table.table-borderless.aha{style:"display:block;"}
-      %tr.aha
-        %td.aha Printed On
-        %td.aha :
-        %td.aha #{Time.now.strftime("%d %B %Y")}
+    -# %h2.ape 
+    -# %table.table.table-borderless.aha{style:"display:block;"}
+    -#   %tr.aha
+    -#     %td.aha Printed On
+    -#     %td.aha :
+    -#     %td.aha #{Time.now.strftime("%d %B %Y")}
         
 
-      %tr.aha
-        %td.aha Printed By
-        %td.aha :
-        %td.aha= current_user&.name
+    -#   %tr.aha
+    -#     %td.aha Printed By
+    -#     %td.aha :
+    -#     %td.aha= current_user&.name
     
 
       
@@ -71,19 +71,14 @@
     -# %br
     %table.table.table-borderless
       %thead
-        %tr
-          %th.text-center{:scope => "col"} No
-          %th.text-center{:scope => "col"} Name
-          %th.text-center{:scope => "col"} Views
-          %th.text-center{:scope => "col"} Rating
-          %th.text-center{:scope => "col"} Total Rating
+
       -@resources.each_with_index do |res, i|
         %tbody
           %tr
-            %td.text-center{:scope => "row"} #{i+1}
-            %td.text-center #{res&.name&.titlecase&.html_safe}
-            %td.text-center #{res&.visit}
-            %td.text-center 
+            %td.text-center{:scope => "row", :style => "width: 10%"} #{i+1}
+            %td.text-center{:scope => "row", :style => "width: 30%"} #{res&.name&.titlecase&.html_safe}
+            %td.text-center{:scope => "row", :style => "width: 30%"} #{res&.visit}
+            %td.text-center{:scope => "row", :style => "width: 30%"} 
               -rating_total = res&.resource_ratings&.count
               -rating_sum =  res&.resource_ratings&.sum(:rating)
               -rating_average = rating_sum/rating_total
@@ -93,7 +88,7 @@
                 #{rating_average&.round(1)}
 
                 
-            %td.text-center
+            %td.text-center{:scope => "row", :style => "width: 30%"}
               -rating_total = res.resource_ratings.count
               #{rating_total}
 
