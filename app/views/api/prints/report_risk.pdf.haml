@@ -11,10 +11,12 @@
       .ape{max-width: 250px;}
       .aih{font-size:20px}
       .aha{border:none;}
+      .ehe{margin-top:30px;}
 
-  %body
-    %center
-      %h2.aih Exception Report Risk Without Policy 
+  %body.ehe
+    -# %center
+    -#   %h2.aih Exception Report Risk Without Policy 
+
     %table.table.table-borderless.aha{style:"display:block;"}
       %tr.aha
         %td.aha Printed On
@@ -26,10 +28,10 @@
         %td.aha Printed By
         %td.aha :
         %td.aha= current_user&.name
-    %table.table.table-borderless
+    %table.table.table-borderless.ehe
       %thead
         %tr
-          %th.text-center{:scope => "col"} #
+          %th.text-center{:scope => "col"} No
           %th.text-center.apo{:scope => "col"} Business Process
           %th.text-center.apo{:scope => "col"} Risk
           %th.text-center.apo{:scope => "col"} Type of Risk
@@ -93,6 +95,8 @@
               -z+=1
     %p{:style => "page-break-after:always;"}
     %p{:style => "page-break-after:auto;"}
+    -# %center
+    -#   %h2.aih Exception Report Risk Without Policy 
 
 
     
