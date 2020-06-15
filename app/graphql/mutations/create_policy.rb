@@ -7,7 +7,7 @@ module Mutations
     argument :resource_id, ID, required: false
     argument :it_system_ids, [ID], required: false
     argument :resource_ids, [ID], required: false
-    argument :status, Types::Enums::Status, required: false
+    argument :status, String, required: false
     argument :business_process_ids, [ID], required: false
     argument :control_ids, [ID], required: false
     argument :risk_ids, [ID], required: false
@@ -28,7 +28,6 @@ module Mutations
       admin = User.with_role(:admin_reviewer).pluck(:id)
       if policy.id.present?
         policy.update(created_by: policy&.user&.name)
-        policy.update(status: "waiting_for_review" )
       else
         raise GraphQL::ExecutionError, "The exact same draft cannot be duplicated"
       end
