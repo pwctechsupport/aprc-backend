@@ -5,7 +5,7 @@ module Mutations
     argument :description, String, required: true
     argument :parent_id, ID, required: true
     argument :reference_ids, [ID], required: false
-    argument :status, Types::Enums::Status, required: false
+    argument :status, String, required: false
     argument :business_process_ids, [ID], required: true
     argument :control_ids, [ID], required: true
     argument :risk_ids, [ID], required: true
@@ -79,7 +79,7 @@ module Mutations
             pol_res.save_draft
           end 
         end
-        policy.update(created_by: policy&.user&.name, status: "waiting_for_review")
+        policy.update(created_by: policy&.user&.name)
       else
         raise GraphQL::ExecutionError, "The exact same draft cannot be duplicated"
       end
