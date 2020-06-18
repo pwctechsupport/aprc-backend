@@ -1,6 +1,6 @@
 class Risk < ApplicationRecord
-  # validates :name, uniqueness: true
-  validates_uniqueness_of :name, :scope => [:type_of_risk, :level_of_risk]
+  validates :name, uniqueness: true
+  # validates_uniqueness_of :name, :scope => [:type_of_risk, :level_of_risk]
   has_paper_trail
   has_drafts
   serialize :business_process, Array
@@ -29,10 +29,11 @@ class Risk < ApplicationRecord
 
   def self.import(file)
     spreadsheet = open_spreadsheet(file)
-    allowed_attributes = ["name", "level of risk", "status", "type of risk", "related business process", "related business process name"]
+    allowed_attributes = ["name", "level of risk", "status", "type of risk", "related business process name", "related sub business process 1", "related sub business process 2"]
     header = spreadsheet.row(1)
     risk_names = []
     bp_ids = []
+    bp_obj= []
     index_risk = 0
     (2..spreadsheet.last_row).each do |k|
       row = Hash[[header, spreadsheet.row(k)].transpose]
@@ -45,15 +46,42 @@ class Risk < ApplicationRecord
             risk_obj&.update(business_process: ris_bus)
           end
           bp_ids.reject!{|x| x == x}
+          bp_obj.reject!{|x| x == x}
         end
         if !Risk.find_by_name(row["name"]).present?
           risk_names.push(row["name"])
         end
-        risk_id = Risk.create(name: risk_names[index_risk],business_process_ids: row["related business process"], level_of_risk: row["level of risk"], type_of_risk: row["type of risk"], status: "release")
+        risk_id = Risk.create(name: risk_names[index_risk],business_process_ids: BusinessProcess.find_by_name(row["related business process name"])&.id, level_of_risk: row["level of risk"], type_of_risk: row["type of risk"], status: "release")
         index_risk+=1
       end
-      if !row["related business process"].nil?
-        bp_ids.push(row["related business process"])
+      
+      if !row["related business process name"].nil?
+        bp_obj.push({name: row["related business process name"], sub1: row["related sub business process 1"], sub2: row["related sub business process 2"]})
+        bp_obj.each do |bp|
+          if bp[:name].present?
+            main_bp = BusinessProcess.find_by_name(bp[:name])
+            if !main_bp.present?
+              main_bp = BusinessProcess.create(name: bp[:name])
+            end
+            bp_ids.push(main_bp&.id)
+            if bp[:sub1].present?
+              bispro = BusinessProcess.find_by_name(bp[:sub1])
+              if bispro.present?
+                if bp[:sub2].present?
+                  bispro_2 = BusinessProcess.find_by_name(bp[:sub2]) 
+                  if !bispro_2.present?
+                    BusinessProcess.create(name:bp[:sub2], parent_id: bispro&.id)
+                  end
+                end
+              else
+                bispro = BusinessProcess.create(name:bp[:sub1], parent_id:main_bp&.id)
+                if bp[:sub2].present?
+                  BusinessProcess.create(name:bp[:sub2], parent_id: bispro&.id)
+                end
+              end
+            end
+          end
+        end
       end
       if k == spreadsheet.last_row && Risk.find_by_name(row["name"]).present?
         if row["name"].present?

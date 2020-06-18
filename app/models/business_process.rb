@@ -38,7 +38,10 @@ class BusinessProcess < ApplicationRecord
             bispro = BusinessProcess.find_by_name(bp[:sub1])
             if bispro.present?
               if bp[:sub2].present?
-                BusinessProcess.create(name:bp[:sub2], parent_id: bispro&.id)
+                bispro_2 = BusinessProcess.find_by_name(bp[:sub2]) 
+                if !bispro_2.present?
+                  BusinessProcess.create(name:bp[:sub2], parent_id: bispro&.id)
+                end
               end
             else
               bispro = BusinessProcess.create(name:bp[:sub1], parent_id:main_bp&.id)

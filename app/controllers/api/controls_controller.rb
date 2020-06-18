@@ -1,8 +1,9 @@
 module Api
   class ControlsController < ApiController
     def import
-      if Control.import(params[:file])
-      	render json: { status: 200, message: "Succesfully import file control"}
+      status, error_data = Control.import(params[:file])
+      if status
+      	render json: { status: 200, message: "Succesfully import file control", error_data: error_data.as_json}
       else
       	render json: { status: 422, message: "Failed import file control"}
       end

@@ -2,8 +2,20 @@ wb = xlsx_package.workbook
 
 
 wb.add_worksheet(name: "Business Processes") do |sheet|
-  sheet.add_row ["name", "ancestry"]
-  @business_processes.each do |business_process|
-    sheet.add_row [business_process&.name, business_process&.parent&.name]
+  sheet.add_row ["name", "sub business process 1", "sub business process 2"]
+  @business_processes.where(ancestry: nil).each do |business_process|
+    if business_process.children.present?
+      business_process.children.each do |bp_1|
+        if bp_1.children.present?
+          bp_1.children.each do |bp_2|
+            sheet.add_row [business_process&.name, bp_1, bp_2]
+          end
+        else
+          sheet.add_row [business_process&.name, bp_1, ""]
+        end
+      end
+    else
+      sheet.add_row [business_process&.name, business_process&.parent&.name]
+    end
   end
 end
