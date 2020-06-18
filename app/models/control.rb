@@ -99,7 +99,7 @@ class Control < ApplicationRecord
           if ri[:name].present?
             main_risk = Risk.find_by_name(ri[:name])
             if !main_risk.present?
-              main_risk = Risk.create(name: ri[:name], status:"release")
+              main_risk = Risk.create(name: ri[:name], status:"release", level_of_risk: "medium", type_of_risk: "operational_risk")
             end
             risk_ids.push(main_risk&.id)
           end
