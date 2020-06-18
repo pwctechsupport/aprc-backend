@@ -4,27 +4,78 @@ wb = xlsx_package.workbook
 
 wb.add_worksheet(name: "Controls") do |sheet|
   # Create the header row
-  sheet.add_row ["description", "type of control", "frequency", "nature", "assertion", "ipo", "status", "key control", "related business process", "related business process name", "related risk", "related risk name","related control owner","related control owner name"]
+  sheet.add_row ["description", "type of control", "frequency", "nature", "assertion", "ipo", "key control", "related business process name", "related sub business process 1", "related sub business process 2", "related risk name","related control owner name", "control activity title", "control activity guidance"]
   # Create entries for each item
   @controls.each do |control|
-
-    if control.risks.present? || control.business_processes.present? || control.departments.present?
-      z = 0
-      if control.risks.count >= control.business_processes.count
-        control.risks.zip(control.business_processes, control.departments).each do |risk, business_process, department|
-          sheet.add_row [control&.description&.titlecase, control&.type_of_control&.gsub(/_/, ' ')&.titlecase, control&.frequency, control&.nature&.titlecase, control&.assertion&.join&.gsub(/_/, ' ')&.titlecase, control&.ipo.join&.gsub(/_/, ' ')&.titlecase, control&.status&.gsub(/_/, ' ')&.titlecase, control&.key_control, business_process&.id, business_process&.name, risk&.id, risk&.name,department&.id, department&.name]
+    
+    if control.risks.present? || control.business_processes.present? || control.control_owner.present? || control.activity_controls.present?
+      if control.risks.count >= (control.activity_controls.count && control.business_processes.where(ancestry: nil).count && control.control_owner.count)
+        control.risks.zip(control.business_processes.where(ancestry: nil), control.control_owner, control.activity_controls).each do |risk, business_process, owner, activity_control|
+          if business_process.children.present?
+            business_process.children.each do |bp_1|
+              if bp_1.children.present?
+                bp_1.children.each do |bp_2|
+                  sheet.add_row [control&.description&.titlecase, control&.type_of_control&.gsub(/_/, ' ')&.titlecase, control&.frequency, control&.nature&.titlecase, control&.assertion&.join&.gsub(/_/, ' ')&.titlecase, control&.ipo.join&.gsub(/_/, ' ')&.titlecase, control&.key_control, business_process&.name, bp_1, bp_2, risk&.name,owner, activity_control&.activity, activity_control&.guidance]
+                end
+              else
+                sheet.add_row [control&.description&.titlecase, control&.type_of_control&.gsub(/_/, ' ')&.titlecase, control&.frequency, control&.nature&.titlecase, control&.assertion&.join&.gsub(/_/, ' ')&.titlecase, control&.ipo.join&.gsub(/_/, ' ')&.titlecase, control&.key_control, business_process&.name, bp_1, "", risk&.name,owner, activity_control&.activity, activity_control&.guidance]
+              end
+            end
+          else
+            sheet.add_row [control&.description&.titlecase, control&.type_of_control&.gsub(/_/, ' ')&.titlecase, control&.frequency, control&.nature&.titlecase, control&.assertion&.join&.gsub(/_/, ' ')&.titlecase, control&.ipo.join&.gsub(/_/, ' ')&.titlecase, control&.key_control, business_process&.name, "", "", risk&.name,owner, activity_control&.activity, activity_control&.guidance]
+          end
         end
-      elsif control.risks.count <= control.business_processes.count
-        control.business_processes.zip(control.risks, control.departments).each do |business_process, risk, department|
-          sheet.add_row [control&.description&.titlecase, control&.type_of_control&.gsub(/_/, ' ')&.titlecase, control&.frequency, control&.nature&.titlecase, control&.assertion&.join&.gsub(/_/, ' ')&.titlecase, control&.ipo.join&.gsub(/_/, ' ')&.titlecase, control&.status&.gsub(/_/, ' ')&.titlecase, control&.key_control, business_process&.id, business_process&.name, risk&.id, risk&.name,department&.id, department&.name]
+      elsif control.business_processes.where(ancestry: nil).count >= (control.risks.count && control.activity_controls.count && control.control_owner.count)
+        control.business_processes.where(ancestry: nil).zip(control.risks, control.control_owner, control.activity_controls).each do |business_process, risk, owner, activity_control|
+          if business_process.children.present?
+            business_process.children.each do |bp_1|
+              if bp_1.children.present?
+                bp_1.children.each do |bp_2|
+                  sheet.add_row [control&.description&.titlecase, control&.type_of_control&.gsub(/_/, ' ')&.titlecase, control&.frequency, control&.nature&.titlecase, control&.assertion&.join&.gsub(/_/, ' ')&.titlecase, control&.ipo.join&.gsub(/_/, ' ')&.titlecase, control&.key_control, business_process&.name, bp_1, bp_2, risk&.name,owner, activity_control&.activity, activity_control&.guidance]
+                end
+              else
+                sheet.add_row [control&.description&.titlecase, control&.type_of_control&.gsub(/_/, ' ')&.titlecase, control&.frequency, control&.nature&.titlecase, control&.assertion&.join&.gsub(/_/, ' ')&.titlecase, control&.ipo.join&.gsub(/_/, ' ')&.titlecase, control&.key_control, business_process&.name, bp_1, "", risk&.name,owner, activity_control&.activity, activity_control&.guidance]
+              end
+            end
+          else
+            sheet.add_row [control&.description&.titlecase, control&.type_of_control&.gsub(/_/, ' ')&.titlecase, control&.frequency, control&.nature&.titlecase, control&.assertion&.join&.gsub(/_/, ' ')&.titlecase, control&.ipo.join&.gsub(/_/, ' ')&.titlecase, control&.key_control, business_process&.name, "", "", risk&.name,owner, activity_control&.activity, activity_control&.guidance]
+          end
+        end
+      elsif control.activity_controls.count >= (control.risks.count && control.business_processes.where(ancestry: nil).count && control.control_owner.count)
+        control.activity_controls.zip(control.business_processes.where(ancestry: nil), control.control_owner, control.risks).each do |activity_control, business_process, owner, risk|
+          if business_process.children.present?
+            business_process.children.each do |bp_1|
+              if bp_1.children.present?
+                bp_1.children.each do |bp_2|
+                  sheet.add_row [control&.description&.titlecase, control&.type_of_control&.gsub(/_/, ' ')&.titlecase, control&.frequency, control&.nature&.titlecase, control&.assertion&.join&.gsub(/_/, ' ')&.titlecase, control&.ipo.join&.gsub(/_/, ' ')&.titlecase, control&.key_control, business_process&.name, bp_1, bp_2, risk&.name,owner, activity_control&.activity, activity_control&.guidance]
+                end
+              else
+                sheet.add_row [control&.description&.titlecase, control&.type_of_control&.gsub(/_/, ' ')&.titlecase, control&.frequency, control&.nature&.titlecase, control&.assertion&.join&.gsub(/_/, ' ')&.titlecase, control&.ipo.join&.gsub(/_/, ' ')&.titlecase, control&.key_control, business_process&.name, bp_1, "", risk&.name,owner, activity_control&.activity, activity_control&.guidance]
+              end
+            end
+          else
+            sheet.add_row [control&.description&.titlecase, control&.type_of_control&.gsub(/_/, ' ')&.titlecase, control&.frequency, control&.nature&.titlecase, control&.assertion&.join&.gsub(/_/, ' ')&.titlecase, control&.ipo.join&.gsub(/_/, ' ')&.titlecase, control&.key_control, business_process&.name, "", "", risk&.name,owner, activity_control&.activity, activity_control&.guidance]
+          end
         end
       else
-        control.departments.zip(control.risks, control.business_processes).each do |department, risk, business_process|
-          sheet.add_row [control&.description&.titlecase, control&.type_of_control&.gsub(/_/, ' ')&.titlecase, control&.frequency, control&.nature&.titlecase, control&.assertion&.join&.gsub(/_/, ' ')&.titlecase, control&.ipo.join&.gsub(/_/, ' ')&.titlecase, control&.status&.gsub(/_/, ' ')&.titlecase, control&.key_control, business_process&.id, business_process&.name, risk&.id, risk&.name,department&.id, department&.name]
+        control.control_owner.zip(control.risks, control.business_processes.where(ancestry: nil), control.activity_controls ).each do |owner, risk, business_process, activity_control|
+          if business_process.children.present?
+            business_process.children.each do |bp_1|
+              if bp_1.children.present?
+                bp_1.children.each do |bp_2|
+                  sheet.add_row [control&.description&.titlecase, control&.type_of_control&.gsub(/_/, ' ')&.titlecase, control&.frequency, control&.nature&.titlecase, control&.assertion&.join&.gsub(/_/, ' ')&.titlecase, control&.ipo.join&.gsub(/_/, ' ')&.titlecase, control&.key_control, business_process&.name, bp_1, bp_2, risk&.name,owner, activity_control&.activity, activity_control&.guidance]
+                end
+              else
+                sheet.add_row [control&.description&.titlecase, control&.type_of_control&.gsub(/_/, ' ')&.titlecase, control&.frequency, control&.nature&.titlecase, control&.assertion&.join&.gsub(/_/, ' ')&.titlecase, control&.ipo.join&.gsub(/_/, ' ')&.titlecase, control&.key_control, business_process&.name, bp_1, "", risk&.name,owner, activity_control&.activity, activity_control&.guidance]
+              end
+            end
+          else
+            sheet.add_row [control&.description&.titlecase, control&.type_of_control&.gsub(/_/, ' ')&.titlecase, control&.frequency, control&.nature&.titlecase, control&.assertion&.join&.gsub(/_/, ' ')&.titlecase, control&.ipo.join&.gsub(/_/, ' ')&.titlecase, control&.key_control, business_process&.name, "", "", risk&.name,owner, activity_control&.activity, activity_control&.guidance]
+          end
         end
       end
     else
-      sheet.add_row [control&.description&.titlecase, control&.type_of_control&.gsub(/_/, ' ')&.titlecase, control&.frequency, control&.nature&.titlecase, control&.assertion&.join&.gsub(/_/, ' ')&.titlecase, control&.ipo.join&.gsub(/_/, ' ')&.titlecase, control&.status&.gsub(/_/, ' ')&.titlecase, control&.key_control, control&.business_processes&.pluck(:id).join(","), control&.business_processes&.pluck(:name).join(","), control&.risks&.pluck(:id)&.join(","), control&.risks.pluck(:name).join(","),control&.departments.pluck(:id).join(","), control&.departments.pluck(:name).join(",")]
+      sheet.add_row [control&.description&.titlecase, control&.type_of_control&.gsub(/_/, ' ')&.titlecase, control&.frequency, control&.nature&.titlecase, control&.assertion&.join&.gsub(/_/, ' ')&.titlecase, control&.ipo.join&.gsub(/_/, ' ')&.titlecase, control&.key_control, "",  "", "", "", "","",""]
     end
   end
 end
