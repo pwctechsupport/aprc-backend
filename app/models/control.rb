@@ -1,6 +1,7 @@
 class Control < ApplicationRecord
   has_paper_trail
   has_drafts
+  validates_presence_of :description, :type_of_control, :frequency, :nature, :assertion, :ipo
   validates :description, uniqueness: true
   serialize :assertion, Array
   serialize :ipo, Array
@@ -28,6 +29,12 @@ class Control < ApplicationRecord
   has_many :control_departments, dependent: :destroy
   has_many :departments, through: :control_departments
 
+  validate :validate_type_of_control
+  validate :validate_frequency
+  validate :validate_nature
+  validate :validate_assertion
+  validate :validate_ipo
+
   def to_humanize
     "#{self.description} : #{self.description}"
   end
@@ -38,19 +45,28 @@ class Control < ApplicationRecord
 
   def self.import(file)
     spreadsheet = open_spreadsheet(file)
-    allowed_attributes = [ "description", "type of control", "frequency", "nature", "assertion", "ipo", "status", "key control", "related business process", "related business process name", "related risk", "related risk name", "related control owner", "related control owner name"]
+    allowed_attributes = [ "description", "type of control", "frequency", "nature", "assertion", "ipo", "key control", "related business process name","related sub business process 1", "related sub business process 2","related risk name","related control owner name", "control activity title", "control activity guidance"]
     header = spreadsheet.row(1)
     control_descriptions = []
     risk_ids = []
     bp_ids = []
     co_ids = []
+    risk_obj = []
+    co_obj = []
+    bp_obj = []
+    activity_obj = []
+    error_data = []
     index_control = 0
     (2..spreadsheet.last_row).each do |k|
       row = Hash[[header, spreadsheet.row(k)].transpose]
       if row["description"].present? && !Control.find_by(description: row["description"]).present?
         if control_descriptions.count != 0
           control_obj = Control&.find_by(description:control_descriptions[index_control-1])
-          control_id = control_obj&.update(risk_ids: risk_ids.uniq, business_process_ids: bp_ids.uniq, department_ids:co_ids.uniq, status: "release")
+          active_control = []
+          if activity_obj.count != 0
+            active_control = activity_obj.uniq
+          end
+          control_id = control_obj&.update(risk_ids: risk_ids.uniq, business_process_ids: bp_ids.uniq, department_ids:co_ids.uniq, status: "release", activity_controls_attributes:active_control)
           if control_obj&.departments.present?
             con_dep = control_obj&.departments&.map{|x| x.name}
             control_obj&.update(control_owner: con_dep)
@@ -58,23 +74,89 @@ class Control < ApplicationRecord
           risk_ids&.reject!{|x| x == x}
           bp_ids&.reject!{|x| x == x}
           co_ids&.reject!{|x| x == x}
+          bp_obj&.reject!{|x| x == x}
+          risk_obj&.reject!{|x| x == x}
+          co_obj&.reject!{|x| x == x}
+          activity_obj&.reject!{|x| x == x}
         end
         if !Control.find_by(description: row["description"]).present?
           control_descriptions.push(row["description"])
         end
-        control_id = Control&.create(description: control_descriptions[index_control],status: row["status"]&.gsub(" ","_")&.downcase, type_of_control: row["type of control"]&.gsub(" ","_")&.downcase, frequency: row["frequency"]&.downcase, nature: row["nature"]&.downcase, assertion: row["assertion"]&.split(",")&.map {|x| x&.gsub(" ","_")&.downcase}, ipo: row["ipo"]&.split(",").map {|x| x&.gsub(" ","_")&.downcase}, key_control: row["key control"],risk_ids: row["related risk"], business_process_ids: row["related business process"], department_ids: row["related control owner"])
+        control_id = Control&.create(description: control_descriptions[index_control],status: "release", type_of_control: row["type of control"]&.gsub(" ","_")&.downcase, frequency: row["frequency"]&.downcase, nature: row["nature"]&.downcase, assertion: row["assertion"]&.split(",")&.map {|x| x&.gsub(" ","_")&.downcase}, ipo: row["ipo"]&.split(",").map {|x| x&.gsub(" ","_")&.downcase}, key_control: row["key control"],risk_ids: row["related risk"], business_process_ids: row["related business process"], department_ids: row["related control owner"])
+        unless control_id.valid?
+          error_data.push({message: control_id.errors.full_messages.join(","), line: k})
+        end
         index_control+=1
       end
-      risk_ids.push(row["related risk"])
-      bp_ids.push(row["related business process"])
-      if !row["related control owner"].nil?
-        co_ids.push(row["related control owner"])
+
+      if !row["control activity title"].nil?
+        activity_obj.push({activity:row["control activity title"], guidance: row["control activity guidance"]})
       end
+
+      if !row["related risk name"].nil?
+        risk_obj.push({name: row["related risk name"]})
+        risk_obj.each do |ri|
+          if ri[:name].present?
+            main_risk = Risk.find_by_name(ri[:name])
+            if !main_risk.present?
+              main_risk = Risk.create(name: ri[:name], status:"release", level_of_risk: "medium", type_of_risk: "operational_risk")
+            end
+            risk_ids.push(main_risk&.id)
+          end
+        end
+      end
+
+      if !row["related business process name"].nil?
+        bp_obj.push({name: row["related business process name"], sub1: row["related sub business process 1"], sub2: row["related sub business process 2"]})
+        bp_obj.each do |bp|
+          if bp[:name].present?
+            main_bp = BusinessProcess.find_by_name(bp[:name])
+            if !main_bp.present?
+              main_bp = BusinessProcess.create(name: bp[:name])
+            end
+            bp_ids.push(main_bp&.id)
+            if bp[:sub1].present?
+              bispro = BusinessProcess.find_by_name(bp[:sub1])
+              if bispro.present?
+                if bp[:sub2].present?
+                  bispro_2 = BusinessProcess.find_by_name(bp[:sub2]) 
+                  if !bispro_2.present?
+                    BusinessProcess.create(name:bp[:sub2], parent_id: bispro&.id)
+                  end
+                end
+              else
+                bispro = BusinessProcess.create(name:bp[:sub1], parent_id:main_bp&.id)
+                if bp[:sub2].present?
+                  BusinessProcess.create(name:bp[:sub2], parent_id: bispro&.id)
+                end
+              end
+            end
+          end
+        end
+      end
+
+      if !row["related control owner name"].nil?
+        co_obj.push({name: row["related control owner name"]})
+        co_obj.each do |co|
+          if co[:name].present?
+            main_co = Department.find_by_name(co[:name])
+            if !main_co.present?
+              main_co = Department.create(name: co[:name])
+            end
+            co_ids.push(main_co&.id)
+          end
+        end
+      end
+
       if k == spreadsheet.last_row && Control.find_by(description: row["description"]).present?
         if row["description"].present?
           if control_descriptions.count != 0
             control_obj = Control&.find_by(description:control_descriptions[index_control-1])
-            control_id = control_obj&.update(risk_ids: risk_ids.uniq, business_process_ids: bp_ids.uniq, department_ids:co_ids.uniq)
+            active_control = []
+            if activity_obj.count != 0
+              active_control = activity_obj.uniq
+            end
+            control_id = control_obj&.update(risk_ids: risk_ids.uniq, business_process_ids: bp_ids.uniq, department_ids:co_ids.uniq, status: "release", activity_controls_attributes:active_control)
             if control_obj&.departments.present?
               con_dep = control_obj&.departments&.map{|x| x.name}
               control_obj&.update(control_owner: con_dep)
@@ -86,6 +168,7 @@ class Control < ApplicationRecord
         end
       end
     end
+    return true, error_data
   end
 
   def self.open_spreadsheet(file)
@@ -141,4 +224,56 @@ class Control < ApplicationRecord
       converted_assertion = []
     end
   end
+
+
+  
+  private 
+    def validate_type_of_control
+      toc_value = Types::Enums::TypeOfControl.values.map{|x| x[1].value}
+      toc  = self.type_of_control
+      unless toc_value.include? toc
+        self.errors.add(:type_of_control, :type_of_control_invalid,
+          message: "does not exist")
+      end
+    end
+    
+    def validate_frequency
+      freq_value = Types::Enums::Frequency.values.map{|x| x[1].value}
+      freq = self.frequency
+      unless freq_value.include? freq
+        self.errors.add(:frequency, :frequency_invalid,
+          message: "does not exist")
+      end
+    end
+
+    def validate_nature
+      nat_value = Types::Enums::Nature.values.map{|x| x[1].value}
+      nat  = self.nature
+      unless nat_value.include? nat
+        self.errors.add(:nature, :nature_invalid,
+          message: "does not exist")
+      end
+    end
+
+    def validate_assertion
+      asserto_value = Types::Enums::Assertion.values.map{|x| x[1].value}
+      asserto  = self.assertion
+      asserto.each do |assert|
+        unless asserto_value.include? assert
+          self.errors.add(:assertion, :assertion_invalid,
+            message: "does not exist")
+        end
+      end
+    end
+
+    def validate_ipo
+      ip_value = Types::Enums::Ipo.values.map{|x| x[1].value}
+      ip  = self.ipo
+      ip.each do |i|
+        unless ip_value.include? i
+          self.errors.add(:ipo, :ipo_invalid,
+            message: "does not exist")
+        end
+      end
+    end
 end
