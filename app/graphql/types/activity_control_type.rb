@@ -15,6 +15,8 @@ module Types
     field :guidance_file_size, Integer, null: true
     field :guidance_file_name, String, null: true
     field :is_attachment, Boolean, null: true
+    field :draft, Types::VersionType, null: true
+
 
 
     def guidance_resupload_url

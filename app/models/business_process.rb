@@ -22,12 +22,35 @@ class BusinessProcess < ApplicationRecord
 
   def self.import(file)
     spreadsheet = open_spreadsheet(file)
-    allowed_attributes = ["name", "ancestry"]
+    allowed_attributes = ["name", "sub business process 1", "sub business process 2"]
     header = spreadsheet.row(1)
+    bp_obj = []
     (2..spreadsheet.last_row).each do |i|
       row = Hash[[header, spreadsheet.row(i)].transpose]
-      if row["name"].present?
-        business_process_id = BusinessProcess.create(name: row["name"], parent_id: BusinessProcess&.find_by(name: row["ancestry"])&.id)
+      bp_obj.push({name: row["name"], sub1: row["sub business process 1"], sub2: row["sub business process 2"]})
+      bp_obj.each do |bp|
+        if bp[:name].present?
+          main_bp = BusinessProcess.find_by_name(bp[:name])
+          if !main_bp.present?
+            main_bp = BusinessProcess.create(name: bp[:name])
+          end
+          if bp[:sub1].present?
+            bispro = BusinessProcess.find_by_name(bp[:sub1])
+            if bispro.present?
+              if bp[:sub2].present?
+                bispro_2 = BusinessProcess.find_by_name(bp[:sub2]) 
+                if !bispro_2.present?
+                  BusinessProcess.create(name:bp[:sub2], parent_id: bispro&.id)
+                end
+              end
+            else
+              bispro = BusinessProcess.create(name:bp[:sub1], parent_id:main_bp&.id)
+              if bp[:sub2].present?
+                BusinessProcess.create(name:bp[:sub2], parent_id: bispro&.id)
+              end
+            end
+          end
+        end
       end
     end
   end
@@ -42,3 +65,13 @@ class BusinessProcess < ApplicationRecord
     end
   end
 end
+
+
+# if row["sub business process 1"].present?
+#   business_process_id = business_process_id&.id
+#   sub_business_process = BusinessProcess.create(name: row["sub business process 1"], parent_id: business_process_id)
+#   if row["sub business process 2"].present?
+#     sub_business_process_id = sub_business_process&.id
+#     second_sub_business_process = BusinessProcess.create(name: row["sub business process 2"], parent_id: sub_business_process_id)
+#   end
+# end

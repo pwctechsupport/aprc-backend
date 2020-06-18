@@ -1,0 +1,63 @@
+!!!
+%html
+  %head
+    %meta{:content => "text/html; charset=UTF-8", "http-equiv" => "Content-Type"}/
+    :css
+      hr.new5 {
+      border: 1px solid black;
+      border-radius: 5px;}
+      .aih{
+        margin-top:0px;
+        font-size:20px;
+        margin-bottom:5px;
+        }
+      .aha{border:none;}
+      
+
+  %body
+    %table{style:"border:none;"}
+      %tbody
+        %tr
+          %img{:alt => "Logo-pwc", :src => "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f2/Logo-pwc.png/512px-Logo-pwc.png", :width => "60"}/
+          %hr.new5
+    %center
+      %h2.aih Exception Report Risk Without Control 
+    %table.table.table-borderless.aha{style:"display:block;"}
+      %tr.aha
+        %td.aha Printed On
+        %td.aha :
+        %td.aha #{Time.now.strftime("%d %B %Y")}
+        
+
+      %tr.aha
+        %td.aha Printed By
+        %td.aha :
+        %td.aha= current_user&.name
+      %tr.aha
+        %td.aha No. of page
+        %td.aha :
+        %td.aha
+          Page
+          %span#page
+          of
+          %span#topage
+          :javascript
+            var vars={};
+            var x=window.location.search.substring(1).split('&');
+            for (var i in x) {
+              var z=x[i].split('=',2);
+              vars[z[0]] = unescape(z[1]);
+            }
+            document.getElementById('page').innerHTML = vars.page; 
+            document.getElementById('topage').innerHTML = vars.topage;
+    %center
+      %table.table.table-borderless
+        %thead
+          %tr
+            %th.text-center{:scope => "col", :style => "width: 9.99%"} No
+            %th.text-center.apo{:scope => "col", :style => "width: 18%"} Name
+            %th.text-center.apo{:scope => "col", :style => "width: 18%"} Level of Risk
+            %th.text-center.apo{:scope => "col", :style => "width: 18%"} Type of Risk
+            %th.text-center.apo{:scope => "col", :style => "width: 18%"} Business Processes
+            %th.text-center.apo{:scope => "col", :style => "width: 18%"} Related Policy
+    

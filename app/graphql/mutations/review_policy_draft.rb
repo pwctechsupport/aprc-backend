@@ -63,7 +63,7 @@ module Mutations
             admin_main = User.with_role(:admin).pluck(:id)
             all_admin = admin_prep + admin_rev + admin_main
             admin = all_admin.uniq
-            policy.update(is_submitted:false)
+            policy.update_attributes(is_submitted:false, is_related: false)
             if policy.references.present?
               ref= policy&.references
               polisi = Policy.find(args[:id])
@@ -87,8 +87,9 @@ module Mutations
               admin_prep = User.with_role(:admin_preparer).pluck(:id)
               Notification.send_notification(admin_prep, "Policy Draft titled #{policy.title} Has been Rejected", policy&.title,policy, current_user&.id, "request_draft_rejected")
               policy_draft.revert!
-              policy.update(is_submitted:false)
-
+              if policy&.present?
+                policy.update_attributes(is_submitted:false, is_related: false)
+              end
               if policy&.policy_business_processes.where.not(draft_id: nil).present?
                 policy&.policy_business_processes.where.not(draft_id: nil).destroy_all
               end
@@ -134,3 +135,8 @@ module Mutations
     end
   end
 end
+
+
+# policy.draft.object_was == policy.draft.object
+# JSON.parse(policy.draft.object_changes).keys
+# policy.draft.changeset[policy.draft.changeset.keys.first].count

@@ -18,16 +18,16 @@ module Mutations
           if user.user_reviewer_id.present? && (user.user_reviewer_id != current_user.id)
             raise GraphQL::ExecutionError, "This Draft has been reviewed by another Admin."
           else
-            if user_draft.event == "update"
+            if user_draft&.event == "update"
               serial = ["policy_category"]
               serial.each do |sif|
-                if user_draft.changeset[sif].present?
-                  user_draft.changeset[sif].map!{|x| JSON.parse(x)}
+                if user_draft&.changeset[sif].present?
+                  user_draft&.changeset[sif].map!{|x| JSON.parse(x)}
                 end
               end
             end
-            user_draft.reify
-            user_draft.publish!
+            user_draft&.reify
+            user_draft&.publish!
             user.update(user_reviewer_id: current_user.id, status: "release")
             Notification.send_notification(admin_prep, "User Draft named #{user&.name} Approved", user&.name,user, current_user&.id, "request_draft_approved")
           end

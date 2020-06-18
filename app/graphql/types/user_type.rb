@@ -105,5 +105,13 @@ module Types
       current_user&.policies&.find_by(id:id)
     end
 
+    def policy_category
+      if object.class == Hash
+        YAML.load(object["policy_category"])
+      else
+        object&.policy_category
+      end
+    end
+
   end
 end

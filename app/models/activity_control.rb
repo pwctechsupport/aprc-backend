@@ -2,6 +2,7 @@ class ActivityControl < ApplicationRecord
   belongs_to :user, optional: true
   belongs_to :control, optional: true
 
+  has_drafts
   
   
   has_attached_file :resupload

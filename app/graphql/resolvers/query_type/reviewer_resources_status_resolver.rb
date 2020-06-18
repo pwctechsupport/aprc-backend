@@ -31,7 +31,7 @@ module Resolvers
         @q_final = @q1.push(*@q2,*@q3,*@q4,*@q5, *@q6)
         ids = @q_final.map(&:id)
         if ids.count != 0
-          @q = Resource.where(id: ids).order("FIELD(id, #{ids.join(',')})").all.ransack(filter.as_json)
+          @q = Resource.where(id: ids).order("FIELD(id, #{ids.join(',')})").all.ransack
         end
         @q.result(distinct: true).page(page).per(limit)
         # ::context[:current_user].page(page).per(limit)

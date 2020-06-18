@@ -38,7 +38,7 @@ class PolicyCategory < ApplicationRecord
       if row["name"].present? && !PolicyCategory.find_by_name(row["name"]).present?
         if polcat_names.count != 0
           polcat_obj = PolicyCategory&.find_by_name(polcat_names[index_polcat-1])
-          policy_category_id = polcat_obj.update(policy_ids: pol_ids)
+          policy_category_id = polcat_obj.update(policy_ids: pol_ids.uniq)
           if polcat_obj&.policies.present?
             polcat_pol = polcat_obj&.policies&.map{|x| x.title}
             polcat_obj&.update(policy: polcat_pol)
@@ -48,7 +48,7 @@ class PolicyCategory < ApplicationRecord
         if !PolicyCategory.find_by_name(row["name"]).present?
           polcat_names.push(row["name"])
         end
-        policy_category_id = PolicyCategory&.create(name: polcat_names[index_polcat],policy_ids: row["related policy"])
+        policy_category_id = PolicyCategory&.create(name: polcat_names[index_polcat],policy_ids: row["related policy"], status: "release")
         index_polcat+=1
       end
       if !row["related policy"].nil?
@@ -58,7 +58,7 @@ class PolicyCategory < ApplicationRecord
         if row["name"].present?
           if polcat_names.count != 0
             polcat_obj = PolicyCategory&.find_by_name(polcat_names[index_polcat-1])
-            policy_category_id = polcat_obj.update(policy_ids: pol_ids)
+            policy_category_id = polcat_obj.update(policy_ids: pol_ids.uniq)
             if polcat_obj&.policies.present?
               polcat_pol = polcat_obj&.policies&.map{|x| x.title}
               polcat_obj&.update(policy: polcat_pol)

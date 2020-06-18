@@ -34,7 +34,6 @@ module Mutations
           if policy_category&.present? && policy_category&.request_edit&.present?
             policy_category&.request_edit&.destroy
           end
-
         else
           if policy_category.user_reviewer_id.present? && (policy_category.user_reviewer_id != current_user.id)
             raise GraphQL::ExecutionError, "This Draft has been reviewed by another Admin."

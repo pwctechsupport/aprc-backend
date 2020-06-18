@@ -1,7 +1,7 @@
 class Reference < ApplicationRecord
   validates :name, uniqueness: true
   has_paper_trail
-  has_many :policy_references
+  has_many :policy_references, dependent: :destroy
   has_many :policies, through: :policy_references
   accepts_nested_attributes_for :policies, allow_destroy: true
   def to_humanize
@@ -19,7 +19,7 @@ class Reference < ApplicationRecord
       row = Hash[[header, spreadsheet.row(k)].transpose]
       if row["name"].present? && !Reference.find_by_name(row["name"]).present?
         if ref_names.count != 0
-          reference_id = Reference&.find_by_name(ref_names[index_ref-1]).update(policy_ids: ref_ids)
+          reference_id = Reference&.find_by_name(ref_names[index_ref-1]).update(policy_ids: ref_ids.uniq)
           ref_ids.reject!{|x| x == x}
         end
         lovar= row["name"].count "#"
@@ -47,7 +47,7 @@ class Reference < ApplicationRecord
       if k == spreadsheet.last_row && Reference.find_by_name(row["name"]).present?
         if row["name"].present?
           if ref_names.count != 0
-            reference_id = Reference&.find_by_name(ref_names[index_ref-1]).update(policy_ids: ref_ids)
+            reference_id = Reference&.find_by_name(ref_names[index_ref-1]).update(policy_ids: ref_ids.uniq)
             ref_ids.reject!{|x| x == x}
           end
         end

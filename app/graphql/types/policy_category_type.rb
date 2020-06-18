@@ -40,5 +40,13 @@ module Types
         object&.request_edits&.where(user_id: current_user&.id)&.last&.state
       end  
     end
+
+    def policy
+      if object.class == Hash
+        YAML.load(object["policy"])
+      else
+        object&.policy
+      end
+    end
   end
 end

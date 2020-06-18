@@ -9,8 +9,8 @@ class PolicyResource < ApplicationRecord
 
   has_drafts
   
-  belongs_to :policy, optional: true
-  belongs_to :resource, optional: true
+  belongs_to :policy, class_name: "Policy", foreign_key: "policy_id", optional: true
+  belongs_to :resource, class_name: "Resource", foreign_key: "resource_id", optional: true
   def to_humanize
     "#{self.policy.title} : #{self.resource.name}"
   end

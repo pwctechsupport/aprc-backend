@@ -2,11 +2,11 @@ class Resource < ApplicationRecord
   validates :name, uniqueness: true
   has_paper_trail ignore: [:visit, :recent_visit]
   has_drafts
-  belongs_to :policy, optional: true
+  # belongs_to :policy, optional: true
   belongs_to :control, optional: true
-  has_many :policy_resources, dependent: :destroy
+  has_many :policy_resources,  class_name: "PolicyResource", foreign_key: "resource_id", dependent: :destroy
   has_many :policies, through: :policy_resources
-  has_many :resource_controls, dependent: :destroy
+  has_many :resource_controls ,  class_name: "ResourceControl", foreign_key: "resource_id", dependent: :destroy
   has_many :controls, through: :resource_controls
   attr_reader :resupload_remote_url
   has_attached_file :resupload
@@ -46,14 +46,14 @@ class Resource < ApplicationRecord
       row = Hash[[header, spreadsheet.row(k)].transpose]
       if row["name"].present? && !Resource.find_by_name(row["name"]).present?
         if resource_names.count != 0
-          resource_id = Resource&.find_by_name(resource_names[index_resource-1]).update(policy_ids: pol_ids, control_ids: con_ids)
+          resource_id = Resource&.find_by_name(resource_names[index_resource-1]).update(policy_ids: pol_ids.uniq, control_ids: con_ids.uniq)
           pol_ids.reject!{|x| x == x}
           con_ids.reject!{|x| x == x}
         end
         if !Resource.find_by_name(row["name"]).present?
           resource_names.push(row["name"])
         end
-        resource_id = Resource&.create(name: resource_names[index_resource],category: row["category"], policy_ids: row["related policy"], control_ids: row["related control"], business_process_id: row["related business process"])
+        resource_id = Resource&.create(name: resource_names[index_resource],category: row["category"], policy_ids: row["related policy"], control_ids: row["related control"], business_process_id: row["related business process"], status: "release")
         index_resource+=1
       end
       pol_ids.push(row["related policy"])
@@ -61,7 +61,7 @@ class Resource < ApplicationRecord
       if k == spreadsheet.last_row && Resource.find_by_name(row["name"]).present?
         if row["name"].present?
           if resource_names.count != 0
-            resource_id = Resource&.find_by_name(resource_names[index_resource-1]).update(policy_ids: pol_ids, control_ids: con_ids)
+            resource_id = Resource&.find_by_name(resource_names[index_resource-1]).update(policy_ids: pol_ids.uniq, control_ids: con_ids.uniq)
             pol_ids.reject!{|x| x == x}
             con_ids.reject!{|x| x == x}
           end
