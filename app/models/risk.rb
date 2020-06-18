@@ -29,7 +29,7 @@ class Risk < ApplicationRecord
 
   def self.import(file)
     spreadsheet = open_spreadsheet(file)
-    allowed_attributes = ["name", "level of risk", "status", "type of risk", "related business process name", "related sub business process 1", "related sub business process 2"]
+    allowed_attributes = ["name", "level of risk", "type of risk", "related business process name", "related sub business process 1", "related sub business process 2"]
     header = spreadsheet.row(1)
     risk_names = []
     bp_ids = []
@@ -54,7 +54,7 @@ class Risk < ApplicationRecord
         risk_id = Risk.create(name: risk_names[index_risk],business_process_ids: BusinessProcess.find_by_name(row["related business process name"])&.id, level_of_risk: row["level of risk"], type_of_risk: row["type of risk"], status: "release")
         index_risk+=1
       end
-      
+
       if !row["related business process name"].nil?
         bp_obj.push({name: row["related business process name"], sub1: row["related sub business process 1"], sub2: row["related sub business process 2"]})
         bp_obj.each do |bp|
