@@ -82,7 +82,38 @@ class Control < ApplicationRecord
         if !Control.find_by(description: row["description"]).present?
           control_descriptions.push(row["description"])
         end
-        control_id = Control&.create(description: control_descriptions[index_control],status: "release", type_of_control: row["type of control"]&.gsub(" ","_")&.downcase, frequency: row["frequency"]&.downcase, nature: row["nature"]&.downcase, assertion: row["assertion"]&.split(",")&.map {|x| x&.gsub(" ","_")&.downcase}, ipo: row["ipo"]&.split(",").map {|x| x&.gsub(" ","_")&.downcase}, key_control: row["key control"],risk_ids: row["related risk"], business_process_ids: row["related business process"], department_ids: row["related control owner"])
+        if row["assertion"].present?
+          row_assertion = row["assertion"]&.split(",").map {|x| x&.gsub(" ","_")&.downcase}
+        else
+          row_assertion = row["assertion"]
+        end
+
+        if row["ipo"].present?
+          row_ipo = row["ipo"]&.split(",").map {|x| x&.gsub(" ","_")&.downcase}
+        else
+          row_ipo = row["ipo"]
+        end
+
+        if row["nature"].present?
+          row_nature = row["nature"]&.gsub(/[^\w]/, '_')&.downcase
+        else
+          row_nature = row["nature"]
+        end
+
+        if row["frequency"].present?
+          row_frequency = row["frequency"]&.gsub(/[^\w]/, '_')&.downcase
+        else
+          row_frequency = row["frequency"]
+        end
+
+        if row["type of control"].present?
+          row_type_of_control = row["type of control"]&.gsub(/[^\w]/, '_')&.downcase
+        else
+          row_type_of_control = row["type of control"]
+        end
+
+        
+        control_id = Control&.create(description: control_descriptions[index_control],status: "release", type_of_control: row_type_of_control, frequency: row_frequency, nature: row_nature, assertion: row_assertion, ipo: row_ipo, key_control: row["key control"],risk_ids: row["related risk"], business_process_ids: row["related business process"], department_ids: row["related control owner"])
         unless control_id.valid?
           error_data.push({message: control_id.errors.full_messages.join(","), line: k})
         end
@@ -123,6 +154,7 @@ class Control < ApplicationRecord
                   if !bispro_2.present?
                     BusinessProcess.create(name:bp[:sub2], parent_id: bispro&.id)
                   end
+                  bp_ids.push(bispro_2&.id)
                 end
               else
                 bispro = BusinessProcess.create(name:bp[:sub1], parent_id:main_bp&.id)
@@ -130,6 +162,7 @@ class Control < ApplicationRecord
                   BusinessProcess.create(name:bp[:sub2], parent_id: bispro&.id)
                 end
               end
+              bp_ids.push(bispro&.id)
             end
           end
         end

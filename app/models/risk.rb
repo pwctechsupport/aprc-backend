@@ -1,5 +1,7 @@
 class Risk < ApplicationRecord
   validates :name, uniqueness: true
+  validates_presence_of :name, :type_of_risk, :level_of_risk
+
   # validates_uniqueness_of :name, :scope => [:type_of_risk, :level_of_risk]
   has_paper_trail
   has_drafts
@@ -19,6 +21,10 @@ class Risk < ApplicationRecord
   has_many :request_edits, class_name: "RequestEdit", as: :originator, dependent: :destroy
   has_many :tags, dependent: :destroy
 
+  validate :validate_type_of_risk
+  validate :validate_level_of_risk
+
+
   def request_edit
     request_edits.last
   end
@@ -34,16 +40,23 @@ class Risk < ApplicationRecord
     risk_names = []
     bp_ids = []
     bp_obj= []
+    error_data = []
     index_risk = 0
     (2..spreadsheet.last_row).each do |k|
       row = Hash[[header, spreadsheet.row(k)].transpose]
       if row["name"].present? && !Risk.find_by_name(row["name"]).present?
+        byebug
         if risk_names.count != 0
           risk_obj = Risk.find_by_name(risk_names[index_risk-1])
-          risk_id = risk_obj.update(business_process_ids: bp_ids.uniq)
-          if risk_obj&.business_processes.present?
-            ris_bus = risk_obj&.business_processes&.map{|x| x.name}
-            risk_obj&.update(business_process: ris_bus)
+          if risk_obj.present?
+            risk_id = risk_obj.update(business_process_ids: bp_ids.uniq)
+            if risk_obj&.business_processes.present?
+              ris_bus = risk_obj&.business_processes&.map{|x| x.name}
+              risk_obj&.update(business_process: ris_bus)
+            end
+          else
+            self.errors.add(:control, :control_invalid,
+              message: "does not exist/business process failed")
           end
           bp_ids.reject!{|x| x == x}
           bp_obj.reject!{|x| x == x}
@@ -51,7 +64,23 @@ class Risk < ApplicationRecord
         if !Risk.find_by_name(row["name"]).present?
           risk_names.push(row["name"])
         end
-        risk_id = Risk.create(name: risk_names[index_risk],business_process_ids: BusinessProcess.find_by_name(row["related business process name"])&.id, level_of_risk: row["level of risk"], type_of_risk: row["type of risk"], status: "release")
+
+        if row["level of risk"].present?
+          row_level_of_risk = row["level of risk"]&.gsub(/[^\w]/, '_')&.downcase
+        else
+          row_level_of_risk = row["level of risk"]
+        end
+
+        if row["type of risk"].present?
+          row_type_of_risk = row["type of risk"]&.gsub(/[^\w]/, '_')&.downcase
+        else
+          row_type_of_risk = row["type of risk"]
+        end
+
+        risk_id = Risk.create(name: risk_names[index_risk],business_process_ids: BusinessProcess.find_by_name(row["related business process name"])&.id, level_of_risk: row_level_of_risk, type_of_risk: row_type_of_risk, status: "release")
+        unless risk_id.valid?
+          error_data.push({message: risk_id.errors.full_messages.join(","), line: k})
+        end
         index_risk+=1
       end
 
@@ -97,6 +126,7 @@ class Risk < ApplicationRecord
         end
       end
     end
+    return true, error_data
   end
 
   def self.open_spreadsheet(file)
@@ -114,5 +144,24 @@ class Risk < ApplicationRecord
       raise GraphQL::ExecutionError, "The Level of Risk and Type of Risk combination for this Risk is not possible "
     end
   end
+
+  private 
+    def validate_type_of_risk
+      tor_value = Types::Enums::TypeOfRisk.values.map{|x| x[1].value}
+      tor  = self.type_of_risk
+      unless tor_value.include? tor
+        self.errors.add(:type_of_risk, :type_of_risk_invalid,
+          message: "does not exist")
+      end
+    end
+
+    def validate_level_of_risk
+      lor_value = Types::Enums::LevelOfRisk.values.map{|x| x[1].value}
+      lor  = self.level_of_risk
+      unless lor_value.include? lor
+        self.errors.add(:level_of_risk, :level_of_risk_invalid,
+          message: "does not exist")
+      end
+    end
 
 end
