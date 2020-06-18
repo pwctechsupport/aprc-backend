@@ -45,7 +45,6 @@ class Risk < ApplicationRecord
     (2..spreadsheet.last_row).each do |k|
       row = Hash[[header, spreadsheet.row(k)].transpose]
       if row["name"].present? && !Risk.find_by_name(row["name"]).present?
-        byebug
         if risk_names.count != 0
           risk_obj = Risk.find_by_name(risk_names[index_risk-1])
           if risk_obj.present?
