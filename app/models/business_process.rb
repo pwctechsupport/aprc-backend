@@ -25,6 +25,8 @@ class BusinessProcess < ApplicationRecord
     allowed_attributes = ["name", "sub business process 1", "sub business process 2"]
     header = spreadsheet.row(1)
     bp_obj = []
+    collected_bp =[]
+    error_data =[]
     (2..spreadsheet.last_row).each do |i|
       row = Hash[[header, spreadsheet.row(i)].transpose]
       bp_obj.push({name: row["name"], sub1: row["sub business process 1"], sub2: row["sub business process 2"]})
@@ -33,6 +35,11 @@ class BusinessProcess < ApplicationRecord
           main_bp = BusinessProcess.find_by_name(bp[:name])
           if !main_bp.present?
             main_bp = BusinessProcess.create(name: bp[:name])
+            unless main_bp.valid?
+              error_data.push({message: main_bp.errors.full_messages.join(","), line: k})
+            else
+              collected_bp.push(main_bp&.id)
+            end
           end
           if bp[:sub1].present?
             bispro = BusinessProcess.find_by_name(bp[:sub1])
@@ -40,13 +47,28 @@ class BusinessProcess < ApplicationRecord
               if bp[:sub2].present?
                 bispro_2 = BusinessProcess.find_by_name(bp[:sub2]) 
                 if !bispro_2.present?
-                  BusinessProcess.create(name:bp[:sub2], parent_id: bispro&.id)
+                  bispro_2 = BusinessProcess.create(name:bp[:sub2], parent_id: bispro&.id)
+                  unless bispro_2.valid?
+                    error_data.push({message: bispro_2.errors.full_messages.join(","), line: k})
+                  else
+                    collected_bp.push(bispro_2&.id)
+                  end
                 end
               end
             else
               bispro = BusinessProcess.create(name:bp[:sub1], parent_id:main_bp&.id)
+              unless bispro.valid?
+                error_data.push({message: bispro.errors.full_messages.join(","), line: k})
+              else
+                collected_bp.push(bispro&.id)
+              end
               if bp[:sub2].present?
-                BusinessProcess.create(name:bp[:sub2], parent_id: bispro&.id)
+                bispro_2 = BusinessProcess.create(name:bp[:sub2], parent_id: bispro&.id)
+                unless bispro_2.valid?
+                  error_data.push({message: bispro_2.errors.full_messages.join(","), line: k})
+                else
+                  collected_bp.push(bispro_2&.id)
+                end
               end
             end
           end
@@ -66,12 +88,3 @@ class BusinessProcess < ApplicationRecord
   end
 end
 
-
-# if row["sub business process 1"].present?
-#   business_process_id = business_process_id&.id
-#   sub_business_process = BusinessProcess.create(name: row["sub business process 1"], parent_id: business_process_id)
-#   if row["sub business process 2"].present?
-#     sub_business_process_id = sub_business_process&.id
-#     second_sub_business_process = BusinessProcess.create(name: row["sub business process 2"], parent_id: sub_business_process_id)
-#   end
-# end

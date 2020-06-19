@@ -54,6 +54,10 @@ class Control < ApplicationRecord
     risk_obj = []
     co_obj = []
     bp_obj = []
+    collected_control=[]
+    collected_risk =[]
+    collected_bp = []
+    collected_co = []
     activity_obj = []
     error_data = []
     index_control = 0
@@ -116,6 +120,8 @@ class Control < ApplicationRecord
         control_id = Control&.create(description: control_descriptions[index_control],status: "release", type_of_control: row_type_of_control, frequency: row_frequency, nature: row_nature, assertion: row_assertion, ipo: row_ipo, key_control: row["key control"],risk_ids: row["related risk"], business_process_ids: row["related business process"], department_ids: row["related control owner"])
         unless control_id.valid?
           error_data.push({message: control_id.errors.full_messages.join(","), line: k})
+        else
+          collected_control.push(control_id&.id)
         end
         index_control+=1
       end
@@ -131,10 +137,19 @@ class Control < ApplicationRecord
             main_risk = Risk.find_by_name(ri[:name])
             if !main_risk.present?
               main_risk = Risk.create(name: ri[:name], status:"release", level_of_risk: "medium", type_of_risk: "operational_risk")
+              unless main_risk.valid?
+                error_data.push({message: main_risk.errors.full_messages.join(","), line: k})
+              else
+                collected_risk.push(main_risk&.id)
+              end
             end
-            risk_ids.push(main_risk&.id)
+            if main_risk.present?
+              risk_ids.push(main_risk&.id)
+            end
           end
         end
+      else
+        error_data.push({message: "Risk Must Exist", line: k})
       end
 
       if !row["related business process name"].nil?
@@ -144,28 +159,54 @@ class Control < ApplicationRecord
             main_bp = BusinessProcess.find_by_name(bp[:name])
             if !main_bp.present?
               main_bp = BusinessProcess.create(name: bp[:name])
+              unless main_bp.valid?
+                error_data.push({message: main_bp.errors.full_messages.join(","), line: k})
+              else
+                collected_bp.push(main_bp&.id)
+              end
             end
-            bp_ids.push(main_bp&.id)
+            if main_bp.present?
+              bp_ids.push(main_bp&.id)
+            end
             if bp[:sub1].present?
               bispro = BusinessProcess.find_by_name(bp[:sub1])
               if bispro.present?
+                bp_ids.push(bispro&.id)
                 if bp[:sub2].present?
                   bispro_2 = BusinessProcess.find_by_name(bp[:sub2]) 
                   if !bispro_2.present?
-                    BusinessProcess.create(name:bp[:sub2], parent_id: bispro&.id)
+                    bispro_2 = BusinessProcess.create(name:bp[:sub2], parent_id: bispro&.id)
+                    unless bispro_2.valid?
+                      error_data.push({message: bispro_2.errors.full_messages.join(","), line: k})
+                    else
+                      bp_ids.push(bispro_2&.id)
+                      collected_bp.push(bispro_2&.id)
+                    end
                   end
-                  bp_ids.push(bispro_2&.id)
                 end
               else
                 bispro = BusinessProcess.create(name:bp[:sub1], parent_id:main_bp&.id)
+                unless bispro.valid?
+                  error_data.push({message: bispro.errors.full_messages.join(","), line: k})
+                else
+                  bp_ids.push(bispro&.id)
+                  collected_bp.push(bispro&.id)
+                end
                 if bp[:sub2].present?
-                  BusinessProcess.create(name:bp[:sub2], parent_id: bispro&.id)
+                  bispro_2 = BusinessProcess.create(name:bp[:sub2], parent_id: bispro&.id)
+                  unless bispro_2.valid?
+                    error_data.push({message: bispro_2.errors.full_messages.join(","), line: k})
+                  else
+                    bp_ids.push(bispro_2&.id)
+                    collected_bp.push(bispro_2&.id)
+                  end
                 end
               end
-              bp_ids.push(bispro&.id)
             end
           end
         end
+      else
+        error_data.push({message: "Business Process Must Exist", line: k})
       end
 
       if !row["related control owner name"].nil?
@@ -175,10 +216,19 @@ class Control < ApplicationRecord
             main_co = Department.find_by_name(co[:name])
             if !main_co.present?
               main_co = Department.create(name: co[:name])
+              unless main_co.valid?
+                error_data.push({message: main_co.errors.full_messages.join(","), line: k})
+              else
+                collected_co.push(main_co&.id)
+              end
             end
-            co_ids.push(main_co&.id)
+            if main_co.present?
+              co_ids.push(main_co&.id)
+            end
           end
         end
+      else
+        error_data.push({message: "Control Owner Must Exist", line: k})
       end
 
       if k == spreadsheet.last_row && Control.find_by(description: row["description"]).present?
@@ -199,6 +249,24 @@ class Control < ApplicationRecord
             co_ids&.reject!{|x| x == x}
           end
         end
+      end
+    end
+    if error_data.count != 0
+      collect_risk = collected_risk.uniq
+      collect_bp = collected_bp.uniq
+      collect_control = collected_control.uniq
+      collect_co = collected_co.uniq
+      if Control.where(id: collect_control).present?
+        Control.where(id: collect_control ).destroy_all
+      end
+      if Risk.where(id: collect_risk).present?
+        Risk.where(id: collect_risk ).destroy_all
+      end
+      if BusinessProcess.where(id: collect_bp).present?
+        BusinessProcess.where(id: collect_bp).destroy_all
+      end
+      if Department.where(id: collect_co).present?
+        Department.where(id: collect_co).destroy_all
       end
     end
     return true, error_data
