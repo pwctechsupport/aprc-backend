@@ -1,10 +1,11 @@
 module Api
   class BusinessProcessesController < ApiController
     def import
-      if BusinessProcess.import(params[:file])
-      	render json: { status: 200, message: "Succesfully import file business process"}
+      status, error_data = BusinessProcess.import(params[:file])
+      if status
+      	render json: { status: 200, message: "Succesfully import file Business Process", error_data: error_data.as_json}
       else
-      	render json: { status: 422, message: "Failed import file business process"}
+      	render json: { status: 422, message: "Failed import file Business Process"}
       end
     end
   end

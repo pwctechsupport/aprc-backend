@@ -75,6 +75,7 @@ class BusinessProcess < ApplicationRecord
         end
       end
     end
+    return true, error_data
   end
 
   def self.open_spreadsheet(file)
