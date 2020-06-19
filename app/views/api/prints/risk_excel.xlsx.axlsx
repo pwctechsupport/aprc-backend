@@ -13,10 +13,10 @@ wb.add_worksheet(name: "Risks") do |sheet|
           business_process.children.each do |bp_1|
             if bp_1.children.present?
               bp_1.children.each do |bp_2|
-                sheet.add_row [risk&.name, risk&.level_of_risk, risk&.type_of_risk, business_process&.name, bp_1, bp_2]
+                sheet.add_row [risk&.name, risk&.level_of_risk, risk&.type_of_risk, business_process&.name, bp_1.name, bp_2.name]
               end
             else
-              sheet.add_row [risk&.name, risk&.level_of_risk, risk&.type_of_risk, business_process&.name, bp_1, ""]
+              sheet.add_row [risk&.name, risk&.level_of_risk, risk&.type_of_risk, business_process&.name, bp_1.name, ""]
             end
           end
         else
