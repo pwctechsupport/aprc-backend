@@ -113,9 +113,6 @@ module Mutations
         resource.update(control_id: nil)
         resource.update(control_ids: nil)
         resource
-      else
-        resource.update(business_process_id: nil)
-        resource
       end
 
       MutationResult.call(
