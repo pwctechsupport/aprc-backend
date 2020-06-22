@@ -130,10 +130,14 @@ class Risk < ApplicationRecord
                                 collected_bp.push(bispro_2&.id)
                               end
                             else 
-                              if bispro_2&.parent_id == bispro&.id
-                                bp_ids.push(bispro_2&.id)
+                              if bispro_2.parent_id.present?
+                                if bispro_2&.parent_id == bispro&.id
+                                  bp_ids.push(bispro_2&.id)
+                                else
+                                  error_data.push({message: "Sub Business Process 2 belongs to another parent", line: k})
+                                end
                               else
-                                error_data.push({message: "Sub Business Process 2 belongs to another parent", line: k})
+                                bispro_2.update(parent_id: bispro&.id)
                               end
                             end
                           end
@@ -162,10 +166,14 @@ class Risk < ApplicationRecord
                             collected_bp.push(bispro_2&.id)
                           end
                         else 
-                          if bispro_2&.parent_id == bispro&.id
-                            bp_ids.push(bispro_2&.id)
+                          if bispro_2.parent_id.present?
+                            if bispro_2&.parent_id == bispro&.id
+                              bp_ids.push(bispro_2&.id)
+                            else
+                              error_data.push({message: "Sub Business Process 2 belongs to another parent", line: k})
+                            end
                           else
-                            error_data.push({message: "Sub Business Process 2 belongs to another parent", line: k})
+                            bispro_2.update(parent_id: bispro&.id)
                           end
                         end
                       end

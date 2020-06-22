@@ -59,6 +59,14 @@ class BusinessProcess < ApplicationRecord
                         else
                           collected_bp.push(bispro_2&.id)
                         end
+                      else 
+                        if bispro_2.parent_id.present?
+                          if bispro_2&.parent_id != bispro&.id
+                            error_data.push({message: "Sub Business Process 2 belongs to another parent", line: k})
+                          end
+                        else
+                          bispro_2.update(parent_id: bispro&.id)
+                        end
                       end
                     end
                   else
@@ -75,11 +83,22 @@ class BusinessProcess < ApplicationRecord
                   collected_bp.push(bispro&.id)
                 end
                 if bp[:sub2].present?
-                  bispro_2 = BusinessProcess.create(name:bp[:sub2], parent_id: bispro&.id)
-                  unless bispro_2.valid?
-                    error_data.push({message: bispro_2.errors.full_messages.join(","), line: k})
-                  else
-                    collected_bp.push(bispro_2&.id)
+                  bispro_2 = BusinessProcess.find_by_name(bp[:sub2]) 
+                  if !bispro_2.present?
+                    bispro_2 = BusinessProcess.create(name:bp[:sub2], parent_id: bispro&.id)
+                    unless bispro_2.valid?
+                      error_data.push({message: bispro_2.errors.full_messages.join(","), line: k})
+                    else
+                      collected_bp.push(bispro_2&.id)
+                    end
+                  else 
+                    if bispro_2.parent_id.present?
+                      if bispro_2&.parent_id != bispro&.id
+                        error_data.push({message: "Sub Business Process 2 belongs to another parent", line: k})
+                      end
+                    else
+                      bispro_2.update(parent_id: bispro&.id)
+                    end
                   end
                 end
               end
