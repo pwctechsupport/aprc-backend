@@ -45,151 +45,171 @@ class Risk < ApplicationRecord
     error_data = []
     index_risk = 0
     
-    (2..spreadsheet.last_row).each do |k|
-      row = Hash[[header, spreadsheet.row(k)].transpose]
-      if row["name"].present? && !Risk.find_by_name(row["name"]).present?
-        if risk_names.count != 0
-          risk_obj = Risk.find_by_name(risk_names[index_risk-1])
-          if risk_obj.present?
-            risk_id = risk_obj.update(business_process_ids: bp_ids.uniq)
-            if risk_obj&.business_processes.present?
-              ris_bus = risk_obj&.business_processes&.map{|x| x.name}
-              risk_obj&.update(business_process: ris_bus)
+    ActiveRecord::Base.transaction do
+      (2..spreadsheet.last_row).each do |k|
+        row = Hash[[header, spreadsheet.row(k)].transpose]
+        if row["name"].present? && !Risk.find_by_name(row["name"]).present?
+          if risk_names.count != 0
+            risk_obj = Risk.find_by_name(risk_names[index_risk-1])
+            if risk_obj.present?
+              risk_id = risk_obj.update(business_process_ids: bp_ids.uniq)
+              if risk_obj&.business_processes.present?
+                ris_bus = risk_obj&.business_processes&.map{|x| x.name}
+                risk_obj&.update(business_process: ris_bus)
+              end
             end
+            bp_ids.reject!{|x| x == x}
+            bp_obj.reject!{|x| x == x}
           end
-          bp_ids.reject!{|x| x == x}
-          bp_obj.reject!{|x| x == x}
+          if !Risk.find_by_name(row["name"]).present?
+            risk_names.push(row["name"])
+          end
+  
+          if row["level of risk"].present?
+            row_level_of_risk = row["level of risk"]&.gsub(/[^\w]/, '_')&.downcase
+          else
+            row_level_of_risk = row["level of risk"]
+          end
+  
+          if row["type of risk"].present?
+            row_type_of_risk = row["type of risk"]&.gsub(/[^\w]/, '_')&.downcase
+          else
+            row_type_of_risk = row["type of risk"]
+          end
+  
+          risk_id = Risk.create(name: risk_names[index_risk],business_process_ids: BusinessProcess.find_by_name(row["related business process name"])&.id, level_of_risk: row_level_of_risk, type_of_risk: row_type_of_risk, status: "release", is_inside: true)
+          unless risk_id.valid?
+            error_data.push({message: risk_id.errors.full_messages.join(","), line: k})
+          else
+            collected_risk.push(risk_id&.id)
+          end
+          index_risk+=1
+        elsif !row["name"].present?
+          error_data.push({message: "Risk name must Exist", line: k})
         end
-        if !Risk.find_by_name(row["name"]).present?
-          risk_names.push(row["name"])
+  
+        risk_inside = Risk.find_by_name(row["name"]) 
+        if row["name"].present? && risk_inside.present?
+          if !risk_inside.is_inside?
+            error_data.push({message: "Risk data exist, cannot edit risk named  #{risk_inside&.name }. please remove it from the worksheet", line: k})
+          end
         end
-
-        if row["level of risk"].present?
-          row_level_of_risk = row["level of risk"]&.gsub(/[^\w]/, '_')&.downcase
-        else
-          row_level_of_risk = row["level of risk"]
-        end
-
-        if row["type of risk"].present?
-          row_type_of_risk = row["type of risk"]&.gsub(/[^\w]/, '_')&.downcase
-        else
-          row_type_of_risk = row["type of risk"]
-        end
-
-        risk_id = Risk.create(name: risk_names[index_risk],business_process_ids: BusinessProcess.find_by_name(row["related business process name"])&.id, level_of_risk: row_level_of_risk, type_of_risk: row_type_of_risk, status: "release", is_inside: true)
-        unless risk_id.valid?
-          error_data.push({message: risk_id.errors.full_messages.join(","), line: k})
-        else
-          collected_risk.push(risk_id&.id)
-        end
-        index_risk+=1
-      elsif !row["name"].present?
-        error_data.push({message: "Risk name must Exist", line: k})
-      end
-
-      risk_inside = Risk.find_by_name(row["name"]) 
-      if row["name"].present? && risk_inside.present?
-        if !risk_inside.is_inside?
-          error_data.push({message: "Risk data exist, cannot edit risk named  #{risk_inside&.name } attributes. please remove it from the worksheet", line: k})
-        end
-      end
-
-      if risk_inside.present?
-        if risk_inside&.is_inside?
-          if !row["related business process name"].nil?
-            bp_obj.push({name: row["related business process name"], sub1: row["related sub business process 1"], sub2: row["related sub business process 2"]})
-            bp_obj.each do |bp|
-              if bp[:name].present?
-                main_bp = BusinessProcess.find_by_name(bp[:name])
-                if !main_bp.present?
-                  main_bp = BusinessProcess.create(name: bp[:name])
-                  unless main_bp.valid?
-                    error_data.push({message: main_bp.errors.full_messages.join(","), line: k})
-                  else
-                    collected_bp.push(main_bp&.id)
+  
+        if risk_inside.present?
+          if risk_inside&.is_inside?
+            if !row["related business process name"].nil?
+              bp_obj.push({name: row["related business process name"], sub1: row["related sub business process 1"], sub2: row["related sub business process 2"]})
+              bp_obj.each do |bp|
+                if bp[:name].present?
+                  main_bp = BusinessProcess.find_by_name(bp[:name])
+                  if !main_bp.present?
+                    main_bp = BusinessProcess.create(name: bp[:name])
+                    unless main_bp.valid?
+                      error_data.push({message: main_bp.errors.full_messages.join(","), line: k})
+                    else
+                      collected_bp.push(main_bp&.id)
+                    end
                   end
-                end
-                if main_bp.present?
-                  bp_ids.push(main_bp&.id)
-                end
-                if bp[:sub1].present?
-                  bispro = BusinessProcess.find_by_name(bp[:sub1])
-                  if bispro.present?
-                    if bispro&.parent_id.present?
-                      if bispro.parent_id == main_bp&.id
-                        bp_ids.push(bispro&.id)
-                        if bp[:sub2].present?
-                          bispro_2 = BusinessProcess.find_by_name(bp[:sub2]) 
-                          if !bispro_2.present?
-                            bispro_2 = BusinessProcess.create(name:bp[:sub2], parent_id: bispro&.id)
-                            unless bispro_2.valid?
-                              error_data.push({message: bispro_2.errors.full_messages.join(","), line: k})
-                            else
-                              bp_ids.push(bispro_2&.id)
-                              collected_bp.push(bispro_2&.id)
+                  if main_bp.present?
+                    bp_ids.push(main_bp&.id)
+                  end
+                  if bp[:sub1].present?
+                    bispro = BusinessProcess.find_by_name(bp[:sub1])
+                    if bispro.present?
+                      if bispro&.parent_id.present?
+                        if bispro.parent_id == main_bp&.id
+                          bp_ids.push(bispro&.id)
+                          if bp[:sub2].present?
+                            bispro_2 = BusinessProcess.find_by_name(bp[:sub2]) 
+                            if !bispro_2.present?
+                              bispro_2 = BusinessProcess.create(name:bp[:sub2], parent_id: bispro&.id)
+                              unless bispro_2.valid?
+                                error_data.push({message: bispro_2.errors.full_messages.join(","), line: k})
+                              else
+                                bp_ids.push(bispro_2&.id)
+                                collected_bp.push(bispro_2&.id)
+                              end
+                            else 
+                              if bispro_2.parent_id.present?
+                                if bispro_2&.parent_id == bispro&.id
+                                  bp_ids.push(bispro_2&.id)
+                                else
+                                  error_data.push({message: "Sub Business Process 2 belongs to another parent", line: k})
+                                end
+                              else
+                                bispro_2.update(parent_id: bispro&.id)
+                              end
                             end
                           end
+                        else
+                          error_data.push({message: "Sub Business Process 1 belongs to another parent", line: k})
                         end
                       else
-                        error_data.push({message: "Sub Business Process 1 belongs to another parent", line: k})
+                        bispro.update(parent_id: main_bp&.id)
                       end
                     else
-                      bispro.update(parent_id: main_bp&.id)
-                    end
-                  else
-                    bispro = BusinessProcess.create(name:bp[:sub1], parent_id:main_bp&.id)
-                    unless bispro.valid?
-                      error_data.push({message: bispro.errors.full_messages.join(","), line: k})
-                    else
-                      bp_ids.push(bispro&.id)
-                      collected_bp.push(bispro&.id)
-                    end
-                    if bp[:sub2].present?
-                      bispro_2 = BusinessProcess.create(name:bp[:sub2], parent_id: bispro&.id)
-                      unless bispro_2.valid?
-                        error_data.push({message: bispro_2.errors.full_messages.join(","), line: k})
+                      bispro = BusinessProcess.create(name:bp[:sub1], parent_id:main_bp&.id)
+                      unless bispro.valid?
+                        error_data.push({message: bispro.errors.full_messages.join(","), line: k})
                       else
-                        bp_ids.push(bispro_2&.id)
-                        collected_bp.push(bispro_2&.id)
+                        bp_ids.push(bispro&.id)
+                        collected_bp.push(bispro&.id)
+                      end
+                      if bp[:sub2].present?
+                        bispro_2 = BusinessProcess.find_by_name(bp[:sub2]) 
+                        if !bispro_2.present?
+                          bispro_2 = BusinessProcess.create(name:bp[:sub2], parent_id: bispro&.id)
+                          unless bispro_2.valid?
+                            error_data.push({message: bispro_2.errors.full_messages.join(","), line: k})
+                          else
+                            bp_ids.push(bispro_2&.id)
+                            collected_bp.push(bispro_2&.id)
+                          end
+                        else 
+                          if bispro_2.parent_id.present?
+                            if bispro_2&.parent_id == bispro&.id
+                              bp_ids.push(bispro_2&.id)
+                            else
+                              error_data.push({message: "Sub Business Process 2 belongs to another parent", line: k})
+                            end
+                          else
+                            bispro_2.update(parent_id: bispro&.id)
+                          end
+                        end
                       end
                     end
                   end
                 end
               end
+            else
+              error_data.push({message: "Business Process Must Exist", line: k})
             end
-          else
-            error_data.push({message: "Business Process Must Exist", line: k})
-          end
-          if k == spreadsheet.last_row && Risk.find_by_name(row["name"]).present?
-            if row["name"].present?
-              if risk_names.count != 0
-                risk_obj = Risk.find_by_name(risk_names[index_risk-1])
-                risk_id = risk_obj.update(business_process_ids: bp_ids.uniq)
-                if risk_obj&.business_processes.present?
-                  ris_bus = risk_obj&.business_processes&.map{|x| x.name}
-                  risk_obj&.update(business_process: ris_bus)
+            if k == spreadsheet.last_row && Risk.find_by_name(row["name"]).present?
+              if row["name"].present?
+                if risk_names.count != 0
+                  risk_obj = Risk.find_by_name(risk_names[index_risk-1])
+                  risk_id = risk_obj.update(business_process_ids: bp_ids.uniq)
+                  if risk_obj&.business_processes.present?
+                    ris_bus = risk_obj&.business_processes&.map{|x| x.name}
+                    risk_obj&.update(business_process: ris_bus)
+                  end
+                  bp_ids.reject!{|x| x == x}
                 end
-                bp_ids.reject!{|x| x == x}
               end
             end
           end
         end
+      end
+      
+      if error_data.count != 0
+        raise ActiveRecord::Rollback, "Rollback Completed"
+      end
+
+      if Risk.where(is_inside: true).present?
+        Risk.where(is_inside:true).map{|x| x.update(is_inside: false)}
       end
     end
     
-    if error_data.count != 0
-      collect_risk = collected_risk.uniq
-      collect_bp = collected_bp.uniq
-      if Risk.where(id: collect_risk).present?
-        Risk.where(id: collect_risk ).destroy_all
-      end
-      if BusinessProcess.where(id: collect_bp).present?
-        BusinessProcess.where(id: collect_bp).destroy_all
-      end
-    end
-    if Risk.where(is_inside: true).present?
-      Risk.where(is_inside:true).map{|x| x.update(is_inside: false)}
-    end
     return true, error_data
   end
 

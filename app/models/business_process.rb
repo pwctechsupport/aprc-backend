@@ -27,71 +27,90 @@ class BusinessProcess < ApplicationRecord
     bp_obj = []
     collected_bp =[]
     error_data =[]
-    (2..spreadsheet.last_row).each do |i|
-      row = Hash[[header, spreadsheet.row(i)].transpose]
-      if !row["name"].present?
-        error_data.push({message: "Business Process Must Exist", line: k})
-      end
-      bp_obj.push({name: row["name"], sub1: row["sub business process 1"], sub2: row["sub business process 2"]})
-      bp_obj.each do |bp|
-        if bp[:name].present?
-          main_bp = BusinessProcess.find_by_name(bp[:name])
-          if !main_bp.present?
-            main_bp = BusinessProcess.create(name: bp[:name])
-            unless main_bp.valid?
-              error_data.push({message: main_bp.errors.full_messages.join(","), line: k})
-            else
-              collected_bp.push(main_bp&.id)
+    ActiveRecord::Base.transaction do 
+      (2..spreadsheet.last_row).each do |i|
+        row = Hash[[header, spreadsheet.row(i)].transpose]
+        if !row["name"].present?
+          error_data.push({message: "Business Process Must Exist", line: k})
+        end
+        bp_obj.push({name: row["name"], sub1: row["sub business process 1"], sub2: row["sub business process 2"]})
+        bp_obj.each do |bp|
+          if bp[:name].present?
+            main_bp = BusinessProcess.find_by_name(bp[:name])
+            if !main_bp.present?
+              main_bp = BusinessProcess.create(name: bp[:name])
+              unless main_bp.valid?
+                error_data.push({message: main_bp.errors.full_messages.join(","), line: k})
+              else
+                collected_bp.push(main_bp&.id)
+              end
             end
-          end
-          if bp[:sub1].present?
-            bispro = BusinessProcess.find_by_name(bp[:sub1])
-            if bispro.present?
-              if bispro&.parent_id.present?
-                if bispro.parent_id == main_bp&.id
-                  if bp[:sub2].present?
-                    bispro_2 = BusinessProcess.find_by_name(bp[:sub2]) 
-                    if !bispro_2.present?
-                      bispro_2 = BusinessProcess.create(name:bp[:sub2], parent_id: bispro&.id)
-                      unless bispro_2.valid?
-                        error_data.push({message: bispro_2.errors.full_messages.join(","), line: k})
-                      else
-                        collected_bp.push(bispro_2&.id)
+            if bp[:sub1].present?
+              bispro = BusinessProcess.find_by_name(bp[:sub1])
+              if bispro.present?
+                if bispro&.parent_id.present?
+                  if bispro.parent_id == main_bp&.id
+                    if bp[:sub2].present?
+                      bispro_2 = BusinessProcess.find_by_name(bp[:sub2]) 
+                      if !bispro_2.present?
+                        bispro_2 = BusinessProcess.create(name:bp[:sub2], parent_id: bispro&.id)
+                        unless bispro_2.valid?
+                          error_data.push({message: bispro_2.errors.full_messages.join(","), line: k})
+                        else
+                          collected_bp.push(bispro_2&.id)
+                        end
+                      else 
+                        if bispro_2.parent_id.present?
+                          if bispro_2&.parent_id != bispro&.id
+                            error_data.push({message: "Sub Business Process 2 belongs to another parent", line: k})
+                          end
+                        else
+                          bispro_2.update(parent_id: bispro&.id)
+                        end
                       end
                     end
+                  else
+                    error_data.push({message: "Sub Business Process 1 belongs to another parent", line: k})
                   end
                 else
-                  error_data.push({message: "Sub Business Process 1 belongs to another parent", line: k})
+                  bispro.update(parent_id: main_bp&.id)
                 end
               else
-                bispro.update(parent_id: main_bp&.id)
-              end
-            else
-              bispro = BusinessProcess.create(name:bp[:sub1], parent_id:main_bp&.id)
-              unless bispro.valid?
-                error_data.push({message: bispro.errors.full_messages.join(","), line: k})
-              else
-                collected_bp.push(bispro&.id)
-              end
-              if bp[:sub2].present?
-                bispro_2 = BusinessProcess.create(name:bp[:sub2], parent_id: bispro&.id)
-                unless bispro_2.valid?
-                  error_data.push({message: bispro_2.errors.full_messages.join(","), line: k})
+                bispro = BusinessProcess.create(name:bp[:sub1], parent_id:main_bp&.id)
+                unless bispro.valid?
+                  error_data.push({message: bispro.errors.full_messages.join(","), line: k})
                 else
-                  collected_bp.push(bispro_2&.id)
+                  collected_bp.push(bispro&.id)
+                end
+                if bp[:sub2].present?
+                  bispro_2 = BusinessProcess.find_by_name(bp[:sub2]) 
+                  if !bispro_2.present?
+                    bispro_2 = BusinessProcess.create(name:bp[:sub2], parent_id: bispro&.id)
+                    unless bispro_2.valid?
+                      error_data.push({message: bispro_2.errors.full_messages.join(","), line: k})
+                    else
+                      collected_bp.push(bispro_2&.id)
+                    end
+                  else 
+                    if bispro_2.parent_id.present?
+                      if bispro_2&.parent_id != bispro&.id
+                        error_data.push({message: "Sub Business Process 2 belongs to another parent", line: k})
+                      end
+                    else
+                      bispro_2.update(parent_id: bispro&.id)
+                    end
+                  end
                 end
               end
             end
           end
         end
       end
-    end
-    if error_data.count != 0
-      collect_bp = collected_bp.uniq
-      if BusinessProcess.where(id: collect_bp).present?
-        BusinessProcess.where(id: collect_bp).destroy_all
+      if error_data.count != 0
+        raise ActiveRecord::Rollback, "Rollback Completed"
       end
     end
+    
     return true, error_data
   end
 
