@@ -129,7 +129,7 @@ class Control < ApplicationRecord
           error_data.push({message: "Control Description Must Exist", line: k})
         end
 
-        control_inside = Control.find_by_name(row["description"]) 
+        control_inside = Control.find_by(description: row["description"]) 
         if row["description"].present? && control_inside.present?
           if !control_inside.is_inside?
             error_data.push({message: "Control data exist, cannot edit control with description named #{control_inside&.description }. please remove it from the worksheet", line: k})
