@@ -304,7 +304,7 @@ class Control < ApplicationRecord
       end
     end
 
-    return true, error_data
+    return true, error_data.uniq
   end
 
   def self.open_spreadsheet(file)
