@@ -13,7 +13,7 @@
 #   first_name: "Bondan",
 #   last_name: "Herumurti"
 # )
-
+# tes
 are_roles = ["admin_reviewer", "admin_preparer", "admin", "user", "staff", "supervisor", "manager", "high_level"]
 
 8.times do 
