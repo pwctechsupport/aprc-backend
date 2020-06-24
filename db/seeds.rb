@@ -16,7 +16,7 @@
 
 are_roles = ["admin_reviewer", "admin_preparer", "admin", "user", "staff", "supervisor", "manager", "high_level"]
 
-are_roles.each_with_index do |are|
+are_roles.each do |are|
   Role.create(
     name:are
   )
@@ -33,11 +33,12 @@ are_roles.each_with_index do |role, k|
   end
   current_phone = "081231284123#{k}" 
   User.create(
-    email:"pwc#{k+1}_#{role}@rubyh.co",
-    name:"PWC#{k+1} #{current_job}",
+    email:"#{role}@pwc.com",
+    name:current_job,
     password:"password", 
     password_confirmation:"password", 
-    phone:current_phone, 
+    phone:current_phone,
+    status: "release",
     job_position: current_job, 
     role_ids:current_role
   )
