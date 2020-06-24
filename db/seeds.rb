@@ -16,27 +16,31 @@
 
 are_roles = ["admin_reviewer", "admin_preparer", "admin", "user", "staff", "supervisor", "manager", "high_level"]
 
-8.times do 
+are_roles.each_with_index do |are|
   Role.create(
-    name:are_roles.first
+    name:are
   )
-  are_roles.shift
 end
 
-roles = Role.all.map{|x| x.id}
+roles = Role.where(name:are_roles).map{|x| x.id}
 
-z = 0
-
-10.times do
-  roles.rotate!
-  z+=1
+are_roles.each_with_index do |role, k|
+  current_role = roles[k]
+  if role.include? "_"
+    current_job = role.gsub("_", " ").titlecase
+  else
+    current_job = role.titlecase
+  end
+  current_phone = "081231284123#{k}" 
   User.create(
-    email:"pwc#{z}@rubyh.co",
-    name:"PWC#{z}",
+    email:"pwc#{k+1}_#{role}@rubyh.co",
+    name:"PWC#{k+1} #{current_job}",
     password:"password", 
     password_confirmation:"password", 
-    phone:"0812312841249", 
-    job_position:"Head Master", 
-    role_ids:[roles.first]
+    phone:current_phone, 
+    job_position: current_job, 
+    role_ids:current_role
   )
 end
+
+
