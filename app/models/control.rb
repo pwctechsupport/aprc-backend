@@ -39,6 +39,32 @@ class Control < ApplicationRecord
     "#{self.description} : #{self.description}"
   end
 
+  def self.to_export(sheet,control, business_process,risk,owner,activity_control)
+    if business_process.present?
+      if business_process.ancestors.count == 0
+        if business_process.children.present?
+          business_process.children.each do |bp_1|
+            if bp_1.ancestors.count == 1
+              if bp_1.children.present?
+                bp_1.children.each do |bp_2|
+                  if bp_2.ancestors.count == 2
+                    sheet.add_row [control&.description&.titlecase, control&.type_of_control&.gsub(/_/, ' ')&.titlecase, control&.frequency, control&.nature&.titlecase, control&.assertion&.join&.gsub(/_/, ',')&.titlecase, control&.ipo.join&.gsub(/_/, ',')&.titlecase, control&.key_control, business_process&.name, bp_1.name, bp_2.name, risk&.name,owner, activity_control&.activity, activity_control&.guidance]
+                  end
+                end
+              else
+                sheet.add_row [control&.description&.titlecase, control&.type_of_control&.gsub(/_/, ' ')&.titlecase, control&.frequency, control&.nature&.titlecase, control&.assertion&.join&.gsub(/_/, ',')&.titlecase, control&.ipo.join&.gsub(/_/, ',')&.titlecase, control&.key_control, business_process&.name, bp_1.name, "", risk&.name,owner, activity_control&.activity, activity_control&.guidance]
+              end
+            end
+          end
+        else
+          sheet.add_row [control&.description&.titlecase, control&.type_of_control&.gsub(/_/, ' ')&.titlecase, control&.frequency, control&.nature&.titlecase, control&.assertion&.join&.gsub(/_/, ',')&.titlecase, control&.ipo.join&.gsub(/_/, ',')&.titlecase, control&.key_control, business_process&.name, "", "", risk&.name,owner, activity_control&.activity, activity_control&.guidance]
+        end
+      end
+    else
+      sheet.add_row [control&.description&.titlecase, control&.type_of_control&.gsub(/_/, ' ')&.titlecase, control&.frequency, control&.nature&.titlecase, control&.assertion&.join&.gsub(/_/, ',')&.titlecase, control&.ipo.join&.gsub(/_/, ',')&.titlecase, control&.key_control,"", "", "", risk&.name,owner, activity_control&.activity, activity_control&.guidance]
+    end
+  end
+
   def request_edit
     request_edits.last
   end
@@ -90,30 +116,35 @@ class Control < ApplicationRecord
           if row["assertion"].present?
             row_assertion = row["assertion"]&.split(",").map {|x| x&.gsub(" ","_")&.downcase}
           else
+            # error_data.push({message: "Assertion must Exist", line: k})
             row_assertion = row["assertion"]
           end
 
           if row["ipo"].present?
             row_ipo = row["ipo"]&.split(",").map {|x| x&.gsub(" ","_")&.downcase}
           else
+            # error_data.push({message: "IPO must Exist", line: k})
             row_ipo = row["ipo"]
           end
 
           if row["nature"].present?
             row_nature = row["nature"]&.gsub(/[^\w]/, '_')&.downcase
           else
+            # error_data.push({message: "Nature must Exist", line: k})
             row_nature = row["nature"]
           end
 
           if row["frequency"].present?
             row_frequency = row["frequency"]&.gsub(/[^\w]/, '_')&.downcase
           else
+            # error_data.push({message: "Frequency must Exist", line: k})
             row_frequency = row["frequency"]
           end
 
           if row["type of control"].present?
             row_type_of_control = row["type of control"]&.gsub(/[^\w]/, '_')&.downcase
           else
+            # error_data.push({message: "Type of Control must Exist", line: k})
             row_type_of_control = row["type of control"]
           end
 
@@ -140,6 +171,8 @@ class Control < ApplicationRecord
           if control_inside.is_inside?
             if !row["control activity title"].nil?
               activity_obj.push({activity:row["control activity title"], guidance: row["control activity guidance"]})
+            else
+              error_data.push({message: "Activity Control must Exist", line: k})
             end
 
             if !row["related risk name"].nil?
@@ -148,15 +181,14 @@ class Control < ApplicationRecord
                 if ri[:name].present?
                   main_risk = Risk.find_by_name(ri[:name])
                   if !main_risk.present?
-                    main_risk = Risk.create(name: ri[:name], status:"release", level_of_risk: "medium", type_of_risk: "operational_risk")
-                    unless main_risk.valid?
-                      error_data.push({message: main_risk.errors.full_messages.join(","), line: k})
-                    else
-                      collected_risk.push(main_risk&.id)
-                    end
+                    error_data.push({message: "Risk must Exist", line: k})
                   end
                   if main_risk.present?
-                    risk_ids.push(main_risk&.id)
+                    if main_risk.controls.count == 0
+                      risk_ids.push(main_risk&.id)
+                    else
+                      error_data.push({message: "Risk belongs to another Control", line: k})
+                    end
                   end
                 end
               end
@@ -165,41 +197,70 @@ class Control < ApplicationRecord
             end
 
             if !row["related business process name"].nil?
-              bp_obj.push({name: row["related business process name"], sub1: row["related sub business process 1"], sub2: row["related sub business process 2"]})
+              bp_obj.push({name: row["related business process name"], sub1: row["related sub business process 1"], sub2: row["related sub business process 2"], line: k})
               bp_obj.each do |bp|
                 if bp[:name].present?
                   main_bp = BusinessProcess.find_by_name(bp[:name])
                   if !main_bp.present?
-                    main_bp = BusinessProcess.create(name: bp[:name])
-                    unless main_bp.valid?
-                      error_data.push({message: main_bp.errors.full_messages.join(","), line: k})
-                    else
-                      collected_bp.push(main_bp&.id)
-                    end
+                    error_data.push({message: "Business Process must Exist", line: k})
                   end
                   if main_bp.present?
-                    bp_ids.push(main_bp&.id)
+                    if main_bp.controls.count == 0
+                      risk_check = Risk.find_by_name(spreadsheet.row(bp[:line])[10])
+                      if risk_check.present?
+                        if risk_check.business_processes.pluck(:name).include? main_bp.name
+                          bp_ids.push(main_bp&.id)
+                        else
+                          error_data.push({message: "Business Process is not related to risk", line: k})
+                        end
+                      end
+                    else
+                      error_data.push({message: "Business Process belongs to another Control", line: k})
+                    end
                   end
                   if bp[:sub1].present?
+                    if bp[:name].downcase == bp[:sub1].downcase
+                      error_data.push({message: "Business Process and Sub Business Process 1 cannot have the same name", line: k})
+                    end
                     bispro = BusinessProcess.find_by_name(bp[:sub1])
                     if bispro.present?
                       if bispro&.parent_id.present?
-                        if bispro&.parent_id == main_bp&.id
-                          bp_ids.push(bispro&.id)
-                          if bp[:sub2].present?
-                            bispro_2 = BusinessProcess.find_by_name(bp[:sub2]) 
-                            if !bispro_2.present?
-                              bispro_2 = BusinessProcess.create(name:bp[:sub2], parent_id: bispro&.id)
-                              unless bispro_2.valid?
-                                error_data.push({message: bispro_2.errors.full_messages.join(","), line: k})
+                        if bispro.parent_id == main_bp&.id
+                          if bispro.controls.count == 0
+                            risk_check = Risk.find_by_name(spreadsheet.row(bp[:line])[10])
+                            if risk_check.present?
+                              if risk_check.business_processes.pluck(:name).include? bispro.name
+                                bp_ids.push(bispro&.id)
                               else
-                                bp_ids.push(bispro_2&.id)
-                                collected_bp.push(bispro_2&.id)
+                                error_data.push({message: "Sub Business Process 1 is not related to Risk", line: k})
                               end
-                            else 
+                            end
+                          else
+                            error_data.push({message: "Sub Business Process 1 belongs to another Control", line: k})
+                          end
+                          if bp[:sub2].present?
+                            if bp[:sub1].downcase == bp[:sub2].downcase
+                              error_data.push({message: "Sub Business Process 1 and Sub Business Process 2 cannot have the same name", line: k})
+                            end
+                            if bp[:name].downcase == bp[:sub2].downcase
+                              error_data.push({message: "Business Process and Sub Business Process 2 cannot have the same name", line: k})
+                            end
+                            bispro_2 = BusinessProcess.find_by_name(bp[:sub2]) 
+                            if bispro_2.present?
                               if bispro_2.parent_id.present?
                                 if bispro_2&.parent_id == bispro&.id
-                                  bp_ids.push(bispro_2&.id)
+                                  if bispro_2.controls.count == 0
+                                    risk_check = Risk.find_by_name(spreadsheet.row(bp[:line])[10])
+                                    if risk_check.present?
+                                      if risk_check.business_processes.pluck(:name).include? bispro_2.name
+                                        bp_ids.push(bispro_2&.id)
+                                      else
+                                        error_data.push({message: "Sub Business Process 2 is not related to risk", line: k})
+                                      end
+                                    end
+                                  else
+                                    error_data.push({message: "Sub Business Process 2 belongs to another Control", line: k})
+                                  end
                                 else
                                   error_data.push({message: "Sub Business Process 2 belongs to another parent", line: k})
                                 end
@@ -215,33 +276,10 @@ class Control < ApplicationRecord
                         bispro.update(parent_id: main_bp&.id)
                       end
                     else
-                      bispro = BusinessProcess.create(name:bp[:sub1], parent_id:main_bp&.id)
-                      unless bispro.valid?
-                        error_data.push({message: bispro.errors.full_messages.join(","), line: k})
-                      else
-                        bp_ids.push(bispro&.id)
-                        collected_bp.push(bispro&.id)
-                      end
                       if bp[:sub2].present?
                         bispro_2 = BusinessProcess.find_by_name(bp[:sub2]) 
-                        if !bispro_2.present?
-                          bispro_2 = BusinessProcess.create(name:bp[:sub2], parent_id: bispro&.id)
-                          unless bispro_2.valid?
-                            error_data.push({message: bispro_2.errors.full_messages.join(","), line: k})
-                          else
-                            bp_ids.push(bispro_2&.id)
-                            collected_bp.push(bispro_2&.id)
-                          end
-                        else 
-                          if bispro_2.parent_id.present?
-                            if bispro_2&.parent_id == bispro&.id
-                              bp_ids.push(bispro_2&.id)
-                            else
-                              error_data.push({message: "Sub Business Process 2 belongs to another parent", line: k})
-                            end
-                          else
-                            bispro_2.update(parent_id: bispro&.id)
-                          end
+                        if bispro_2.present?
+                          error_data.push({message: "Sub Business Process 1 is empty, cannot assign Sub Business Process 2", line: k})
                         end
                       end
                     end
@@ -258,15 +296,14 @@ class Control < ApplicationRecord
                 if co[:name].present?
                   main_co = Department.find_by_name(co[:name])
                   if !main_co.present?
-                    main_co = Department.create(name: co[:name])
-                    unless main_co.valid?
-                      error_data.push({message: main_co.errors.full_messages.join(","), line: k})
-                    else
-                      collected_co.push(main_co&.id)
-                    end
+                    error_data.push({message: "Control Owner must Exist", line: k})
                   end
                   if main_co.present?
-                    co_ids.push(main_co&.id)
+                    if main_co.controls.present?
+                      co_ids.push(main_co&.id)
+                    else
+                      error_data.push({message: "Control Owner belongs to another Control", line: k})
+                    end
                   end
                 end
               end

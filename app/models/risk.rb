@@ -68,12 +68,14 @@ class Risk < ApplicationRecord
           if row["level of risk"].present?
             row_level_of_risk = row["level of risk"]&.gsub(/[^\w]/, '_')&.downcase
           else
+            # error_data.push({message: "Level of Risk must Exist", line: k})
             row_level_of_risk = row["level of risk"]
           end
   
           if row["type of risk"].present?
             row_type_of_risk = row["type of risk"]&.gsub(/[^\w]/, '_')&.downcase
           else
+            # error_data.push({message: "Type of Risk must Exist", line: k})
             row_type_of_risk = row["type of risk"]
           end
   
@@ -103,36 +105,44 @@ class Risk < ApplicationRecord
                 if bp[:name].present?
                   main_bp = BusinessProcess.find_by_name(bp[:name])
                   if !main_bp.present?
-                    main_bp = BusinessProcess.create(name: bp[:name])
-                    unless main_bp.valid?
-                      error_data.push({message: main_bp.errors.full_messages.join(","), line: k})
-                    else
-                      collected_bp.push(main_bp&.id)
-                    end
+                    error_data.push({message: "Business Process must Exist", line: k})
                   end
                   if main_bp.present?
-                    bp_ids.push(main_bp&.id)
+                    if main_bp.controls.count == 0
+                      bp_ids.push(main_bp&.id)
+                    else
+                      error_data.push({message: "Business Process belongs to another risk", line: k})
+                    end
                   end
                   if bp[:sub1].present?
+                    if bp[:name].downcase == bp[:sub1].downcase
+                      error_data.push({message: "Business Process and Sub Business Process 1 cannot have the same name", line: k})
+                    end
                     bispro = BusinessProcess.find_by_name(bp[:sub1])
                     if bispro.present?
                       if bispro&.parent_id.present?
                         if bispro.parent_id == main_bp&.id
-                          bp_ids.push(bispro&.id)
+                          if bispro.risks.count == 0
+                            bp_ids.push(bispro&.id)
+                          else
+                            error_data.push({message: "Sub Business Process 1 belongs to another risk", line: k})
+                          end
                           if bp[:sub2].present?
+                            if bp[:sub1].downcase == bp[:sub2].downcase
+                              error_data.push({message: "Sub Business Process 1 and Sub Business Process 2 cannot have the same name", line: k})
+                            end
+                            if bp[:name].downcase == bp[:sub2].downcase
+                              error_data.push({message: "Business Process and Sub Business Process 2 cannot have the same name", line: k})
+                            end
                             bispro_2 = BusinessProcess.find_by_name(bp[:sub2]) 
-                            if !bispro_2.present?
-                              bispro_2 = BusinessProcess.create(name:bp[:sub2], parent_id: bispro&.id)
-                              unless bispro_2.valid?
-                                error_data.push({message: bispro_2.errors.full_messages.join(","), line: k})
-                              else
-                                bp_ids.push(bispro_2&.id)
-                                collected_bp.push(bispro_2&.id)
-                              end
-                            else 
+                            if bispro_2.present?
                               if bispro_2.parent_id.present?
                                 if bispro_2&.parent_id == bispro&.id
-                                  bp_ids.push(bispro_2&.id)
+                                  if bispro_2.risks.count == 0
+                                    bp_ids.push(bispro_2&.id)
+                                  else
+                                    error_data.push({message: "Sub Business Process 2 belongs to another risk", line: k})
+                                  end
                                 else
                                   error_data.push({message: "Sub Business Process 2 belongs to another parent", line: k})
                                 end
@@ -148,33 +158,10 @@ class Risk < ApplicationRecord
                         bispro.update(parent_id: main_bp&.id)
                       end
                     else
-                      bispro = BusinessProcess.create(name:bp[:sub1], parent_id:main_bp&.id)
-                      unless bispro.valid?
-                        error_data.push({message: bispro.errors.full_messages.join(","), line: k})
-                      else
-                        bp_ids.push(bispro&.id)
-                        collected_bp.push(bispro&.id)
-                      end
                       if bp[:sub2].present?
                         bispro_2 = BusinessProcess.find_by_name(bp[:sub2]) 
-                        if !bispro_2.present?
-                          bispro_2 = BusinessProcess.create(name:bp[:sub2], parent_id: bispro&.id)
-                          unless bispro_2.valid?
-                            error_data.push({message: bispro_2.errors.full_messages.join(","), line: k})
-                          else
-                            bp_ids.push(bispro_2&.id)
-                            collected_bp.push(bispro_2&.id)
-                          end
-                        else 
-                          if bispro_2.parent_id.present?
-                            if bispro_2&.parent_id == bispro&.id
-                              bp_ids.push(bispro_2&.id)
-                            else
-                              error_data.push({message: "Sub Business Process 2 belongs to another parent", line: k})
-                            end
-                          else
-                            bispro_2.update(parent_id: bispro&.id)
-                          end
+                        if bispro_2.present?
+                          error_data.push({message: "Sub Business Process 1 is empty, cannot assign Sub Business Process 2", line: k})
                         end
                       end
                     end
