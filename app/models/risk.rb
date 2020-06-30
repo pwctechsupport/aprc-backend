@@ -153,6 +153,10 @@ class Risk < ApplicationRecord
                         end
                       end
                     end
+                  else
+                    if bp[:sub2].present?
+                      error_data.push({message: "Sub Business Process 2 is invalid because Sub Business Process 1 is missing ", line: k})
+                    end
                   end
                 end
               end
