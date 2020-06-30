@@ -186,6 +186,8 @@ class Control < ApplicationRecord
                   if main_risk.present?
                     if main_risk.controls.count == 0
                       risk_ids.push(main_risk&.id)
+                    elsif main_risk.controls.pluck(:description).include? row["description"]
+
                     else
                       error_data.push({message: "Risk belongs to another Control", line: k})
                     end
@@ -214,6 +216,7 @@ class Control < ApplicationRecord
                           error_data.push({message: "Business Process is not related to risk", line: k})
                         end
                       end
+                    elsif main_bp.controls.pluck(:description).include? row["description"]
                     else
                       error_data.push({message: "Business Process belongs to another Control", line: k})
                     end
@@ -235,6 +238,8 @@ class Control < ApplicationRecord
                                 error_data.push({message: "Sub Business Process 1 is not related to Risk", line: k})
                               end
                             end
+                          elsif bispro.controls.pluck(:description).include? row["description"]
+                          
                           else
                             error_data.push({message: "Sub Business Process 1 belongs to another Control", line: k})
                           end
@@ -258,6 +263,8 @@ class Control < ApplicationRecord
                                         error_data.push({message: "Sub Business Process 2 is not related to risk", line: k})
                                       end
                                     end
+                                  elsif bispro_2.controls.pluck(:description).include? row["description"]
+                                  
                                   else
                                     error_data.push({message: "Sub Business Process 2 belongs to another Control", line: k})
                                   end
@@ -299,8 +306,10 @@ class Control < ApplicationRecord
                     error_data.push({message: "Control Owner must Exist", line: k})
                   end
                   if main_co.present?
-                    if main_co.controls.present?
+                    if main_co.controls.count == 0
                       co_ids.push(main_co&.id)
+                    elsif main_co.controls.pluck(:description).include? row["description"]
+                      
                     else
                       error_data.push({message: "Control Owner belongs to another Control", line: k})
                     end
