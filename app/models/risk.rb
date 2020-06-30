@@ -108,11 +108,7 @@ class Risk < ApplicationRecord
                     error_data.push({message: "Business Process must Exist", line: k})
                   end
                   if main_bp.present?
-                    if main_bp.controls.count == 0
-                      bp_ids.push(main_bp&.id)
-                    else
-                      error_data.push({message: "Business Process belongs to another risk", line: k})
-                    end
+                    bp_ids.push(main_bp&.id)
                   end
                   if bp[:sub1].present?
                     if bp[:name].downcase == bp[:sub1].downcase
@@ -122,11 +118,7 @@ class Risk < ApplicationRecord
                     if bispro.present?
                       if bispro&.parent_id.present?
                         if bispro.parent_id == main_bp&.id
-                          if bispro.risks.count == 0
-                            bp_ids.push(bispro&.id)
-                          else
-                            error_data.push({message: "Sub Business Process 1 belongs to another risk", line: k})
-                          end
+                          bp_ids.push(bispro&.id)
                           if bp[:sub2].present?
                             if bp[:sub1].downcase == bp[:sub2].downcase
                               error_data.push({message: "Sub Business Process 1 and Sub Business Process 2 cannot have the same name", line: k})
@@ -138,11 +130,7 @@ class Risk < ApplicationRecord
                             if bispro_2.present?
                               if bispro_2.parent_id.present?
                                 if bispro_2&.parent_id == bispro&.id
-                                  if bispro_2.risks.count == 0
-                                    bp_ids.push(bispro_2&.id)
-                                  else
-                                    error_data.push({message: "Sub Business Process 2 belongs to another risk", line: k})
-                                  end
+                                  bp_ids.push(bispro_2&.id)
                                 else
                                   error_data.push({message: "Sub Business Process 2 belongs to another parent", line: k})
                                 end
@@ -164,6 +152,10 @@ class Risk < ApplicationRecord
                           error_data.push({message: "Sub Business Process 1 is empty, cannot assign Sub Business Process 2", line: k})
                         end
                       end
+                    end
+                  else
+                    if bp[:sub2].present?
+                      error_data.push({message: "Sub Business Process 2 is invalid because Sub Business Process 1 is missing ", line: k})
                     end
                   end
                 end
