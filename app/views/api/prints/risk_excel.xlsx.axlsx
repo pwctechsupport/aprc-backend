@@ -13,7 +13,7 @@ wb.add_worksheet(name: "Risks") do |sheet|
           bp.children.each do |bp_1|
             if bp_1.children.present?
               bp_1.children.each do |bp_2|
-              sheet.add_row [risk&.name, risk&.level_of_risk&.gsub(/_/, ' ')&.titlecase, risk&.type_of_risk&.gsub(/_/, ' ')&.titlecase, bp&.name, bp_1.name, bp_2.name]
+                sheet.add_row [risk&.name, risk&.level_of_risk&.gsub(/_/, ' ')&.titlecase, risk&.type_of_risk&.gsub(/_/, ' ')&.titlecase, bp&.name, bp_1.name, bp_2.name]
               end
             else
               sheet.add_row [risk&.name, risk&.level_of_risk&.gsub(/_/, ' ')&.titlecase, risk&.type_of_risk&.gsub(/_/, ' ')&.titlecase, bp&.name, bp_1.name, ""]
