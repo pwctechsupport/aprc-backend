@@ -48,20 +48,20 @@ class Control < ApplicationRecord
               if bp_1.children.present?
                 bp_1.children.each do |bp_2|
                   if bp_2.ancestors.count == 2
-                    sheet.add_row [control&.description&.titlecase, control&.type_of_control&.gsub(/_/, ' ')&.titlecase, control&.frequency, control&.nature&.titlecase, control&.assertion&.join&.gsub(/_/, ',')&.titlecase, control&.ipo.join&.gsub(/_/, ',')&.titlecase, control&.key_control, business_process&.name, bp_1.name, bp_2.name, risk&.name,owner, activity_control&.activity, activity_control&.guidance]
+                    sheet.add_row [control&.description&.titlecase, control&.type_of_control&.gsub(/_/, ' ')&.titlecase, control&.frequency, control&.nature&.titlecase, control&.assertion&.join(",")&.gsub(/_/, ' ')&.titlecase, control&.ipo.join(",")&.gsub(/_/, ' ')&.titlecase, control&.key_control, business_process&.name, bp_1.name, bp_2.name, risk&.name,owner, activity_control&.activity, activity_control&.guidance]
                   end
                 end
               else
-                sheet.add_row [control&.description&.titlecase, control&.type_of_control&.gsub(/_/, ' ')&.titlecase, control&.frequency, control&.nature&.titlecase, control&.assertion&.join&.gsub(/_/, ',')&.titlecase, control&.ipo.join&.gsub(/_/, ',')&.titlecase, control&.key_control, business_process&.name, bp_1.name, "", risk&.name,owner, activity_control&.activity, activity_control&.guidance]
+                sheet.add_row [control&.description&.titlecase, control&.type_of_control&.gsub(/_/, ' ')&.titlecase, control&.frequency, control&.nature&.titlecase, control&.assertion&.join(",")&.gsub(/_/, ' ')&.titlecase, control&.ipo.join(",")&.gsub(/_/, ' ')&.titlecase, control&.key_control, business_process&.name, bp_1.name, "", risk&.name,owner, activity_control&.activity, activity_control&.guidance]
               end
             end
           end
         else
-          sheet.add_row [control&.description&.titlecase, control&.type_of_control&.gsub(/_/, ' ')&.titlecase, control&.frequency, control&.nature&.titlecase, control&.assertion&.join&.gsub(/_/, ',')&.titlecase, control&.ipo.join&.gsub(/_/, ',')&.titlecase, control&.key_control, business_process&.name, "", "", risk&.name,owner, activity_control&.activity, activity_control&.guidance]
+          sheet.add_row [control&.description&.titlecase, control&.type_of_control&.gsub(/_/, ' ')&.titlecase, control&.frequency, control&.nature&.titlecase, control&.assertion&.join(",")&.gsub(/_/, ' ')&.titlecase, control&.ipo.join(",")&.gsub(/_/, ' ')&.titlecase, control&.key_control, business_process&.name, "", "", risk&.name,owner, activity_control&.activity, activity_control&.guidance]
         end
       end
     else
-      sheet.add_row [control&.description&.titlecase, control&.type_of_control&.gsub(/_/, ' ')&.titlecase, control&.frequency, control&.nature&.titlecase, control&.assertion&.join&.gsub(/_/, ',')&.titlecase, control&.ipo.join&.gsub(/_/, ',')&.titlecase, control&.key_control,"", "", "", risk&.name,owner, activity_control&.activity, activity_control&.guidance]
+      sheet.add_row [control&.description&.titlecase, control&.type_of_control&.gsub(/_/, ' ')&.titlecase, control&.frequency, control&.nature&.titlecase, control&.assertion&.join(",")&.gsub(/_/, ' ')&.titlecase, control&.ipo.join(",")&.gsub(/_/, ' ')&.titlecase, control&.key_control,"", "", "", risk&.name,owner, activity_control&.activity, activity_control&.guidance]
     end
   end
 
