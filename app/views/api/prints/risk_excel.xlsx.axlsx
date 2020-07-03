@@ -4,27 +4,15 @@ wb = xlsx_package.workbook
 
 wb.add_worksheet(name: "Risks") do |sheet|
   # Create the header row
-  sheet.add_row ["name", "level of risk", "type of risk", "related business process name", "related sub business process 1", "related sub business process 2"]
+  sheet.add_row ["name", "level of risk", "type of risk", "related business process name"]
   # Create entries for each item
   @risks.each do |risk|
     if risk&.business_processes.count != 0
       risk&.business_processes&.where(ancestry:nil).each do |bp|
-        if bp.children.present?
-          bp.children.each do |bp_1|
-            if bp_1.children.present?
-              bp_1.children.each do |bp_2|
-                sheet.add_row [risk&.name, risk&.level_of_risk&.gsub(/_/, ' ')&.titlecase, risk&.type_of_risk&.gsub(/_/, ' ')&.titlecase, bp&.name, bp_1.name, bp_2.name]
-              end
-            else
-              sheet.add_row [risk&.name, risk&.level_of_risk&.gsub(/_/, ' ')&.titlecase, risk&.type_of_risk&.gsub(/_/, ' ')&.titlecase, bp&.name, bp_1.name, ""]
-            end
-          end
-        else
-          sheet.add_row [risk&.name, risk&.level_of_risk&.gsub(/_/, ' ')&.titlecase, risk&.type_of_risk&.gsub(/_/, ' ')&.titlecase, bp&.name, "", ""]
-        end
+        sheet.add_row [risk&.name, risk&.level_of_risk&.gsub(/_/, ' ')&.titlecase, risk&.type_of_risk&.gsub(/_/, ' ')&.titlecase, bp&.name]
       end
     else
-      sheet.add_row [risk&.name, risk&.level_of_risk&.gsub(/_/, ' ')&.titlecase, risk&.type_of_risk&.gsub(/_/, ' ')&.titlecase, "", "", ""]
+      sheet.add_row [risk&.name, risk&.level_of_risk&.gsub(/_/, ' ')&.titlecase, risk&.type_of_risk&.gsub(/_/, ' ')&.titlecase, ""]
     end
   end
 end

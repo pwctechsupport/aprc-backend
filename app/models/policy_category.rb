@@ -28,46 +28,96 @@ class PolicyCategory < ApplicationRecord
 
   def self.import(file)
     spreadsheet = open_spreadsheet(file)
-    allowed_attributes = ["name", "related policy", "related policy title"]
+    allowed_attributes = ["name", "related policy title"]
     header = spreadsheet.row(1)
     polcat_names = []
     pol_ids = []
+    pol_obj = []
+    error_data = []
     index_polcat = 0
-    (2..spreadsheet.last_row).each do |k|
-      row = Hash[[header, spreadsheet.row(k)].transpose]
-      if row["name"].present? && !PolicyCategory.find_by_name(row["name"]).present?
-        if polcat_names.count != 0
-          polcat_obj = PolicyCategory&.find_by_name(polcat_names[index_polcat-1])
-          policy_category_id = polcat_obj.update(policy_ids: pol_ids.uniq)
-          if polcat_obj&.policies.present?
-            polcat_pol = polcat_obj&.policies&.map{|x| x.title}
-            polcat_obj&.update(policy: polcat_pol)
-          end
-          pol_ids.reject!{|x| x == x}
-        end
-        if !PolicyCategory.find_by_name(row["name"]).present?
-          polcat_names.push(row["name"])
-        end
-        policy_category_id = PolicyCategory&.create(name: polcat_names[index_polcat],policy_ids: row["related policy"], status: "release")
-        index_polcat+=1
-      end
-      if !row["related policy"].nil?
-        pol_ids.push(row["related policy"])
-      end
-      if k == spreadsheet.last_row && PolicyCategory.find_by_name(row["name"]).present?
-        if row["name"].present?
+    ActiveRecord::Base.transaction do 
+      (2..spreadsheet.last_row).each do |k|
+        row = Hash[[header, spreadsheet.row(k)].transpose]
+        if row["name"].present? && !PolicyCategory.find_by_name(row["name"]).present?
           if polcat_names.count != 0
             polcat_obj = PolicyCategory&.find_by_name(polcat_names[index_polcat-1])
-            policy_category_id = polcat_obj.update(policy_ids: pol_ids.uniq)
-            if polcat_obj&.policies.present?
-              polcat_pol = polcat_obj&.policies&.map{|x| x.title}
-              polcat_obj&.update(policy: polcat_pol)
+            if polcat_obj.present?
+              policy_category_id = polcat_obj.update(policy_ids: pol_ids.uniq)
+              if polcat_obj&.policies.present?
+                polcat_pol = polcat_obj&.policies&.map{|x| x.title}
+                polcat_obj&.update(policy: polcat_pol)
+              end
             end
             pol_ids.reject!{|x| x == x}
+            pol_obj.reject!{|x| x == x}
+          end
+
+          if !PolicyCategory.find_by_name(row["name"]).present?
+            polcat_names.push(row["name"])
+          end
+
+          policy_category_id = PolicyCategory&.create(name: polcat_names[index_polcat],policy_ids: Policy.find_by(title: row["related policy title"])&.id, status: "release", is_inside: true)
+
+          unless policy_category_id.valid?
+            error_data.push({message: policy_category_id.errors.full_messages.join(","), line: k})
+          end
+          index_polcat+=1
+
+        elsif !row["name"].present?
+          error_data.push({message: "Policy Category name must Exist", line: k})
+        end
+
+        polcat_inside = PolicyCategory.find_by_name(row["name"])
+        if row["name"].present? && polcat_inside.present?
+          if !polcat_inside.is_inside?
+            error_data.push({message: "Policy Category data exist, cannot edit Policy Category named  #{polcat_inside&.name }. please remove it from the worksheet", line: k})
+          end
+        end
+
+        if polcat_inside.present?
+          if polcat_inside&.is_inside?
+            if !row["related policy title"].nil?
+              pol_obj.push({title: row["related policy title"]})
+              pol_obj.each do |pol|
+                if pol[:title].present?
+                  main_pol = Policy.find_by(title: pol[:title])
+                  if !main_pol.present?
+                    error_data.push({message: "Policy must Exist", line: k})
+                  end
+                  if main_pol.present?
+                    pol_ids.push(main_pol&.id)
+                  end
+                end
+              end
+            end
+
+            if k == spreadsheet.last_row && PolicyCategory.find_by_name(row["name"]).present?
+              if row["name"].present?
+                if polcat_names.count != 0
+                  polcat_obj = PolicyCategory&.find_by_name(polcat_names[index_polcat-1])
+                  policy_category_id = polcat_obj.update(policy_ids: pol_ids.uniq)
+                  if polcat_obj&.policies.present?
+                    polcat_pol = polcat_obj&.policies&.map{|x| x.title}
+                    polcat_obj&.update(policy: polcat_pol)
+                  end
+                  pol_ids.reject!{|x| x == x}
+                end
+              end
+            end
           end
         end
       end
+
+      if error_data.count != 0
+        raise ActiveRecord::Rollback, "Rollback Completed"
+      end
+
+      if PolicyCategory.where(is_inside: true).present?
+        PolicyCategory.where(is_inside:true).map{|x| x.update(is_inside: false)}
+      end
     end
+
+    return true, error_data.uniq
   end
 
   def self.open_spreadsheet(file)

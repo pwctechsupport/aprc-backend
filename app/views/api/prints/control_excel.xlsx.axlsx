@@ -4,7 +4,7 @@ wb = xlsx_package.workbook
 
 wb.add_worksheet(name: "Controls") do |sheet|
   # Create the header row
-  sheet.add_row ["description", "type of control", "frequency", "nature", "assertion", "ipo", "key control", "related business process name", "related sub business process 1", "related sub business process 2", "related risk name","related control owner name", "control activity title", "control activity guidance"]
+  sheet.add_row ["description", "type of control", "frequency", "nature", "assertion", "ipo", "key control", "related business process name", "related risk name","related control owner name", "control activity title", "control activity guidance"]
   # Create entries for each item
   @controls.each do |control|
     

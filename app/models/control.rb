@@ -40,29 +40,7 @@ class Control < ApplicationRecord
   end
 
   def self.to_export(sheet,control, business_process,risk,owner,activity_control)
-    if business_process.present?
-      if business_process.ancestors.count == 0
-        if business_process.children.present?
-          business_process.children.each do |bp_1|
-            if bp_1.ancestors.count == 1
-              if bp_1.children.present?
-                bp_1.children.each do |bp_2|
-                  if bp_2.ancestors.count == 2
-                    sheet.add_row [control&.description&.titlecase, control&.type_of_control&.gsub(/_/, ' ')&.titlecase, control&.frequency, control&.nature&.titlecase, control&.assertion&.join(",")&.gsub(/_/, ' ')&.titlecase, control&.ipo.join(",")&.gsub(/_/, ' ')&.titlecase, control&.key_control, business_process&.name, bp_1.name, bp_2.name, risk&.name,owner, activity_control&.activity, activity_control&.guidance]
-                  end
-                end
-              else
-                sheet.add_row [control&.description&.titlecase, control&.type_of_control&.gsub(/_/, ' ')&.titlecase, control&.frequency, control&.nature&.titlecase, control&.assertion&.join(",")&.gsub(/_/, ' ')&.titlecase, control&.ipo.join(",")&.gsub(/_/, ' ')&.titlecase, control&.key_control, business_process&.name, bp_1.name, "", risk&.name,owner, activity_control&.activity, activity_control&.guidance]
-              end
-            end
-          end
-        else
-          sheet.add_row [control&.description&.titlecase, control&.type_of_control&.gsub(/_/, ' ')&.titlecase, control&.frequency, control&.nature&.titlecase, control&.assertion&.join(",")&.gsub(/_/, ' ')&.titlecase, control&.ipo.join(",")&.gsub(/_/, ' ')&.titlecase, control&.key_control, business_process&.name, "", "", risk&.name,owner, activity_control&.activity, activity_control&.guidance]
-        end
-      end
-    else
-      sheet.add_row [control&.description&.titlecase, control&.type_of_control&.gsub(/_/, ' ')&.titlecase, control&.frequency, control&.nature&.titlecase, control&.assertion&.join(",")&.gsub(/_/, ' ')&.titlecase, control&.ipo.join(",")&.gsub(/_/, ' ')&.titlecase, control&.key_control,"", "", "", risk&.name,owner, activity_control&.activity, activity_control&.guidance]
-    end
+    sheet.add_row [control&.description&.titlecase, control&.type_of_control&.gsub(/_/, ' ')&.titlecase, control&.frequency, control&.nature&.titlecase, control&.assertion&.join(",")&.gsub(/_/, ' ')&.titlecase, control&.ipo.join(",")&.gsub(/_/, ' ')&.titlecase, control&.key_control, business_process&.name, risk&.name,owner, activity_control&.activity, activity_control&.guidance]
   end
 
   def request_edit
@@ -71,7 +49,7 @@ class Control < ApplicationRecord
 
   def self.import(file)
     spreadsheet = open_spreadsheet(file)
-    allowed_attributes = [ "description", "type of control", "frequency", "nature", "assertion", "ipo", "key control", "related business process name","related sub business process 1", "related sub business process 2","related risk name","related control owner name", "control activity title", "control activity guidance"]
+    allowed_attributes = [ "description", "type of control", "frequency", "nature", "assertion", "ipo", "key control", "related business process name","related risk name","related control owner name", "control activity title", "control activity guidance"]
     header = spreadsheet.row(1)
     control_descriptions = []
     risk_ids = []
@@ -191,7 +169,7 @@ class Control < ApplicationRecord
             end
 
             if !row["related business process name"].nil?
-              bp_obj.push({name: row["related business process name"], sub1: row["related sub business process 1"], sub2: row["related sub business process 2"], line: k})
+              bp_obj.push({name: row["related business process name"] line: k})
               bp_obj.each do |bp|
                 if bp[:name].present?
                   main_bp = BusinessProcess.find_by_name(bp[:name])
@@ -203,71 +181,12 @@ class Control < ApplicationRecord
                     if risk_check.present?
                       if risk_check.business_processes.pluck(:name).include? main_bp.name
                         bp_ids.push(main_bp&.id)
+                        if main_bp.descendant_ids.present?
+                          bp_ids.push(main_bp.descendant_ids)
+                        end
                       else
                         error_data.push({message: "Business Process is not related to risk", line: k})
                       end
-                    end
-                  end
-                  if bp[:sub1].present?
-                    if bp[:name].downcase == bp[:sub1].downcase
-                      error_data.push({message: "Business Process and Sub Business Process 1 cannot have the same name", line: k})
-                    end
-                    bispro = BusinessProcess.find_by_name(bp[:sub1])
-                    if bispro.present?
-                      if bispro&.parent_id.present?
-                        if bispro.parent_id == main_bp&.id
-                          risk_check = Risk.find_by_name(spreadsheet.row(bp[:line])[10])
-                          if risk_check.present?
-                            if risk_check.business_processes.pluck(:name).include? bispro.name
-                              bp_ids.push(bispro&.id)
-                            else
-                              error_data.push({message: "Sub Business Process 1 is not related to Risk", line: k})
-                            end
-                          end
-                          if bp[:sub2].present?
-                            if bp[:sub1].downcase == bp[:sub2].downcase
-                              error_data.push({message: "Sub Business Process 1 and Sub Business Process 2 cannot have the same name", line: k})
-                            end
-                            if bp[:name].downcase == bp[:sub2].downcase
-                              error_data.push({message: "Business Process and Sub Business Process 2 cannot have the same name", line: k})
-                            end
-                            bispro_2 = BusinessProcess.find_by_name(bp[:sub2]) 
-                            if bispro_2.present?
-                              if bispro_2.parent_id.present?
-                                if bispro_2&.parent_id == bispro&.id
-                                  risk_check = Risk.find_by_name(spreadsheet.row(bp[:line])[10])
-                                  if risk_check.present?
-                                    if risk_check.business_processes.pluck(:name).include? bispro_2.name
-                                      bp_ids.push(bispro_2&.id)
-                                    else
-                                      error_data.push({message: "Sub Business Process 2 is not related to risk", line: k})
-                                    end
-                                  end
-                                else
-                                  error_data.push({message: "Sub Business Process 2 belongs to another parent", line: k})
-                                end
-                              else
-                                bispro_2.update(parent_id: bispro&.id)
-                              end
-                            end
-                          end
-                        else
-                          error_data.push({message: "Sub Business Process 1 belongs to another parent", line: k})
-                        end
-                      else
-                        bispro.update(parent_id: main_bp&.id)
-                      end
-                    else
-                      if bp[:sub2].present?
-                        bispro_2 = BusinessProcess.find_by_name(bp[:sub2]) 
-                        if bispro_2.present?
-                          error_data.push({message: "Sub Business Process 1 is empty, cannot assign Sub Business Process 2", line: k})
-                        end
-                      end
-                    end
-                  else
-                    if bp[:sub2].present?
-                      error_data.push({message: "Sub Business Process 2 is invalid because Sub Business Process 1 is missing ", line: k})
                     end
                   end
                 end
