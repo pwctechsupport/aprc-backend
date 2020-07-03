@@ -1,6 +1,7 @@
 class Risk < ApplicationRecord
   validates :name, uniqueness: true
   validates_presence_of :name, :type_of_risk, :level_of_risk
+  validates_uniqueness_of :name, :case_sensitive => false
 
   # validates_uniqueness_of :name, :scope => [:type_of_risk, :level_of_risk]
   has_paper_trail
@@ -35,7 +36,7 @@ class Risk < ApplicationRecord
 
   def self.import(file)
     spreadsheet = open_spreadsheet(file)
-    allowed_attributes = ["name", "level of risk", "type of risk", "related business process name", "related sub business process 1", "related sub business process 2"]
+    allowed_attributes = ["name", "level of risk", "type of risk", "related business process name"]
     header = spreadsheet.row(1)
     risk_names = []
     bp_ids = []
@@ -82,8 +83,6 @@ class Risk < ApplicationRecord
           risk_id = Risk.create(name: risk_names[index_risk],business_process_ids: BusinessProcess.find_by_name(row["related business process name"])&.id, level_of_risk: row_level_of_risk, type_of_risk: row_type_of_risk, status: "release", is_inside: true)
           unless risk_id.valid?
             error_data.push({message: risk_id.errors.full_messages.join(","), line: k})
-          else
-            collected_risk.push(risk_id&.id)
           end
           index_risk+=1
         elsif !row["name"].present?
@@ -100,7 +99,7 @@ class Risk < ApplicationRecord
         if risk_inside.present?
           if risk_inside&.is_inside?
             if !row["related business process name"].nil?
-              bp_obj.push({name: row["related business process name"], sub1: row["related sub business process 1"], sub2: row["related sub business process 2"]})
+              bp_obj.push({name: row["related business process name"]})
               bp_obj.each do |bp|
                 if bp[:name].present?
                   main_bp = BusinessProcess.find_by_name(bp[:name])
@@ -109,53 +108,8 @@ class Risk < ApplicationRecord
                   end
                   if main_bp.present?
                     bp_ids.push(main_bp&.id)
-                  end
-                  if bp[:sub1].present?
-                    if bp[:name].downcase == bp[:sub1].downcase
-                      error_data.push({message: "Business Process and Sub Business Process 1 cannot have the same name", line: k})
-                    end
-                    bispro = BusinessProcess.find_by_name(bp[:sub1])
-                    if bispro.present?
-                      if bispro&.parent_id.present?
-                        if bispro.parent_id == main_bp&.id
-                          bp_ids.push(bispro&.id)
-                          if bp[:sub2].present?
-                            if bp[:sub1].downcase == bp[:sub2].downcase
-                              error_data.push({message: "Sub Business Process 1 and Sub Business Process 2 cannot have the same name", line: k})
-                            end
-                            if bp[:name].downcase == bp[:sub2].downcase
-                              error_data.push({message: "Business Process and Sub Business Process 2 cannot have the same name", line: k})
-                            end
-                            bispro_2 = BusinessProcess.find_by_name(bp[:sub2]) 
-                            if bispro_2.present?
-                              if bispro_2.parent_id.present?
-                                if bispro_2&.parent_id == bispro&.id
-                                  bp_ids.push(bispro_2&.id)
-                                else
-                                  error_data.push({message: "Sub Business Process 2 belongs to another parent", line: k})
-                                end
-                              else
-                                bispro_2.update(parent_id: bispro&.id)
-                              end
-                            end
-                          end
-                        else
-                          error_data.push({message: "Sub Business Process 1 belongs to another parent", line: k})
-                        end
-                      else
-                        bispro.update(parent_id: main_bp&.id)
-                      end
-                    else
-                      if bp[:sub2].present?
-                        bispro_2 = BusinessProcess.find_by_name(bp[:sub2]) 
-                        if bispro_2.present?
-                          error_data.push({message: "Sub Business Process 1 is empty, cannot assign Sub Business Process 2", line: k})
-                        end
-                      end
-                    end
-                  else
-                    if bp[:sub2].present?
-                      error_data.push({message: "Sub Business Process 2 is invalid because Sub Business Process 1 is missing ", line: k})
+                    if main_bp.descendant_ids.present?
+                      bp_ids.push(main_bp.descendant_ids)
                     end
                   end
                 end

@@ -1,6 +1,8 @@
 class BusinessProcess < ApplicationRecord
   has_paper_trail
   validates :name, uniqueness: true
+  validates_uniqueness_of :name, :case_sensitive => false
+
   has_many :policy_business_processes, dependent: :destroy
   has_many :policies, through: :policy_business_processes
   has_many :control_business_processes, dependent: :destroy
