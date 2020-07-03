@@ -169,7 +169,7 @@ class Control < ApplicationRecord
             end
 
             if !row["related business process name"].nil?
-              bp_obj.push({name: row["related business process name"] line: k})
+              bp_obj.push({name: row["related business process name"], line: k})
               bp_obj.each do |bp|
                 if bp[:name].present?
                   main_bp = BusinessProcess.find_by_name(bp[:name])
