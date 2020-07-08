@@ -12,6 +12,9 @@ module Resolvers
         @q.sorts = 'created_at desc' if @q.sorts.empty?
         @q.result.page(page).per(limit)
       end
+      def ready?(args)
+        authorize_user
+      end
     end
   end
 end

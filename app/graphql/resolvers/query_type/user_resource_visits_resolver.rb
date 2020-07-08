@@ -12,6 +12,10 @@ module Resolvers
         @q.sorts = 'recent_visit desc' if @q.sorts.empty?
         @q.result(distinct: true).page(page).per(limit)
       end
+      
+      def ready?(args)
+        authorize_user
+      end
     end
   end
 end
