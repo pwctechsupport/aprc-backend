@@ -29,6 +29,7 @@
       td{font-size:15px;}
       .tab{ margin-left:40px;}
       .ape{font-size:24px; text-align:left;}
+      .apu{font-size:24px; text-align:center;}
       .aps{font-size:28px;}
       .mege{text-shadow: 0.5px 0.5px black;}
       .aha{border:none;}
@@ -51,6 +52,7 @@
         %td.aha :
         %td.aha= current_user&.name
     %h1.aps Risk & Controls
+    %h2.apu= @business_process&.name
     
     -@business_process.risks.each_with_index do |ris, x|
       %ul

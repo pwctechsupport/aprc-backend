@@ -13,9 +13,9 @@ module Resolvers
         # ::context[:current_user].page(page).per(limit)
       end
 
-      # def ready?(args)
-      #   authorize_user
-      # end
+      def ready?(args)
+        authorize_user
+      end
     end
   end
 end

@@ -11,6 +11,10 @@ module Resolvers
         @q = RequestEdit.where(user_id: current_user.id).ransack(filter.as_json)
         @q.result(distinct: true).page(page).per(limit)
       end
+
+      def ready?(args)
+        authorize_user
+      end
     end
   end
 end
