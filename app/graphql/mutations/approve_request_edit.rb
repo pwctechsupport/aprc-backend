@@ -13,6 +13,10 @@ module Mutations
         request_edit.approve!
         request_edit.update(approver_id: current_user&.id)
         request_edit&.originator.update(status: "ready_for_edit")
+        if request_edit&.originator_type == "Policy"
+          re_user_id = request_edit&.user_id
+          request_edit&.originator.update(user_id: re_user_id )
+        end
         Notification.send_notification(admin_prep, request_edit&.to_name, "Request Edit Has been Approved By #{current_user&.name}",request_edit&.originator, current_user&.id, "request_edit_approved")
       else
         request_edit.reject!
