@@ -14,12 +14,21 @@
 #   last_name: "Herumurti"
 # )
 
-are_roles = ["admin_reviewer", "admin_preparer", "admin", "user", "staff", "supervisor", "manager", "high_level"]
+are_roles = ["admin_reviewer", "admin_preparer", "user"]
+are_categories = ["references", "sop", "template", "flowchart"]
 
 are_roles.each do |are|
   Role.create(
     name:are
   )
+end
+
+are_categories.each do |x|
+  if x == "sop"
+    EnumList.create(name: x, category_type: "Category", code: x.upcase)
+  else
+    EnumList.create(name: x, category_type: "Category", code: x.titlecase)
+  end
 end
 
 roles = Role.where(name:are_roles).map{|x| x.id}
