@@ -28,7 +28,7 @@ module Api
     end
 
     def report_risk
-      @risks = Risk.all
+      @risks = Risk.where.not(id:PolicyRisk.pluck(:risk_id), status: "release")
       respond_to do |format|
         format.json
         format.pdf do
@@ -43,7 +43,7 @@ module Api
     end
 
     def report_risk_policy
-      @risks = Risk.all
+      @risks = Risk.where.not(id:ControlRisk.pluck(:risk_id), status: "release")
       respond_to do |format|
         format.json
         format.pdf do
@@ -58,7 +58,7 @@ module Api
     end
 
     def report_resource_rating
-      @resources = Resource.all
+      @resources = Resource.where(status: "release")
       respond_to do |format|
         format.json
         format.pdf do
@@ -103,7 +103,7 @@ module Api
     end
 
     def report_control_policy
-      @controls = Control.all
+      @controls = Control.where(status: "release")
       
       respond_to do |format|
         format.json

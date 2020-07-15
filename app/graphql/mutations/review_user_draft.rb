@@ -19,7 +19,7 @@ module Mutations
             raise GraphQL::ExecutionError, "This Draft has been reviewed by another Admin."
           else
             if user_draft&.event == "update"
-              serial = ["policy_category"]
+              serial = ["policy_category", "main_role"]
               serial.each do |sif|
                 if user_draft&.changeset[sif].present?
                   user_draft&.changeset[sif].map!{|x| JSON.parse(x)}

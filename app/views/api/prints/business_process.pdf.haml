@@ -99,14 +99,9 @@
                 %td.text-center #{con.status.to_s.gsub(/[^0-9A-Za-z]/, ' ').titlecase}
                 %td 
                   -if con.key_control == true
-                    .risk.text-center
-                      %input#checkboxG5.css-checkbox{:checked => "checked", :name => "checkboxG5", :type => "checkbox"}/
-                      %label.css-label{:for => "checkboxG5"}
+                    Yes
                   -else
-                    .risk.text-center
-                      %input#checkboxG4.css-checkbox{:name => "checkboxG4", :type => "checkbox"}/
-                      %label.css-label{:for => "checkboxG4"}
-          %br
+                    No
           %br
     
     %p{:style => "page-break-after:always;"}

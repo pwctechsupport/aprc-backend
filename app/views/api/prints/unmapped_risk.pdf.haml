@@ -74,27 +74,21 @@
     -# %br
     %table.table.table-borderless
       %thead
-        
-      -collect_risk=[]
-      -ris =  @tags.pluck(:risk_id).group_by(&:itself).reject{|k,v| v.count>1}.keys
-      -ris.reject!{|x| x == nil} if ris.count(nil) >= 1
-      -ris.each_with_index do |ras,i|
-        -rus = Risk.find(ras)
-        -if rus.business_processes.present?
-          -rus.business_processes.each do |bus|
-            %tr
-              %td.text-center{:scope => "row", :style => "width: 10%"} #{i+1}
-              %td.text-center.ape{:scope => "row", :style => "width: 30%"} #{rus.name.to_s.gsub(/[^0-9A-Za-z]/, ' ').titlecase.html_safe}
-              %td.text-center{:scope => "row", :style => "width: 30%"} #{rus.level_of_risk.to_s.gsub(/[^0-9A-Za-z]/, ' ').titlecase.html_safe}
-              %td.text-center{:scope => "row", :style => "width: 30%"} #{rus.type_of_risk.to_s.gsub(/[^0-9A-Za-z]/, ' ').titlecase.html_safe}
-              %td.text-center{:scope => "row", :style => "width: 30%"} #{bus&.name&.titlecase}
-        -else
-          %tr
-            %td.text-center{:scope => "row", :style => "width: 10%"} #{i+1}
-            %td.text-center.ape{:scope => "row", :style => "width: 30%"} #{rus.name.to_s.gsub(/[^0-9A-Za-z]/, ' ').titlecase.html_safe}
-            %td.text-center{:scope => "row", :style => "width: 30%"} #{rus.level_of_risk.to_s.gsub(/[^0-9A-Za-z]/, ' ').titlecase.html_safe}
-            %td.text-center{:scope => "row", :style => "width: 30%"} #{rus.type_of_risk.to_s.gsub(/[^0-9A-Za-z]/, ' ').titlecase.html_safe}
-            %td.text-center{:scope => "row", :style => "width: 30%"} No Business Process
+      -z = 1
+      -@tags.each do |tag|
+        -if !tag.risk_id.nil?
+          -unmapped_risk = tag.business_process.risk_ids
+          -unmapped_risk.reject!{|x| x == tag.risk_id }
+          -if unmapped_risk.count != 0
+            -unmapped_risk.each do |unmapped|
+              -risk = Risk.find(unmapped)
+              %tr
+                %td.text-center{:scope => "row", :style => "width: 10%"} #{z}
+                %td.text-center{:scope => "row", :style => "width: 30%"} #{tag&.business_process&.name&.titlecase}
+                %td.text-center.ape{:scope => "row", :style => "width: 30%"} #{risk.name.to_s.gsub(/[^0-9A-Za-z]/, ' ').titlecase.html_safe}
+                %td.text-center{:scope => "row", :style => "width: 30%"} #{risk.level_of_risk.to_s.gsub(/[^0-9A-Za-z]/, ' ').titlecase.html_safe}
+                %td.text-center{:scope => "row", :style => "width: 30%"} #{risk.type_of_risk.to_s.gsub(/[^0-9A-Za-z]/, ' ').titlecase.html_safe}
+              - z+=1 
     %br
     %br
 

@@ -108,13 +108,9 @@
                   %td.text-center{:scope => "row",:style => "width: 14%"} #{bis&.name}
                   %td{:scope => "row",:style => "width: 8%"}
                     -if con&.key_control == true
-                      .risk.text-center
-                        %input#checkboxG5.css-checkbox{:checked => "checked", :name => "checkboxG5", :type => "checkbox"}/
-                        %label.css-label{:for => "checkboxG5"}
+                      Yes
                     -else
-                      .risk.text-center
-                        %input#checkboxG4.css-checkbox{:name => "checkboxG4", :type => "checkbox"}/
-                        %label.css-label{:for => "checkboxG4"}
+                      No
                   -z+=1
         -else
           -if con.policies.present?
@@ -131,13 +127,9 @@
                   %td.text-center{:scope => "row",:style => "width: 14%"} No Business Process
                   %td{:scope => "row",:style => "width: 8%"}
                     -if con&.key_control == true
-                      .risk.text-center
-                        %input#checkboxG5.css-checkbox{:checked => "checked", :name => "checkboxG5", :type => "checkbox"}/
-                        %label.css-label{:for => "checkboxG5"}
+                      Yes
                     -else
-                      .risk.text-center
-                        %input#checkboxG4.css-checkbox{:name => "checkboxG4", :type => "checkbox"}/
-                        %label.css-label{:for => "checkboxG4"}
+                      No
                   -z+=1
           -else
             %tbody
@@ -152,13 +144,9 @@
                 %td.text-center{:scope => "row",:style => "width: 14%"} No Business Process
                 %td{:scope => "row",:style => "width: 8%"} 
                   -if con&.key_control == true
-                    .risk.text-center
-                      %input#checkboxG5.css-checkbox{:checked => "checked", :name => "checkboxG5", :type => "checkbox"}/
-                      %label.css-label{:for => "checkboxG5"}
+                    Yes
                   -else
-                    .risk.text-center
-                      %input#checkboxG4.css-checkbox{:name => "checkboxG4", :type => "checkbox"}/
-                      %label.css-label{:for => "checkboxG4"}
+                    No
                 -z+=1
     %br
     %br

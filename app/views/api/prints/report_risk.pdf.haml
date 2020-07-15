@@ -33,6 +33,7 @@
       
       -z = 1
       -@risks.each do |ris|
+        -zone = ActiveSupport::TimeZone.new("Jakarta")
         -if ris.business_processes.present?
           -ris.business_processes.each do |bus|
             %tbody
@@ -47,11 +48,11 @@
                 -else
                   %td.text-center.apo{:scope => "row",:style => "width: 12%"}
                 -if ris&.versions&.find_by(event:"create")&.present?
-                  %td.text-center.apo{:scope => "row",:style => "width: 10%"}=ris&.versions&.find_by(event:"create")&.created_at
+                  %td.text-center.apo{:scope => "row",:style => "width: 10%"}=ris&.versions&.find_by(event:"create")&.created_at.in_time_zone(zone).inspect.sub(" +07:00", "")
                 -else
                   %td.text-center.apo{:scope => "row",:style => "width: 10%"}
                 -if ris&.updated_at.present?
-                  %td.text-center.ape{:scope => "row",:style => "width: 10%"}=ris&.updated_at
+                  %td.text-center.ape{:scope => "row",:style => "width: 10%"}=ris&.updated_at.in_time_zone(zone).inspect.sub(" +07:00", "")
                 -else
                   %td.text-center.apo{:scope => "row",:style => "width: 10%"}
                 -if ris&.versions&.last&.whodunnit.present?
@@ -72,11 +73,11 @@
               -else
                 %td.text-center.apo{:scope => "row",:style => "width: 12%"}
               -if ris&.versions&.find_by(event:"create")&.present?
-                %td.text-center.apo{:scope => "row",:style => "width: 10%"}=ris&.versions&.find_by(event:"create")&.created_at
+                %td.text-center.apo{:scope => "row",:style => "width: 10%"}=ris&.versions&.find_by(event:"create")&.created_at.in_time_zone(zone).inspect.sub(" +07:00", "")
               -else
                 %td.text-center.apo{:scope => "row",:style => "width: 10%"}
               -if ris&.updated_at.present?
-                %td.text-center.ape{:scope => "row",:style => "width: 10%"}=ris&.updated_at
+                %td.text-center.ape{:scope => "row",:style => "width: 10%"}=ris&.updated_at.in_time_zone(zone).inspect.sub(" +07:00", "")
               -else
                 %td.text-center.apo{:scope => "row",:style => "width: 10%"}
               -if ris&.versions&.last&.whodunnit.present?
