@@ -78,7 +78,7 @@
             %td.text-center{:scope => "row", :style => "width: 10%"} #{i+1}
             %td.text-center{:scope => "row", :style => "width: 30%"} #{res&.name&.titlecase&.html_safe}
             %td.text-center{:scope => "row", :style => "width: 30%"} #{res&.visit}
-            %td.text-center{:scope => "row", :style => "width: 30%"} 
+            %td.text-center{:scope => "row", :style => "width: 20%"} 
               -rating_total = res&.resource_ratings&.count
               -rating_sum =  res&.resource_ratings&.sum(:rating)
               -rating_average = rating_sum/rating_total
@@ -88,9 +88,11 @@
                 #{rating_average&.round(1)}
 
                 
-            %td.text-center{:scope => "row", :style => "width: 30%"}
+            %td.text-center{:scope => "row", :style => "width: 20%"}
               -rating_total = res.resource_ratings.count
               #{rating_total}
+            %td.text-center{:scope => "row", :style => "width: 20%"} #{res&.category}
+            
 
     %br
     %br
