@@ -6,19 +6,14 @@ wb.add_worksheet(name: "Resources") do |sheet|
   # Create the header row
   sheet.add_row ["name", "category", "related policy title", "related business process name"]
   # Create entries for each item
+
   @resources.each do |resource|
-    if resource.business_processes.present? || resource.policies.present?
-      if resource.business_processes.count >= resource.policies.count
-        resource.business_processes.zip(resource.policies).each do |business_process, policy|
-          sheet.add_row [resource&.name, resource&.category, policy&.title, business_process&.name]
-        end
-      else
-        resource.policies.zip(resource.business_processes).each do |policy, business_process|
-          sheet.add_row [resource&.name, resource&.category, policy&.title, business_process&.name]
-        end
+    if resource&.policies.present?
+      resource&.policies.each do |policy|
+        sheet.add_row [resource&.name, resource&.category, policy&.title, resource&.business_process&.name]
       end
     else
-      sheet.add_row [resource&.name, resource&.category , resource&.policies&.pluck(:title)&.join(","),resource&.business_processes&.pluck(:name)&.join(",")]
+      sheet.add_row [resource&.name, resource&.category, "", resource&.business_process&.name]
     end
   end
 end

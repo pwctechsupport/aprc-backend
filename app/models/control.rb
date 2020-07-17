@@ -1,5 +1,5 @@
 class Control < ApplicationRecord
-  has_paper_trail ignore: [:status, :updated_at]
+  has_paper_trail ignore: [:status, :updated_at, :is_inside]
   has_drafts
   validates_presence_of :description, :type_of_control, :frequency, :nature, :assertion, :ipo
   validates :description, uniqueness: true
@@ -51,6 +51,9 @@ class Control < ApplicationRecord
     spreadsheet = open_spreadsheet(file)
     allowed_attributes = [ "description", "type of control", "frequency", "nature", "assertion", "ipo", "key control", "related business process name","related risk name","related control owner name", "control activity title", "control activity guidance"]
     header = spreadsheet.row(1)
+    if header.present?
+      header.map! {|x| x.downcase}
+    end
     control_descriptions = []
     risk_ids = []
     bp_ids = []
@@ -65,9 +68,20 @@ class Control < ApplicationRecord
     activity_obj = []
     error_data = []
     index_control = 0
+    spread_count = spreadsheet.row(2).count
+    spread_nil = spreadsheet.row(2).group_by(&:itself).map { |k,v| [k, v.length] }.to_h
+    if spread_nil[nil] == spread_count
+      error_data.push({message: "Control cannot be empty", line: 2})
+    end
     ActiveRecord::Base.transaction do
       (2..spreadsheet.last_row).each do |k|
         row = Hash[[header, spreadsheet.row(k)].transpose]
+        if !header.present?
+          error_data.push({message: "Control's Headers does not exist", line: 1})
+        end
+        if header.sort != allowed_attributes.sort
+          error_data.push({message: "Incorrect Header, Please follow the existing template", line: 1})
+        end
         if row["description"].present? && !Control.find_by(description: row["description"]).present?
           if control_descriptions.count != 0
             control_obj = Control&.find_by(description:control_descriptions[index_control-1])
@@ -125,9 +139,18 @@ class Control < ApplicationRecord
             # error_data.push({message: "Type of Control must Exist", line: k})
             row_type_of_control = row["type of control"]
           end
+          if !BusinessProcess.find_by_name(row["related business process name"]).present?
+            error_data.push({message: "Business Process must Exist", line: k})
+          end
 
-          
-          control_id = Control&.create(description: control_descriptions[index_control],status: "release", type_of_control: row_type_of_control, frequency: row_frequency, nature: row_nature, assertion: row_assertion, ipo: row_ipo, key_control: row["key control"],risk_ids: row["related risk"], business_process_ids: row["related business process"], department_ids: row["related control owner"], is_inside: true)
+          if !Risk.find_by_name(row["related risk name"]).present?
+            error_data.push({message: "Risk must Exist", line: k})
+          end
+
+          if !Department.find_by_name(row["related control owner name"]).present?
+            error_data.push({message: "Control Owner must Exist", line: k})
+          end
+          control_id = Control&.create(description: control_descriptions[index_control],status: "release", type_of_control: row_type_of_control, frequency: row_frequency, nature: row_nature, assertion: row_assertion, ipo: row_ipo, key_control: row["key control"],risk_ids: Risk.find_by_name(row["related risk nam"])&.id, business_process_ids: BusinessProcess.find_by_name(row["related business process name"])&.id, department_ids: Department.find_by_name(row["related control owner name"])&.id, is_inside: true)
           unless control_id.valid?
             error_data.push({message: control_id.errors.full_messages.join(","), line: k})
           else
@@ -177,7 +200,7 @@ class Control < ApplicationRecord
                     error_data.push({message: "Business Process must Exist", line: k})
                   end
                   if main_bp.present?
-                    risk_check = Risk.find_by_name(spreadsheet.row(bp[:line])[10])
+                    risk_check = Risk.find_by_name(spreadsheet.row(bp[:line])[header.find_index("related risk name")])
                     if risk_check.present?
                       if risk_check.business_processes.pluck(:name).include? main_bp.name
                         bp_ids.push(main_bp&.id)

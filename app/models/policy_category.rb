@@ -1,5 +1,5 @@
 class PolicyCategory < ApplicationRecord
-	has_paper_trail ignore: [:status, :updated_at]
+	has_paper_trail ignore: [:status, :updated_at, :is_inside]
 
   # Add callbacks in the order you need.
   paper_trail.on_destroy    # add destroy callback
@@ -30,14 +30,29 @@ class PolicyCategory < ApplicationRecord
     spreadsheet = open_spreadsheet(file)
     allowed_attributes = ["name", "related policy title"]
     header = spreadsheet.row(1)
+    if header.present?
+      header.map! {|x| x.downcase}
+    end
     polcat_names = []
     pol_ids = []
     pol_obj = []
     error_data = []
     index_polcat = 0
+
+    spread_count = spreadsheet.row(2).count
+    spread_nil = spreadsheet.row(2).group_by(&:itself).map { |k,v| [k, v.length] }.to_h
+    if spread_nil[nil] == spread_count
+      error_data.push({message: "Policy Category cannot be empty", line: 2})
+    end
     ActiveRecord::Base.transaction do 
       (2..spreadsheet.last_row).each do |k|
         row = Hash[[header, spreadsheet.row(k)].transpose]
+        if !header.present?
+          error_data.push({message: "Policy Category Headers does not exist", line: 1})
+        end
+        if header.sort != allowed_attributes.sort
+          error_data.push({message: "Incorrect Header, Please follow the existing template", line: 1})
+        end
         if row["name"].present? && !PolicyCategory.find_by_name(row["name"]).present?
           if polcat_names.count != 0
             polcat_obj = PolicyCategory&.find_by_name(polcat_names[index_polcat-1])
@@ -56,7 +71,11 @@ class PolicyCategory < ApplicationRecord
             polcat_names.push(row["name"])
           end
 
-          policy_category_id = PolicyCategory&.create(name: polcat_names[index_polcat],policy_ids: Policy.find_by(title: row["related policy title"])&.id, status: "release", is_inside: true)
+          if !Policy.find_by(title: row["related policy title"].to_s).present?
+            error_data.push({message: "Policy must Exist", line: k})
+          end
+
+          policy_category_id = PolicyCategory&.create(name: polcat_names[index_polcat],policy_ids: Policy.find_by(title: row["related policy title"].to_s)&.id, status: "release", is_inside: true)
 
           unless policy_category_id.valid?
             error_data.push({message: policy_category_id.errors.full_messages.join(","), line: k})
