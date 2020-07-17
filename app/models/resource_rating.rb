@@ -11,6 +11,6 @@ class ResourceRating < ApplicationRecord
   belongs_to :user, optional: true
 
   def to_humanize
-    "#{self.user.name} rate Resoruce: #{self.resource.name} Rating: #{self.rating}"
+    "#{self.user.name} rate #{self.resource.name} #{self.rating}"
   end
 end

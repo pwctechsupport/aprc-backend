@@ -4,7 +4,7 @@ class Risk < ApplicationRecord
   validates_uniqueness_of :name, :case_sensitive => false
 
   # validates_uniqueness_of :name, :scope => [:type_of_risk, :level_of_risk]
-  has_paper_trail ignore: [:status, :updated_at]
+  has_paper_trail ignore: [:status, :updated_at, :is_inside]
   has_drafts
   serialize :business_process, Array
   has_many :control_risks, class_name: "ControlRisk", foreign_key: "risk_id", dependent: :destroy
@@ -38,6 +38,9 @@ class Risk < ApplicationRecord
     spreadsheet = open_spreadsheet(file)
     allowed_attributes = ["name", "level of risk", "type of risk", "related business process name"]
     header = spreadsheet.row(1)
+    if header.present?
+      header.map! {|x| x.downcase}
+    end
     risk_names = []
     bp_ids = []
     bp_obj= []
@@ -45,10 +48,21 @@ class Risk < ApplicationRecord
     collected_bp = []
     error_data = []
     index_risk = 0
+    spread_count = spreadsheet.row(2).count
+    spread_nil = spreadsheet.row(2).group_by(&:itself).map { |k,v| [k, v.length] }.to_h
+    if spread_nil[nil] == spread_count
+      error_data.push({message: "Risk cannot be empty", line: 2})
+    end
     
     ActiveRecord::Base.transaction do
       (2..spreadsheet.last_row).each do |k|
         row = Hash[[header, spreadsheet.row(k)].transpose]
+        if !header.present?
+          error_data.push({message: "Risk's Headers does not exist", line: 1})
+        end
+        if header.sort != allowed_attributes.sort
+          error_data.push({message: "Incorrect Header, Please follow the existing template", line: 1})
+        end
         if row["name"].present? && !Risk.find_by_name(row["name"]).present?
           if risk_names.count != 0
             risk_obj = Risk.find_by_name(risk_names[index_risk-1])
@@ -78,6 +92,10 @@ class Risk < ApplicationRecord
           else
             # error_data.push({message: "Type of Risk must Exist", line: k})
             row_type_of_risk = row["type of risk"]
+          end
+
+          if !BusinessProcess.find_by_name(row["related business process name"]).present?
+            error_data.push({message: "Business Process must Exist", line: k})
           end
   
           risk_id = Risk.create(name: risk_names[index_risk],business_process_ids: BusinessProcess.find_by_name(row["related business process name"])&.id, level_of_risk: row_level_of_risk, type_of_risk: row_type_of_risk, status: "release", is_inside: true)

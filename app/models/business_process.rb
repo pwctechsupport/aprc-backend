@@ -26,12 +26,27 @@ class BusinessProcess < ApplicationRecord
     spreadsheet = open_spreadsheet(file)
     allowed_attributes = ["name", "sub business process 1", "sub business process 2"]
     header = spreadsheet.row(1)
+    if header.present?
+      header.map! {|x| x.downcase}
+    end
     bp_obj = []
     collected_bp =[]
     error_data =[]
+    spread_count = spreadsheet.row(2).count
+    spread_nil = spreadsheet.row(2).group_by(&:itself).map { |k,v| [k, v.length] }.to_h
+    if spread_nil[nil] == spread_count
+      error_data.push({message: "Business Process cannot be empty", line: 2})
+    end
+    
     ActiveRecord::Base.transaction do 
       (2..spreadsheet.last_row).each do |k|
         row = Hash[[header, spreadsheet.row(k)].transpose]
+        if !header.present?
+          error_data.push({message: "Business Process Headers does not exist", line: 1})
+        end
+        if header.sort != allowed_attributes.sort
+          error_data.push({message: "Incorrect Header, Please follow the existing template", line: 1})
+        end
         if !row["name"].present?
           error_data.push({message: "Business Process Must Exist", line: k})
         end
