@@ -110,7 +110,7 @@ class Risk < ApplicationRecord
         risk_inside = Risk.find_by_name(row["name"]) 
         if row["name"].present? && risk_inside.present?
           if !risk_inside.is_inside?
-            error_data.push({message: "Risk data exist, cannot edit risk named  #{risk_inside&.name }. please remove it from the worksheet", line: k})
+            error_data.push({message: "Risk data already exist, cannot edit risk named  #{risk_inside&.name }. please remove it from the worksheet", line: k})
           end
         end
   

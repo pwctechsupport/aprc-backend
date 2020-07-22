@@ -73,7 +73,7 @@ class Reference < ApplicationRecord
           reference_inside = Reference.find_by_name(str_name)
           if str_name.present? && reference_inside.present?
             if !reference_inside.is_inside?
-              error_data.push({message: "Reference data exist, cannot edit Reference named  #{reference_inside&.name }. please remove it from the worksheet", line: k})
+              error_data.push({message: "Reference data already exist, cannot edit Reference named  #{reference_inside&.name }. please remove it from the worksheet", line: k})
             end
           end
         end

@@ -28,7 +28,7 @@ module Api
     end
 
     def report_risk
-      @risks = Risk.where.not(id:PolicyRisk.pluck(:risk_id), status: "release")
+      @risks = Risk.where.not(id:PolicyRisk.pluck(:risk_id)).where(status: "release")
       respond_to do |format|
         format.json
         format.pdf do
@@ -43,7 +43,7 @@ module Api
     end
 
     def report_risk_policy
-      @risks = Risk.where.not(id:ControlRisk.pluck(:risk_id), status: "release")
+      @risks = Risk.where.not(id:ControlRisk.pluck(:risk_id)).where(status: "release")
       respond_to do |format|
         format.json
         format.pdf do
