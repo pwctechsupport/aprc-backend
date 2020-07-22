@@ -73,7 +73,7 @@ class Resource < ApplicationRecord
         resource_inside = Resource.find_by_name(row["name"])
         if row["name"].present? && resource_inside.present?
           if !resource_inside.is_inside?
-            error_data.push({message: "Resource data exist, cannot edit Resource named  #{resource_inside&.name }. please remove it from the worksheet", line: k})
+            error_data.push({message: "Resource data already exist, cannot edit Resource named  #{resource_inside&.name }. please remove it from the worksheet", line: k})
           end
         end
 

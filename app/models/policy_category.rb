@@ -89,7 +89,7 @@ class PolicyCategory < ApplicationRecord
         polcat_inside = PolicyCategory.find_by_name(row["name"])
         if row["name"].present? && polcat_inside.present?
           if !polcat_inside.is_inside?
-            error_data.push({message: "Policy Category data exist, cannot edit Policy Category named  #{polcat_inside&.name }. please remove it from the worksheet", line: k})
+            error_data.push({message: "Policy Category data already exist, cannot edit Policy Category named  #{polcat_inside&.name }. please remove it from the worksheet", line: k})
           end
         end
 
