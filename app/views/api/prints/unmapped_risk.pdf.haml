@@ -75,10 +75,11 @@
     %table.table.table-borderless
       %thead
       -z = 1
-      -@tags.each do |tag|
-        -if !tag.risk_id.nil?
-          -unmapped_risk = tag.business_process.risk_ids
-          -unmapped_risk.reject!{|x| x == tag.risk_id }
+      -new_tag = @tags.pluck(:business_process_id).map{|x| Tag.where.not(risk_id:nil).find_by(business_process_id: x)}
+      -new_tag.each do |tag|
+        -unmapped_risk = tag.business_process.risk_ids
+        -total_risk = @tags.where(business_process_id: tag.business_process_id).map{|x| x.risk_id}
+        -unmapped_risk.reject!{|x| total_risk.include?(x)}
           -if unmapped_risk.count != 0
             -unmapped_risk.each do |unmapped|
               -risk = Risk.find(unmapped)

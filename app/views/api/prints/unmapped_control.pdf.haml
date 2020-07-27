@@ -76,29 +76,30 @@
       %thead
       
       -z = 1
-      -@tags.each do |tag|
-        -if !tag.control_id.nil?
-          -unmapped_control = tag.business_process.control_ids
-          -unmapped_control.reject!{|x| x == tag.control_id }
-          -if unmapped_control.count != 0
-            -unmapped_control.each do |unmapped|
-              -con = Control.find(unmapped)
-              %tr
-                %td.text-center{:scope => "row", :style => "width: 6%"} #{z}
-                %td.text-center{:scope => "row",:style => "width: 12%"} #{tag.business_process&.name&.titlecase}
-                %td.text-center{:scope => "row",:style => "width: 12%"} #{con&.description.titlecase}
-                %td.text-center{:scope => "row", :style => "width: 12%"} #{con.type_of_control.to_s.gsub(/[^0-9A-Za-z]/, ' ').titlecase.html_safe}
-                %td.text-center{:scope => "row",:style => "width: 13%"} #{con.control_owner.join(",").to_s.gsub(/[^0-9A-Za-z]/, ' ').titlecase.html_safe}
-                %td.text-center{:scope => "row",:style => "width: 12%"} #{con.frequency.to_s.gsub(/[^0-9A-Za-z]/, ' ').titlecase.html_safe}
-                %td.text-center{:scope => "row",:style => "width: 8%"} #{con.nature.to_s.gsub(/[^0-9A-Za-z]/, ' ').titlecase.html_safe}
-                %td.text-center{:scope => "row",:style => "width: 9%"}= con.convert_assertion.join(",")
-                %td.text-center{:scope => "row",:style => "width: 8%"}= con.convert_ipo.join(",")
-                %td{:scope => "row",:style => "width: 6%"}
-                  -if con&.key_control == true
-                    Yes
-                  -else
-                    No
-              - z+=1 
+      -new_tag = @tags.pluck(:business_process_id).map{|x| Tag.where.not(control_id:nil).find_by(business_process_id: x)}
+      -new_tag.each do |tag|
+        -unmapped_control = tag.business_process.control_ids
+        -total_control = @tags.where(business_process_id: tag.business_process_id).map{|x| x.control_id}
+        -unmapped_control.reject!{|x| total_control.include?(x)}
+        -if unmapped_control.count != 0
+          -unmapped_control.each do |unmapped|
+            -con = Control.find(unmapped)
+            %tr
+              %td.text-center{:scope => "row", :style => "width: 6%"} #{z}
+              %td.text-center{:scope => "row",:style => "width: 12%"} #{tag.business_process&.name&.titlecase}
+              %td.text-center{:scope => "row",:style => "width: 12%"} #{con&.description.titlecase}
+              %td.text-center{:scope => "row", :style => "width: 12%"} #{con.type_of_control.to_s.gsub(/[^0-9A-Za-z]/, ' ').titlecase.html_safe}
+              %td.text-center{:scope => "row",:style => "width: 13%"} #{con.control_owner.join(",").to_s.gsub(/[^0-9A-Za-z]/, ' ').titlecase.html_safe}
+              %td.text-center{:scope => "row",:style => "width: 12%"} #{con.frequency.to_s.gsub(/[^0-9A-Za-z]/, ' ').titlecase.html_safe}
+              %td.text-center{:scope => "row",:style => "width: 8%"} #{con.nature.to_s.gsub(/[^0-9A-Za-z]/, ' ').titlecase.html_safe}
+              %td.text-center{:scope => "row",:style => "width: 9%"}= con.convert_assertion.join(",")
+              %td.text-center{:scope => "row",:style => "width: 8%"}= con.convert_ipo.join(",")
+              %td{:scope => "row",:style => "width: 6%"}
+                -if con&.key_control == true
+                  Yes
+                -else
+                  No
+            - z+=1 
       
 
     %br

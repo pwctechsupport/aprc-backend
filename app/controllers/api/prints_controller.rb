@@ -73,7 +73,7 @@ module Api
     end
 
     def unmapped_risk
-      @tags = Tag.all
+      @tags = Tag.where.not(risk_id:nil)
       respond_to do |format|
         format.json
         format.pdf do
@@ -88,7 +88,7 @@ module Api
     end
 
     def unmapped_control
-      @tags = Tag.all
+      @tags = Tag.where.not(control_id:nil)
       respond_to do |format|
         format.json
         format.pdf do
