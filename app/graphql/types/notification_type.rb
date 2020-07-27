@@ -14,9 +14,9 @@ module Types
 		field :user, Types::UserType, null: true
 		field :sender_user_id, ID, null: true
 		field :sender_user, Types::UserType, null:true
-		field :sender_user_name, String, null: true
+		field :sender_user_actual_name, String, null: true
 
-		def sender_user_name
+		def sender_user_actual_name
 			sender = object&.sender_user&.name
 			if object&.is_general
 				sender= "System"
