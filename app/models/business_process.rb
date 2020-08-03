@@ -55,7 +55,7 @@ class BusinessProcess < ApplicationRecord
           if bp[:name].present?
             main_bp = BusinessProcess.find_by_name(bp[:name])
             if !main_bp.present?
-              main_bp = BusinessProcess.create(name: bp[:name])
+              main_bp = BusinessProcess.create(name: bp[:name], created_by: current_user&.name, last_updated_by: current_user&.name)
               unless main_bp.valid?
                 error_data.push({message: main_bp.errors.full_messages.join(","), line: k})
               else
@@ -95,7 +95,7 @@ class BusinessProcess < ApplicationRecord
                   bispro.update(parent_id: main_bp&.id)
                 end
               else
-                bispro = BusinessProcess.create(name:bp[:sub1], parent_id:main_bp&.id)
+                bispro = BusinessProcess.create(name:bp[:sub1], parent_id:main_bp&.id, created_by: current_user&.name, last_updated_by: current_user&.name)
                 unless bispro.valid?
                   error_data.push({message: bispro.errors.full_messages.join(","), line: k})
                 else

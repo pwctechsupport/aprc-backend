@@ -75,7 +75,7 @@ class PolicyCategory < ApplicationRecord
             error_data.push({message: "Policy must Exist", line: k})
           end
 
-          policy_category_id = PolicyCategory&.create(name: polcat_names[index_polcat],policy_ids: Policy.find_by(title: row["related policy title"].to_s)&.id, status: "release", is_inside: true)
+          policy_category_id = PolicyCategory&.create(name: polcat_names[index_polcat],policy_ids: Policy.find_by(title: row["related policy title"].to_s)&.id, status: "release", is_inside: true, created_by: current_user&.name, last_updated_by: current_user&.name)
 
           unless policy_category_id.valid?
             error_data.push({message: policy_category_id.errors.full_messages.join(","), line: k})

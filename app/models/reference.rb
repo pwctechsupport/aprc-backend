@@ -59,7 +59,7 @@ class Reference < ApplicationRecord
               error_data.push({message: "Policy must Exist", line: k})
             end
 
-            reference_id = Reference&.create(name: ref_names[index_ref],policy_ids: Policy.find_by(title: row["related policy title"].to_s)&.id, is_inside: true)
+            reference_id = Reference&.create(name: ref_names[index_ref],policy_ids: Policy.find_by(title: row["related policy title"].to_s)&.id, is_inside: true, created_by: current_user&.name, last_updated_by: current_user&.name)
             unless reference_id.valid?
               error_data.push({message: reference_id.errors.full_messages.join(","), line: k})
             end

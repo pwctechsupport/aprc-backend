@@ -89,7 +89,7 @@ class Control < ApplicationRecord
             if activity_obj.count != 0
               active_control = activity_obj.uniq
             end
-            control_id = control_obj&.update(risk_ids: risk_ids.uniq, business_process_ids: bp_ids.uniq, department_ids:co_ids.uniq, status: "release", activity_controls_attributes:active_control)
+            control_id = control_obj&.update(risk_ids: risk_ids.uniq, business_process_ids: bp_ids.uniq, department_ids:co_ids.uniq, status: "release", activity_controls_attributes:active_control, created_by: current_user&.name, last_updated_by: current_user&.name)
             if control_obj&.departments.present?
               con_dep = control_obj&.departments&.map{|x| x.name}
               control_obj&.update(control_owner: con_dep)
@@ -150,7 +150,7 @@ class Control < ApplicationRecord
           if !Department.find_by_name(row["related control owner name"]).present?
             error_data.push({message: "Control Owner must Exist", line: k})
           end
-          control_id = Control&.create(description: control_descriptions[index_control],status: "release", type_of_control: row_type_of_control, frequency: row_frequency, nature: row_nature, assertion: row_assertion, ipo: row_ipo, key_control: row["key control"],risk_ids: Risk.find_by_name(row["related risk nam"])&.id, business_process_ids: BusinessProcess.find_by_name(row["related business process name"])&.id, department_ids: Department.find_by_name(row["related control owner name"])&.id, is_inside: true)
+          control_id = Control&.create(description: control_descriptions[index_control],status: "release", type_of_control: row_type_of_control, frequency: row_frequency, nature: row_nature, assertion: row_assertion, ipo: row_ipo, key_control: row["key control"],risk_ids: Risk.find_by_name(row["related risk nam"])&.id, business_process_ids: BusinessProcess.find_by_name(row["related business process name"])&.id, department_ids: Department.find_by_name(row["related control owner name"])&.id, is_inside: true, created_by: current_user&.name, last_updated_by: current_user&.name)
           unless control_id.valid?
             error_data.push({message: control_id.errors.full_messages.join(","), line: k})
           else
