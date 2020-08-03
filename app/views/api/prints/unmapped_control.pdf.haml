@@ -68,8 +68,8 @@
     -#   %tbody
     -#     %tr
     -#       %td #{ris.name}
-    -#       %td #{ris.level_of_risk.to_s.gsub(/_/, ' ').titlecase}
-    -#       %td #{ris.type_of_risk.to_s.gsub(/_/, ' ').titlecase}
+    -#       %td #{ris.level_of_risk.to_s.gsub(/_/, ' ').capitalize}
+    -#       %td #{ris.type_of_risk.to_s.gsub(/_/, ' ').capitalize}
     -#       %td #{ris.business_process.name.capitalize}
     -# %br
     %table.table.table-borderless
@@ -86,12 +86,12 @@
             -con = Control.find(unmapped)
             %tr
               %td.text-center{:scope => "row", :style => "width: 6%"} #{z}
-              %td.text-center{:scope => "row",:style => "width: 12%"} #{tag.business_process&.name&.titlecase}
-              %td.text-center{:scope => "row",:style => "width: 12%"} #{con&.description.titlecase}
-              %td.text-center{:scope => "row", :style => "width: 12%"} #{con.type_of_control.to_s.gsub(/[^0-9A-Za-z]/, ' ').titlecase.html_safe}
-              %td.text-center{:scope => "row",:style => "width: 13%"} #{con.control_owner.join(",").to_s.gsub(/[^0-9A-Za-z]/, ' ').titlecase.html_safe}
-              %td.text-center{:scope => "row",:style => "width: 12%"} #{con.frequency.to_s.gsub(/[^0-9A-Za-z]/, ' ').titlecase.html_safe}
-              %td.text-center{:scope => "row",:style => "width: 8%"} #{con.nature.to_s.gsub(/[^0-9A-Za-z]/, ' ').titlecase.html_safe}
+              %td.text-center{:scope => "row",:style => "width: 12%"} #{tag.business_process&.name&.capitalize}
+              %td.text-center{:scope => "row",:style => "width: 12%"} #{con&.description.capitalize}
+              %td.text-center{:scope => "row", :style => "width: 12%"} #{con.type_of_control.to_s.gsub(/[^0-9A-Za-z]/, ' ').capitalize.html_safe}
+              %td.text-center{:scope => "row",:style => "width: 13%"} #{con.control_owner.join(",").to_s.gsub(/[^0-9A-Za-z]/, ' ').capitalize.html_safe}
+              %td.text-center{:scope => "row",:style => "width: 12%"} #{con.frequency.to_s.gsub(/[^0-9A-Za-z]/, ' ').capitalize.html_safe}
+              %td.text-center{:scope => "row",:style => "width: 8%"} #{con.nature.to_s.gsub(/[^0-9A-Za-z]/, ' ').capitalize.html_safe}
               %td.text-center{:scope => "row",:style => "width: 9%"}= con.convert_assertion.join(",")
               %td.text-center{:scope => "row",:style => "width: 8%"}= con.convert_ipo.join(",")
               %td{:scope => "row",:style => "width: 6%"}

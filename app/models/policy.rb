@@ -26,7 +26,7 @@ class Policy < ApplicationRecord
   
 
   def to_humanize
-    "#{self.title.titlecase}"
+    "#{self.title.capitalize}"
   end
 
   def request_edit

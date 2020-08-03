@@ -56,7 +56,7 @@ module Mutations
           if args[:category].present?
             enum_list = EnumList&.find_by(category_type: "Category", name: args[:category]) || EnumList&.find_by(category_type: "Category", code: args[:category])
             if enum_list ==  nil 
-              kode = args[:category].gsub("_"," ").titlecase
+              kode = args[:category].gsub("_"," ").capitalize
               EnumList.create(name: args[:category], category_type: "Category", code: kode)
             end
             enum_list = EnumList&.find_by(category_type: "Category", name: args[:category]) || EnumList&.find_by(category_type: "Category", code: args[:category])
