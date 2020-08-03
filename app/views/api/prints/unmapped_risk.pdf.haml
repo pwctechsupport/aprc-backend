@@ -81,14 +81,14 @@
         -total_risk = @tags.where(business_process_id: tag.business_process_id).map{|x| x.risk_id}
         -unmapped_risk.reject!{|x| total_risk.include?(x)}
         -if unmapped_risk.count != 0
-          -unmapped_risk.each do |unmapped|
+          -unmapped_risk.uniq.each do |unmapped|
             -risk = Risk.find(unmapped)
             %tr
               %td.text-center{:scope => "row", :style => "width: 10%"} #{z}
               %td.text-center{:scope => "row", :style => "width: 30%"} #{tag&.business_process&.name&.capitalize}
-              %td.text-center.ape{:scope => "row", :style => "width: 30%"} #{risk.name.to_s.gsub(/[^0-9A-Za-z]/, ' ').capitalize.html_safe}
-              %td.text-center{:scope => "row", :style => "width: 30%"} #{risk.level_of_risk.to_s.gsub(/[^0-9A-Za-z]/, ' ').capitalize.html_safe}
-              %td.text-center{:scope => "row", :style => "width: 30%"} #{risk.type_of_risk.to_s.gsub(/[^0-9A-Za-z]/, ' ').capitalize.html_safe}
+              %td.text-center.ape{:scope => "row", :style => "width: 30%"} #{risk.name.to_s.capitalize.html_safe}
+              %td.text-center{:scope => "row", :style => "width: 30%"} #{risk.level_of_risk.to_s.gsub("_", ' ').capitalize.html_safe}
+              %td.text-center{:scope => "row", :style => "width: 30%"} #{risk.type_of_risk.to_s.gsub("_", ' ').capitalize.html_safe}
             - z+=1 
     %br
     %br
