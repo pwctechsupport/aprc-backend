@@ -2,9 +2,19 @@
 wb = xlsx_package.workbook
 
 
+content = wb.styles.add_style(:bg_color => "FFFFFFFF",
+  :fg_color=>"#FF000000",
+  :border=>Axlsx::STYLE_THIN_BORDER,
+  :alignment=>{:horizontal => :center, :vertical => :center})
+
+
+header = wb.styles.add_style(:sz => 12, :bg_color => 'b10015', :fg_color => 'FF', :b => true, :border => { :style => :thin, :color => "00000000", :edges => [:top, :bottom, :left, :right] }, :alignment=>{:horizontal => :center, :vertical => :center})
+
+
+
 wb.add_worksheet(name: "Exception Report") do |sheet|
   # Create the header row
-  sheet.add_row ["Business Process", "Name of control","Type of control","Control Owner", "Frequency", "Nature", "Assertion", "Ipo", "Key control"]
+  head = sheet.add_row ["Business Process", "Name of control","Type of control","Control Owner", "Frequency", "Nature", "Assertion", "Ipo", "Key control"], :style => header, :height => 25
   # Create entries for each item
   new_tag = @tags.pluck(:business_process_id).map{|x| Tag.where.not(control_id:nil).find_by(business_process_id: x)}
   new_tag.uniq.each do |tag|
@@ -24,7 +34,7 @@ wb.add_worksheet(name: "Exception Report") do |sheet|
           con.convert_assertion.join(","), 
           con.convert_ipo.join(","),
           con&.key_control
-        ]
+        ], :style=>content, :height => 22
       end
     end
   end
