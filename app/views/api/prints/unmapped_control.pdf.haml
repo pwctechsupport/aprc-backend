@@ -94,7 +94,7 @@
               %td.text-center{:scope => "row",:style => "width: 8%"} #{con.nature.to_s.gsub("_", ' ').capitalize.html_safe}
               %td.text-center{:scope => "row",:style => "width: 9%"}= con.convert_assertion.join(",")
               %td.text-center{:scope => "row",:style => "width: 8%"}= con.convert_ipo.join(",")
-              %td{:scope => "row",:style => "width: 6%"}
+              %td.text-center{:scope => "row",:style => "width: 6%"}
                 -if con&.key_control == true
                   Yes
                 -else
