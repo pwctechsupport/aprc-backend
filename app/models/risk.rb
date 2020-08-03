@@ -98,7 +98,7 @@ class Risk < ApplicationRecord
             error_data.push({message: "Business Process must Exist", line: k})
           end
   
-          risk_id = Risk.create(name: risk_names[index_risk],business_process_ids: BusinessProcess.find_by_name(row["related business process name"])&.id, level_of_risk: row_level_of_risk, type_of_risk: row_type_of_risk, status: "release", is_inside: true)
+          risk_id = Risk.create(name: risk_names[index_risk],business_process_ids: BusinessProcess.find_by_name(row["related business process name"])&.id, level_of_risk: row_level_of_risk, type_of_risk: row_type_of_risk, status: "release", is_inside: true, created_by: current_user&.name, last_updated_by: current_user&.name)
           unless risk_id.valid?
             error_data.push({message: risk_id.errors.full_messages.join(","), line: k})
           end
