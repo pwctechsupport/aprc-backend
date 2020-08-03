@@ -4,28 +4,27 @@ wb = xlsx_package.workbook
 
 wb.add_worksheet(name: "Exception Report") do |sheet|
   # Create the header row
-  sheet.add_row ["control owner", "description", "type of control", "frequency", "nature", "assertion", "ipo", "status", "key control", "business process"]
+  sheet.add_row ["Business Process", "Name of control","Type of control","Control Owner", "Frequency", "Nature", "Assertion", "Ipo", "Key control"]
   # Create entries for each item
-  ris = @tags.pluck(:control_id).group_by(&:itself).reject{|k,v| v.count>1}.keys
-  ris.reject!{|x| x == nil} if ris.count(nil) >= 1
-  
-  ris.each do |con|
-    control = Control.find(con)
-    if control.assertion.count < 2
-      if control.business_processes.present?
-        control&.business_processes.each do |bis|
-          sheet.add_row [control&.control_owner.join(",")&.titlecase, control&.description&.titlecase, control&.type_of_control&.gsub(/_/, ' ')&.titlecase, control&.frequency, control&.nature&.titlecase, control&.assertion&.join&.gsub(/_/, ' ')&.titlecase, control&.ipo.join&.gsub(/_/, ' ')&.titlecase, control&.status&.gsub(/_/, ' ')&.titlecase, control&.key_control,bis&.name]
-        end
-      else
-        sheet.add_row [control&.control_owner.join(",")&.titlecase, control&.description&.titlecase, control&.type_of_control&.gsub(/_/, ' ')&.titlecase, control&.frequency, control&.nature&.titlecase, control&.assertion&.join&.gsub(/_/, ' ')&.titlecase, control&.ipo.join&.gsub(/_/, ' ')&.titlecase, control&.status&.gsub(/_/, ' ')&.titlecase, control&.key_control,"No Business Process"]
-      end
-    else
-      if control.business_processes.present?
-        control&.business_processes.each do |bis|
-          sheet.add_row [control&.control_owner.join(",")&.titlecase, control&.description&.titlecase, control&.type_of_control&.gsub(/_/, ' ')&.titlecase, control&.frequency, control&.nature&.titlecase, control&.assertion&.join(",")&.gsub(/_/, ' ')&.titlecase, control&.ipo&.join(",")&.gsub(/_/, ' ')&.titlecase, control&.status&.gsub(/_/, ' ')&.titlecase, control&.key_control,bis&.name]
-        end
-      else
-        sheet.add_row [control&.control_owner.join(",")&.titlecase, control&.description&.titlecase, control&.type_of_control&.gsub(/_/, ' ')&.titlecase, control&.frequency, control&.nature&.titlecase, control&.assertion&.join(",")&.gsub(/_/, ' ')&.titlecase, control&.ipo&.join(",")&.gsub(/_/, ' ')&.titlecase, control&.status&.gsub(/_/, ' ')&.titlecase, control&.key_control,"No Business Process"]
+  new_tag = @tags.pluck(:business_process_id).map{|x| Tag.where.not(control_id:nil).find_by(business_process_id: x)}
+  new_tag.uniq.each do |tag|
+    unmapped_control = tag.business_process.control_ids
+    total_control = @tags.where(business_process_id: tag.business_process_id).map{|x| x.control_id}
+    unmapped_control.reject!{|x| total_control.include?(x)}
+    if unmapped_control.count != 0
+      unmapped_control.uniq.each do |unmapped|
+        con = Control.find(unmapped)
+        sheet.add_row [
+          tag.business_process&.name&.capitalize, 
+          con&.description.capitalize, 
+          con.type_of_control.present? ? con.type_of_control.to_s.gsub("_", ' ').capitalize : "", 
+          con.control_owner.present? ? con.control_owner.join(", ").to_s.gsub("_", ' ').titlecase : "", 
+          con&.frequency&.to_s&.gsub("_", ' ').capitalize.html_safe, 
+          con&.nature&.to_s&.gsub("_", ' ').capitalize, 
+          con.convert_assertion.join(","), 
+          con.convert_ipo.join(","),
+          con&.key_control
+        ]
       end
     end
   end

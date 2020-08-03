@@ -43,7 +43,7 @@ module Mutations
             user_draft.revert!
             if user&.present? && user&.request_edit&.present?
               user&.request_edit&.destroy
-              user.update(policy_category: policy_category_rejected)
+              user.update(policy_category: policy_category_rejected, status: "release")
             end
           end
         end 

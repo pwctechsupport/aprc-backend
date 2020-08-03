@@ -25,7 +25,7 @@ class Policy < ApplicationRecord
   belongs_to :user_reviewer, class_name: "User", foreign_key:"user_reviewer_id", optional: true
 
   def to_humanize
-    "#{self.title.titlecase}"
+    "#{self.title.capitalize}"
   end
 
   def request_edit

@@ -44,7 +44,7 @@ module Mutations
             risk_draft.revert!
             if risk&.present? && risk&.request_edit&.present?
               risk&.request_edit&.destroy
-              risk&.update(business_process: business_process_rejected)
+              risk&.update(business_process: business_process_rejected, status: "release")
             end
           end
         end 

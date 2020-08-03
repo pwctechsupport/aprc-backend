@@ -29,7 +29,7 @@
       td{font-size:15px;}
       .tab{ margin-left:40px;}
       .ape{font-size:24px; text-align:left;}
-      .apu{font-size:24px; text-align:center;}
+      .apu{font-size:24px; text-align:left;}
       .aps{font-size:28px;}
       .mege{text-shadow: 0.5px 0.5px black;}
       .aha{border:none;}
@@ -51,23 +51,23 @@
         %td.aha Printed By
         %td.aha :
         %td.aha= current_user&.name
-    %h1.aps Risk & Controls
+    %h1.aps.text-center Risk & Controls
     %h2.apu= @business_process&.name
     
     -@business_process.risks.each_with_index do |ris, x|
       %ul
         %li
           %h3 
-            R.#{ris.id}: #{ris.name.titlecase}
+            R.#{ris.id}: #{ris.name.capitalize}
             -if ris&.level_of_risk&.present?
               -if ris&.level_of_risk == "low"
-                %span{:style => "background:#28a745;"} #{ris.level_of_risk.to_s.gsub(/_/, ' ').titlecase}
+                %span{:style => "background:#28a745;"} #{ris.level_of_risk.to_s.gsub(/_/, ' ').capitalize}
               -elsif ris&.level_of_risk == "medium"
-                %span{:style => "background:#ffc107;color:black;"} #{ris.level_of_risk.to_s.gsub(/_/, ' ').titlecase}
+                %span{:style => "background:#ffc107;color:black;"} #{ris.level_of_risk.to_s.gsub(/_/, ' ').capitalize}
               -elsif ris&.level_of_risk == "high"
-                %span{:style => "background:#dc3545;"} #{ris.level_of_risk.to_s.gsub(/_/, ' ').titlecase}
+                %span{:style => "background:#dc3545;"} #{ris.level_of_risk.to_s.gsub(/_/, ' ').capitalize}
             -if ris.type_of_risk.present?
-              %span{:style => "background:#6c757d;"} #{ris.type_of_risk.to_s.gsub(/_/, ' ').titlecase}
+              %span{:style => "background:#6c757d;"} #{ris.type_of_risk.to_s.gsub(/_/, ' ').capitalize}
       -if ris.controls.present? == false
       -else
         %h4{style: "margin-bottom:0px;"} 
@@ -75,35 +75,35 @@
         %table.table.table-borderless
           %thead
             %tr
-              %th.mege.text-center{:scope => "col"} No
-              %th.mege.text-center{:scope => "col"} Control Description
-              %th.mege.text-center{:scope => "col"} Type of Control
-              %th.mege.text-center{:scope => "col"} Control Owner
-              %th.mege.text-center{:scope => "col"} Frequency
-              %th.mege.text-center{:scope => "col"} Nature
-              %th.mege.text-center{:scope => "col"} Assertion
-              %th.mege.text-center{:scope => "col"} IPO
-              %th.mege.text-center{:scope => "col"} Status
-              %th.mege.text-center{:scope => "col"} Key Control
+              %th.mege.text-center{:scope => "col", :style => "width: 5.99%"} No
+              %th.mege.text-center{:scope => "col", :style => "width: 14%"} Control Description
+              %th.mege.text-center{:scope => "col", :style => "width: 10%"} Type of Control
+              %th.mege.text-center{:scope => "col", :style => "width: 15%"} Control Owner
+              %th.mege.text-center{:scope => "col", :style => "width: 10%"} Frequency
+              %th.mege.text-center{:scope => "col", :style => "width: 10%"} Nature
+              %th.mege.text-center{:scope => "col", :style => "width: 10%"} Assertion
+              %th.mege.text-center{:scope => "col", :style => "width: 5%"} IPO
+              %th.mege.text-center{:scope => "col", :style => "width: 10%"} Status
+              %th.mege.text-center{:scope => "col", :style => "width: 10%"} Key Control
           -ris.controls.each_with_index do |con,i|
             %tbody
               %tr
-                %td.text-center{:scope => "row"} #{i+1}
-                %td.text-center #{con.description.to_s.gsub(/[^0-9A-Za-z]/, ' ').titlecase.html_safe}
-                %td.text-center #{con.type_of_control.to_s.gsub(/[^0-9A-Za-z]/, ' ').titlecase.html_safe}
-                %td.text-center #{con.control_owner.join(",")}
-                %td.text-center #{con.frequency.to_s.gsub(/[^0-9A-Za-z]/, ' ').titlecase.html_safe}
-                %td.text-center #{con.nature.to_s.gsub(/[^0-9A-Za-z]/, ' ').titlecase.html_safe}
-                %td.text-center= con.convert_assertion.join(",")
-                %td.text-center= con.convert_ipo.join(",")
-                %td.text-center #{con.status.to_s.gsub(/[^0-9A-Za-z]/, ' ').titlecase}
-                %td 
+                %td.text-center{:scope => "row", :style => "width: 6%"} #{i+1}
+                %td.text-center{:scope => "row", :style => "width: 14%"} #{con.description.to_s.gsub(/[^0-9A-Za-z]/, ' ').capitalize.html_safe}
+                %td.text-center{:scope => "row", :style => "width: 10%"} #{con.type_of_control.to_s.gsub(/[^0-9A-Za-z]/, ' ').capitalize.html_safe}
+                %td.text-center{:scope => "row", :style => "width: 15%"} #{con.control_owner.join(", ")}
+                %td.text-center{:scope => "row", :style => "width: 10%"} #{con.frequency.to_s.gsub(/[^0-9A-Za-z]/, ' ').capitalize.html_safe}
+                %td.text-center{:scope => "row", :style => "width: 10%"} #{con.nature.to_s.gsub(/[^0-9A-Za-z]/, ' ').capitalize.html_safe}
+                %td.text-center{:scope => "row", :style => "width: 10%"}= con.convert_assertion.join(",")
+                %td.text-center{:scope => "row", :style => "width: 5%"}= con.convert_ipo.join(",")
+                %td.text-center{:scope => "row", :style => "width: 10%"} #{con.status.to_s.gsub(/[^0-9A-Za-z]/, ' ').capitalize}
+                %td.text-center{:scope => "row", :style => "width: 10%"}
                   -if con.key_control == true
                     Yes
                   -else
                     No
           %br
     
-    %p{:style => "page-break-after:always;"}
+    -# %p{:style => "page-break-after:always;"}
 
     %p{:style => "page-break-after:auto;"}

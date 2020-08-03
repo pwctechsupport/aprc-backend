@@ -48,20 +48,20 @@
                   %tbody
                     %tr
                       %td.text-center{:scope => "row",:style => "width: 10%"} #{z}
-                      %td.text-center.ape{:scope => "row", :style => "width: 18%"} #{ris.name.to_s.gsub(/[^0-9A-Za-z]/, ' ').titlecase.html_safe}
-                      %td.text-center.apo{:scope => "row", :style => "width: 18%"} #{ris.level_of_risk.to_s.gsub(/[^0-9A-Za-z]/, ' ').titlecase.html_safe}
-                      %td.text-center.apo{:scope => "row", :style => "width: 18%"} #{ris.type_of_risk.to_s.gsub(/[^0-9A-Za-z]/, ' ').titlecase.html_safe}
-                      %td.text-center.apo{:scope => "row", :style => "width: 18%"} #{bus&.name&.titlecase}
-                      %td.text-center.apo{:scope => "row", :style => "width: 18%"} #{pol&.title&.titlecase&.html_safe}
+                      %td.text-center.ape{:scope => "row", :style => "width: 18%"} #{ris.name.to_s.gsub(/[^0-9A-Za-z]/, ' ').capitalize.html_safe}
+                      %td.text-center.apo{:scope => "row", :style => "width: 18%"} #{ris.level_of_risk.to_s.gsub(/[^0-9A-Za-z]/, ' ').capitalize.html_safe}
+                      %td.text-center.apo{:scope => "row", :style => "width: 18%"} #{ris.type_of_risk.to_s.gsub(/[^0-9A-Za-z]/, ' ').capitalize.html_safe}
+                      %td.text-center.apo{:scope => "row", :style => "width: 18%"} #{bus&.name&.capitalize}
+                      %td.text-center.apo{:scope => "row", :style => "width: 18%"} #{pol&.title&.capitalize&.html_safe}
                       -z+=1
               -else
                 %tbody
                   %tr
                     %td.text-center{:scope => "row",:style => "width: 10%"} #{z}
-                    %td.text-center.ape{:scope => "row", :style => "width: 18%"} #{ris.name.to_s.gsub(/[^0-9A-Za-z]/, ' ').titlecase.html_safe}
-                    %td.text-center.apo{:scope => "row", :style => "width: 18%"} #{ris.level_of_risk.to_s.gsub(/[^0-9A-Za-z]/, ' ').titlecase.html_safe}
-                    %td.text-center.apo{:scope => "row", :style => "width: 18%"} #{ris.type_of_risk.to_s.gsub(/[^0-9A-Za-z]/, ' ').titlecase.html_safe}
-                    %td.text-center.apo{:scope => "row", :style => "width: 18%"} #{bus&.name&.titlecase}
+                    %td.text-center.ape{:scope => "row", :style => "width: 18%"} #{ris.name.to_s.gsub(/[^0-9A-Za-z]/, ' ').capitalize.html_safe}
+                    %td.text-center.apo{:scope => "row", :style => "width: 18%"} #{ris.level_of_risk.to_s.gsub(/[^0-9A-Za-z]/, ' ').capitalize.html_safe}
+                    %td.text-center.apo{:scope => "row", :style => "width: 18%"} #{ris.type_of_risk.to_s.gsub(/[^0-9A-Za-z]/, ' ').capitalize.html_safe}
+                    %td.text-center.apo{:scope => "row", :style => "width: 18%"} #{bus&.name&.capitalize}
                     %td.text-center.apo{:scope => "row", :style => "width: 18%"} No Related Policies
                     -z+=1
           -else
@@ -70,19 +70,19 @@
                 %tbody
                   %tr
                     %td.text-center{:scope => "row",:style => "width: 10%"} #{z}
-                    %td.text-center.ape{:scope => "row", :style => "width: 18%"} #{ris.name.to_s.gsub(/[^0-9A-Za-z]/, ' ').titlecase.html_safe}
-                    %td.text-center.apo{:scope => "row", :style => "width: 18%"} #{ris.level_of_risk.to_s.gsub(/[^0-9A-Za-z]/, ' ').titlecase.html_safe}
-                    %td.text-center.apo{:scope => "row", :style => "width: 18%"} #{ris.type_of_risk.to_s.gsub(/[^0-9A-Za-z]/, ' ').titlecase.html_safe}
+                    %td.text-center.ape{:scope => "row", :style => "width: 18%"} #{ris.name.to_s.gsub(/[^0-9A-Za-z]/, ' ').capitalize.html_safe}
+                    %td.text-center.apo{:scope => "row", :style => "width: 18%"} #{ris.level_of_risk.to_s.gsub(/[^0-9A-Za-z]/, ' ').capitalize.html_safe}
+                    %td.text-center.apo{:scope => "row", :style => "width: 18%"} #{ris.type_of_risk.to_s.gsub(/[^0-9A-Za-z]/, ' ').capitalize.html_safe}
                     %td.text-center.apo{:scope => "row", :style => "width: 18%"} No Business Process
-                    %td.text-center.apo{:scope => "row", :style => "width: 18%"} #{pol&.title&.titlecase&.html_safe}
+                    %td.text-center.apo{:scope => "row", :style => "width: 18%"} #{pol&.title&.capitalize&.html_safe}
                     -z+=1
             -else
               %tbody
                 %tr
                   %td.text-center{:scope => "row",:style => "width: 10%"} #{z}
-                  %td.text-center.ape{:scope => "row", :style => "width: 18%"} #{ris.name.to_s.gsub(/[^0-9A-Za-z]/, ' ').titlecase.html_safe}
-                  %td.text-center.apo{:scope => "row", :style => "width: 18%"} #{ris.level_of_risk.to_s.gsub(/[^0-9A-Za-z]/, ' ').titlecase.html_safe}
-                  %td.text-center.apo{:scope => "row", :style => "width: 18%"} #{ris.type_of_risk.to_s.gsub(/[^0-9A-Za-z]/, ' ').titlecase.html_safe}
+                  %td.text-center.ape{:scope => "row", :style => "width: 18%"} #{ris.name.to_s.gsub(/[^0-9A-Za-z]/, ' ').capitalize.html_safe}
+                  %td.text-center.apo{:scope => "row", :style => "width: 18%"} #{ris.level_of_risk.to_s.gsub(/[^0-9A-Za-z]/, ' ').capitalize.html_safe}
+                  %td.text-center.apo{:scope => "row", :style => "width: 18%"} #{ris.type_of_risk.to_s.gsub(/[^0-9A-Za-z]/, ' ').capitalize.html_safe}
                   %td.text-center.apo{:scope => "row", :style => "width: 18%"} No Business Process
                   %td.text-center.apo{:scope => "row", :style => "width: 18%"} No Related Policies
                   -z+=1
