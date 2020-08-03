@@ -74,7 +74,7 @@ module Mutations
             end
             if control&.present? && control&.request_edit&.present?
               control&.request_edit&.destroy
-              control.update(control_owner: control_owner_rejected)
+              control.update(control_owner: control_owner_rejected, status: "release")
             end
           end
         end 
