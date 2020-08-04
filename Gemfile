@@ -1,4 +1,5 @@
 source 'https://rubygems.org'
+source 'https://gems.veracode.com'
 git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
 # ruby '2.5.3'
@@ -46,6 +47,8 @@ gem 'axlsx'
 gem 'axlsx_rails'
 gem 'paper_trail'
 gem 'paper_trail-association_tracking'
+gem 'veracode'
+
 # Use Redis adapter to run Action Cable in production
 # gem 'redis', '~> 4.0'
 # Use ActiveModel has_secure_password
