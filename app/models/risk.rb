@@ -34,7 +34,7 @@ class Risk < ApplicationRecord
     "#{self.name} : #{self.status}"
   end
 
-  def self.import(file)
+  def self.import(file, current_user=nil)
     spreadsheet = open_spreadsheet(file)
     allowed_attributes = ["name", "level of risk", "type of risk", "related business process name"]
     header = spreadsheet.row(1)

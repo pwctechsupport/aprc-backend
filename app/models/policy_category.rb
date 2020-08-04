@@ -26,7 +26,7 @@ class PolicyCategory < ApplicationRecord
     "#{self.name}"
   end
 
-  def self.import(file)
+  def self.import(file, current_user=nil)
     spreadsheet = open_spreadsheet(file)
     allowed_attributes = ["name", "related policy title"]
     header = spreadsheet.row(1)
@@ -38,7 +38,6 @@ class PolicyCategory < ApplicationRecord
     pol_obj = []
     error_data = []
     index_polcat = 0
-
     spread_count = spreadsheet.row(2).count
     spread_nil = spreadsheet.row(2).group_by(&:itself).map { |k,v| [k, v.length] }.to_h
     if spread_nil[nil] == spread_count

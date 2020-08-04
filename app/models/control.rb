@@ -47,7 +47,7 @@ class Control < ApplicationRecord
     request_edits.last
   end
 
-  def self.import(file)
+  def self.import(file, current_user=nil)
     spreadsheet = open_spreadsheet(file)
     allowed_attributes = [ "description", "type of control", "frequency", "nature", "assertion", "ipo", "key control", "related business process name","related risk name","related control owner name", "control activity title", "control activity guidance"]
     header = spreadsheet.row(1)
