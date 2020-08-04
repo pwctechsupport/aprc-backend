@@ -22,7 +22,7 @@ class BusinessProcess < ApplicationRecord
     "#{self.name} : #{self.status}"
   end
 
-  def self.import(file)
+  def self.import(file, current_user=nil)
     spreadsheet = open_spreadsheet(file)
     allowed_attributes = ["name", "sub business process 1", "sub business process 2"]
     header = spreadsheet.row(1)

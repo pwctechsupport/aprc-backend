@@ -10,7 +10,7 @@ class Reference < ApplicationRecord
     "#{self.name} : #{self.status}"
   end
 
-  def self.import(file)
+  def self.import(file, current_user=nil)
     spreadsheet = open_spreadsheet(file)
     allowed_attributes = ["name", "related policy title"]
     header = spreadsheet.row(1)
