@@ -3,13 +3,25 @@ wb = xlsx_package.workbook
 content = wb.styles.add_style(:bg_color => "FFFFFFFF",
   :fg_color=>"#FF000000",
   :border=>Axlsx::STYLE_THIN_BORDER,
-  :alignment=>{:horizontal => :center, :vertical => :center})
+  :alignment=>{:horizontal => :center, :vertical => :center},
+  :font_name => 'Georgia'
+)
+
+title = wb.styles.add_style(:sz => 20, :b => true, :alignment=>{:horizontal => :center, :vertical => :center}, :font_name => 'Georgia')
 
 
-header = wb.styles.add_style(:sz => 12, :bg_color => 'b10015', :fg_color => 'FF', :b => true, :border => { :style => :thin, :color => "00000000", :edges => [:top, :bottom, :left, :right] }, :alignment=>{:horizontal => :center, :vertical => :center})
+header = wb.styles.add_style(:sz => 12, :bg_color => 'b10015', :fg_color => 'FF', :b => true, :border => { :style => :thin, :color => "00000000", :edges => [:top, :bottom, :left, :right] }, :alignment=>{:horizontal => :center, :vertical => :center}, :font_name => 'Georgia')
 
 wb.add_worksheet(name: "Report Risk without Policy") do |sheet|
   # Create the header row
+  sheet.add_row ["Exception Report: Risk without Policy"], :style => title, :height => 28
+  2.times { sheet.add_row}
+  sheet.add_row ["Printed on: #{Time.now.strftime("%d %B %Y")}"],:font_name => 'Georgia', :sz => 12
+  sheet.add_row ["Printed by: #{current_user&.name}"],:font_name => 'Georgia', :sz => 12
+  3.times { sheet.add_row}
+  sheet.merge_cells "A1:H1"
+  sheet.merge_cells "A4:C4"
+  sheet.merge_cells "A5:C5"
   sheet.add_row ["Business Process", "Risk", "Type of Risk","Level of Risk","Created By", "Created On", "Last Update On", "Last Update By"], :style => header, :height => 25
   # Create entries for each item
   zone = ActiveSupport::TimeZone.new("Jakarta")
@@ -40,4 +52,5 @@ wb.add_worksheet(name: "Report Risk without Policy") do |sheet|
       ], :style=>content, :height => 22
     end  
   end
+  sheet.column_widths 28
 end
