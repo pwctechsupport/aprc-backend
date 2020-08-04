@@ -58,7 +58,7 @@ module Mutations
               resource&.policy_resources.where.not(draft_id: nil).destroy_all
             end
             if resource&.present?
-              resource.update(is_related: false)
+              resource.update(is_related: false, status: "release")
             end
             if resource&.present? && resource&.request_edit&.present?
               resource&.request_edit&.destroy
