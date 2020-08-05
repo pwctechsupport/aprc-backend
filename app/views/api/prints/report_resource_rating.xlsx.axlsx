@@ -4,14 +4,26 @@ wb = xlsx_package.workbook
 content = wb.styles.add_style(:bg_color => "FFFFFFFF",
   :fg_color=>"#FF000000",
   :border=>Axlsx::STYLE_THIN_BORDER,
-  :alignment=>{:horizontal => :center, :vertical => :center})
+  :alignment=>{:horizontal => :center, :vertical => :center},
+  :font_name => 'Georgia'
+)
 
 
-header = wb.styles.add_style(:sz => 12, :bg_color => 'b10015', :fg_color => 'FF', :b => true, :border => { :style => :thin, :color => "00000000", :edges => [:top, :bottom, :left, :right] }, :alignment=>{:horizontal => :center, :vertical => :center})
+title = wb.styles.add_style(:sz => 20, :b => true, :alignment=>{:horizontal => :center, :vertical => :center}, :font_name => 'Georgia')
+
+header = wb.styles.add_style(:sz => 12, :bg_color => 'b10015', :fg_color => 'FF', :b => true, :border => { :style => :thin, :color => "00000000", :edges => [:top, :bottom, :left, :right] }, :alignment=>{:horizontal => :center, :vertical => :center}, :font_name => 'Georgia')
 
 wb.add_worksheet(name: "Exception Report") do |sheet|
   # Create the header row
-  sheet.add_row ["Name", "Views", "Rating", "Total rating"], :style => header, :height => 25
+  sheet.add_row ["Resource Utilisation Report"], :style => title, :height => 28
+  2.times { sheet.add_row}
+  sheet.add_row ["Printed on: #{Time.now.strftime("%d %B %Y")}"],:font_name => 'Georgia', :sz => 12
+  sheet.add_row ["Printed by: #{current_user&.name}"],:font_name => 'Georgia', :sz => 12
+  3.times { sheet.add_row}
+  sheet.merge_cells "A1:E1"
+  sheet.merge_cells "A4:C4"
+  sheet.merge_cells "A5:C5"
+  sheet.add_row ["Name", "Number of Download", "Average rating", "Number of rating", "Category"], :style => header, :height => 25
   # Create entries for each item
   @resources.each do |resource|
     rating_total = resource.resource_ratings.count
@@ -19,9 +31,10 @@ wb.add_worksheet(name: "Exception Report") do |sheet|
     rating_average = rating_sum/rating_total
     rating_round = rating_average.round(1)
     if rating_average.nan?
-      sheet.add_row [resource&.name, resource&.visit, "Not Rated", rating_total], :style=>content, :height => 22
+      sheet.add_row [resource&.name&.capitalize, resource&.visit, "Not Rated", rating_total, resource&.category], :style=>content, :height => 22
     else
-      sheet.add_row [resource&.name, resource&.visit, rating_round, rating_total], :style=>content, :height => 22
+      sheet.add_row [resource&.name&.capitalize, resource&.visit, rating_round, rating_total, resource&.category], :style=>content, :height => 22
     end
   end
+  sheet.column_widths 28
 end
