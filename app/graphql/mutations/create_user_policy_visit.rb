@@ -2,6 +2,7 @@ module Mutations
   class CreateUserPolicyVisit < Mutations::BaseMutation
     # arguments passed to the `resolved` method
     argument :policy_id, ID, required: true
+    argument :recent_visit, String, required: false
 
 
     # return type from the mutation
@@ -13,7 +14,7 @@ module Mutations
       args[:recent_visit] = Time.now
       if UserPolicyVisit.find_by(user_id: current_user&.id ,policy_id: args[:policy_id]).present?
         user_policy_visit =  UserPolicyVisit.find_by(user_id: current_user&.id ,policy_id: args[:policy_id])
-        user_policy_visit.update(recent_visit: args[:recent_visit])
+        user_policy_visit&.update(recent_visit: args[:recent_visit])
       else
         user_policy_visit = UserPolicyVisit.create!(args.to_h)
       end
