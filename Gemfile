@@ -16,6 +16,7 @@ gem 'roo', ">= 2.5.1"
 gem 'uglifier', '>= 1.3.0'
 # See https://github.com/rails/execjs#readme for more supported runtimes
 # gem 'mini_racer', platforms: :ruby
+gem 'axlsx_styler'
 gem 'paperclip', '~> 4.3', '>= 4.3.1'
 gem 'rolify'
 
@@ -70,6 +71,8 @@ gem 'graphql-pagination'
 gem 'kaminari-activerecord'
 gem 'ransack', github: 'activerecord-hackery/ransack'
 gem 'ancestry'
+gem 'psych'
+gem "safe_yaml"
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
