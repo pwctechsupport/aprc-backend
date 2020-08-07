@@ -43,7 +43,7 @@ module Types
 
     def policy
       if object.class == Hash
-        YAML.load(object["policy"])
+        YAML.load(object["policy"], :safe => true)
       else
         object&.policy
       end
