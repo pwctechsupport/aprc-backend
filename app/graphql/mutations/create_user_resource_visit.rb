@@ -3,6 +3,7 @@ module Mutations
     # arguments passed to the `resolved` method
     argument :resource_id, ID, required: true
     argument :recent_visit, String, required: false
+    argument :user_id, ID, required: false
 
 
     # return type from the mutation
