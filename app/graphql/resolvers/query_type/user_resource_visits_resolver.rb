@@ -8,7 +8,7 @@ module Resolvers
 
       def resolve(filter:, page: nil, limit: nil)
         current_user = context[:current_user]
-        @q = UserResourceVisit&.where(user_id: current_user&.id).ransack(filter.as_json)
+        @q = UserResourceVisit.where(user_id: current_user&.id).ransack(filter.as_json)
         @q.sorts = 'recent_visit desc' if @q.sorts.empty?
         @q.result(distinct: true).page(page).per(limit)
       end
