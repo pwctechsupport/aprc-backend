@@ -99,7 +99,8 @@ module Types
 
     def control_owner
       if object.class == Hash
-        YAML.load(object["control_owner"], :safe => true)
+        obj = object["control owner"]
+        obj.present? ? YAML.load(obj , :safe => true) : []
       else
         object&.control_owner
       end
