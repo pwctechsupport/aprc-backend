@@ -28,7 +28,7 @@ module Api
     end
 
     def report_risk
-      @risks = Risk.where.not(id:PolicyRisk.pluck(:risk_id)).where(status: "release")
+      @risks = Risk.includes(:business_processes).order("business_processes.name ASC").where.not(id:PolicyRisk.pluck(:risk_id)).where(status: "release")
       respond_to do |format|
         format.json
         format.pdf do
@@ -43,7 +43,7 @@ module Api
     end
 
     def report_risk_policy
-      @risks = Risk.where.not(id:ControlRisk.pluck(:risk_id)).where(status: "release")
+      @risks = Risk.includes(:business_processes).order("business_processes.name ASC").where.not(id:ControlRisk.pluck(:risk_id)).where(status: "release")
       respond_to do |format|
         format.json
         format.pdf do
@@ -73,11 +73,11 @@ module Api
     end
 
     def unmapped_risk
-      @tags = Tag.where.not(risk_id:nil)
+      @tags = Tag.includes(:business_process).order("business_processes.name ASC").where.not(risk_id:nil)
       respond_to do |format|
         format.json
         format.pdf do
-          render pdf: 'unmapped_risk', layout: 'layouts/pdf.haml', template: 'api/prints/unmapped_risk.pdf.haml',orientation: "Landscape", dpi: 300, show_as_html: params.key?('debug'), javascript_delay: 3000, margin: {top: 60, bottom: 20, left: 15, right: 15 }, outline: {outline: true, outline_depth: 10 }, footer: {html: {template:'shared/_pdf_report_footer'}}, header: {html: {template:'shared/_pdf_header_unmapped_risk'}}
+          render pdf: 'unmapped_risk', layout: 'layouts/pdf.haml', template: 'api/prints/unmapped_risk.pdf.haml',orientation: "Landscape", dpi: 300, show_as_html: params.key?('debug'), javascript_delay: 3000, margin: {top: 65, bottom: 20, left: 15, right: 15 }, outline: {outline: true, outline_depth: 10 }, footer: {html: {template:'shared/_pdf_report_footer'}}, header: {html: {template:'shared/_pdf_header_unmapped_risk'}}
         end
         format.xlsx {
           response.headers[
@@ -88,11 +88,11 @@ module Api
     end
 
     def unmapped_control
-      @tags = Tag.where.not(control_id:nil)
+      @tags = Tag.includes(:business_process).order("business_processes.name ASC").where.not(control_id:nil)
       respond_to do |format|
         format.json
         format.pdf do
-          render pdf: 'unmapped_control', layout: 'layouts/pdf.haml', template: 'api/prints/unmapped_control.pdf.haml',orientation: "Landscape", dpi: 300, show_as_html: params.key?('debug'), javascript_delay: 3000, margin: {top: 60, bottom: 20, left: 15, right: 15 }, outline: {outline: true, outline_depth: 10 }, footer: {html: {template:'shared/_pdf_report_footer'}}, header: {html: {template:'shared/_pdf_header_unmapped_control'}}
+          render pdf: 'unmapped_control', layout: 'layouts/pdf.haml', template: 'api/prints/unmapped_control.pdf.haml',orientation: "Landscape", dpi: 300, show_as_html: params.key?('debug'), javascript_delay: 3000, margin: {top: 65, bottom: 20, left: 15, right: 15 }, outline: {outline: true, outline_depth: 10 }, footer: {html: {template:'shared/_pdf_report_footer'}}, header: {html: {template:'shared/_pdf_header_unmapped_control'}}
         end
         format.xlsx {
           response.headers[

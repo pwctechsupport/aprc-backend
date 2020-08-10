@@ -27,8 +27,6 @@
       
     :css
       .apo{font-size:13px;}
-      th{font-size:12px;}
-      td{font-size:12px;}
       .tab{ margin-left:40px;}
       .ape{%font-size:24px; text-align:left;}
       .aps{font-size:20px;}
@@ -76,6 +74,8 @@
       %thead
       
       -z = 1
+      -zone = ActiveSupport::TimeZone.new("Jakarta")
+
       -new_tag = @tags.pluck(:business_process_id).map{|x| Tag.where.not(control_id:nil).find_by(business_process_id: x)}
       -new_tag.uniq.each do |tag|
         -unmapped_control = tag.business_process.control_ids
@@ -84,22 +84,31 @@
         -if unmapped_control.count != 0
           -unmapped_control.uniq.each do |unmapped|
             -con = Control.find(unmapped)
-            %tr
-              %td.text-center{:scope => "row", :style => "width: 6%"} #{z}
-              %td.text-center{:scope => "row",:style => "width: 12%"} #{tag.business_process&.name&.capitalize}
-              %td.text-center{:scope => "row",:style => "width: 12%"} #{con&.description.capitalize}
-              %td.text-center{:scope => "row", :style => "width: 12%"} #{con.type_of_control.to_s.gsub("_", ' ').capitalize.html_safe}
-              %td.text-center{:scope => "row",:style => "width: 13%"} #{con.control_owner.join(", ").to_s.gsub("_", ' ').titlecase.html_safe}
-              %td.text-center{:scope => "row",:style => "width: 12%"} #{con.frequency.to_s.gsub("_", ' ').capitalize.html_safe}
-              %td.text-center{:scope => "row",:style => "width: 8%"} #{con.nature.to_s.gsub("_", ' ').capitalize.html_safe}
-              %td.text-center{:scope => "row",:style => "width: 9%"}= con.convert_assertion.join(",")
-              %td.text-center{:scope => "row",:style => "width: 8%"}= con.convert_ipo.join(",")
-              %td.text-center{:scope => "row",:style => "width: 6%"}
-                -if con&.key_control == true
-                  Yes
+            -if con.published_at.present? || (con.status == "release")
+              %tr
+                %td.text-center{:scope => "row", :style => "width: 6%"} #{z}
+                %td.text-center{:scope => "row",:style => "width: 10%"} #{tag.business_process&.name&.capitalize}
+                %td.text-center{:scope => "row",:style => "width: 10%"} #{con&.description.capitalize}
+                %td.text-center{:scope => "row", :style => "width: 8%"} #{con.type_of_control.to_s.gsub("_", ' ').capitalize.html_safe}
+                %td.text-center{:scope => "row",:style => "width: 10%"} #{con.control_owner.join(", ").to_s.gsub("_", ' ').titlecase.html_safe}
+                %td.text-center{:scope => "row",:style => "width: 8%"} #{con.frequency.to_s.gsub("_", ' ').capitalize.html_safe}
+                %td.text-center{:scope => "row",:style => "width: 8%"} #{con.nature.to_s.gsub("_", ' ').capitalize.html_safe}
+                %td.text-center{:scope => "row",:style => "width: 9%"}= con.convert_assertion.join(",")
+                %td.text-center{:scope => "row",:style => "width: 8%"}= con.convert_ipo.join(",")
+                %td.text-center{:scope => "row",:style => "width: 6%"}
+                  -if con&.key_control == true
+                    Yes
+                  -else
+                    No
+                -if con&.updated_at.present?
+                  %td.text-center{:scope => "row",:style => "width: 8%"}=con&.updated_at.in_time_zone(zone).inspect.sub(" +07:00", "")
                 -else
-                  No
-            - z+=1 
+                  %td.text-center{:scope => "row",:style => "width: 8%"}
+                -if con&.versions&.last&.whodunnit.present?
+                  %td.text-center{:scope => "row",:style => "width: 9%"}=User&.find(con&.versions&.last&.whodunnit)&.name
+                -else
+                  %td.text-center{:scope => "row",:style => "width: 9%"}
+              - z+=1 
       
 
     %br

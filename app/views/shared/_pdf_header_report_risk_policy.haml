@@ -8,11 +8,11 @@
       border-radius: 5px;}
       .aih{
         margin-top:0px;
-        font-size:20px;
+        font-size:20pt;
         margin-bottom:5px;
         }
       .aha{border:none;}
-      .apo{max-width: 250px;font-size: 15px;}
+      .apo{max-width: 250px;}
       
       
 
@@ -25,16 +25,6 @@
     %center
       %h2.aih Report Risk Without Control 
     %table.table.table-borderless.aha{style:"display:block;"}
-      %tr.aha
-        %td.aha Printed On
-        %td.aha :
-        %td.aha #{Time.now.strftime("%d %B %Y")}
-        
-
-      %tr.aha
-        %td.aha Printed By
-        %td.aha :
-        %td.aha= current_user&.name
       %tr.aha
         %td.aha No. of page
         %td.aha :
@@ -52,14 +42,28 @@
             }
             document.getElementById('page').innerHTML = vars.page; 
             document.getElementById('topage').innerHTML = vars.topage;
+      %tr.aha
+        %td.aha Printed On
+        %td.aha :
+        %td.aha #{Time.now.strftime("%d %B %Y")}
+        
+
+      %tr.aha
+        %td.aha Printed By
+        %td.aha :
+        %td.aha= current_user&.name
     %center
       %table.table.table-borderless
         %thead
           %tr
-            %th.text-center{:scope => "col", :style => "width: 9.99%"} No
-            %th.text-center.apo{:scope => "col", :style => "width: 18%"} Name
-            %th.text-center.apo{:scope => "col", :style => "width: 18%"} Level of Risk
-            %th.text-center.apo{:scope => "col", :style => "width: 18%"} Type of Risk
-            %th.text-center.apo{:scope => "col", :style => "width: 18%"} Business Processes
-            %th.text-center.apo{:scope => "col", :style => "width: 18%"} Related Policy
+            %th.text-center.apo{:scope => "col", :style => "width: 4.99%"} No
+            %th.text-center.apo{:scope => "col", :style => "width: 10%"} Main / sub Business Process
+            %th.text-center.apo{:scope => "col", :style => "width: 12%"} Risk
+            %th.text-center.apo{:scope => "col", :style => "width: 10%"} Type of risk
+            %th.text-center.apo{:scope => "col", :style => "width: 10%"} Level of risk
+            %th.text-center.apo{:scope => "col", :style => "width: 10%"} Related policy
+            %th.text-center.apo{:scope => "col",:style => "width: 12%"} Created by
+            %th.text-center.apo{:scope => "col",:style => "width: 10%"} Created on
+            %th.text-center.apo{:scope => "col",:style => "width: 10%"} Last update on
+            %th.text-center.apo{:scope => "col",:style => "width: 11%"} Last update by
     

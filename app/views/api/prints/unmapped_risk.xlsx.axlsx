@@ -20,10 +20,10 @@ wb.add_worksheet(name: "Exception Report") do |sheet|
   sheet.add_row ["Printed on: #{Time.now.strftime("%d %B %Y")}"],:font_name => 'Georgia', :sz => 12
   sheet.add_row ["Printed by: #{current_user&.name}"],:font_name => 'Georgia', :sz => 12
   3.times { sheet.add_row}
-  sheet.merge_cells "A1:D1"
-  sheet.merge_cells "A4:C4"
-  sheet.merge_cells "A5:C5"
-  sheet.add_row [ "Business process","Name of risk", "Level of risk", "Type of risk"], :style => header, :height => 25
+  sheet.merge_cells "A1:H1"
+  sheet.merge_cells "A4:H4"
+  sheet.merge_cells "A5:H5"
+  sheet.add_row [ "Business process","Name of risk", "Level of risk", "Type of risk","Created By", "Created On", "Last Update On", "Last Update By"], :style => header, :height => 25
   # Create entries for each item
   new_tag = @tags.pluck(:business_process_id).map{|x| Tag.where.not(risk_id:nil).find_by(business_process_id: x)}
   new_tag.uniq.each do |tag|
@@ -37,7 +37,11 @@ wb.add_worksheet(name: "Exception Report") do |sheet|
           tag&.business_process&.name&.capitalize, 
           risk.name.to_s.capitalize, 
           risk.level_of_risk.to_s.gsub("_", ' ').capitalize,
-          risk.type_of_risk.to_s.gsub("_", ' ').capitalize
+          risk.type_of_risk.to_s.gsub("_", ' ').capitalize,
+          risk&.versions&.find_by(event:"create")&.whodunnit.present? ? User&.find(risk&.versions&.find_by(event:"create")&.whodunnit).name : "",
+          risk&.versions&.find_by(event:"create")&.present? ? risk&.versions&.find_by(event:"create")&.created_at.in_time_zone(zone).inspect.sub(" +07:00", "") : "",
+          risk&.updated_at.present? ? risk&.updated_at.in_time_zone(zone).inspect.sub(" +07:00", "") : "",
+          risk&.versions&.last&.whodunnit.present? ? User&.find(risk&.versions&.last&.whodunnit)&.name : ""
         ], :style=>content, :height => 22
       end
     end

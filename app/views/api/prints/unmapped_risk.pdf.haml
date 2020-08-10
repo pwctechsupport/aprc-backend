@@ -5,7 +5,7 @@
     %meta{:content => "text/html; charset=UTF-8", "http-equiv" => "Content-Type"}/
     %meta{:charset => "utf-8"}/
     %meta{:content => "IE=edge", "http-equiv" => "X-UA-Compatible"}/
-    %title Flowchart Unmapped Risk
+    %title Untagged Risk in Flowchart Report
     :css
       input[type=checkbox]{
       \/* Double-sized Checkboxes */
@@ -26,8 +26,6 @@
       
     :css
       .apo{font-size:13px;}
-      th{font-size:14px;}
-      td{font-size:13px;}
       .tab{ margin-left:40px;}
       .ape{%font-size:24px; text-align:left;}
       .aps{font-size:20px;}
@@ -75,6 +73,7 @@
     %table.table.table-borderless
       %thead
       -z = 1
+      -zone = ActiveSupport::TimeZone.new("Jakarta")
       -new_tag = @tags.pluck(:business_process_id).map{|x| Tag.where.not(risk_id:nil).find_by(business_process_id: x)}
       -new_tag.uniq.each do |tag|
         
@@ -84,13 +83,30 @@
         -if unmapped_risk.count != 0
           -unmapped_risk.uniq.each do |unmapped|
             -risk = Risk.find(unmapped)
-            %tr
-              %td.text-center{:scope => "row", :style => "width: 10%"} #{z}
-              %td.text-center{:scope => "row", :style => "width: 30%"} #{tag&.business_process&.name&.capitalize}
-              %td.text-center.ape{:scope => "row", :style => "width: 30%"} #{risk.name.to_s.capitalize.html_safe}
-              %td.text-center{:scope => "row", :style => "width: 30%"} #{risk.level_of_risk.to_s.gsub("_", ' ').capitalize.html_safe}
-              %td.text-center{:scope => "row", :style => "width: 30%"} #{risk.type_of_risk.to_s.gsub("_", ' ').capitalize.html_safe}
-            - z+=1 
+            -if risk.published_at.present? || (risk.status == "release")
+              %tr
+                %td.text-center{:scope => "row", :style => "width: 5%"} #{z}
+                %td.text-center{:scope => "row", :style => "width: 13%"} #{tag&.business_process&.name&.capitalize}
+                %td.text-center{:scope => "row", :style => "width: 15%"} #{risk.name.to_s.capitalize.html_safe}
+                %td.text-center{:scope => "row", :style => "width: 12%"} #{risk.type_of_risk.to_s.gsub("_", ' ').capitalize.html_safe}
+                %td.text-center{:scope => "row", :style => "width: 12%"} #{risk.level_of_risk.to_s.gsub("_", ' ').capitalize.html_safe}
+                -if risk&.versions&.find_by(event:"create")&.whodunnit.present?
+                  %td.text-center{:scope => "row",:style => "width: 12%"}=User&.find(risk&.versions&.find_by(event:"create")&.whodunnit).name
+                -else
+                  %td.text-center{:scope => "row",:style => "width: 12%"}
+                -if risk&.versions&.find_by(event:"create")&.present?
+                  %td.text-center{:scope => "row",:style => "width: 10%"}=risk&.versions&.find_by(event:"create")&.created_at.in_time_zone(zone).inspect.sub(" +07:00", "")
+                -else
+                  %td.text-center{:scope => "row",:style => "width: 10%"}
+                -if risk&.updated_at.present?
+                  %td.text-center{:scope => "row",:style => "width: 10%"}=risk&.updated_at.in_time_zone(zone).inspect.sub(" +07:00", "")
+                -else
+                  %td.text-center{:scope => "row",:style => "width: 10%"}
+                -if risk&.versions&.last&.whodunnit.present?
+                  %td.text-center{:scope => "row",:style => "width: 11%"}=User&.find(risk&.versions&.last&.whodunnit)&.name
+                -else
+                  %td.text-center{:scope => "row",:style => "width: 11%"}
+              - z+=1 
     %br
     %br
 

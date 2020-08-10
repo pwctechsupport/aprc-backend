@@ -41,50 +41,115 @@
         -z = 1
         -x=1
         -@risks.each do |ris| 
+          -zone = ActiveSupport::TimeZone.new("Jakarta")
           -if ris.business_processes.present?
             -ris&.business_processes.each do |bus|
               -if ris.policies.present?
                 -ris.policies.each do |pol|
                   %tbody
                     %tr
-                      %td.text-center{:scope => "row",:style => "width: 10%"} #{z}
-                      %td.text-center.ape{:scope => "row", :style => "width: 18%"} #{ris.name.to_s.gsub(/[^0-9A-Za-z]/, ' ').capitalize.html_safe}
-                      %td.text-center.apo{:scope => "row", :style => "width: 18%"} #{ris.level_of_risk.to_s.gsub(/[^0-9A-Za-z]/, ' ').capitalize.html_safe}
-                      %td.text-center.apo{:scope => "row", :style => "width: 18%"} #{ris.type_of_risk.to_s.gsub(/[^0-9A-Za-z]/, ' ').capitalize.html_safe}
-                      %td.text-center.apo{:scope => "row", :style => "width: 18%"} #{bus&.name&.capitalize}
-                      %td.text-center.apo{:scope => "row", :style => "width: 18%"} #{pol&.title&.capitalize&.html_safe}
+                      %td.text-center{:scope => "row",:style => "width: 5%"} #{z}
+                      %td.text-center.apo{:scope => "row", :style => "width: 10%"} #{bus&.name&.capitalize}
+                      %td.text-center.ape{:scope => "row", :style => "width: 12%"} #{ris.name.to_s.gsub(/[^0-9A-Za-z]/, ' ').capitalize.html_safe}
+                      %td.text-center.apo{:scope => "row", :style => "width: 10%"} #{ris.type_of_risk.to_s.gsub(/[^0-9A-Za-z]/, ' ').capitalize.html_safe}
+                      %td.text-center.apo{:scope => "row", :style => "width: 10%"} #{ris.level_of_risk.to_s.gsub(/[^0-9A-Za-z]/, ' ').capitalize.html_safe}
+                      %td.text-center.apo{:scope => "row", :style => "width: 10%"} #{pol&.title&.capitalize&.html_safe}
+                      -if ris&.versions&.find_by(event:"create")&.whodunnit.present?
+                        %td.text-center.apo{:scope => "row",:style => "width: 12%"}=User&.find(ris&.versions&.find_by(event:"create")&.whodunnit).name
+                      -else
+                        %td.text-center.apo{:scope => "row",:style => "width: 12%"}
+                      -if ris&.versions&.find_by(event:"create")&.present?
+                        %td.text-center.apo{:scope => "row",:style => "width: 10%"}=ris&.versions&.find_by(event:"create")&.created_at.in_time_zone(zone).inspect.sub(" +07:00", "")
+                      -else
+                        %td.text-center.apo{:scope => "row",:style => "width: 10%"}
+                      -if ris&.updated_at.present?
+                        %td.text-center.ape{:scope => "row",:style => "width: 10%"}=ris&.updated_at.in_time_zone(zone).inspect.sub(" +07:00", "")
+                      -else
+                        %td.text-center.apo{:scope => "row",:style => "width: 10%"}
+                      -if ris&.versions&.last&.whodunnit.present?
+                        %td.text-center.ape{:scope => "row",:style => "width: 11%"}=User&.find(ris&.versions&.last&.whodunnit)&.name
+                      -else
+                        %td.text-center.apo{:scope => "row",:style => "width: 11%"}
                       -z+=1
               -else
                 %tbody
                   %tr
-                    %td.text-center{:scope => "row",:style => "width: 10%"} #{z}
-                    %td.text-center.ape{:scope => "row", :style => "width: 18%"} #{ris.name.to_s.gsub(/[^0-9A-Za-z]/, ' ').capitalize.html_safe}
-                    %td.text-center.apo{:scope => "row", :style => "width: 18%"} #{ris.level_of_risk.to_s.gsub(/[^0-9A-Za-z]/, ' ').capitalize.html_safe}
-                    %td.text-center.apo{:scope => "row", :style => "width: 18%"} #{ris.type_of_risk.to_s.gsub(/[^0-9A-Za-z]/, ' ').capitalize.html_safe}
-                    %td.text-center.apo{:scope => "row", :style => "width: 18%"} #{bus&.name&.capitalize}
-                    %td.text-center.apo{:scope => "row", :style => "width: 18%"} No Related Policies
+                    %td.text-center{:scope => "row",:style => "width: 5%"} #{z}
+                    %td.text-center.apo{:scope => "row", :style => "width: 10%"} #{bus&.name&.capitalize}
+                    %td.text-center.ape{:scope => "row", :style => "width: 12%"} #{ris.name.to_s.gsub(/[^0-9A-Za-z]/, ' ').capitalize.html_safe}
+                    %td.text-center.apo{:scope => "row", :style => "width: 10%"} #{ris.type_of_risk.to_s.gsub(/[^0-9A-Za-z]/, ' ').capitalize.html_safe}
+                    %td.text-center.apo{:scope => "row", :style => "width: 10%"} #{ris.level_of_risk.to_s.gsub(/[^0-9A-Za-z]/, ' ').capitalize.html_safe}
+                    %td.text-center.apo{:scope => "row", :style => "width: 10%"} No Related Policies
+                    -if ris&.versions&.find_by(event:"create")&.whodunnit.present?
+                      %td.text-center.apo{:scope => "row",:style => "width: 12%"}=User&.find(ris&.versions&.find_by(event:"create")&.whodunnit).name
+                    -else
+                      %td.text-center.apo{:scope => "row",:style => "width: 12%"}
+                    -if ris&.versions&.find_by(event:"create")&.present?
+                      %td.text-center.apo{:scope => "row",:style => "width: 10%"}=ris&.versions&.find_by(event:"create")&.created_at.in_time_zone(zone).inspect.sub(" +07:00", "")
+                    -else
+                      %td.text-center.apo{:scope => "row",:style => "width: 10%"}
+                    -if ris&.updated_at.present?
+                      %td.text-center.ape{:scope => "row",:style => "width: 10%"}=ris&.updated_at.in_time_zone(zone).inspect.sub(" +07:00", "")
+                    -else
+                      %td.text-center.apo{:scope => "row",:style => "width: 10%"}
+                    -if ris&.versions&.last&.whodunnit.present?
+                      %td.text-center.ape{:scope => "row",:style => "width: 11%"}=User&.find(ris&.versions&.last&.whodunnit)&.name
+                    -else
+                      %td.text-center.apo{:scope => "row",:style => "width: 11%"}
                     -z+=1
           -else
             -if ris.policies.present?
               -ris.policies.each do |pol|
                 %tbody
                   %tr
-                    %td.text-center{:scope => "row",:style => "width: 10%"} #{z}
-                    %td.text-center.ape{:scope => "row", :style => "width: 18%"} #{ris.name.to_s.gsub(/[^0-9A-Za-z]/, ' ').capitalize.html_safe}
-                    %td.text-center.apo{:scope => "row", :style => "width: 18%"} #{ris.level_of_risk.to_s.gsub(/[^0-9A-Za-z]/, ' ').capitalize.html_safe}
-                    %td.text-center.apo{:scope => "row", :style => "width: 18%"} #{ris.type_of_risk.to_s.gsub(/[^0-9A-Za-z]/, ' ').capitalize.html_safe}
-                    %td.text-center.apo{:scope => "row", :style => "width: 18%"} No Business Process
-                    %td.text-center.apo{:scope => "row", :style => "width: 18%"} #{pol&.title&.capitalize&.html_safe}
+                    %td.text-center{:scope => "row",:style => "width: 5%"} #{z}
+                    %td.text-center.apo{:scope => "row", :style => "width: 10%"} No Business Process
+                    %td.text-center.ape{:scope => "row", :style => "width: 12%"} #{ris.name.to_s.gsub(/[^0-9A-Za-z]/, ' ').capitalize.html_safe}
+                    %td.text-center.apo{:scope => "row", :style => "width: 10%"} #{ris.type_of_risk.to_s.gsub(/[^0-9A-Za-z]/, ' ').capitalize.html_safe}
+                    %td.text-center.apo{:scope => "row", :style => "width: 10%"} #{ris.level_of_risk.to_s.gsub(/[^0-9A-Za-z]/, ' ').capitalize.html_safe}
+                    %td.text-center.apo{:scope => "row", :style => "width: 10%"} #{pol&.title&.capitalize&.html_safe}
+                    -if ris&.versions&.find_by(event:"create")&.whodunnit.present?
+                      %td.text-center.apo{:scope => "row",:style => "width: 12%"}=User&.find(ris&.versions&.find_by(event:"create")&.whodunnit).name
+                    -else
+                      %td.text-center.apo{:scope => "row",:style => "width: 12%"}
+                    -if ris&.versions&.find_by(event:"create")&.present?
+                      %td.text-center.apo{:scope => "row",:style => "width: 10%"}=ris&.versions&.find_by(event:"create")&.created_at.in_time_zone(zone).inspect.sub(" +07:00", "")
+                    -else
+                      %td.text-center.apo{:scope => "row",:style => "width: 10%"}
+                    -if ris&.updated_at.present?
+                      %td.text-center.ape{:scope => "row",:style => "width: 10%"}=ris&.updated_at.in_time_zone(zone).inspect.sub(" +07:00", "")
+                    -else
+                      %td.text-center.apo{:scope => "row",:style => "width: 10%"}
+                    -if ris&.versions&.last&.whodunnit.present?
+                      %td.text-center.ape{:scope => "row",:style => "width: 11%"}=User&.find(ris&.versions&.last&.whodunnit)&.name
+                    -else
+                      %td.text-center.apo{:scope => "row",:style => "width: 11%"}
                     -z+=1
             -else
               %tbody
                 %tr
-                  %td.text-center{:scope => "row",:style => "width: 10%"} #{z}
-                  %td.text-center.ape{:scope => "row", :style => "width: 18%"} #{ris.name.to_s.gsub(/[^0-9A-Za-z]/, ' ').capitalize.html_safe}
-                  %td.text-center.apo{:scope => "row", :style => "width: 18%"} #{ris.level_of_risk.to_s.gsub(/[^0-9A-Za-z]/, ' ').capitalize.html_safe}
-                  %td.text-center.apo{:scope => "row", :style => "width: 18%"} #{ris.type_of_risk.to_s.gsub(/[^0-9A-Za-z]/, ' ').capitalize.html_safe}
-                  %td.text-center.apo{:scope => "row", :style => "width: 18%"} No Business Process
-                  %td.text-center.apo{:scope => "row", :style => "width: 18%"} No Related Policies
+                  %td.text-center{:scope => "row",:style => "width: 5%"} #{z}
+                  %td.text-center.apo{:scope => "row", :style => "width: 10%"} No Business Process
+                  %td.text-center.ape{:scope => "row", :style => "width: 12%"} #{ris.name.to_s.gsub(/[^0-9A-Za-z]/, ' ').capitalize.html_safe}
+                  %td.text-center.apo{:scope => "row", :style => "width: 10%"} #{ris.type_of_risk.to_s.gsub(/[^0-9A-Za-z]/, ' ').capitalize.html_safe}
+                  %td.text-center.apo{:scope => "row", :style => "width: 10%"} #{ris.level_of_risk.to_s.gsub(/[^0-9A-Za-z]/, ' ').capitalize.html_safe}
+                  %td.text-center.apo{:scope => "row", :style => "width: 10%"} No Related Policies
+                  -if ris&.versions&.find_by(event:"create")&.whodunnit.present?
+                    %td.text-center.apo{:scope => "row",:style => "width: 12%"}=User&.find(ris&.versions&.find_by(event:"create")&.whodunnit).name
+                  -else
+                    %td.text-center.apo{:scope => "row",:style => "width: 12%"}
+                  -if ris&.versions&.find_by(event:"create")&.present?
+                    %td.text-center.apo{:scope => "row",:style => "width: 10%"}=ris&.versions&.find_by(event:"create")&.created_at.in_time_zone(zone).inspect.sub(" +07:00", "")
+                  -else
+                    %td.text-center.apo{:scope => "row",:style => "width: 10%"}
+                  -if ris&.updated_at.present?
+                    %td.text-center.ape{:scope => "row",:style => "width: 10%"}=ris&.updated_at.in_time_zone(zone).inspect.sub(" +07:00", "")
+                  -else
+                    %td.text-center.apo{:scope => "row",:style => "width: 10%"}
+                  -if ris&.versions&.last&.whodunnit.present?
+                    %td.text-center.ape{:scope => "row",:style => "width: 11%"}=User&.find(ris&.versions&.last&.whodunnit)&.name
+                  -else
+                    %td.text-center.apo{:scope => "row",:style => "width: 11%"}
                   -z+=1
 
       %p{:style => "page-break-after:always;"}

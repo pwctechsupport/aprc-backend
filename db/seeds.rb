@@ -27,7 +27,7 @@ are_categories.each do |x|
   if x == "sop"
     EnumList.create(name: x, category_type: "Category", code: x.upcase)
   else
-    EnumList.create(name: x, category_type: "Category", code: x.titlecase)
+    EnumList.create(name: x, category_type: "Category", code: x.capitalize)
   end
 end
 
@@ -52,5 +52,7 @@ are_roles.each_with_index do |role, k|
     role_ids:current_role
   )
 end
+
+ConvertTable.run
 
 
