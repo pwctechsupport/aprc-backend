@@ -17,6 +17,8 @@ class User < ApplicationRecord
   has_many :policy_categories, through: :user_policy_categories, dependent: :destroy
   has_many :resource_ratings, class_name: "ResourceRating", foreign_key: "user_id", dependent: :destroy
   has_many :risks
+  has_many :resource_visits, class_name: "UserResourceVisit", foreign_key: "user_id", dependent: :destroy
+  has_many :policy_visits, class_name: "UserPolicyVisit", foreign_key: "user_id", dependent: :destroy
   has_many :controls
   has_many :business_process
   has_many :bookmark, dependent: :destroy

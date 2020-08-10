@@ -2,12 +2,13 @@ module Mutations
   class CreateRequestEdit < Mutations::BaseMutation
     argument :originator_id, ID, required: true
     argument :originator_type, String, required: true
+    argument :user_id, ID, required: false
 
     field :request_edit, Types::RequestEditType, null: true
 
     def resolve(args)
       current_user = context[:current_user]
-      args[:user_id] = current_user&.id
+      args[:user_id] = current_user.id
       case args[:originator_type]
       when "Policy"
         policy = Policy.find(args[:originator_id])

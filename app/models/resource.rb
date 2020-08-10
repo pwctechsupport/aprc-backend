@@ -149,7 +149,7 @@ class Resource < ApplicationRecord
     end
   end
 
-  def resource_file_type(res)
+  def self.resource_file_type(res)
     content = res.resupload_content_type
     if content === nil
       content_true = ""

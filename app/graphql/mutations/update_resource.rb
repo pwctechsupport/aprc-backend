@@ -113,10 +113,10 @@ module Mutations
           
           if resource.resupload.present?
             if !(args[:resupload].present?) && args[:name].present?
-              args[:resupload_file_name] = "#{args[:name]}" << resource.resource_file_type(resource)
+              args[:resupload_file_name] = "#{args[:name]}" << Resource.resource_file_type(resource)
               resource.update_attributes!(resupload: resource.resupload, resupload_file_name: args[:resupload_file_name])
             elsif args[:resupload].present? && args[:name].present?
-              args[:resupload_file_name] = "#{args[:name]}" << resource.resource_file_type(resource)
+              args[:resupload_file_name] = "#{args[:name]}" << Resource.resource_file_type(resource)
               resource.update_attributes!(resupload: args[:resupload], resupload_file_name: args[:resupload_file_name],base_64_file: args[:resupload])
             end     
           end
