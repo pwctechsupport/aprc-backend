@@ -108,7 +108,8 @@ module Types
 
     def policy_category
       if object.class == Hash
-        YAML.load(object["policy_category"], :safe => true)
+        obj = object["policy_category"]
+        obj.present? ? SafeYAML.load(obj) : []
       else
         object&.policy_category
       end
@@ -116,7 +117,8 @@ module Types
 
     def main_role
       if object.class == Hash
-        YAML.load(object["main_role"], :safe => true)
+        obj = object["main_role"]
+        obj.present? ? SafeYAML.load(obj) : []
       else
         object&.main_role
       end
