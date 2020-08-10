@@ -12,7 +12,7 @@ module Mutations
 
     def resolve(args)
       current_user = context[:current_user]
-      args[:user_id] = current_user&.id
+      args[:user_id] = current_user.id
       args[:recent_visit] = Time.now
       user_policy_visit = current_user&.policy_visits&.where(["policy_id = ?", "#{args[:policy_id]}"])
       if user_policy_visit.present?
