@@ -28,7 +28,10 @@ module Api
     end
 
     def report_risk
-      @risks = Risk.includes(:business_processes).order("business_processes.name ASC").where.not(id:PolicyRisk.pluck(:risk_id)).where(status: "release")
+      pub_risk = Risk.where.not(id:PolicyRisk.pluck(:risk_id)).where.not(published_at: nil).pluck(:id)
+      rel_risk = Risk.where.not(id:PolicyRisk.pluck(:risk_id)).where(status: "release").pluck(:id)
+      all_risk = (pub_risk + rel_risk).uniq
+      @risks = Risk.where(id: all_risk).includes(:business_processes).order("business_processes.name ASC").uniq
       respond_to do |format|
         format.json
         format.pdf do
@@ -43,7 +46,10 @@ module Api
     end
 
     def report_risk_policy
-      @risks = Risk.includes(:business_processes).order("business_processes.name ASC").where.not(id:ControlRisk.pluck(:risk_id)).where(status: "release")
+      pub_risk = Risk.where.not(id:ControlRisk.pluck(:risk_id)).where.not(published_at: nil).pluck(:id)
+      rel_risk = Risk.where.not(id:ControlRisk.pluck(:risk_id)).where(status: "release").pluck(:id)
+      all_risk = (pub_risk + rel_risk).uniq
+      @risks = Risk.where(id: all_risk).includes(:business_processes).order("business_processes.name ASC").uniq
       respond_to do |format|
         format.json
         format.pdf do
@@ -59,7 +65,10 @@ module Api
 
     def report_resource_rating
       zone = ActiveSupport::TimeZone.new("Jakarta")
-      res = Resource.where(status: "release").select{|x| x.category != "Flowchart"}
+      pub_res = Resource.where.not(published_at: nil)
+      rel_res = Resource.where(status: "release")
+      all_res = (pub_res + rel_res).uniq
+      res = all_res.select{|x| x.category != "Flowchart"}
       @resources = res.map{|x| [
         name: x&.name&.capitalize&.html_safe,
         category: x&.category,
@@ -86,7 +95,7 @@ module Api
     end
 
     def unmapped_risk
-      @tags = Tag.includes(:business_process).order("business_processes.name ASC").where.not(risk_id:nil)
+      @tags = Tag.includes(:business_process).order("business_processes.name ASC").where.not(risk_id:nil).uniq
       respond_to do |format|
         format.json
         format.pdf do
@@ -101,7 +110,7 @@ module Api
     end
 
     def unmapped_control
-      @tags = Tag.includes(:business_process).order("business_processes.name ASC").where.not(control_id:nil)
+      @tags = Tag.includes(:business_process).order("business_processes.name ASC").where.not(control_id:nil).uniq
       respond_to do |format|
         format.json
         format.pdf do
