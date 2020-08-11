@@ -58,7 +58,20 @@ module Api
     end
 
     def report_resource_rating
-      @resources = Resource.where(status: "release")
+      zone = ActiveSupport::TimeZone.new("Jakarta")
+      res = Resource.where(status: "release").select{|x| x.category != "Flowchart"}
+      @resources = res.map{|x| [
+        name: x&.name&.capitalize&.html_safe,
+        category: x&.category,
+        visit: x&.visit,
+        average: Resource.rate(x).third.nan? ? "Not Rated" : Resource.rate(x).fourth,
+        total: Resource.rate(x).first,
+        created_by: x&.versions&.find_by(event:"create")&.whodunnit.present? ? User&.find(x&.versions&.find_by(event:"create")&.whodunnit).name : "",
+        created_on: x&.versions&.find_by(event:"create")&.present? ? x&.versions&.find_by(event:"create")&.created_at.in_time_zone(zone).inspect.sub(" +07:00","") : "",
+        last_updated_on: x&.updated_at.present? ? x&.updated_at.in_time_zone(zone).inspect.sub(" +07:00","") : "",
+        last_updated_by: x&.versions&.last&.whodunnit.present? ? User&.find(x&.versions&.last&.whodunnit)&.name : ""   
+        ]
+      }.flatten(1).sort_by {|h| [h[:total],h[:average]]}.reverse
       respond_to do |format|
         format.json
         format.pdf do

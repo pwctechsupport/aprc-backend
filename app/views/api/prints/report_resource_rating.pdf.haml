@@ -67,53 +67,27 @@
     -#       %td #{ris.type_of_risk.to_s.gsub(/_/, ' ').capitalize}
     -#       %td #{ris.business_process.name.capitalize}
     -# %br
-    -zone = ActiveSupport::TimeZone.new("Jakarta")
     %table.table.table-borderless
       %thead
       -@resources.each_with_index do |res, i|
-        -if res&.category != "Flowchart"
-          %tbody
-            %tr
-              %td.text-center{:scope => "row", :style => "width: 5%"} #{i+1}
-              %td.text-center{:scope => "row", :style => "width: 12%"} #{res&.name&.capitalize&.html_safe}
-              %td.text-center{:scope => "row", :style => "width: 10%"} #{res&.visit}
-              %td.text-center{:scope => "row", :style => "width: 10%"} 
-                -rating_total = res&.resource_ratings&.count
-                -rating_sum =  res&.resource_ratings&.sum(:rating)
-                -rating_average = rating_sum/rating_total
-                -if rating_average.nan?
-                  Not Rated
-                -else
-                  #{rating_average&.round(1)}
-
-                  
-              %td.text-center{:scope => "row", :style => "width: 10%"}
-                -rating_total = res.resource_ratings.count
-                #{rating_total}
-              %td.text-center{:scope => "row", :style => "width: 10%"} #{res&.category}
-              -if res&.versions&.find_by(event:"create")&.whodunnit.present?
-                %td.text-center{:scope => "row",:style => "width: 12%"}=User&.find(res&.versions&.find_by(event:"create")&.whodunnit).name
-              -else
-                %td.text-center{:scope => "row",:style => "width: 12%"}
-              -if res&.versions&.find_by(event:"create")&.present?
-                %td.text-center{:scope => "row",:style => "width: 10%"}=res&.versions&.find_by(event:"create")&.created_at.in_time_zone(zone).inspect.sub(" +07:00", "")
-              -else
-                %td.text-center{:scope => "row",:style => "width: 10%"}
-              -if res&.updated_at.present?
-                %td.text-center.ape{:scope => "row",:style => "width: 10%"}=res&.updated_at.in_time_zone(zone).inspect.sub(" +07:00", "")
-              -else
-                %td.text-center{:scope => "row",:style => "width: 10%"}
-              -if res&.versions&.last&.whodunnit.present?
-                %td.text-center{:scope => "row",:style => "width: 11%"}=User&.find(res&.versions&.last&.whodunnit)&.name
-              -else
-                %td.text-center{:scope => "row",:style => "width: 11%"}
-            
+        %tbody
+          %tr
+            %td.text-center{:scope => "row", :style => "width: 5%"} #{i+1}
+            %td.text-center{:scope => "row", :style => "width: 12%"}= res[:name]
+            %td.text-center{:scope => "row", :style => "width: 10%"}= res[:category]
+            %td.text-center{:scope => "row", :style => "width: 10%"}= res[:visit]
+            %td.text-center{:scope => "row", :style => "width: 10%"}= res[:average]
+            %td.text-center{:scope => "row", :style => "width: 10%"}= res[:total]
+            %td.text-center{:scope => "row",:style => "width: 12%"}= res[:created_by]
+            %td.text-center{:scope => "row",:style => "width: 10%"}= res[:created_on]
+            %td.text-center{:scope => "row",:style => "width: 10%"}= res[:last_updated_on]
+            %td.text-center{:scope => "row",:style => "width: 11%"}= res[:last_updated_by]
 
     %br
     %br
 
 
-
+  -# Resource.where(id: 1...10).map{|x| [name: x&.name&.capitalize&.html_safe,category: x&.category, x&.visit,  ]}
 
     / %p{:style => "page-break-after:always;"}
     / / %p{:style => "page-break-after:auto;"}
