@@ -4,12 +4,14 @@ module Mutations
     argument :originator_type, String, required: true
     argument :resuploadBase64, String, as: :resupload, required: false
     argument :resuploadFileName, String, as: :resupload_file_name, default_value: 'resupload', required: false
+    argument :user_id, ID, required: false
+
 
     field :file_attachment, Types::FileAttachmentType, null: true
 
     def resolve(args)
       current_user = context[:current_user]
-      args[:user_id] = current_user&.id
+      args[:user_id] = current_user.id
       file_attachment = FileAttachment.create!(args.to_h)
       # request_edit = current_user.request_edit_risks.create!(args.to_h)
       MutationResult.call(

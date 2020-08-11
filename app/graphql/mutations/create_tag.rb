@@ -8,13 +8,14 @@ module Mutations
     argument :y_coordinates, Int, required: false
     argument :control_id, ID, required: false
     argument :risk_id, ID, required: false
+    argument :user_id, ID, required: false
 
     # return type from the mutation
     field :tag, Types::TagType, null: true
 
     def resolve(args)
       current_user = context[:current_user]
-      args[:user_id] = current_user&.id
+      args[:user_id] = current_user.id
       resource = Resource.find(args[:resource_id].to_i)
       args[:image_name] = resource.resupload_file_name
       if args[:control_id].present?

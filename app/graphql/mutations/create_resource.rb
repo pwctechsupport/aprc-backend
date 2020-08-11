@@ -59,7 +59,7 @@ module Mutations
         if act&.first&.class == ActionController::Parameters
           activities = act.collect {|x| x.permit(:id,:_destroy,:x_coordinates,:y_coordinates, :body, :resource_id, :business_process_id, :image_name, :user_id, :risk_id, :control_id)}
           args.delete(:tags_attributes)
-          args[:tags_attributes]= activities.collect{|x| x.to_h}
+          args[:tags_attributes]= activities.collect{|x| x&.to_h}
           args[:tags_attributes].first["user_id"] = current_user.id
         end
       end
@@ -68,8 +68,8 @@ module Mutations
         args.delete(:resupload_file_name)
       end
 
-      args[:created_by] = current_user&.name || "User with ID#{current_user&.id}"
-      args[:last_updated_by] = current_user&.name || "User with ID#{current_user&.id}"
+      args[:created_by] = current_user.name
+      args[:last_updated_by] = current_user.name
       if args[:control_ids].present?
         control = args[:control_ids]
         args.delete(:control_ids)
@@ -81,7 +81,7 @@ module Mutations
       resource=Resource.new(args)
       resource&.save_draft
       if args[:resupload].present?
-        args[:resupload_file_name] = "#{args[:name]}" << resource.resource_file_type(resource)
+        args[:resupload_file_name] = "#{args[:name]}" << Resource.resource_file_type(resource)
         resource.update_attributes(resupload: args[:resupload], resupload_file_name: args[:resupload_file_name], base_64_file: args[:resupload])
       
       end

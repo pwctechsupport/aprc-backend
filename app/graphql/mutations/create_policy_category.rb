@@ -17,10 +17,10 @@ module Mutations
     def resolve(args)
       current_user = context[:current_user]
 
-      args[:created_by] = current_user&.name || "User with ID#{current_user&.id}"
-      args[:last_updated_by] = current_user&.name || "User with ID#{current_user&.id}"
+      args[:created_by] = current_user.name
+      args[:last_updated_by] = current_user.name
       if args[:policy_ids].present?
-        args[:policy] = args[:policy_ids].map{|x| Policy.find(x&.to_i).title}
+        args[:policy] = args[:policy_ids]&.map{|x| Policy.find(x&.to_i)&.title}
       end
 
       policy_category = current_user&.policy_categories&.new(args.to_h)

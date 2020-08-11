@@ -11,7 +11,8 @@ Paperclip.options[:content_type_mappings] = {
   pptx: 'application/vnd.openxmlformats-officedocument.presentationml.presentation',
   xlsx: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
 }
-
+SafeYAML::OPTIONS[:default_mode] = :safe
+SafeYAML::OPTIONS[:deserialize_symbols] = true
 
 
 module GraphqlDevise

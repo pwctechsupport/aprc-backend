@@ -44,7 +44,7 @@ module Types
     def policy
       if object.class == Hash
         obj = object["policy"]
-        obj.present? ? YAML.load(obj , :safe => true) : []
+        obj.present? ? SafeYAML.load(obj) : []
       else
         object&.policy
       end

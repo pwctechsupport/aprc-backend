@@ -5,12 +5,13 @@ module Mutations
     argument :guidance, String, required: false
     argument :resuploadBase64, String, as: :resupload, required: false
     argument :resuploadFileName, String, as: :resupload_file_name, default_value: 'resupload', required: false
+    argument :user_id, ID, required: false
 
     field :activity_control, Types::ActivityControlType, null: true
 
     def resolve(args)
       current_user = context[:current_user]
-      args[:user_id] = current_user&.id
+      args[:user_id] = current_user.id
       
       if args[:guidance].present? && (args[:resupload].present? || args[:resuploadFileName.present?])
         raise GraphQL::ExecutionError, "Guidance can only provide one type of Guidance: Attachment or Text" 

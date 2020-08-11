@@ -21,8 +21,8 @@ module Mutations
 
     def resolve(args)
       current_user = context[:current_user]
-      args[:created_by] = current_user&.name || "User with ID#{current_user&.id}"
-      args[:last_updated_by] = current_user&.name || "User with ID#{current_user&.id}"
+      args[:created_by] = current_user.name
+      args[:last_updated_by] = current_user.name
       if args[:business_process_ids].present?
         buspro = args[:business_process_ids]
         args.delete(:business_process_ids)

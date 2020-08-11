@@ -19,10 +19,10 @@ module Mutations
     def resolve(args)
       
       current_user = context[:current_user]
-      args[:created_by] = current_user&.name || "User with ID#{current_user&.id}"
-      args[:last_updated_by] = current_user&.name || "User with ID#{current_user&.id}"
+      args[:created_by] = current_user.name
+      args[:last_updated_by] = current_user.name
       if args[:business_process_ids].present?
-        args[:business_process] = args[:business_process_ids].map{|x| BusinessProcess.find(x&.to_i).name}
+        args[:business_process] = args[:business_process_ids]&.map{|x| BusinessProcess.find(x&.to_i)&.name}
       end
       risk = Risk.new(args.to_h)
       risk.save_draft
