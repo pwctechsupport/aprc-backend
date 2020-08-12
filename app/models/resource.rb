@@ -149,6 +149,14 @@ class Resource < ApplicationRecord
     end
   end
 
+  def self.rate(resource)
+    rating_total = resource.resource_ratings.count
+    rating_sum =  resource.resource_ratings.sum(:rating)
+    rating_average = rating_sum/rating_total
+    rating_round = rating_average.round(1)
+    return rating_total, rating_sum, rating_average, rating_round
+  end
+
   def self.resource_file_type(res)
     content = res.resupload_content_type
     if content === nil

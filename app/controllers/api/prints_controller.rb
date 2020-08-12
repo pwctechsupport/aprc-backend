@@ -28,7 +28,10 @@ module Api
     end
 
     def report_risk
-      @risks = Risk.includes(:business_processes).order("business_processes.name ASC").where.not(id:PolicyRisk.pluck(:risk_id)).where(status: "release")
+      pub_risk = Risk.where.not(id:PolicyRisk.pluck(:risk_id)).where.not(published_at: nil).pluck(:id)
+      rel_risk = Risk.where.not(id:PolicyRisk.pluck(:risk_id)).where(status: "release").pluck(:id)
+      all_risk = (pub_risk + rel_risk).uniq
+      @risks = Risk.where(id: all_risk).includes(:business_processes).order("business_processes.name ASC").uniq
       respond_to do |format|
         format.json
         format.pdf do
@@ -43,7 +46,10 @@ module Api
     end
 
     def report_risk_policy
-      @risks = Risk.includes(:business_processes).order("business_processes.name ASC").where.not(id:ControlRisk.pluck(:risk_id)).where(status: "release")
+      pub_risk = Risk.where.not(id:ControlRisk.pluck(:risk_id)).where.not(published_at: nil).pluck(:id)
+      rel_risk = Risk.where.not(id:ControlRisk.pluck(:risk_id)).where(status: "release").pluck(:id)
+      all_risk = (pub_risk + rel_risk).uniq
+      @risks = Risk.where(id: all_risk).includes(:business_processes).order("business_processes.name ASC").uniq
       respond_to do |format|
         format.json
         format.pdf do
@@ -58,7 +64,23 @@ module Api
     end
 
     def report_resource_rating
-      @resources = Resource.where(status: "release")
+      zone = ActiveSupport::TimeZone.new("Jakarta")
+      pub_res = Resource.where.not(published_at: nil)
+      rel_res = Resource.where(status: "release")
+      all_res = (pub_res + rel_res).uniq
+      res = all_res.select{|x| x.category != "Flowchart"}
+      @resources = res.map{|x| [
+        name: x&.name&.capitalize&.html_safe,
+        category: x&.category,
+        visit: x&.visit,
+        average: Resource.rate(x).third.nan? ? "Not Rated" : Resource.rate(x).fourth,
+        total: Resource.rate(x).first,
+        created_by: x&.versions&.find_by(event:"create")&.whodunnit.present? ? User&.find(x&.versions&.find_by(event:"create")&.whodunnit).name : "",
+        created_on: x&.versions&.find_by(event:"create")&.present? ? x&.versions&.find_by(event:"create")&.created_at.in_time_zone(zone).inspect.sub(" +07:00","") : "",
+        last_updated_on: x&.updated_at.present? ? x&.updated_at.in_time_zone(zone).inspect.sub(" +07:00","") : "",
+        last_updated_by: x&.versions&.last&.whodunnit.present? ? User&.find(x&.versions&.last&.whodunnit)&.name : ""   
+        ]
+      }.flatten(1).sort_by {|h| [h[:total],h[:average]]}.reverse
       respond_to do |format|
         format.json
         format.pdf do
@@ -73,7 +95,7 @@ module Api
     end
 
     def unmapped_risk
-      @tags = Tag.includes(:business_process).order("business_processes.name ASC").where.not(risk_id:nil)
+      @tags = Tag.includes(:business_process).order("business_processes.name ASC").where.not(risk_id:nil).uniq
       respond_to do |format|
         format.json
         format.pdf do
@@ -88,7 +110,7 @@ module Api
     end
 
     def unmapped_control
-      @tags = Tag.includes(:business_process).order("business_processes.name ASC").where.not(control_id:nil)
+      @tags = Tag.includes(:business_process).order("business_processes.name ASC").where.not(control_id:nil).uniq
       respond_to do |format|
         format.json
         format.pdf do

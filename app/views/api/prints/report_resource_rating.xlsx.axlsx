@@ -12,7 +12,6 @@ content = wb.styles.add_style(:bg_color => "FFFFFFFF",
 title = wb.styles.add_style(:sz => 20, :b => true, :alignment=>{:horizontal => :center, :vertical => :center}, :font_name => 'Georgia')
 
 header = wb.styles.add_style(:sz => 12, :bg_color => 'b10015', :fg_color => 'FF', :b => true, :border => { :style => :thin, :color => "00000000", :edges => [:top, :bottom, :left, :right] }, :alignment=>{:horizontal => :center, :vertical => :center}, :font_name => 'Georgia')
-zone = ActiveSupport::TimeZone.new("Jakarta")
 
 wb.add_worksheet(name: "Exception Report") do |sheet|
   # Create the header row
@@ -24,38 +23,20 @@ wb.add_worksheet(name: "Exception Report") do |sheet|
   sheet.merge_cells "A1:I1"
   sheet.merge_cells "A4:I4"
   sheet.merge_cells "A5:I5"
-  sheet.add_row ["Name", "Number of Download", "Average rating", "Number of rating", "Category","Created By", "Created On", "Last Update On", "Last Update By"], :style => header, :height => 25
+  sheet.add_row ["Name", "Category", "Number of Download", "Average rating", "Number of rating","Created By", "Created On", "Last Update On", "Last Update By"], :style => header, :height => 25
   # Create entries for each item
   @resources.each do |resource|
-    rating_total = resource.resource_ratings.count
-    rating_sum =  resource.resource_ratings.sum(:rating)
-    rating_average = rating_sum/rating_total
-    rating_round = rating_average.round(1)
-    if rating_average.nan?
-      sheet.add_row [
-        resource&.name&.capitalize, 
-        resource&.visit, 
-        "Not Rated", 
-        rating_total, 
-        resource&.category,
-        resource&.versions&.find_by(event:"create")&.whodunnit.present? ? User&.find(resource&.versions&.find_by(event:"create")&.whodunnit).name : "",
-        resource&.versions&.find_by(event:"create")&.present? ? resource&.versions&.find_by(event:"create")&.created_at.in_time_zone(zone).inspect.sub(" +07:00", "") : "",
-        resource&.updated_at.present? ? resource&.updated_at.in_time_zone(zone).inspect.sub(" +07:00", "") : "",
-        resource&.versions&.last&.whodunnit.present? ? User&.find(resource&.versions&.last&.whodunnit)&.name : ""
-        ], :style=>content, :height => 22
-    else
-      sheet.add_row [
-        resource&.name&.capitalize, 
-        resource&.visit, 
-        rating_round, 
-        rating_total, 
-        resource&.category,
-        resource&.versions&.find_by(event:"create")&.whodunnit.present? ? User&.find(resource&.versions&.find_by(event:"create")&.whodunnit).name : "",
-        resource&.versions&.find_by(event:"create")&.present? ? resource&.versions&.find_by(event:"create")&.created_at.in_time_zone(zone).inspect.sub(" +07:00", "") : "",
-        resource&.updated_at.present? ? resource&.updated_at.in_time_zone(zone).inspect.sub(" +07:00", "") : "",
-        resource&.versions&.last&.whodunnit.present? ? User&.find(resource&.versions&.last&.whodunnit)&.name : ""
-        ], :style=>content, :height => 22
-    end
+    sheet.add_row [
+      resource[:name], 
+      resource[:category], 
+      resource[:visit], 
+      resource[:average], 
+      resource[:total], 
+      resource[:created_by], 
+      resource[:created_on], 
+      resource[:last_updated_on], 
+      resource[:last_updated_by]
+      ], :style=>content, :height => 22
   end
   sheet.column_widths 28
 end
