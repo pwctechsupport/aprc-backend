@@ -35,6 +35,7 @@ RUN cp /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 # COPY Gemfile & Gemfil.lock
 COPY Gemfile* $APP_PATH/
 # Run bundle
+RUN gem install bundler -v 2.0.2
 RUN bundle install
 # Adding project files
 COPY . $APP_PATH/
