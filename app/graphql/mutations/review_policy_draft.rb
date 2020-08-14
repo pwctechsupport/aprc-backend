@@ -88,7 +88,7 @@ module Mutations
               Notification.send_notification(admin_prep, "Policy Draft titled #{policy.title} Has been Rejected", policy&.title,policy, current_user&.id, "request_draft_rejected")
               policy_draft.revert!
               if policy&.present?
-                policy.update_attributes(is_submitted:false, is_related: false)
+                policy.update_attributes(is_submitted:false, is_related: false, status: "release")
               end
               if policy&.policy_business_processes.where.not(draft_id: nil).present?
                 policy&.policy_business_processes.where.not(draft_id: nil).destroy_all

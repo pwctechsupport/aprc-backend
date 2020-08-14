@@ -33,7 +33,17 @@ module Types
 			if object.whodunnit
 				user = User.find(object.whodunnit)
 			end
-			"#{user&.name || "someone"} #{object.event} #{object.item_type}: #{object.item&.to_humanize}"
+			if object.event == "destroy"
+				if object.item_type == "Control"
+					"#{user&.name || "someone"} #{object.event} #{object.item_type}: #{JSON.parse(object.object)["description"]}"
+				elsif object.item_type == "Policy"
+					"#{user&.name || "someone"} #{object.event} #{object.item_type}: #{JSON.parse(object.object)["title"]}"
+				else
+					"#{user&.name || "someone"} #{object.event} #{object.item_type}: #{JSON.parse(object.object)["name"] || "something"}"
+				end
+			else
+				"#{user&.name || "someone"} #{object.event} #{object.item_type}: #{object.item&.to_humanize}"
+			end
 		end
 	end
 end

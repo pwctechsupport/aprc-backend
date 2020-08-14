@@ -43,7 +43,8 @@ module Types
 
     def policy
       if object.class == Hash
-        YAML.load(object["policy"])
+        obj = object["policy"]
+        obj.present? ? SafeYAML.load(obj) : []
       else
         object&.policy
       end

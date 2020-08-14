@@ -14,15 +14,15 @@
     .row.m-t-10
       .col-md-12
         %li 
-          %h3 #{"Level of Risk       :"} #{@risk.level_of_risk.to_s.gsub(/_/, ' ').titlecase}
+          %h3 #{"Level of Risk       :"} #{@risk.level_of_risk.to_s.gsub(/_/, ' ').capitalize}
     .row.m-t-10
       .col-md-12
         %li  
-          %h3 Risk Status           : #{@risk.status.to_s.gsub(/_/, ' ').titlecase}
+          %h3 Risk Status           : #{@risk.status.to_s.gsub(/_/, ' ').capitalize}
     .row.m-t-10
       .col-md-12
         %li
-          %h3 Type of Risk         : #{@risk.type_of_risk.to_s.gsub(/_/, ' ').titlecase}
+          %h3 Type of Risk         : #{@risk.type_of_risk.to_s.gsub(/_/, ' ').capitalize}
     .row.m-t-10
       .col-md-12
   %ul

@@ -4,18 +4,20 @@ module Mutations
     argument :name, String, required: false
     argument :resuploadBase64, String, as: :resupload, required: false
     argument :resuploadFileName, String, as: :resupload_file_name, required: false
-
+    argument :user_id, ID, required: false
+    argument :resupload_file_name, String, required: false
+    
     field :manual, Types::ManualType, null: true
 
     def resolve(id:, **args)
       current_user = context[:current_user]
-      args[:user_id] = current_user&.id
+      args[:user_id] = current_user.id
       manual = Manual.find(id)
       if current_user.has_role?(:admin_reviewer)
         manual.update_attributes!(args.to_h)
         if args[:resupload].present?
           if args[:name].present?
-            args[:resupload_file_name] = "#{args[:name]}" << manual.resource_file_type(manual)
+            args[:resupload_file_name] = "#{args[:name]}" << Manual.resource_file_type(manual)
             manual.update_attributes(resupload: args[:resupload], resupload_file_name: args[:resupload_file_name])
           end
         end

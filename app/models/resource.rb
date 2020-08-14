@@ -1,6 +1,6 @@
 class Resource < ApplicationRecord
   validates :name, uniqueness: true
-  has_paper_trail ignore: [:visit, :recent_visit]
+  has_paper_trail ignore: [:visit, :recent_visit, :status, :updated_at]
   has_drafts
   # belongs_to :policy, optional: true
   belongs_to :control, optional: true
@@ -36,38 +36,107 @@ class Resource < ApplicationRecord
 
   def self.import(file)
     spreadsheet = open_spreadsheet(file)
-    allowed_attributes = ["name", "category", "status", "related control", "related policy", "related control description", "related policy title","related business process", "related business process name"]
+    allowed_attributes = ["name", "category","related policy title", "related business process name"]
     header = spreadsheet.row(1)
     resource_names = []
     pol_ids = []
-    con_ids = []
+    pol_obj = []
+    bp_ids = []
+    bp_obj= []
+    error_data = []
     index_resource = 0
-    (2..spreadsheet.last_row).each do |k|
-      row = Hash[[header, spreadsheet.row(k)].transpose]
-      if row["name"].present? && !Resource.find_by_name(row["name"]).present?
-        if resource_names.count != 0
-          resource_id = Resource&.find_by_name(resource_names[index_resource-1]).update(policy_ids: pol_ids.uniq, control_ids: con_ids.uniq)
-          pol_ids.reject!{|x| x == x}
-          con_ids.reject!{|x| x == x}
-        end
-        if !Resource.find_by_name(row["name"]).present?
-          resource_names.push(row["name"])
-        end
-        resource_id = Resource&.create(name: resource_names[index_resource],category: row["category"], policy_ids: row["related policy"], control_ids: row["related control"], business_process_id: row["related business process"], status: "release")
-        index_resource+=1
-      end
-      pol_ids.push(row["related policy"])
-      con_ids.push(row["related control"])
-      if k == spreadsheet.last_row && Resource.find_by_name(row["name"]).present?
-        if row["name"].present?
+    ActiveRecord::Base.transaction do 
+      (2..spreadsheet.last_row).each do |k|
+        row = Hash[[header, spreadsheet.row(k)].transpose]
+        if row["name"].present? && !Resource.find_by_name(row["name"]).present?
           if resource_names.count != 0
-            resource_id = Resource&.find_by_name(resource_names[index_resource-1]).update(policy_ids: pol_ids.uniq, control_ids: con_ids.uniq)
+            resource_id = Resource&.find_by_name(resource_names[index_resource-1]).update(policy_ids: pol_ids.uniq, business_process_ids: bp_ids.uniq)
             pol_ids.reject!{|x| x == x}
-            con_ids.reject!{|x| x == x}
+            pol_obj.reject!{|x| x == x}
+            bp_ids.reject!{|x| x == x}
+            bp_obj.reject!{|x| x == x}
+          end
+          if !Resource.find_by_name(row["name"]).present?
+            resource_names.push(row["name"])
+          end
+          resource_id = Resource&.create(name: resource_names[index_resource],category: row["category"], policy_ids: Policy.find_by(title: row["related policy title"])&.id, business_process_ids: BusinessProcess.find_by_name(row["related business process name"])&.id, status: "release", is_inside: true)
+          
+          unless resource_id.valid?
+            error_data.push({message: resource_id.errors.full_messages.join(","), line: k})
+          end
+
+          index_resource+=1
+        elsif !row["name"].present?
+          error_data.push({message: "Resource name must Exist", line: k})
+        end
+
+        resource_inside = Resource.find_by_name(row["name"])
+        if row["name"].present? && resource_inside.present?
+          if !resource_inside.is_inside?
+            error_data.push({message: "Resource data already exist, cannot edit Resource named  #{resource_inside&.name }. please remove it from the worksheet", line: k})
+          end
+        end
+
+        if resource_inside.present?
+          if resource_inside&.is_inside?
+            if !row["related policy title"].nil?
+              pol_obj.push({title: row["related policy title"]})
+              pol_obj.each do |pol|
+                if pol[:title].present?
+                  main_pol = Policy.find_by(title: pol[:title])
+                  if !main_pol.present?
+                    error_data.push({message: "Policy must Exist", line: k})
+                  end
+                  if main_pol.present?
+                    pol_ids.push(main_pol&.id)
+                  end
+                end
+              end
+            end
+
+            if !row["related business process name"].nil?
+              bp_obj.push({name: row["related business process name"]})
+              bp_obj.each do |bp|
+                if bp[:name].present?
+                  main_bp = BusinessProcess.find_by_name(bp[:name])
+                  if !main_bp.present?
+                    error_data.push({message: "Business Process must Exist", line: k})
+                  end
+                  if main_bp.present?
+                    bp_ids.push(main_bp&.id)
+                    if main_bp.descendant_ids.present?
+                      bp_ids.push(main_bp.descendant_ids)
+                    end
+                  end
+                end
+              end
+            else
+              error_data.push({message: "Business Process Must Exist", line: k})
+            end
+
+            if k == spreadsheet.last_row && Resource.find_by_name(row["name"]).present?
+              if row["name"].present?
+                if resource_names.count != 0
+                  resource_id = Resource&.find_by_name(resource_names[index_resource-1]).update(policy_ids: pol_ids.uniq, business_process_ids: bp_ids.uniq)
+                  pol_ids.reject!{|x| x == x}
+                  bp_ids.reject!{|x| x == x}
+                end
+              end
+            end
           end
         end
       end
+
+      if error_data.count != 0
+        raise ActiveRecord::Rollback, "Rollback Completed"
+      end
+
+      if Resource.where(is_inside: true).present?
+        Resource.where(is_inside:true).map{|x| x.update(is_inside: false)}
+      end
     end
+
+    return true, error_data.uniq
   end
 
   def self.open_spreadsheet(file)
@@ -80,7 +149,15 @@ class Resource < ApplicationRecord
     end
   end
 
-  def resource_file_type(res)
+  def self.rate(resource)
+    rating_total = resource.resource_ratings.count
+    rating_sum =  resource.resource_ratings.sum(:rating)
+    rating_average = rating_sum/rating_total
+    rating_round = rating_average.round(1)
+    return rating_total, rating_sum, rating_average, rating_round
+  end
+
+  def self.resource_file_type(res)
     content = res.resupload_content_type
     if content === nil
       content_true = ""

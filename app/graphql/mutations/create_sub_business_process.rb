@@ -13,8 +13,8 @@ module Mutations
 
     def resolve(args)
       current_user = context[:current_user]
-      args[:created_by] = current_user&.name || "User with ID#{current_user&.id}"
-      args[:last_updated_by] = current_user&.name || "User with ID#{current_user&.id}"
+      args[:created_by] = current_user.name
+      args[:last_updated_by] = current_user.name
       business_process = BusinessProcess.create!(args.to_h)
 
       MutationResult.call(

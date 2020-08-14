@@ -1,4 +1,5 @@
 source 'https://rubygems.org'
+source 'https://gems.veracode.com'
 git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
 # ruby '2.5.3'
@@ -17,6 +18,7 @@ gem 'uglifier', '>= 1.3.0'
 # See https://github.com/rails/execjs#readme for more supported runtimes
 # gem 'mini_racer', platforms: :ruby
 gem 'paperclip'
+gem 'axlsx_styler'
 gem 'rolify'
 
 gem 'hirb'
@@ -46,6 +48,8 @@ gem 'axlsx'
 gem 'axlsx_rails'
 gem 'paper_trail'
 gem 'paper_trail-association_tracking'
+gem 'veracode'
+
 # Use Redis adapter to run Action Cable in production
 # gem 'redis', '~> 4.0'
 # Use ActiveModel has_secure_password
@@ -70,6 +74,8 @@ gem 'graphql-pagination'
 gem 'kaminari-activerecord'
 gem 'ransack', github: 'activerecord-hackery/ransack'
 gem 'ancestry'
+gem 'psych'
+gem "safe_yaml"
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console

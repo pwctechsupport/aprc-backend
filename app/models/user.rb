@@ -4,9 +4,11 @@ class User < ApplicationRecord
   include Tokenizable
   # Include default devise modules. Others available are:
   # :confirmable, :lockable, :timeoutable, :trackable and :omniauthable
-  has_paper_trail ignore: [:current_sign_in_at,:last_sign_in_at, :sign_in_count, :updated_at]
+  has_paper_trail ignore: [:current_sign_in_at,:last_sign_in_at, :sign_in_count, :updated_at, :status]
   has_drafts
   serialize :policy_category, Array
+  serialize :main_role, Array
+
 
   has_many :request_edits, class_name: "RequestEdit", as: :originator, dependent: :destroy
   has_many :file_attachments, dependent: :destroy
@@ -15,6 +17,8 @@ class User < ApplicationRecord
   has_many :policy_categories, through: :user_policy_categories, dependent: :destroy
   has_many :resource_ratings, class_name: "ResourceRating", foreign_key: "user_id", dependent: :destroy
   has_many :risks
+  has_many :resource_visits, class_name: "UserResourceVisit", foreign_key: "user_id", dependent: :destroy
+  has_many :policy_visits, class_name: "UserPolicyVisit", foreign_key: "user_id", dependent: :destroy
   has_many :controls
   has_many :business_process
   has_many :bookmark, dependent: :destroy

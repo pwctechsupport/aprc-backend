@@ -2,6 +2,8 @@ module Mutations
   class CreateUserResourceVisit < Mutations::BaseMutation
     # arguments passed to the `resolved` method
     argument :resource_id, ID, required: true
+    argument :recent_visit, String, required: false
+    argument :user_id, ID, required: false
 
 
     # return type from the mutation
@@ -9,11 +11,11 @@ module Mutations
 
     def resolve(args)
       current_user = context[:current_user]
-      args[:user_id] = current_user&.id
+      args[:user_id] = current_user.id
       args[:recent_visit] = Time.now
-      if UserResourceVisit.find_by(user_id: current_user&.id ,resource_id: args[:resource_id]).present?
-        user_resource_visit =  UserResourceVisit.find_by(user_id: current_user&.id ,resource_id: args[:resource_id])
-        user_resource_visit.update(recent_visit: args[:recent_visit])
+      user_resource_visit = current_user&.resource_visits&.where(["resource_id = ?", "#{args[:resource_id]}"])
+      if user_resource_visit.present?
+        user_resource_visit&.first&.update!(recent_visit: args[:recent_visit])
       else
         user_resource_visit = UserResourceVisit.create!(args.to_h)
       end

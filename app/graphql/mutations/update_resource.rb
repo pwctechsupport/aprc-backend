@@ -56,7 +56,7 @@ module Mutations
           if args[:category].present?
             enum_list = EnumList&.find_by(category_type: "Category", name: args[:category]) || EnumList&.find_by(category_type: "Category", code: args[:category])
             if enum_list ==  nil 
-              kode = args[:category].gsub("_"," ").titlecase
+              kode = args[:category].gsub("_"," ").capitalize
               EnumList.create(name: args[:category], category_type: "Category", code: kode)
             end
             enum_list = EnumList&.find_by(category_type: "Category", name: args[:category]) || EnumList&.find_by(category_type: "Category", code: args[:category])
@@ -113,10 +113,10 @@ module Mutations
           
           if resource.resupload.present?
             if !(args[:resupload].present?) && args[:name].present?
-              args[:resupload_file_name] = "#{args[:name]}" << resource.resource_file_type(resource)
+              args[:resupload_file_name] = "#{args[:name]}" << Resource.resource_file_type(resource)
               resource.update_attributes!(resupload: resource.resupload, resupload_file_name: args[:resupload_file_name])
             elsif args[:resupload].present? && args[:name].present?
-              args[:resupload_file_name] = "#{args[:name]}" << resource.resource_file_type(resource)
+              args[:resupload_file_name] = "#{args[:name]}" << Resource.resource_file_type(resource)
               resource.update_attributes!(resupload: args[:resupload], resupload_file_name: args[:resupload_file_name],base_64_file: args[:resupload])
             end     
           end

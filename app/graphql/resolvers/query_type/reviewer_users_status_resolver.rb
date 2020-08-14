@@ -11,11 +11,11 @@ module Resolvers
         @q = User.ransack(filter.as_json)
         
         @q1 = @q.result.where(status:"waiting_for_review")
-        @q1 = @q1.sort_by(&:updated_at).reverse
-
         @q2 = @q.result.where(status:"waiting_for_approval")
-        @q2 = @q2.sort_by(&:updated_at).reverse
+        @q0 = @q1 + @q2
+        @q0 = @q0.sort_by(&:updated_at).reverse
         
+
         @q3 = @q.result.where(status:"ready_for_edit")
         @q3 = @q3.sort_by(&:updated_at).reverse
 
@@ -28,7 +28,7 @@ module Resolvers
         @q6 = @q.result.where(status:nil)
         @q6 = @q6.sort_by(&:updated_at).reverse
 
-        @q_final = @q1.push(*@q2,*@q3,*@q4,*@q5, *@q6)
+        @q_final = @q0.push(*@q3,*@q4,*@q5, *@q6)
         ids = @q_final.map(&:id)
         if ids.count != 0
           @q = User.where(id: ids).order("FIELD(id, #{ids.join(',')})").all.ransack

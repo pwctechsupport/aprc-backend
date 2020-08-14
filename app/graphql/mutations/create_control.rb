@@ -16,6 +16,7 @@ module Mutations
     argument :key_control, Boolean, required: false
     argument :created_by, String, required: false
     argument :last_updated_by, String, required: false
+    argument :department_ids, [ID], required: false
 
     field :control, Types::ControlType, null: true
     
@@ -28,7 +29,7 @@ module Mutations
           activities = act.collect {|x| x.permit(:id,:activity,:guidance,:control_id,:resuploadBase64,:resuploadFileName,:_destroy,:resupload,:user_id,:resupload_file_name)}
           args.delete(:activity_controls_attributes)
           args[:activity_controls_attributes]= activities.collect{|x| x.to_h}
-          args[:created_by] = current_user&.name || "User with ID#{current_user&.id}"
+          args[:created_by] = current_user.name 
         end
         args[:activity_controls_attributes].each do |aca|
           act_control = ActivityControl.new(aca)
@@ -37,9 +38,9 @@ module Mutations
         end
         args.delete(:activity_controls_attributes)
       end
-      args[:last_updated_by] = current_user&.name || "User with ID#{current_user&.id}"
+      args[:last_updated_by] = current_user.name 
       if args[:department_ids].present?
-        args[:control_owner] = args[:department_ids].map{|x| Department.find(x&.to_i).name}
+        args[:control_owner] = args[:department_ids]&.map{|x| Department.find(x&.to_i)&.name}
       end
       if args[:business_process_ids].present?
         buspro = args[:business_process_ids]

@@ -11,6 +11,7 @@ module Mutations
     argument :status, Types::Enums::Status, required: false
     argument :department_id, ID, required: false
     argument :policy_category, [ID], as: :policy_category_ids,required: false
+    argument :main_role, [ID], as: :role_ids,required: false
 
 
     # return type from the mutation
@@ -18,8 +19,13 @@ module Mutations
 
     def resolve(args)
       if args[:policy_category_ids].present?
-        args[:policy_category] = args[:policy_category_ids].map{|x| PolicyCategory.find(x&.to_i).name}
+        args[:policy_category] = args[:policy_category_ids]&.map{|x| PolicyCategory.find(x&.to_i)&.name}
       end
+
+      if args[:role_ids].present?
+        args[:main_role] = args[:role_ids]&.map{|x| Role.find(x&.to_i)&.name}
+      end
+
       user = User.new(args.to_h)
       user.save_draft
       current_user = context[:current_user]

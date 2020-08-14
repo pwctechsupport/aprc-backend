@@ -55,7 +55,8 @@ module Types
 
     def business_process
       if object.class == Hash
-        YAML.load(object["business_process"])
+        obj = object["business_process"]
+        obj.present? ? SafeYAML.load(obj) : []
       else
         object&.business_process
       end

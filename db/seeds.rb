@@ -13,31 +13,46 @@
 #   first_name: "Bondan",
 #   last_name: "Herumurti"
 # )
-# tes
-# tes2
-are_roles = ["admin_reviewer", "admin_preparer", "admin", "user", "staff", "supervisor", "manager", "high_level"]
 
-8.times do 
+are_roles = ["admin_reviewer", "admin_preparer", "user"]
+are_categories = ["references", "sop", "template", "flowchart"]
+
+are_roles.each do |are|
   Role.create(
-    name:are_roles.first
+    name:are
   )
-  are_roles.shift
 end
 
-roles = Role.all.map{|x| x.id}
+are_categories.each do |x|
+  if x == "sop"
+    EnumList.create(name: x, category_type: "Category", code: x.upcase)
+  else
+    EnumList.create(name: x, category_type: "Category", code: x.capitalize)
+  end
+end
 
-z = 0
+roles = Role.where(name:are_roles).map{|x| x.id}
 
-10.times do
-  roles.rotate!
-  z+=1
+are_roles.each_with_index do |role, k|
+  current_role = roles[k]
+  if role.include? "_"
+    current_job = role.gsub("_", " ").titlecase
+  else
+    current_job = role.titlecase
+  end
+  current_phone = "081231284123#{k}" 
   User.create(
-    email:"pwc#{z}@rubyh.co",
-    name:"PWC#{z}",
+    email:"#{role}@pwc.com",
+    name:current_job,
     password:"password", 
     password_confirmation:"password", 
-    phone:"0812312841249", 
-    job_position:"Head Master", 
-    role_ids:[roles.first]
+    phone:current_phone,
+    status: "release",
+    job_position: current_job, 
+    role_ids:current_role
   )
 end
+
+ConvertTable.run
+
+

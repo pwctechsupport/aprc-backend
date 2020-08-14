@@ -1,21 +1,56 @@
 wb = xlsx_package.workbook
 
+content = wb.styles.add_style(:bg_color => "FFFFFFFF",
+  :fg_color=>"#FF000000",
+  :border=>Axlsx::STYLE_THIN_BORDER,
+  :alignment=>{:horizontal => :center, :vertical => :center},
+  :font_name => 'Georgia'
+)
 
-wb.add_worksheet(name: "Exception Report") do |sheet|
+title = wb.styles.add_style(:sz => 20, :b => true, :alignment=>{:horizontal => :center, :vertical => :center}, :font_name => 'Georgia')
+
+
+header = wb.styles.add_style(:sz => 12, :bg_color => 'b10015', :fg_color => 'FF', :b => true, :border => { :style => :thin, :color => "00000000", :edges => [:top, :bottom, :left, :right] }, :alignment=>{:horizontal => :center, :vertical => :center}, :font_name => 'Georgia')
+
+wb.add_worksheet(name: "Report Risk without Policy") do |sheet|
   # Create the header row
-  sheet.add_row ["Risk", "Business Process","Control Owner","Description","Control Type"]
+  sheet.add_row ["Exception Report: Risk without Policy"], :style => title, :height => 28
+  2.times { sheet.add_row}
+  sheet.add_row ["Printed on: #{Time.now.strftime("%d %B %Y")}"],:font_name => 'Georgia', :sz => 12
+  sheet.add_row ["Printed by: #{current_user&.name}"],:font_name => 'Georgia', :sz => 12
+  3.times { sheet.add_row}
+  sheet.merge_cells "A1:H1"
+  sheet.merge_cells "A4:C4"
+  sheet.merge_cells "A5:C5"
+  sheet.add_row ["Business Process", "Risk", "Type of Risk","Level of Risk","Created By", "Created On", "Last Update On", "Last Update By"], :style => header, :height => 25
   # Create entries for each item
+  zone = ActiveSupport::TimeZone.new("Jakarta")
   @risks.each do |item|
     if item.business_processes.present?
-      item.controls.each do |bis|
-        item.business_processes.each do |bes| 
-          sheet.add_row [item.name,bes&.name,bis.control_owner.join(",").to_s.gsub(/"/,'').gsub(/"|\[|\]/, ''),bis.description.to_s.gsub(/"/,'').gsub(/"|\[|\]/, ''),bis.type_of_control.to_s.gsub(/"/,'').gsub(/"|\[|\]/, '').titlecase]
-        end
+      item.business_processes.each do |bes| 
+        sheet.add_row [
+          bes&.name&.capitalize,
+          item&.name&.capitalize, 
+          item.type_of_risk.present? ? item&.type_of_risk&.to_s&.gsub(/[^0-9A-Za-z]/, ' ')&.capitalize : "",
+          item.level_of_risk.present? ? item&.level_of_risk&.to_s&.gsub(/[^0-9A-Za-z]/, ' ')&.capitalize : "",
+          item&.versions&.find_by(event:"create")&.whodunnit.present? ? User&.find(item&.versions&.find_by(event:"create")&.whodunnit).name : "",
+          item&.versions&.find_by(event:"create")&.present? ? item&.versions&.find_by(event:"create")&.created_at.in_time_zone(zone).inspect.sub(" +07:00", "") : "",
+          item&.updated_at.present? ? item&.updated_at.in_time_zone(zone).inspect.sub(" +07:00", "") : "",
+          item&.versions&.last&.whodunnit.present? ? User&.find(item&.versions&.last&.whodunnit)&.name : ""
+        ], :style=>content, :height => 22
       end
     else
-      item.controls.each do |bis| 
-        sheet.add_row [item.name,"No Business Process",bis.control_owner.join(",").to_s.gsub(/"/,'').gsub(/"|\[|\]/, ''),bis.description.to_s.gsub(/"/,'').gsub(/"|\[|\]/, ''),bis.type_of_control.to_s.gsub(/"/,'').gsub(/"|\[|\]/, '').titlecase]
-      end
+      sheet.add_row [
+        "No Business Process",
+        item&.name&.capitalize, 
+        item.type_of_risk.present? ? item&.type_of_risk&.to_s&.gsub(/[^0-9A-Za-z]/, ' ')&.capitalize : "",
+        item.level_of_risk.present? ? item&.level_of_risk&.to_s&.gsub(/[^0-9A-Za-z]/, ' ')&.capitalize : "",
+        item&.versions&.find_by(event:"create")&.whodunnit.present? ? User&.find(item&.versions&.find_by(event:"create")&.whodunnit).name : "",
+        item&.versions&.find_by(event:"create")&.present? ? item&.versions&.find_by(event:"create")&.created_at.in_time_zone(zone).inspect.sub(" +07:00", "") : "",
+        item&.updated_at.present? ? item&.updated_at.in_time_zone(zone).inspect.sub(" +07:00", "") : "",
+        item&.versions&.last&.whodunnit.present? ? User&.find(item&.versions&.last&.whodunnit)&.name : ""
+      ], :style=>content, :height => 22
     end  
   end
+  sheet.column_widths 28
 end

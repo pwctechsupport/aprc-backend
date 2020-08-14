@@ -26,8 +26,6 @@
       
     :css
       .apo{font-size:13px;}
-      th{font-size:14px;}
-      td{font-size:13px;}
       .tab{ margin-left:40px;}
       .ape{%font-size:24px; text-align:left;}
       .aps{font-size:36px;}
@@ -65,36 +63,28 @@
     -#   %tbody
     -#     %tr
     -#       %td #{ris.name}
-    -#       %td #{ris.level_of_risk.to_s.gsub(/_/, ' ').titlecase}
-    -#       %td #{ris.type_of_risk.to_s.gsub(/_/, ' ').titlecase}
+    -#       %td #{ris.level_of_risk.to_s.gsub(/_/, ' ').capitalize}
+    -#       %td #{ris.type_of_risk.to_s.gsub(/_/, ' ').capitalize}
     -#       %td #{ris.business_process.name.capitalize}
     -# %br
     %table.table.table-borderless
       %thead
-
       -@resources.each_with_index do |res, i|
         %tbody
           %tr
-            %td.text-center{:scope => "row", :style => "width: 10%"} #{i+1}
-            %td.text-center{:scope => "row", :style => "width: 30%"} #{res&.name&.titlecase&.html_safe}
-            %td.text-center{:scope => "row", :style => "width: 30%"} #{res&.visit}
-            %td.text-center{:scope => "row", :style => "width: 30%"} 
-              -rating_total = res&.resource_ratings&.count
-              -rating_sum =  res&.resource_ratings&.sum(:rating)
-              -rating_average = rating_sum/rating_total
-              -if rating_average.nan?
-                Not Rated
-              -else
-                #{rating_average&.round(1)}
-
-                
-            %td.text-center{:scope => "row", :style => "width: 30%"}
-              -rating_total = res.resource_ratings.count
-              #{rating_total}
+            %td.text-center{:scope => "row", :style => "width: 5%"} #{i+1}
+            %td.text-center{:scope => "row", :style => "width: 12%"}= res[:name]
+            %td.text-center{:scope => "row", :style => "width: 10%"}= res[:category]
+            %td.text-center{:scope => "row", :style => "width: 10%"}= res[:visit]
+            %td.text-center{:scope => "row", :style => "width: 10%"}= res[:average]
+            %td.text-center{:scope => "row", :style => "width: 10%"}= res[:total]
+            %td.text-center{:scope => "row",:style => "width: 12%"}= res[:created_by]
+            %td.text-center{:scope => "row",:style => "width: 10%"}= res[:created_on]
+            %td.text-center{:scope => "row",:style => "width: 10%"}= res[:last_updated_on]
+            %td.text-center{:scope => "row",:style => "width: 11%"}= res[:last_updated_by]
 
     %br
     %br
-
 
 
 

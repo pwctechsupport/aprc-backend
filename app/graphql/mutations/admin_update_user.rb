@@ -15,6 +15,8 @@ module Mutations
     argument :department_id, ID, required: false
     argument :status, Types::Enums::Status, required: false
     argument :policy_category, [ID], as: :policy_category_ids,required: false
+    argument :main_role, [ID], as: :role_ids,required: false
+
 
 
     # return type from the mutation
@@ -30,12 +32,25 @@ module Mutations
           if args[:policy_category_ids].present?
             args[:policy_category] = args[:policy_category_ids].map{|x| PolicyCategory.find(x&.to_i).name}
           end
+
+          if args[:role_ids].present?
+            args[:main_role] = args[:role_ids].map{|x| Role.find(x&.to_i).name}
+          end
+
           user&.attributes = args
           user&.save_draft
           if user&.draft_id.present?
             if user.draft.event == "update"
               if args[:policy_category].present?
                 serial = ["policy_category"]
+                serial.each do |sif|
+                  if user.draft.changeset[sif].present?
+                    user.draft.changeset[sif].map!{|x| JSON.parse(x)}
+                  end
+                end
+              end
+              if args[:main_role].present?
+                serial = ["main_role"]
                 serial.each do |sif|
                   if user.draft.changeset[sif].present?
                     user.draft.changeset[sif].map!{|x| JSON.parse(x)}

@@ -33,6 +33,7 @@ module Types
     field :status, String, null: true
     field :department, Types::DepartmentType, null: true
     field :policy_category, [String], null: true
+    field :main_role, [String], null: true
     field :resource_rating, Types::ResourceRatingType, null: true
 
     def activity_controls
@@ -107,9 +108,19 @@ module Types
 
     def policy_category
       if object.class == Hash
-        YAML.load(object["policy_category"])
+        obj = object["policy_category"]
+        obj.present? ? SafeYAML.load(obj) : []
       else
         object&.policy_category
+      end
+    end
+
+    def main_role
+      if object.class == Hash
+        obj = object["main_role"]
+        obj.present? ? SafeYAML.load(obj) : []
+      else
+        object&.main_role
       end
     end
 

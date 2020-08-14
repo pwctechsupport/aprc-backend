@@ -2,20 +2,49 @@
 wb = xlsx_package.workbook
 
 
+content = wb.styles.add_style(:bg_color => "FFFFFFFF",
+  :fg_color=>"#FF000000",
+  :border=>Axlsx::STYLE_THIN_BORDER,
+  :alignment=>{:horizontal => :center, :vertical => :center},
+  :font_name => 'Georgia'
+)
+
+title = wb.styles.add_style(:sz => 20, :b => true, :alignment=>{:horizontal => :center, :vertical => :center}, :font_name => 'Georgia')
+
+header = wb.styles.add_style(:sz => 12, :bg_color => 'b10015', :fg_color => 'FF', :b => true, :border => { :style => :thin, :color => "00000000", :edges => [:top, :bottom, :left, :right] }, :alignment=>{:horizontal => :center, :vertical => :center}, :font_name => 'Georgia')
+
 wb.add_worksheet(name: "Exception Report") do |sheet|
   # Create the header row
-  sheet.add_row ["name", "level of risk", "status", "type of risk", "business process"]
+  sheet.add_row ["Untagged Risk in Flowchart Report"], :style => title, :height => 28
+  2.times { sheet.add_row}
+  sheet.add_row ["Printed on: #{Time.now.strftime("%d %B %Y")}"],:font_name => 'Georgia', :sz => 12
+  sheet.add_row ["Printed by: #{current_user&.name}"],:font_name => 'Georgia', :sz => 12
+  3.times { sheet.add_row}
+  sheet.merge_cells "A1:H1"
+  sheet.merge_cells "A4:H4"
+  sheet.merge_cells "A5:H5"
+  sheet.add_row [ "Business process","Name of risk", "Level of risk", "Type of risk","Created By", "Created On", "Last Update On", "Last Update By"], :style => header, :height => 25
   # Create entries for each item
-  ris =  @tags.pluck(:risk_id).group_by(&:itself).reject{|k,v| v.count>1}.keys
-  ris.reject!{|x| x == nil} if ris.count(nil) >= 1
-  ris.each do |ras|
-    risk = Risk.find(ras)
-    if risk.business_processes.present?
-      risk&.business_processes.each do |bis|
-        sheet.add_row [risk&.name, risk&.level_of_risk, risk&.status, risk&.type_of_risk,bis&.name]
+  new_tag = @tags.pluck(:business_process_id).map{|x| Tag.where.not(risk_id:nil).find_by(business_process_id: x)}
+  new_tag.uniq.each do |tag|
+    unmapped_risk = tag.business_process.risk_ids
+    total_risk = @tags.where(business_process_id: tag.business_process_id).map{|x| x.risk_id}
+    unmapped_risk.reject!{|x| total_risk.include?(x)}
+    if unmapped_risk.count != 0
+      unmapped_risk.uniq.each do |unmapped|
+        risk = Risk.find(unmapped)
+        sheet.add_row [
+          tag&.business_process&.name&.capitalize, 
+          risk.name.to_s.capitalize, 
+          risk.level_of_risk.to_s.gsub("_", ' ').capitalize,
+          risk.type_of_risk.to_s.gsub("_", ' ').capitalize,
+          risk&.versions&.find_by(event:"create")&.whodunnit.present? ? User&.find(risk&.versions&.find_by(event:"create")&.whodunnit).name : "",
+          risk&.versions&.find_by(event:"create")&.present? ? risk&.versions&.find_by(event:"create")&.created_at.in_time_zone(zone).inspect.sub(" +07:00", "") : "",
+          risk&.updated_at.present? ? risk&.updated_at.in_time_zone(zone).inspect.sub(" +07:00", "") : "",
+          risk&.versions&.last&.whodunnit.present? ? User&.find(risk&.versions&.last&.whodunnit)&.name : ""
+        ], :style=>content, :height => 22
       end
-    else
-      sheet.add_row [risk&.name, risk&.level_of_risk, risk&.status, risk&.type_of_risk,"No Business Process"] 
     end
   end
+  sheet.column_widths 28
 end

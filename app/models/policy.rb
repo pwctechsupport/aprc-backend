@@ -1,6 +1,6 @@
 class Policy < ApplicationRecord
   validates :title, uniqueness: true
-  has_paper_trail ignore: [:visit, :recent_visit]
+  has_paper_trail ignore: [:visit, :recent_visit, :status, :updated_at]
   has_drafts
   belongs_to :policy_category, optional: true
   belongs_to :user, optional: true
@@ -25,7 +25,7 @@ class Policy < ApplicationRecord
   belongs_to :user_reviewer, class_name: "User", foreign_key:"user_reviewer_id", optional: true
 
   def to_humanize
-    "#{self.title.titlecase}"
+    "#{self.title.capitalize}"
   end
 
   def request_edit
