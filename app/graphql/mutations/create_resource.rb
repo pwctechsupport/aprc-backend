@@ -27,7 +27,7 @@ module Mutations
 
     def resolve(args)
       current_user = context[:current_user]
-
+      args.trust
       if args[:resupload_link].present?
         url = URI.parse(args[:resupload_link])
         http = Net::HTTP.new(url.host, url.port)
@@ -59,7 +59,8 @@ module Mutations
         if act&.first&.class == ActionController::Parameters
           activities = act.collect {|x| x.permit(:id,:_destroy,:x_coordinates,:y_coordinates, :body, :resource_id, :business_process_id, :image_name, :user_id, :risk_id, :control_id)}
           args.delete(:tags_attributes)
-          args[:tags_attributes]= activities.collect{|x| x&.to_h}
+          activity_hash = activities.collect{|x| x.to_h}
+          args[:tags_attributes]= activity_hash
           args[:tags_attributes].first["user_id"] = current_user.id
         end
       end
@@ -81,9 +82,9 @@ module Mutations
       resource=Resource.new(args)
       resource&.save_draft
       if args[:resupload].present?
+        args.trust
         args[:resupload_file_name] = "#{args[:name]}" << Resource.resource_file_type(resource)
-        resource.update_attributes(resupload: args[:resupload], resupload_file_name: args[:resupload_file_name], base_64_file: args[:resupload])
-      
+        resource.update_attributes!(resupload: args[:resupload], resupload_file_name: args[:resupload_file_name], base_64_file: args[:resupload])
       end
       admin = User.with_role(:admin_reviewer).pluck(:id)
       if resource.id.present?
