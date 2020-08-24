@@ -1,5 +1,7 @@
 module Mutations
   class CreateControl < Mutations::BaseMutation
+    graphql_name "CreateControl"
+
     argument :control_owner, [ID], as: :department_ids,required: true
     argument :fte_estimate, Int, required: false 
     argument :description, String, required: true
@@ -29,7 +31,6 @@ module Mutations
           activities = act.collect {|x| x.permit(:id,:activity,:guidance,:control_id,:resuploadBase64,:resuploadFileName,:_destroy,:resupload,:user_id,:resupload_file_name)}
           args.delete(:activity_controls_attributes)
           args[:activity_controls_attributes]= activities.collect{|x| x.to_h}
-          args[:created_by] = current_user.name 
         end
         args[:activity_controls_attributes].each do |aca|
           act_control = ActivityControl.new(aca)
@@ -38,9 +39,10 @@ module Mutations
         end
         args.delete(:activity_controls_attributes)
       end
+      args[:created_by] = current_user.name
       args[:last_updated_by] = current_user.name 
       if args[:department_ids].present?
-        args[:control_owner] = args[:department_ids]&.map{|x| Department.find(x&.to_i)&.name}
+        args[:control_owner] = args[:department_ids].map{|x| Department.find(x&.to_i).name}
       end
       if args[:business_process_ids].present?
         buspro = args[:business_process_ids]
@@ -86,8 +88,8 @@ module Mutations
         "#{invalid.record.errors.full_messages.join(', ')}"
       )
     end
-    # def ready?(args)
-    #   authorize_user
-    # end
+    def ready?(args)
+      authorize_user
+    end
   end
 end

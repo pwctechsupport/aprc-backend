@@ -10,14 +10,15 @@ module Mutations
 
     def resolve(args)
       current_user = context[:current_user]
-      args[:user_id] = current_user&.id
+      args[:user_id] = current_user.id
+      args.trust
       if Manual.count < 1
         if current_user.has_role?(:admin_reviewer)
-          manual = Manual.create!(args.to_h)
+          manual = Manual.new(args.to_h)
           if args[:resupload].present?
             args[:resupload_file_name] = "#{args[:name]}" << Manual.resource_file_type(manual)
-            manual.update_attributes(resupload: args[:resupload], resupload_file_name: args[:resupload_file_name])
           end
+          manual.save
         else
           raise GraphQL::ExecutionError ,"Only User with role \"Admin Reviewer\" can Upload the user manual"
         end

@@ -28,7 +28,7 @@ module Mutations
     def resolve(id:, **args)
       current_user = context[:current_user]
       resource = Resource.find(id)
-      resource_name = resource&.name
+      resource_name = resource.name
 
       if resource&.request_edits&.last&.approved?
         if resource.draft?
@@ -166,8 +166,8 @@ module Mutations
       )
     end
 
-    # def ready?(args)
-    #   authorize_user
-    # end
+    def ready?(args)
+      authorize_user
+    end
   end
 end
