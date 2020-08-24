@@ -56,7 +56,7 @@ module Types
     def business_process
       if object.class == Hash
         obj = object["business_process"]
-        obj.present? ? SafeYAML.load(obj) : []
+        obj.present? ? Psych.parse(obj).to_ruby : []
       else
         object&.business_process
       end
