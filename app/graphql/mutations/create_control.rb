@@ -23,13 +23,14 @@ module Mutations
     field :control, Types::ControlType, null: true
     
     def resolve(args)
+      Control.serialize(:control_owner, Array)
       current_user = context[:current_user]
       actor_control_id = []
       if args[:activity_controls_attributes].present?
         act = args[:activity_controls_attributes]
         if act&.first&.class == ActionController::Parameters
           activities = act.collect {|x| x.permit(:id,:activity,:guidance,:control_id,:resuploadBase64,:resuploadFileName,:_destroy,:resupload,:user_id,:resupload_file_name)}
-          args.delete(:activity_controls_attributes)
+          # args.delete(:activity_controls_attributes)
           args[:activity_controls_attributes]= activities.collect{|x| x.to_h}
         end
         args[:activity_controls_attributes].each do |aca|
@@ -42,7 +43,7 @@ module Mutations
       args[:created_by] = current_user.name
       args[:last_updated_by] = current_user.name 
       if args[:department_ids].present?
-        args[:control_owner] = args[:department_ids].map{|x| Department.find(x&.to_i).name}
+        args[:control_owner] = args[:department_ids].map{|x| Department.find(x).name}
       end
       if args[:business_process_ids].present?
         buspro = args[:business_process_ids]
