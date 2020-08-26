@@ -22,7 +22,7 @@ module Mutations
       args[:created_by] = current_user.name
       args[:last_updated_by] = current_user.name
       if args[:business_process_ids].present?
-        args[:business_process] = args[:business_process_ids].map{|x| BusinessProcess.find(x&.to_i).name}
+        args[:business_process] = args[:business_process_ids].map{|x| BusinessProcess.find(x).name}
       end
       risk = Risk.new(args.to_h)
       risk.save_draft

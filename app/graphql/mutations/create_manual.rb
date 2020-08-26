@@ -16,7 +16,7 @@ module Mutations
         if current_user.has_role?(:admin_reviewer)
           manual = Manual.new(args.to_h)
           if args[:resupload].present?
-            args[:resupload_file_name] = "#{args[:name]}" << Manual.resource_file_type(manual)
+            args[:resupload_file_name] = "#{args[:name]}#{Manual.resource_file_type(manual)}".html_safe
           end
           manual.save
         else
