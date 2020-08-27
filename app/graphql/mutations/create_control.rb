@@ -30,8 +30,14 @@ module Mutations
         act = args[:activity_controls_attributes]
         if act&.first&.class == ActionController::Parameters
           activities = act.collect {|x| x.permit(:id,:activity,:guidance,:control_id,:resuploadBase64,:resuploadFileName,:_destroy,:resupload,:user_id,:resupload_file_name)}
-          # args.delete(:activity_controls_attributes)
-          args[:activity_controls_attributes]= activities.collect{|x| x.to_h}
+          args.delete(:activity_controls_attributes)
+          safe_array = []
+          activities.each do |x| 
+            safe_hash= {}
+            x.to_h.each{|k,v| safe_hash[k.html_safe]= v.html_safe}
+            safe_array.push(safe_hash)
+          end
+          args[:activity_controls_attributes] = safe_array
         end
         args[:activity_controls_attributes].each do |aca|
           act_control = ActivityControl.new(aca)
@@ -43,7 +49,7 @@ module Mutations
       args[:created_by] = current_user.name
       args[:last_updated_by] = current_user.name 
       if args[:department_ids].present?
-        args[:control_owner] = args[:department_ids].map{|x| Department.find(x).name}
+        args[:control_owner] = args[:department_ids].map{|x| Department.find(x).name}.map(&:html_safe)
       end
       if args[:business_process_ids].present?
         buspro = args[:business_process_ids]

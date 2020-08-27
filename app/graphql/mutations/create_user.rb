@@ -19,11 +19,11 @@ module Mutations
 
     def resolve(args)
       if args[:policy_category_ids].present?
-        args[:policy_category] = args[:policy_category_ids].map{|x| PolicyCategory.find(x).name}
+        args[:policy_category] = args[:policy_category_ids].map{|x| PolicyCategory.find(x).name}.map(&:squish)
       end
 
       if args[:role_ids].present?
-        args[:main_role] = args[:role_ids].map{|x| Role.find(x).name}
+        args[:main_role] = args[:role_ids].map{|x| Role.find(x).name}.map(&:html_safe)
       end
 
       user = User.new(args.to_h)
