@@ -20,7 +20,7 @@ module Mutations
       args[:created_by] = current_user.name
       args[:last_updated_by] = current_user.name
       if args[:policy_ids].present?
-        args[:policy] = args[:policy_ids].map{|x| Policy.find(x).title}
+        args[:policy] = args[:policy_ids].map{|x| Policy.find(x).title}.map(&:html_safe)
       end
 
       policy_category = current_user&.policy_categories&.new(args.to_h)

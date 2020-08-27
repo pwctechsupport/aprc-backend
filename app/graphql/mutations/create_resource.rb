@@ -59,8 +59,13 @@ module Mutations
         if act&.first&.class == ActionController::Parameters
           activities = act.collect {|x| x.permit(:id,:_destroy,:x_coordinates,:y_coordinates, :body, :resource_id, :business_process_id, :image_name, :user_id, :risk_id, :control_id)}
           args.delete(:tags_attributes)
-          activity_hash = activities.collect{|x| x.to_h}
-          args[:tags_attributes]= activity_hash
+          safe_array = []
+          activities.each do |x| 
+            safe_hash= {}
+            x.to_h.each{|k,v| safe_hash[k.squish]= v.squish}
+            safe_array.push(safe_hash)
+          end
+          args[:tags_attributes]= safe_array
           args[:tags_attributes].first["user_id"] = current_user.id
         end
       end
