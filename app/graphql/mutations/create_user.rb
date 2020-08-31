@@ -19,11 +19,21 @@ module Mutations
 
     def resolve(args)
       if args[:policy_category_ids].present?
-        args[:policy_category] = args[:policy_category_ids].map{|x| PolicyCategory.find(x).name}.map(&:squish)
+        relation_safe_array_polcat = []
+        args[:policy_category_ids].each do |policy_category|
+          policy_category_name = PolicyCategory.find(policy_category).name
+          relation_safe_array_polcat.push(policy_category_name.html_safe)
+        end
+        args[:policy_category] = relation_safe_array_polcat
       end
 
       if args[:role_ids].present?
-        args[:main_role] = args[:role_ids].map{|x| Role.find(x).name}.map(&:html_safe)
+        relation_safe_array_role = []
+        args[:role_ids].each do |role|
+          role_name = Role.find(role).name
+          relation_safe_array_role.push(role_name.html_safe)
+        end
+        args[:main_role] = relation_safe_array_role
       end
 
       user = User.new(args.to_h)
