@@ -49,8 +49,12 @@ module Mutations
       args[:created_by] = current_user.name
       args[:last_updated_by] = current_user.name 
       if args[:department_ids].present?
-        department_ids = args[:department_ids].map(&:html_safe)
-        args[:control_owner] = department_ids.map{|x| Department.find(x).name}.map(&:html_safe)
+        relation_safe_array = []
+        args[:department_ids].each do |department|
+          department_name = Department.find(department).name
+          relation_safe_array.push(department_name.html_safe)
+        end
+        args[:control_owner] = relation_safe_array
       end
       if args[:business_process_ids].present?
         buspro = args[:business_process_ids]
