@@ -15,7 +15,7 @@ module Mutations
       args[:recent_visit] = Time.now
       user_resource_visit = current_user.resource_visits.where("resource_id = ?", args[:resource_id])
       if user_resource_visit.present?
-        user_resource_visit&.first&.update!(recent_visit: args[:recent_visit])
+        user_resource_visit = user_resource_visit&.first&.update!(recent_visit: args[:recent_visit])
       else
         user_resource_visit = UserResourceVisit.create!(args.to_h)
       end
