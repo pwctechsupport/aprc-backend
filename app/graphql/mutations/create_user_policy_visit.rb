@@ -16,7 +16,7 @@ module Mutations
       args[:recent_visit] = Time.now
       user_policy_visit = current_user.policy_visits.where("policy_id = ?", args[:policy_id])
       if user_policy_visit.present?
-        user_policy_visit&.first&.update!(recent_visit: args[:recent_visit])
+        user_policy_visit = user_policy_visit&.first&.update!(recent_visit: args[:recent_visit])
       else
         user_policy_visit = UserPolicyVisit.create!(args.to_h)
       end
