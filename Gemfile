@@ -41,6 +41,7 @@ gem 'wkhtmltopdf-binary-edge', '~> 0.12.5.1'
 
 gem 'haml'
 gem 'draftsman', '~> 0.7.1'
+gem 'apollo_upload_server', '2.0.0.beta.3'
 
 gem 'rubyzip'
 gem 'axlsx'

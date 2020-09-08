@@ -5,6 +5,7 @@ module Mutations
     # arguments passed to the `resolved` method
     argument :name, String, required: true
     argument :resuploadBase64, String, as: :resupload, required: false
+    argument :resupload, ApolloUploadServer::Upload, required: false
     argument :resuploadFileName, String, as: :resupload_file_name, required: false
     argument :category, String, required: true
     argument :policy_id, ID, required: false
