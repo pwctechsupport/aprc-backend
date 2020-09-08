@@ -4,6 +4,7 @@ module Mutations
     argument :activity, String, required: false
     argument :guidance, String, required: false
     argument :resuploadBase64, String, as: :resupload, required: false
+    argument :resupload, ApolloUploadServer::Upload, required: false
     argument :resuploadFileName, String, as: :resupload_file_name, default_value: 'resupload', required: false
     argument :user_id, ID, required: false
 
