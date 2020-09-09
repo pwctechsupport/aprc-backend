@@ -14,7 +14,7 @@ module Mutations
       args[:user_id] = current_user&.id
       activity_control = ActivityControl.find(id)
       args[:control_id] = activity_control&.control_id
-      if args[:guidance].present? && (args[:resupload].present? || args[:resuploadFileName.present?])
+      if args[:guidance].present? && (args[:resupload].present? || args[:resuploadFileName].present?)
         raise GraphQL::ExecutionError, "Guidance can only provide one type of Guidance: Attachment or Text" 
       else
         if args[:guidance]&.present? && (activity_control&.resupload&.present?)
