@@ -95,9 +95,10 @@ Rails.application.configure do
   config.action_mailer.asset_host = 'https://mandalorian.rubyh.co'
 
   config.action_mailer.delivery_method = :smtp
+  # akun alif@altechomega.com
   config.action_mailer.smtp_settings = {
-    :user_name => 'db114c05b7aa29',
-    :password => '81934d59857028',
+    :user_name => '44469e2497cc5e',
+    :password => '57753d21f37ddd',
     :address => 'smtp.mailtrap.io',
     :domain => 'smtp.mailtrap.io',
     :port => '2525',
