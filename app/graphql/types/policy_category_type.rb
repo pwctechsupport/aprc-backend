@@ -44,7 +44,7 @@ module Types
     def policy
       if object.class == Hash
         obj = object["policy"]
-        obj.present? ? SafeYAML.load(obj) : []
+        obj.present? ? Psych.parse(obj).root.children.map(&:value) : []
       else
         object&.policy
       end

@@ -21,9 +21,16 @@ module Mutations
       current_user = context[:current_user]
       args[:created_by] = current_user.name
       args[:last_updated_by] = current_user.name
+
       if args[:business_process_ids].present?
-        args[:business_process] = args[:business_process_ids]&.map{|x| BusinessProcess.find(x&.to_i)&.name}
+        relation_safe_array = []
+        args[:business_process_ids].each do |business_process|
+          business_process_name = BusinessProcess.find(business_process).name
+          relation_safe_array.push(business_process_name.html_safe)
+        end
+        args[:business_process] = relation_safe_array
       end
+
       risk = Risk.new(args.to_h)
       risk.save_draft
 

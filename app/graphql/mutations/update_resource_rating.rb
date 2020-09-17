@@ -22,9 +22,9 @@ module Mutations
         "#{invalid.record.errors.full_messages.join(',')}"
       )
     end
-    # def ready?(args)
-    #   authorize_user
-    # end
+    def ready?(args)
+      authorize_user
+    end
 
   end
 end

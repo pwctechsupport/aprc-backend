@@ -6,6 +6,7 @@ module Mutations
     argument :id, ID, required: true
     argument :name, String, required: false
     argument :resuploadBase64, String, as: :resupload, required: false
+    argument :resupload, ApolloUploadServer::Upload, required: false
     argument :resuploadFileName, String, as: :resupload_file_name, required: false  
     argument :category, String, required: false 
     argument :policy_ids, [ID], required: false 
@@ -28,7 +29,7 @@ module Mutations
     def resolve(id:, **args)
       current_user = context[:current_user]
       resource = Resource.find(id)
-      resource_name = resource&.name
+      resource_name = resource.name
 
       if resource&.request_edits&.last&.approved?
         if resource.draft?
@@ -166,8 +167,8 @@ module Mutations
       )
     end
 
-    # def ready?(args)
-    #   authorize_user
-    # end
+    def ready?(args)
+      authorize_user
+    end
   end
 end

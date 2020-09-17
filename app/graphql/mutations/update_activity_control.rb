@@ -4,6 +4,7 @@ module Mutations
     argument :activity, String, required: false
     argument :guidance, String, required: false
     argument :resuploadBase64, String, as: :resupload, required: false
+    argument :resupload, ApolloUploadServer::Upload, required: false
     argument :resuploadFileName, String, as: :resupload_file_name, default_value: 'resupload', required: false
 
     field :activity_control, Types::ActivityControlType, null: true
@@ -13,7 +14,7 @@ module Mutations
       args[:user_id] = current_user&.id
       activity_control = ActivityControl.find(id)
       args[:control_id] = activity_control&.control_id
-      if args[:guidance].present? && (args[:resupload].present? || args[:resuploadFileName.present?])
+      if args[:guidance].present? && (args[:resupload].present? || args[:resuploadFileName].present?)
         raise GraphQL::ExecutionError, "Guidance can only provide one type of Guidance: Attachment or Text" 
       else
         if args[:guidance]&.present? && (activity_control&.resupload&.present?)

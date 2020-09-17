@@ -1,5 +1,7 @@
 module Mutations
   class CreateControl < Mutations::BaseMutation
+    graphql_name "CreateControl"
+
     argument :control_owner, [ID], as: :department_ids,required: true
     argument :fte_estimate, Int, required: false 
     argument :description, String, required: true
@@ -21,6 +23,7 @@ module Mutations
     field :control, Types::ControlType, null: true
     
     def resolve(args)
+      Control.serialize(:control_owner, Array)
       current_user = context[:current_user]
       actor_control_id = []
       if args[:activity_controls_attributes].present?
@@ -28,8 +31,13 @@ module Mutations
         if act&.first&.class == ActionController::Parameters
           activities = act.collect {|x| x.permit(:id,:activity,:guidance,:control_id,:resuploadBase64,:resuploadFileName,:_destroy,:resupload,:user_id,:resupload_file_name)}
           args.delete(:activity_controls_attributes)
-          args[:activity_controls_attributes]= activities.collect{|x| x.to_h}
-          args[:created_by] = current_user.name 
+          safe_array = []
+          activities.each do |x| 
+            safe_hash= {}
+            x.to_h.each{|k,v| safe_hash[k.html_safe]= v.html_safe}
+            safe_array.push(safe_hash)
+          end
+          args[:activity_controls_attributes] = safe_array
         end
         args[:activity_controls_attributes].each do |aca|
           act_control = ActivityControl.new(aca)
@@ -38,9 +46,15 @@ module Mutations
         end
         args.delete(:activity_controls_attributes)
       end
+      args[:created_by] = current_user.name
       args[:last_updated_by] = current_user.name 
       if args[:department_ids].present?
-        args[:control_owner] = args[:department_ids]&.map{|x| Department.find(x&.to_i)&.name}
+        relation_safe_array = []
+        args[:department_ids].each do |department|
+          department_name = Department.find(department).name
+          relation_safe_array.push(department_name.html_safe)
+        end
+        args[:control_owner] = relation_safe_array
       end
       if args[:business_process_ids].present?
         buspro = args[:business_process_ids]
@@ -86,8 +100,8 @@ module Mutations
         "#{invalid.record.errors.full_messages.join(', ')}"
       )
     end
-    # def ready?(args)
-    #   authorize_user
-    # end
+    def ready?(args)
+      authorize_user
+    end
   end
 end

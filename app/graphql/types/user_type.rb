@@ -109,7 +109,7 @@ module Types
     def policy_category
       if object.class == Hash
         obj = object["policy_category"]
-        obj.present? ? SafeYAML.load(obj) : []
+        obj.present? ? Psych.safe_load(obj) : []
       else
         object&.policy_category
       end
@@ -118,7 +118,7 @@ module Types
     def main_role
       if object.class == Hash
         obj = object["main_role"]
-        obj.present? ? SafeYAML.load(obj) : []
+        obj.present? ? Psych.safe_load(obj) : []
       else
         object&.main_role
       end

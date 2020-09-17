@@ -5,6 +5,7 @@ module Mutations
     # arguments passed to the `resolved` method
     argument :name, String, required: true
     argument :resuploadBase64, String, as: :resupload, required: false
+    argument :resupload, ApolloUploadServer::Upload, required: false
     argument :resuploadFileName, String, as: :resupload_file_name, required: false
     argument :category, String, required: true
     argument :policy_id, ID, required: false
@@ -27,7 +28,7 @@ module Mutations
 
     def resolve(args)
       current_user = context[:current_user]
-
+      args.trust
       if args[:resupload_link].present?
         url = URI.parse(args[:resupload_link])
         http = Net::HTTP.new(url.host, url.port)
@@ -59,7 +60,13 @@ module Mutations
         if act&.first&.class == ActionController::Parameters
           activities = act.collect {|x| x.permit(:id,:_destroy,:x_coordinates,:y_coordinates, :body, :resource_id, :business_process_id, :image_name, :user_id, :risk_id, :control_id)}
           args.delete(:tags_attributes)
-          args[:tags_attributes]= activities.collect{|x| x&.to_h}
+          safe_array = []
+          activities.each do |x| 
+            safe_hash= {}
+            x.to_h.each{|k,v| safe_hash[k.squish]= v.squish}
+            safe_array.push(safe_hash)
+          end
+          args[:tags_attributes]= safe_array
           args[:tags_attributes].first["user_id"] = current_user.id
         end
       end
@@ -81,9 +88,9 @@ module Mutations
       resource=Resource.new(args)
       resource&.save_draft
       if args[:resupload].present?
-        args[:resupload_file_name] = "#{args[:name]}" << Resource.resource_file_type(resource)
-        resource.update_attributes(resupload: args[:resupload], resupload_file_name: args[:resupload_file_name], base_64_file: args[:resupload])
-      
+        args.trust
+        args[:resupload_file_name] = "#{ConvertName.raw(args[:name])}#{Resource.resource_file_type(resource).html_safe}"
+        resource.update_attributes!(resupload: args[:resupload], resupload_file_name: args[:resupload_file_name], base_64_file: args[:resupload])
       end
       admin = User.with_role(:admin_reviewer).pluck(:id)
       if resource.id.present?

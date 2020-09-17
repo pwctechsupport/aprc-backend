@@ -32,7 +32,6 @@ module Mutations
           raise GraphQL::ExecutionError, "Draft Cannot be created until another Draft is Approved/Rejected by an Admin"
         else
           if args[:business_process_ids].present? || args[:risk_ids].present?
-            
             args[:is_related] = true
           end
           if args[:activity_controls_attributes].present?
@@ -63,7 +62,7 @@ module Mutations
           if args[:department_ids].present?
             args[:control_owner] = args[:department_ids].map{|x| Department.find(x&.to_i).name}
           end
-          args[:last_updated_by] = current_user&.name || "User with ID#{current_user&.id}"
+          args[:last_updated_by] = current_user.name
           prev_buspro = []
           prev_risk = []
           if args[:business_process_ids].present?
@@ -148,9 +147,9 @@ module Mutations
         "#{invalid.record.errors.full_messages.join(', ')}"
       )
     end
-    # def ready?(args)
-    #   authorize_user
-    # end
+    def ready?(args)
+      authorize_user
+    end
   end
 end
 
