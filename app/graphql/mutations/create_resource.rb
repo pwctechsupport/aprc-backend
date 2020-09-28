@@ -63,7 +63,7 @@ module Mutations
           safe_array = []
           activities.each do |x| 
             safe_hash= {}
-            x.to_h.each{|k,v| safe_hash[k.squish]= v.squish}
+            x.to_h.each{|k,v| safe_hash[k.html_safe]= v.html_safe}
             safe_array.push(safe_hash)
           end
           args[:tags_attributes]= safe_array
