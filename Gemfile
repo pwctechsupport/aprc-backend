@@ -50,7 +50,7 @@ gem 'axlsx_rails'
 gem 'paper_trail'
 gem 'paper_trail-association_tracking'
 gem 'veracode'
-gem 'actioncable', '~> 0.0.0'
+# gem 'actioncable', '~> 0.0.0'
 
 # Use Redis adapter to run Action Cable in production
 # gem 'redis', '~> 4.0'
