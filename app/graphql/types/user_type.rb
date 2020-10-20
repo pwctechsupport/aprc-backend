@@ -2,13 +2,13 @@ module Types
   class UserType < BaseObject
     field :id, ID, null: false
     field :name, String, null: true
-    field :firstName, String, null: true
-    field :lastName, String, null: true
+    field :first_name, String, null: true
+    field :last_name, String, null: true
     field :email, String, null: true
     field :token, String, null: false
     field :phone, String, null: true
     field :role, [Int], null: true
-    field :jobPosition, String, null: true
+    field :job_position, String, null: true
     field :policies, [Types::PolicyType], null: true
     field :policy_categories, [Types::PolicyCategoryType], null: true 
     field :created_at, String, null: true
