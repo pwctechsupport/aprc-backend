@@ -399,7 +399,7 @@ DEPENDENCIES
   psych
   puma
   rack-cors
-  rails (~> 5.2.3)
+  rails (~> 5.2.4)
   ransack!
   rolify
   roo (>= 2.5.1)
