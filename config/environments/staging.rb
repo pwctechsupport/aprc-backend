@@ -100,7 +100,7 @@ Rails.application.configure do
     :address              => "smtp-relay.sendinblue.com",
     :port                 => 587,
     :user_name            => "Aprc_tools@hotmail.com",
-    :password             => "aprc2020",
+    :password             => "GzZErs8Yj5MAN6m1",
     :authentication       => "login",
     :enable_starttls_auto => true
   }
