@@ -59,11 +59,11 @@ Rails.application.configure do
 
   # SMTP settings for gmail
   config.action_mailer.smtp_settings = {
-    :address              => "smtp.gmail.com",
+    :address              => "smtp-relay.sendinblue.com",
     :port                 => 587,
-    :user_name            => "noreply.notagain@gmail.com",
-    :password             => "hhyjiunjjubgodev",
-    :authentication       => "plain",
+    :user_name            => "Aprc_tools@hotmail.com",
+    :password             => "aprc2020",
+    :authentication       => "login",
     :enable_starttls_auto => true
   }
   # Raises error for missing translations
