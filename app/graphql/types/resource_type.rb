@@ -2,7 +2,7 @@
   class ResourceType < BaseObject
     field :id, ID, null: false
     field :name, String, null: true
-    field :resuploadUrl, String, null: true
+    field :resupload_url, String, null: true
     field :category, String, null: true
     field :control, Types::ControlType, null: true
     field :policy_ids, [Types::PolicyType], null: true

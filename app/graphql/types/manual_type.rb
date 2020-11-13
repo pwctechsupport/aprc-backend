@@ -5,7 +5,7 @@ module Types
     field :created_at, String, null: false
     field :updated_at, String, null: false
     field :user, Types::UserType, null: true
-    field :resuploadUrl, String, null: true
+    field :resupload_url, String, null: true
     field :file_type, String, null: true
     field :file_size, Integer, null: true
     field :file_name, String, null: true
