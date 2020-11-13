@@ -5,7 +5,10 @@ RUN apt-get update -qq && apt-get install -y build-essential vim
 
 # Install mysql
 RUN apt-get install -y default-libmysqlclient-dev
-RUN apt-get install imagemagick
+
+# Install imagemagick
+RUN apt-get update
+RUN apt-get install --only-upgrade imagemagick
 
 # Install nodejs
 RUN curl -sL https://deb.nodesource.com/setup_12.x | bash - &&\
