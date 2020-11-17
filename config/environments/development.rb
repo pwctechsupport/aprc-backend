@@ -52,6 +52,13 @@ Rails.application.configure do
   config.assets.debug = true
   config.force_ssl = true
 
+  # make sure to log on docker with STDOUT
+  config.log_formatter = ::Logger::Formatter.new
+
+  logger           = ActiveSupport::Logger.new(STDOUT)
+  logger.formatter = config.log_formatter
+  config.logger    = ActiveSupport::TaggedLogging.new(logger)
+
   # Suppress logger output for asset requests.
   config.assets.quiet = true
   config.action_mailer.delivery_method = :smtp
