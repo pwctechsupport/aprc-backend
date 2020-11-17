@@ -8,7 +8,8 @@ RUN apt-get install -y default-libmysqlclient-dev
 
 # Install imagemagick
 RUN apt-get update
-RUN apt-get install --only-upgrade imagemagick
+RUN apt-get -y install --only-upgrade imagemagick
+RUN apt-get -y install libxrender1
 RUN apt-get update -qq && apt-get install -y wkhtmltopdf xvfb
 
 # Install nodejs
