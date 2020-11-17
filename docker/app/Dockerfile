@@ -9,8 +9,8 @@ RUN apt-get install -y default-libmysqlclient-dev
 # Install imagemagick
 RUN apt-get update
 RUN apt-get -y install --only-upgrade imagemagick
-RUN apt-get -y install libxrender1
-RUN apt-get update -qq && apt-get install -y wkhtmltopdf xvfb
+RUN apt-get -y install libjpeg-dev
+
 
 # Install nodejs
 RUN curl -sL https://deb.nodesource.com/setup_12.x | bash - &&\

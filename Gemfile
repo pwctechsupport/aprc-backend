@@ -38,7 +38,7 @@ gem 'jbuilder', '~> 2.5'
 gem 'mysql2'
 gem 'graphql_playground-rails'
 gem 'wicked_pdf'
-gem 'wkhtmltopdf-binary-edge', '~> 0.12.5.1'
+gem 'wkhtmltopdf-binary'
 
 gem 'haml'
 gem 'draftsman', '~> 0.7.1'
