@@ -1,8 +1,8 @@
 module Types
   class TagType < BaseObject
     field :id, ID, null: false
-    field :x_coordinates, Int, null: true
-    field :y_coordinates, Int, null: true
+    field :x_coordinates, Float, null: true
+    field :y_coordinates, Float, null: true
     field :resource_id, ID, null: true
     field :business_process_id, ID, null: true
     field :user_id, ID, null: true
