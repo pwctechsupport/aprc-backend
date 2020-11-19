@@ -1,15 +1,7 @@
 FROM ruby:2.5.3
 
 # Install plugin
-RUN apt-get update -qq && apt-get install -y build-essential vim
-
-# Install mysql
-RUN apt-get install -y default-libmysqlclient-dev
-
-# Install imagemagick
-RUN apt-get update
-RUN apt-get -y install --only-upgrade imagemagick
-RUN apt-get -y install libjpeg-dev
+RUN apt-get update -qq && apt-get install -y build-essential vim default-libmysqlclient-dev imagemagick libjpeg-dev
 
 
 # Install nodejs
