@@ -40,7 +40,7 @@ COPY . $APP_PATH/
 
 RUN yarn install --check-files
 
-RUN bin/delayed_job start
+# RUN bin/delayed_job start
 
 # Build Frond-End
 # RUN RAILS_ENV=$RAILS_ENV bundle exec rake assets:precompile
