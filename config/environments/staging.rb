@@ -97,11 +97,11 @@ Rails.application.configure do
   config.action_mailer.delivery_method = :smtp
   # akun alif@altechomega.com
   config.action_mailer.smtp_settings = {
-    :user_name => '44469e2497cc5e',
-    :password => '57753d21f37ddd',
-    :address => 'smtp.mailtrap.io',
-    :domain => 'smtp.mailtrap.io',
-    :port => '2525',
-    :authentication => :cram_md5
+    :address              => "smtp-relay.sendinblue.com",
+    :port                 => 587,
+    :user_name            => "Aprc_tools@hotmail.com",
+    :password             => "GzZErs8Yj5MAN6m1",
+    :authentication       => "login",
+    :enable_starttls_auto => true
   }
 end
