@@ -19,40 +19,13 @@ module Mutations
             if policy.user_reviewer_id.present? && (policy.user_reviewer_id != current_user.id)
               raise GraphQL::ExecutionError, "This Draft has been reviewed by another Admin."
             else
-              if policy&.policy_business_processes.where.not(draft_id: nil).present?
-                if policy&.policy_business_processes.where(draft_id: nil).present?
-                  policy&.policy_business_processes.where(draft_id: nil).destroy_all
+              %w(business_processes risks controls references resources).each do |relation|
+                if policy&.send("policy_#{relation}").where.not(draft_id: nil).present?
+                  if policy&.send("policy_#{relation}").where(draft_id: nil).present?
+                    policy&.send("policy_#{relation}").where(draft_id: nil).destroy_all 
+                  end
+                  policy&.send("policy_#{relation}").where.not(draft_id: nil).each {|x| x.draft.publish!}
                 end
-                policy&.policy_business_processes.where.not(draft_id: nil).each {|x| x.draft.publish!}
-
-              end
-    
-              if policy&.policy_controls.where.not(draft_id: nil).present?
-                if policy&.policy_controls.where(draft_id: nil).present?
-                  policy&.policy_controls.where(draft_id: nil).destroy_all
-                end
-                policy&.policy_controls.where.not(draft_id: nil).each {|x| x.draft.publish!}
-              end
-    
-              if policy&.policy_risks.where.not(draft_id: nil).present?
-                if policy&.policy_risks.where(draft_id: nil).present?
-                  policy&.policy_risks.where(draft_id: nil).destroy_all
-                end
-                policy&.policy_risks.where.not(draft_id: nil).each {|x| x.draft.publish!}
-              end
-
-              if policy&.policy_references.where.not(draft_id: nil).present?
-                if policy&.policy_references.where(draft_id: nil).present?
-                  policy&.policy_references.where(draft_id: nil).destroy_all
-                end
-                policy&.policy_references.where.not(draft_id: nil).each {|x| x.draft.publish!}
-              end
-
-              if policy&.policy_resources.where.not(draft_id: nil).present?
-                if policy&.policy_resources.where(draft_id: nil).present?
-                  policy&.policy_resources.where(draft_id: nil).destroy_all
-                end
-                policy&.policy_resources.where.not(draft_id: nil).each {|x| x.draft.publish!}
               end
 
               policy_draft.publish!
@@ -86,24 +59,22 @@ module Mutations
             else
               admin_prep = User.with_role(:admin_preparer).pluck(:id)
               Notification.send_notification(admin_prep, "Policy Draft titled #{policy.title} Has been Rejected", policy&.title,policy, current_user&.id, "request_draft_rejected")
-              policy_draft.revert!
-              if policy&.present?
-                policy.update_attributes(is_submitted:false, is_related: false, status: "release")
-              end
-              if policy&.policy_business_processes.where.not(draft_id: nil).present?
-                policy&.policy_business_processes.where.not(draft_id: nil).destroy_all
-              end
-              if policy&.policy_risks.where.not(draft_id: nil).present?
-                policy&.policy_risks.where.not(draft_id: nil).destroy_all
-              end
-              if policy&.policy_controls.where.not(draft_id: nil).present?
-                policy&.policy_controls.where.not(draft_id: nil).destroy_all
-              end
-              if policy&.policy_references.where.not(draft_id: nil).present?
-                policy&.policy_references.where.not(draft_id: nil).destroy_all
-              end
-              if policy&.policy_resources.where.not(draft_id: nil).present?
-                policy&.policy_resources.where.not(draft_id: nil).destroy_all
+              if policy.published_at.nil?
+                policy_draft.update_attributes(
+                  object_changes: JSON.parse(policy_draft.object_changes).update({"status" => [nil, "draft"]}).to_json, 
+                  object:JSON.parse(policy_draft.object).update({"status" => "draft"}).to_json
+                )
+                policy.update(status:"draft")
+              else
+                policy_draft.revert!
+                if policy&.present?
+                  policy.update_attributes(is_submitted:false, is_related: false, status: "release")
+                end
+                %w(business_processes risks controls references resources).each do |relation|
+                  if policy&.send("policy_#{relation}").where.not(draft_id: nil).present?
+                    policy&.send("policy_#{relation}").where.not(draft_id: nil).destroy_all 
+                  end
+                end
               end
               if policy&.present? && policy&.request_edit&.present?
                 policy&.request_edit&.destroy
