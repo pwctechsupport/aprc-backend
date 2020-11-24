@@ -3,6 +3,7 @@ class Control < ApplicationRecord
   has_drafts
   validates_presence_of :description, :type_of_control, :frequency, :nature, :assertion, :ipo
   validates :description, uniqueness: true
+  validates_uniqueness_of :description, :case_sensitive => false
   serialize :assertion, Array
   serialize :ipo, Array
   serialize :control_owner, Array

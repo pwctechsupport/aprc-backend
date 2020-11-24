@@ -11,6 +11,7 @@ class PolicyCategory < ApplicationRecord
   serialize :policy, Array
 	
 	validates :name, uniqueness: true
+  validates_uniqueness_of :name, :case_sensitive => false
   has_many :policies , inverse_of: :policy_category,dependent: :nullify
   accepts_nested_attributes_for :policies, allow_destroy: true
   has_many :user_policy_categories, dependent: :destroy
