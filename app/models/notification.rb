@@ -8,7 +8,7 @@ class Notification < ApplicationRecord
 
   def push_notif_email
     user = User.find(self.user_id)
-    UserPushMailer.push_notif_email(user).deliver_later
+    UserPushMailer.push_notif_email(user, self).deliver_later
   end
 
   def self.send_notification(arr_of_user, title, body, originator,sender_user_id, data_type= nil)
