@@ -21,6 +21,7 @@ module GraphqlDevise
     config.load_defaults 5.2
 
     config.active_job.queue_adapter = :delayed_job
+    config.action_mailer.preview_path = "#{Rails.root}/lib/mailer_previews"
 
 
     # Settings in config/environments/* take precedence over those specified here.
