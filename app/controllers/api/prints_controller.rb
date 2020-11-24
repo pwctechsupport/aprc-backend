@@ -95,7 +95,8 @@ module Api
     end
 
     def unmapped_risk
-      @tags = Tag.includes(:business_process).order("business_processes.name ASC").where.not(risk_id:nil).uniq
+      @q = Tag.where.not(risk_id:nil).uniq.pluck(:id)
+      @tags = Tag.where(id: @q).includes(:business_process).order("business_processes.name ASC")
       respond_to do |format|
         format.json
         format.pdf do
@@ -110,7 +111,8 @@ module Api
     end
 
     def unmapped_control
-      @tags = Tag.includes(:business_process).order("business_processes.name ASC").where.not(control_id:nil).uniq
+      @q = Tag.where.not(control_id:nil).uniq.pluck(:id)
+      @tags = Tag.where(id: @q).includes(:business_process).order("business_processes.name ASC")
       respond_to do |format|
         format.json
         format.pdf do
