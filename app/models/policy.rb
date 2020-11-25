@@ -25,6 +25,8 @@ class Policy < ApplicationRecord
   has_many :file_attachments, class_name: "FileAttachment", as: :originator, dependent: :destroy
   belongs_to :user_reviewer, class_name: "User", foreign_key:"user_reviewer_id", optional: true
 
+  scope :released, -> {where(status: "release")}
+
   def to_humanize
     "#{self.title.capitalize}"
   end
