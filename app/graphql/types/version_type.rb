@@ -41,7 +41,10 @@ module Types
 				else
 					"#{user&.name || "someone"} #{object.event} #{object.item_type}: #{JSON.parse(object.object)["name"] || "something"}"
 				end
+			elsif object.item_type == "Import"
+				"#{user&.name || "someone"} imported #{object.item&.to_humanize}"
 			else
+				event_name = if object.event == "create " then "created" elsif object.event == "update" then "updated" elsif object.event == "destroy" then "destroyed" else ""
 				"#{user&.name || "someone"} #{object.event} #{object.item_type}: #{object.item&.to_humanize}"
 			end
 		end
