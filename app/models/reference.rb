@@ -1,5 +1,6 @@
 class Reference < ApplicationRecord
   validates :name, uniqueness: true
+  validates_uniqueness_of :name, :case_sensitive => false
   validates_presence_of :name
 
   has_paper_trail ignore: [:updated_at, :is_inside]
