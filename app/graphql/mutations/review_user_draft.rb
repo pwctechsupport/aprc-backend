@@ -15,36 +15,28 @@ module Mutations
         user_draft= user.draft
         admin_prep = User.with_role(:admin_preparer).pluck(:id)
         if args[:publish] === true
-          if user.user_reviewer_id.present? && (user.user_reviewer_id != current_user.id)
-            raise GraphQL::ExecutionError, "This Draft has been reviewed by another Admin."
-          else
-            if user_draft&.event == "update"
-              serial = ["policy_category", "main_role"]
-              serial.each do |sif|
-                if user_draft&.changeset[sif].present?
-                  user_draft&.changeset[sif].map!{|x| JSON.parse(x)}
-                end
+          if user_draft&.event == "update"
+            serial = ["policy_category", "main_role"]
+            serial.each do |sif|
+              if user_draft&.changeset[sif].present?
+                user_draft&.changeset[sif].map!{|x| JSON.parse(x)}
               end
             end
-            user_draft&.reify
-            user_draft&.publish!
-            user.update(user_reviewer_id: current_user.id, status: "release")
-            Notification.send_notification(admin_prep, "User Draft named #{user&.name} Approved", user&.name,user, current_user&.id, "request_draft_approved")
           end
+          user_draft&.reify
+          user_draft&.publish!
+          user.update(user_reviewer_id: current_user.id, status: "release")
+          Notification.send_notification(admin_prep, "User Draft named #{user&.name} Approved", user&.name,user, current_user&.id, "request_draft_approved")
           if user&.present? && user&.request_edit&.present?
             user&.request_edit&.destroy
           end
         else
-          if user.user_reviewer_id.present? && (user.user_reviewer_id != current_user.id)
-            raise GraphQL::ExecutionError, "This Draft has been reviewed by another Admin."
-          else
-            Notification.send_notification(admin_prep, "User Draft named #{user&.name} Rejected", user&.name,user, current_user&.id, "request_draft_rejected")
-            policy_category_rejected = user&.policy_category
-            user_draft.revert!
-            if user&.present? && user&.request_edit&.present?
-              user&.request_edit&.destroy
-              user.update(policy_category: policy_category_rejected, status: "release")
-            end
+          Notification.send_notification(admin_prep, "User Draft named #{user&.name} Rejected", user&.name,user, current_user&.id, "request_draft_rejected")
+          policy_category_rejected = user&.policy_category
+          user_draft.revert!
+          if user&.present? && user&.request_edit&.present?
+            user&.request_edit&.destroy
+            user.update(policy_category: policy_category_rejected, status: "release")
           end
         end 
       else
