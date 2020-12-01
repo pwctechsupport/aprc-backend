@@ -41,7 +41,9 @@ module Mutations
                 nama = namu.join(", ")
                 name = namu.map{|x| Policy.find(x)&.title}
                 nami = name.join(", ")
-                Notification.send_notification_to_all(admin ,"#{polisi.title} with #{r.name} has been updated. Consider review for other related policies with #{r.name} i.e.: #{nami}","#{nama}",policy, current_user&.id, "related_reference" ) 
+                if ref.count > 1 # don't send notif if policy just have 1 reference
+                  Notification.send_notification_to_all(admin ,"#{polisi.title} with #{r.name} has been updated. Consider review for other related policies with #{r.name} i.e.: #{nami}","#{nama}",policy, current_user&.id, "related_reference" ) 
+                end
                 #{polisi.title} with #{r.name} has been updated. Consider review other related policies with #{r.name} #{nama}. 
               end
             end
