@@ -33,10 +33,11 @@ module Types
 			if object.whodunnit
 				user = User.find(object.whodunnit)
 			end
+
 			if object.event == "destroy"
 				if object.item_type == "Control"
 					"#{user&.name || "someone"} #{object.event} #{object.item_type}: #{JSON.parse(object.object)["description"]}"
-				elsif object.item_type == "Policy"
+				elsif object.item_id_type == "Policy"
 					"#{user&.name || "someone"} #{object.event} #{object.item_type}: #{JSON.parse(object.object)["title"]}"
 				else
 					"#{user&.name || "someone"} #{object.event} #{object.item_type}: #{JSON.parse(object.object)["name"] || "something"}"
@@ -44,7 +45,7 @@ module Types
 			elsif object.item_type == "Import"
 				"#{user&.name || "someone"} imported #{object.item&.to_humanize}"
 			else
-				event_name = if object.event == "create " then "created" elsif object.event == "update" then "updated" elsif object.event == "destroy" then "destroyed" else ""
+				event_name = if object.event == "create " then "created" elsif object.event == "update" then "updated" elsif object.event == "destroy" then "destroyed" else "" end
 				"#{user&.name || "someone"} #{object.event} #{object.item_type}: #{object.item&.to_humanize}"
 			end
 		end
