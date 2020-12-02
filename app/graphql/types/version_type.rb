@@ -33,20 +33,20 @@ module Types
 			if object.whodunnit
 				user = User.find(object.whodunnit)
 			end
+      event_name = if object.event == "create " then "created" elsif object.event == "update" then "updated" elsif object.event == "destroy" then "destroyed" else "" end
 
 			if object.event == "destroy"
 				if object.item_type == "Control"
-					"#{user&.name || "someone"} #{object.event} #{object.item_type}: #{JSON.parse(object.object)["description"]}"
+					"#{user&.name || "someone"} #{event_name} #{object.item_type}: #{JSON.parse(object.object)["description"]}"
 				elsif object.item_id_type == "Policy"
-					"#{user&.name || "someone"} #{object.event} #{object.item_type}: #{JSON.parse(object.object)["title"]}"
+					"#{user&.name || "someone"} #{event_name} #{object.item_type}: #{JSON.parse(object.object)["title"]}"
 				else
-					"#{user&.name || "someone"} #{object.event} #{object.item_type}: #{JSON.parse(object.object)["name"] || "something"}"
+					"#{user&.name || "someone"} #{event_name} #{object.item_type}: #{JSON.parse(object.object)["name"] || "something"}"
 				end
 			elsif object.item_type == "Import"
 				"#{user&.name || "someone"} imported #{object.item&.to_humanize}"
 			else
-				event_name = if object.event == "create " then "created" elsif object.event == "update" then "updated" elsif object.event == "destroy" then "destroyed" else "" end
-				"#{user&.name || "someone"} #{object.event} #{object.item_type}: #{object.item&.to_humanize}"
+				"#{user&.name || "someone"} #{event_name} #{object.item_type}: #{object.item&.to_humanize}"
 			end
 		end
 	end
