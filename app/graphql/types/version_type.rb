@@ -33,7 +33,7 @@ module Types
 			if object.whodunnit
 				user = User.find(object.whodunnit)
 			end
-      event_name = if object.event == "create " then "created" elsif object.event == "update" then "updated" elsif object.event == "destroy" then "destroyed" else "" end
+      		event_name = if object.event == "create" then "created" elsif object.event == "update" then "updated" elsif object.event == "destroy" then "destroyed" else object.event end
 
 			if object.event == "destroy"
 				if object.item_type == "Control"

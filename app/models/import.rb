@@ -2,7 +2,24 @@ class Import < ApplicationRecord
   has_paper_trail
 
   has_attached_file :file
-  validates_attachment_content_type :file, content_type: { content_type: ["image/jpeg", "image/gif", "image/png", "application/pdf", "application/xlsx","application/vnd.ms-excel", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "application/msword", "application/vnd.openxmlformats-officedocument.wordprocessingml.document", "text/plain", "application/zip", "application/x-zip", "application/x-zip-compressed","application/octet-stream","application/vnd.ms-office","application/vnd.openxmlformats-officedocument.presentationml.presentation", "application/vnd.ms-powerpoint"] }
+  validates_attachment :file, content_type: {content_type: %w(
+    application/vnd.ms-excel
+    application/msword
+    application/vnd.ms-powerpoint
+    application/vnd.openxmlformats-officedocument.spreadsheetml.sheet
+    application/vnd.openxmlformats-officedocument.spreadsheetml.template
+    application/vnd.openxmlformats-officedocument.presentationml.template
+    application/vnd.openxmlformats-officedocument.presentationml.slideshow
+    application/vnd.openxmlformats-officedocument.presentationml.presentation
+    application/vnd.openxmlformats-officedocument.presentationml.slide
+    application/vnd.openxmlformats-officedocument.wordprocessingml.document
+    application/vnd.openxmlformats-officedocument.wordprocessingml.template
+    text/csv
+    application/x-gzip
+    application/zip
+    application/pdf
+    application/rtf
+  )}
 
   def to_humanize
     "#{self.name} : #{self.file_file_name}"
