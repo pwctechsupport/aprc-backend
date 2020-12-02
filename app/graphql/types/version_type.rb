@@ -38,7 +38,7 @@ module Types
 			if object.event == "destroy"
 				if object.item_type == "Control"
 					"#{user&.name || "someone"} #{event_name} #{object.item_type}: #{JSON.parse(object.object)["description"]}"
-				elsif object.item_id_type == "Policy"
+				elsif object.item_type == "Policy"
 					"#{user&.name || "someone"} #{event_name} #{object.item_type}: #{JSON.parse(object.object)["title"]}"
 				else
 					"#{user&.name || "someone"} #{event_name} #{object.item_type}: #{JSON.parse(object.object)["name"] || "something"}"
