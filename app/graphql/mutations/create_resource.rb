@@ -106,7 +106,7 @@ module Mutations
             res_pol.save_draft
           end 
         end
-        resource.update(status: "waiting_for_review" )
+        resource.update_columns(status: "waiting_for_review" )
         Notification.send_notification(admin, resource&.name, resource&.category,resource, current_user&.id, "request_draft")
       else
         raise GraphQL::ExecutionError, "The exact same draft cannot be duplicated"
@@ -115,10 +115,10 @@ module Mutations
       
       resource = Resource.find_by(name: args[:name], category: args[:category])
       if resource.category.downcase == "flowchart"
-        resource.update(policy_id: nil)
-        resource.update(policy_ids: nil)
-        resource.update(control_id: nil)
-        resource.update(control_ids: nil)
+        resource.update_columns(policy_id: nil)
+        resource.update_columns(policy_ids: nil)
+        resource.update_columns(control_id: nil)
+        resource.update_columns(control_ids: nil)
         resource
       end
 
