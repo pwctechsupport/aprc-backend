@@ -119,10 +119,11 @@ module Mutations
       
       resource = Resource.find_by(name: args[:name], category: args[:category])
       if resource.category.downcase == "flowchart"
-        resource.update_columns(policy_id: nil)
-        resource.update_columns(policy_ids: nil)
-        resource.update_columns(control_id: nil)
-        resource.update_columns(control_ids: nil)
+        resource.policy_id = nil
+        resource.policy_ids = nil
+        resource.control_id = nil
+        resource.control_ids = nil
+        resource.save(:validate => false)
         resource
       end
 
