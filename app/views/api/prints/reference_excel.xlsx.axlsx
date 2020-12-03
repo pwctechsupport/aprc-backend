@@ -4,15 +4,18 @@ wb = xlsx_package.workbook
 
 wb.add_worksheet(name: "References") do |sheet|
   # Create the header row
-  sheet.add_row ["name", "related policy title"]
+  sheet.add_row ["ID", "name", "related policy title"]
   # Create entries for each item
+  a = 0
   @references.each do |reference|
     if reference&.policies.present?
       reference&.policies&.each do |policy|
-        sheet.add_row [reference&.name, policy.title]
+        a += 1
+        sheet.add_row [a, reference&.name, policy.title]
       end
     else
-      sheet.add_row [reference&.name, reference&.policies.pluck(:title).join(",")]
+      a += 1
+      sheet.add_row [a, reference&.name, reference&.policies.pluck(:title).join(",")]
     end
   end
 end

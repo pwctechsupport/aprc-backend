@@ -23,15 +23,18 @@ wb.add_worksheet(name: "Exception Report") do |sheet|
   sheet.merge_cells "A1:F1"
   sheet.merge_cells "A4:C4"
   sheet.merge_cells "A5:C5"
-  sheet.add_row ["name", "level of risk", "status", "type of risk", "business process", "related policy","Created By", "Created On", "Last Update On", "Last Update By"], :style => header, :height => 25
+  sheet.add_row ["ID", "name", "level of risk", "status", "type of risk", "business process", "related policy","Created By", "Created On", "Last Update On", "Last Update By"], :style => header, :height => 25
   # Create entries for each item
   zone = ActiveSupport::TimeZone.new("Jakarta")
+  a = 0
   @risks.each do |risk|
     if risk.business_processes.present?
       risk&.business_processes.each do |bis|
         if risk.policies.present?
           risk.policies.each do |pol|
+            a += 1
             sheet.add_row [
+              a,
               risk&.name, 
               risk&.level_of_risk.present? ? risk&.level_of_risk&.to_s&.gsub(/_/, ' ')&.capitalize : "", 
               risk&.status&.capitalize, 
@@ -45,7 +48,9 @@ wb.add_worksheet(name: "Exception Report") do |sheet|
               ], :style=>content, :height => 22
           end
         else
+          a += 1
           sheet.add_row [
+            a,
             risk&.name, 
             risk&.level_of_risk.present? ? risk&.level_of_risk&.to_s&.gsub(/_/, ' ')&.capitalize : "", 
             risk&.status&.capitalize, 
@@ -63,7 +68,9 @@ wb.add_worksheet(name: "Exception Report") do |sheet|
     else
       if risk.policies.present?
         risk.policies.each do |pol|
+          a += 1
           sheet.add_row [
+            a,
             risk&.name, 
             risk&.level_of_risk.present? ? risk&.level_of_risk&.to_s&.gsub(/_/, ' ')&.capitalize : "", 
             risk&.status&.capitalize, 
@@ -78,7 +85,9 @@ wb.add_worksheet(name: "Exception Report") do |sheet|
             ], :style=>content, :height => 22
         end
       else
+        a += 1
         sheet.add_row [
+          a,
           risk&.name, 
           risk&.level_of_risk.present? ? risk&.level_of_risk&.to_s&.gsub(/_/, ' ')&.capitalize : "", 
           risk&.status&.capitalize, 
