@@ -23,7 +23,7 @@ class Resource < ApplicationRecord
   belongs_to :user_reviewer, class_name: "User", foreign_key:"user_reviewer_id", optional: true
 
   def to_humanize
-    "#{self.name} : #{self.resupload_file_name}"
+    "#{self.name} : #{self.resupload_file_name || self.resupload_link}"
   end
 
   def request_edit
