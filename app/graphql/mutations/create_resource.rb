@@ -88,13 +88,14 @@ module Mutations
       resource=Resource.new(args)
       resource&.save_draft
       if args[:resupload].present?
-        args.trust
-        args[:resupload_file_name] = "#{ConvertName.raw(args[:name])}#{Resource.resource_file_type(resource).html_safe}"
-        resource.resupload = args[:resupload]
-        resource.resupload_file_name = args[:resupload_file_name]
-        resource.base_64_file = args[:resupload]
-        resource.skip_callback(true)
-        resource.save!
+        PaperTrail.request(enabled: false) do
+          args.trust
+          args[:resupload_file_name] = "#{ConvertName.raw(args[:name])}#{Resource.resource_file_type(resource).html_safe}"
+          resource.resupload = args[:resupload]
+          resource.resupload_file_name = args[:resupload_file_name]
+          resource.base_64_file = args[:resupload]
+          resource.save!
+        end
         resource
       end
       admin = User.with_role(:admin_reviewer).pluck(:id)
@@ -120,13 +121,14 @@ module Mutations
       
       resource = Resource.find_by(name: args[:name], category: args[:category])
       if resource.category.downcase == "flowchart"
-        resource.policy_id = nil
-        resource.policy_ids = nil
-        resource.control_id = nil
-        resource.control_ids = nil
-        resource.skip_callback(true)
-        resource.save!
-        resource
+        PaperTrail.request(enabled: false) do
+          resource.policy_id = nil
+          resource.policy_ids = nil
+          resource.control_id = nil
+          resource.control_ids = nil
+          resource.save!
+          resource
+        end
       end
 
       MutationResult.call(
