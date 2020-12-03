@@ -93,7 +93,8 @@ module Mutations
         resource.resupload = args[:resupload]
         resource.resupload_file_name = args[:resupload_file_name]
         resource.base_64_file = args[:resupload]
-        resource.save(:validate => false)
+        resource.skip_callback(true)
+        resource.save!
         resource
       end
       admin = User.with_role(:admin_reviewer).pluck(:id)
@@ -123,7 +124,8 @@ module Mutations
         resource.policy_ids = nil
         resource.control_id = nil
         resource.control_ids = nil
-        resource.save(:validate => false)
+        resource.skip_callback(true)
+        resource.save!
         resource
       end
 
