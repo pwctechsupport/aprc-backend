@@ -90,7 +90,10 @@ module Mutations
       if args[:resupload].present?
         args.trust
         args[:resupload_file_name] = "#{ConvertName.raw(args[:name])}#{Resource.resource_file_type(resource).html_safe}"
-        resource.update_column(resupload: args[:resupload], resupload_file_name: args[:resupload_file_name], base_64_file: args[:resupload])
+        resource.resupload = args[:resupload]
+        resource.resupload_file_name = args[:resupload_file_name]
+        resource.base_64_file = args[:resupload])
+        resource.save(:validate => false)
       end
       admin = User.with_role(:admin_reviewer).pluck(:id)
       if resource.id.present?
