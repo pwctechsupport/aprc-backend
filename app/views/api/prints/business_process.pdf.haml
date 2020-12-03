@@ -53,8 +53,8 @@
         %td.aha= current_user&.name
     %h1.aps.text-center Risk & Controls
     %h2.apu= @business_process&.name
-    
-    -@business_process.risks.each_with_index do |ris, x|
+    - @risks = Risk.joins(:risk_business_processes).where(risk_business_processes:{business_process_id: @business_process.subtree_ids}).distinct
+    - @risks.each_with_index do |ris, x|
       %ul
         %li
           %h3 
