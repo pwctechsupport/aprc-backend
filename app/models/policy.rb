@@ -1,7 +1,7 @@
 class Policy < ApplicationRecord
   validates :title, uniqueness: true
   validates_uniqueness_of :title, :case_sensitive => false
-  has_paper_trail ignore: [:visit, :recent_visit, :status, :updated_at]
+  has_paper_trail ignore: [:visit, :recent_visit, :updated_at]
   has_drafts
   belongs_to :policy_category, optional: true
   belongs_to :user, optional: true
