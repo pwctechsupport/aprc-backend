@@ -17,7 +17,7 @@ wb.add_worksheet(name: "Exception Report") do |sheet|
   # Create the header row
   sheet.add_row ["Resource Utilisation Report"], :style => title, :height => 28
   2.times { sheet.add_row}
-  sheet.add_row ["Printed on: #{Time.now.strftime("%d %B %Y")}"],:font_name => 'Georgia', :sz => 12
+  sheet.add_row ["Printed on: #{Time.now.strftime("%d-%m-%Y")}"],:font_name => 'Georgia', :sz => 12
   sheet.add_row ["Printed by: #{current_user&.name}"],:font_name => 'Georgia', :sz => 12
   3.times { sheet.add_row}
   sheet.merge_cells "A1:I1"
