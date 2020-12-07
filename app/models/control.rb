@@ -1,7 +1,7 @@
 class Control < ApplicationRecord
   has_paper_trail ignore: [:updated_at, :is_inside]
   has_drafts
-  validates_presence_of :description, :type_of_control, :frequency, :nature, :assertion, :ipo
+  validates_presence_of :description, :type_of_control, :frequency, :nature, :assertion
   validates :description, uniqueness: true
   validates_uniqueness_of :description, :case_sensitive => false
   serialize :assertion, Array
