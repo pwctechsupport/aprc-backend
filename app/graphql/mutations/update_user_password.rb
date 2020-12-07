@@ -24,7 +24,6 @@ module Mutations
       )
     rescue ActiveRecord::RecordInvalid => invalid
       GraphQL::ExecutionError.new(
-        "Invalid Attributes for #{invalid.record.class.name}: " \
         "#{invalid.record.errors.full_messages.join(', ')}"
       )
     end
