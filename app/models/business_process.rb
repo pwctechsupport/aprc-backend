@@ -11,7 +11,7 @@ class BusinessProcess < ApplicationRecord
   has_many :risks, through: :risk_business_processes
   accepts_nested_attributes_for :risks, allow_destroy: true
   has_ancestry
-  has_many :resources, dependent: :destroy
+  has_many :resources, dependent: :nullify
   has_many :bookmark_business_processes
   has_many :users, through: :bookmark_business_processes
   has_many :bookmarks, class_name: "Bookmark", as: :originator, dependent: :destroy
