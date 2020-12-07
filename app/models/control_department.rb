@@ -13,6 +13,13 @@ class ControlDepartment < ApplicationRecord
   belongs_to :control
   belongs_to :department
 
+  before_destroy :update_control_owner
+
+  def update_control_owner
+    con_dep = control&.departments&.map{|x| x.name}
+    control&.update(control_owner: con_dep)
+  end
+
   def to_humanize
     "#{self.control&.description} : #{self.department.name}"
   end
