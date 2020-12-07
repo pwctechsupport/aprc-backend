@@ -95,11 +95,11 @@
                 -else
                   %td.text-center{:scope => "row",:style => "width: 12%"}
                 -if risk&.versions&.find_by(event:"create")&.present?
-                  %td.text-center{:scope => "row",:style => "width: 10%"}=risk&.versions&.find_by(event:"create")&.created_at.in_time_zone(zone).inspect.sub(" +07:00", "")
+                  %td.text-center{:scope => "row",:style => "width: 10%"}=risk&.versions&.find_by(event:"create")&.created_at.in_time_zone(zone).strftime("%d-%m-%Y %T %Z")
                 -else
                   %td.text-center{:scope => "row",:style => "width: 10%"}
                 -if risk&.updated_at.present?
-                  %td.text-center{:scope => "row",:style => "width: 10%"}=risk&.updated_at.in_time_zone(zone).inspect.sub(" +07:00", "")
+                  %td.text-center{:scope => "row",:style => "width: 10%"}=risk&.updated_at.in_time_zone(zone).strftime("%d-%m-%Y %T %Z")
                 -else
                   %td.text-center{:scope => "row",:style => "width: 10%"}
                 -if risk&.versions&.last&.whodunnit.present?

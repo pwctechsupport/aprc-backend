@@ -76,8 +76,8 @@ module Api
         average: Resource.rate(x).third.nan? ? "Not Rated" : Resource.rate(x).fourth,
         total: Resource.rate(x).first,
         created_by: x&.versions&.find_by(event:"create")&.whodunnit.present? ? User&.find(x&.versions&.find_by(event:"create")&.whodunnit).name : "",
-        created_on: x&.versions&.find_by(event:"create")&.present? ? x&.versions&.find_by(event:"create")&.created_at.in_time_zone(zone).inspect.sub(" +07:00","") : "",
-        last_updated_on: x&.updated_at.present? ? x&.updated_at.in_time_zone(zone).inspect.sub(" +07:00","") : "",
+        created_on: x&.versions&.find_by(event:"create")&.present? ? x&.versions&.find_by(event:"create")&.created_at.in_time_zone(zone).strftime("%d-%m-%Y %T %Z") : "",
+        last_updated_on: x&.updated_at.present? ? x&.updated_at.in_time_zone(zone).strftime("%d-%m-%Y %T %Z") : "",
         last_updated_by: x&.versions&.last&.whodunnit.present? ? User&.find(x&.versions&.last&.whodunnit)&.name : ""   
         ]
       }.flatten(1).sort_by {|h| [h[:total],h[:average]]}.reverse

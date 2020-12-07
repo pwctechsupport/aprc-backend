@@ -49,7 +49,7 @@ wb.add_worksheet(name: "Exception Report") do |sheet|
           con.convert_assertion.join(","), 
           con.convert_ipo.join(","),
           con&.key_control,
-          con&.updated_at.present? ? con&.updated_at.in_time_zone(zone).inspect.sub(" +07:00", "") : "",
+          con&.updated_at.present? ? con&.updated_at.in_time_zone(zone).strftime("%d-%m-%Y %T %Z") : "",
           con&.versions&.last&.whodunnit.present? ? User&.find(con&.versions&.last&.whodunnit)&.name : ""
         ], :style=>content, :height => 22
       end

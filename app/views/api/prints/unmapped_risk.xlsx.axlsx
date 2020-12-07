@@ -40,8 +40,8 @@ wb.add_worksheet(name: "Exception Report") do |sheet|
           risk.level_of_risk.to_s.gsub("_", ' ').capitalize,
           risk.type_of_risk.to_s.gsub("_", ' ').capitalize,
           risk&.versions&.find_by(event:"create")&.whodunnit.present? ? User&.find(risk&.versions&.find_by(event:"create")&.whodunnit).name : "",
-          risk&.versions&.find_by(event:"create")&.present? ? risk&.versions&.find_by(event:"create")&.created_at.in_time_zone(zone).inspect.sub(" +07:00", "") : "",
-          risk&.updated_at.present? ? risk&.updated_at.in_time_zone(zone).inspect.sub(" +07:00", "") : "",
+          risk&.versions&.find_by(event:"create")&.present? ? risk&.versions&.find_by(event:"create")&.created_at.in_time_zone(zone).strftime("%d-%m-%Y %T %Z") : "",
+          risk&.updated_at.present? ? risk&.updated_at.in_time_zone(zone).strftime("%d-%m-%Y %T %Z") : "",
           risk&.versions&.last&.whodunnit.present? ? User&.find(risk&.versions&.last&.whodunnit)&.name : ""
         ], :style=>content, :height => 22
       end

@@ -37,8 +37,8 @@ wb.add_worksheet(name: "Report Risk without Policy") do |sheet|
           item.type_of_risk.present? ? item&.type_of_risk&.to_s&.gsub(/[^0-9A-Za-z]/, ' ')&.capitalize : "",
           item.level_of_risk.present? ? item&.level_of_risk&.to_s&.gsub(/[^0-9A-Za-z]/, ' ')&.capitalize : "",
           item&.versions&.find_by(event:"create")&.whodunnit.present? ? User&.find(item&.versions&.find_by(event:"create")&.whodunnit).name : "",
-          item&.versions&.find_by(event:"create")&.present? ? item&.versions&.find_by(event:"create")&.created_at.in_time_zone(zone).inspect.sub(" +07:00", "") : "",
-          item&.updated_at.present? ? item&.updated_at.in_time_zone(zone).inspect.sub(" +07:00", "") : "",
+          item&.versions&.find_by(event:"create")&.present? ? item&.versions&.find_by(event:"create")&.created_at.in_time_zone(zone).strftime("%d-%m-%Y %T %Z") : "",
+          item&.updated_at.present? ? item&.updated_at.in_time_zone(zone).strftime("%d-%m-%Y %T %Z") : "",
           item&.versions&.last&.whodunnit.present? ? User&.find(item&.versions&.last&.whodunnit)&.name : ""
         ], :style=>content, :height => 22
       end
@@ -51,8 +51,8 @@ wb.add_worksheet(name: "Report Risk without Policy") do |sheet|
         item.type_of_risk.present? ? item&.type_of_risk&.to_s&.gsub(/[^0-9A-Za-z]/, ' ')&.capitalize : "",
         item.level_of_risk.present? ? item&.level_of_risk&.to_s&.gsub(/[^0-9A-Za-z]/, ' ')&.capitalize : "",
         item&.versions&.find_by(event:"create")&.whodunnit.present? ? User&.find(item&.versions&.find_by(event:"create")&.whodunnit).name : "",
-        item&.versions&.find_by(event:"create")&.present? ? item&.versions&.find_by(event:"create")&.created_at.in_time_zone(zone).inspect.sub(" +07:00", "") : "",
-        item&.updated_at.present? ? item&.updated_at.in_time_zone(zone).inspect.sub(" +07:00", "") : "",
+        item&.versions&.find_by(event:"create")&.present? ? item&.versions&.find_by(event:"create")&.created_at.in_time_zone(zone).strftime("%d-%m-%Y %T %Z") : "",
+        item&.updated_at.present? ? item&.updated_at.in_time_zone(zone).strftime("%d-%m-%Y %T %Z") : "",
         item&.versions&.last&.whodunnit.present? ? User&.find(item&.versions&.last&.whodunnit)&.name : ""
       ], :style=>content, :height => 22
     end  

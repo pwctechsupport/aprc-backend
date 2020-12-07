@@ -42,8 +42,8 @@ wb.add_worksheet(name: "Exception Report") do |sheet|
               bis&.name,
               pol&.title ,
               risk&.versions&.find_by(event:"create")&.whodunnit.present? ? User&.find(risk&.versions&.find_by(event:"create")&.whodunnit).name : "",
-              risk&.versions&.find_by(event:"create")&.present? ? risk&.versions&.find_by(event:"create")&.created_at.in_time_zone(zone).inspect.sub(" +07:00", "") : "",
-              risk&.updated_at.present? ? risk&.updated_at.in_time_zone(zone).inspect.sub(" +07:00", "") : "",
+              risk&.versions&.find_by(event:"create")&.present? ? risk&.versions&.find_by(event:"create")&.created_at.in_time_zone(zone).strftime("%d-%m-%Y %T %Z") : "",
+              risk&.updated_at.present? ? risk&.updated_at.in_time_zone(zone).strftime("%d-%m-%Y %T %Z") : "",
               risk&.versions&.last&.whodunnit.present? ? User&.find(risk&.versions&.last&.whodunnit)&.name : ""
               ], :style=>content, :height => 22
           end
@@ -58,8 +58,8 @@ wb.add_worksheet(name: "Exception Report") do |sheet|
             bis&.name,
             "No Related Policies",
             risk&.versions&.find_by(event:"create")&.whodunnit.present? ? User&.find(risk&.versions&.find_by(event:"create")&.whodunnit).name : "",
-            risk&.versions&.find_by(event:"create")&.present? ? risk&.versions&.find_by(event:"create")&.created_at.in_time_zone(zone).inspect.sub(" +07:00", "") : "",
-            risk&.updated_at.present? ? risk&.updated_at.in_time_zone(zone).inspect.sub(" +07:00", "") : "",
+            risk&.versions&.find_by(event:"create")&.present? ? risk&.versions&.find_by(event:"create")&.created_at.in_time_zone(zone).strftime("%d-%m-%Y %T %Z") : "",
+            risk&.updated_at.present? ? risk&.updated_at.in_time_zone(zone).strftime("%d-%m-%Y %T %Z") : "",
             risk&.versions&.last&.whodunnit.present? ? User&.find(risk&.versions&.last&.whodunnit)&.name : ""
             
             ], :style=>content, :height => 22
@@ -78,8 +78,8 @@ wb.add_worksheet(name: "Exception Report") do |sheet|
             "No Business Process",
             pol&.title,
             risk&.versions&.find_by(event:"create")&.whodunnit.present? ? User&.find(risk&.versions&.find_by(event:"create")&.whodunnit).name : "",
-            risk&.versions&.find_by(event:"create")&.present? ? risk&.versions&.find_by(event:"create")&.created_at.in_time_zone(zone).inspect.sub(" +07:00", "") : "",
-            risk&.updated_at.present? ? risk&.updated_at.in_time_zone(zone).inspect.sub(" +07:00", "") : "",
+            risk&.versions&.find_by(event:"create")&.present? ? risk&.versions&.find_by(event:"create")&.created_at.in_time_zone(zone).strftime("%d-%m-%Y %T %Z") : "",
+            risk&.updated_at.present? ? risk&.updated_at.in_time_zone(zone).strftime("%d-%m-%Y %T %Z") : "",
             risk&.versions&.last&.whodunnit.present? ? User&.find(risk&.versions&.last&.whodunnit)&.name : ""
             
             ], :style=>content, :height => 22
@@ -95,8 +95,8 @@ wb.add_worksheet(name: "Exception Report") do |sheet|
           "No Business Process",
           "No Related Policies",
           risk&.versions&.find_by(event:"create")&.whodunnit.present? ? User&.find(risk&.versions&.find_by(event:"create")&.whodunnit).name : "",
-          risk&.versions&.find_by(event:"create")&.present? ? risk&.versions&.find_by(event:"create")&.created_at.in_time_zone(zone).inspect.sub(" +07:00", "") : "",
-          risk&.updated_at.present? ? risk&.updated_at.in_time_zone(zone).inspect.sub(" +07:00", "") : "",
+          risk&.versions&.find_by(event:"create")&.present? ? risk&.versions&.find_by(event:"create")&.created_at.in_time_zone(zone).strftime("%d-%m-%Y %T %Z") : "",
+          risk&.updated_at.present? ? risk&.updated_at.in_time_zone(zone).strftime("%d-%m-%Y %T %Z") : "",
           risk&.versions&.last&.whodunnit.present? ? User&.find(risk&.versions&.last&.whodunnit)&.name : ""
           
           ], :style=>content, :height => 22
