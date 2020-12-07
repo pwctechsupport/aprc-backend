@@ -8,7 +8,7 @@ module Resolvers
 
       def resolve(filter:, page: nil, limit: nil)
         Department.page(page).per(limit)
-        @q = Department.ransack(filter.as_json)
+        @q = Department.order('name ASC').ransack(filter.as_json)
         @q.result(distinct: true).page(page).per(limit)
       end
 
