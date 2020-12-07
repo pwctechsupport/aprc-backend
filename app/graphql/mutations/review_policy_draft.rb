@@ -59,7 +59,7 @@ module Mutations
                 object_changes: JSON.parse(policy_draft.object_changes).update({"status" => [nil, "draft"]}).to_json, 
                 object:JSON.parse(policy_draft.object).update({"status" => "draft"}).to_json
               )
-              policy.update(status:"draft")
+              policy.update(status:"draft", is_submitted: false)
             else
               policy_draft.revert!
               if policy&.present?
