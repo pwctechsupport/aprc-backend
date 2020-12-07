@@ -4,7 +4,7 @@ wb = xlsx_package.workbook
 
 wb.add_worksheet(name: "Exception Report") do |sheet|
   # Create the header row
-  sheet.add_row ["ID", "control owner", "description", "type of control", "frequency", "nature", "assertion", "ipo", "status", "key control", "business process", "related policy"]
+  sheet.add_row ["No", "control owner", "description", "type of control", "frequency", "nature", "assertion", "ipo", "status", "key control", "business process", "related policy"]
   # Create entries for each item
   a = 0
   @controls.each do |control|

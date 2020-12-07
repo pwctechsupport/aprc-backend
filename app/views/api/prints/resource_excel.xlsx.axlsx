@@ -4,7 +4,7 @@ wb = xlsx_package.workbook
 
 wb.add_worksheet(name: "Resources") do |sheet|
   # Create the header row
-  sheet.add_row ["ID", "name", "category", "related policy title", "related business process name"]
+  sheet.add_row ["No", "name", "category", "related policy title", "related business process name"]
   # Create entries for each item
   a = 0
   @resources.each do |resource|

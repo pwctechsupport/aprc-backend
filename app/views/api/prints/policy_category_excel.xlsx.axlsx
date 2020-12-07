@@ -4,7 +4,7 @@ wb = xlsx_package.workbook
 
 wb.add_worksheet(name: "PolicyCategories") do |sheet|
   # Create the header row
-  sheet.add_row ["ID", "name", "related policy title"]
+  sheet.add_row ["No", "name", "related policy title"]
   # Create entries for each item
   a = 0
   @policy_categories.each do |policy_category|

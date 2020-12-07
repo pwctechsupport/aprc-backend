@@ -22,7 +22,7 @@ wb.add_worksheet(name: "Report Risk without Policy") do |sheet|
   sheet.merge_cells "A1:H1"
   sheet.merge_cells "A4:C4"
   sheet.merge_cells "A5:C5"
-  sheet.add_row ["ID", "Business Process", "Risk", "Type of Risk","Level of Risk","Created By", "Created On", "Last Update On", "Last Update By"], :style => header, :height => 25
+  sheet.add_row ["No", "Business Process", "Risk", "Type of Risk","Level of Risk","Created By", "Created On", "Last Update On", "Last Update By"], :style => header, :height => 25
   # Create entries for each item
   zone = ActiveSupport::TimeZone.new("Jakarta")
   a = 0

@@ -23,7 +23,7 @@ wb.add_worksheet(name: "Exception Report") do |sheet|
   sheet.merge_cells "A1:F1"
   sheet.merge_cells "A4:C4"
   sheet.merge_cells "A5:C5"
-  sheet.add_row ["ID", "name", "level of risk", "status", "type of risk", "business process", "related policy","Created By", "Created On", "Last Update On", "Last Update By"], :style => header, :height => 25
+  sheet.add_row ["No", "name", "level of risk", "status", "type of risk", "business process", "related policy","Created By", "Created On", "Last Update On", "Last Update By"], :style => header, :height => 25
   # Create entries for each item
   zone = ActiveSupport::TimeZone.new("Jakarta")
   a = 0

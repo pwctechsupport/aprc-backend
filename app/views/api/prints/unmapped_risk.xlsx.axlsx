@@ -23,7 +23,7 @@ wb.add_worksheet(name: "Exception Report") do |sheet|
   sheet.merge_cells "A1:H1"
   sheet.merge_cells "A4:H4"
   sheet.merge_cells "A5:H5"
-  sheet.add_row [ "ID", "Business process","Name of risk", "Level of risk", "Type of risk","Created By", "Created On", "Last Update On", "Last Update By"], :style => header, :height => 25
+  sheet.add_row [ "No", "Business process","Name of risk", "Level of risk", "Type of risk","Created By", "Created On", "Last Update On", "Last Update By"], :style => header, :height => 25
   # Create entries for each item
   new_tag = @tags.pluck(:business_process_id).map{|x| Tag.where.not(risk_id:nil).find_by(business_process_id: x)}
   new_tag.uniq.each do |tag|
