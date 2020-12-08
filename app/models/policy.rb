@@ -25,6 +25,8 @@ class Policy < ApplicationRecord
   has_many :file_attachments, class_name: "FileAttachment", as: :originator, dependent: :destroy
   belongs_to :user_reviewer, class_name: "User", foreign_key:"user_reviewer_id", optional: true
 
+  after_save :touch_policy_category
+
   scope :released, -> {where(status: "release")}
 
   def to_humanize
@@ -33,5 +35,11 @@ class Policy < ApplicationRecord
 
   def request_edit
     request_edits.last
+  end
+
+  def touch_policy_category
+    if saved_change_to_policy_category_id? && policy_category.present?
+      policy_category.update_columns(policy: policy_category.policies.map(&:title))
+    end
   end
 end
