@@ -55,10 +55,10 @@ module Mutations
             admin_prep = User.with_role(:admin_preparer).pluck(:id)
             Notification.send_notification(admin_prep, "Policy Draft titled #{policy.title} Has been Rejected", policy&.title,policy, current_user&.id, "request_draft_rejected")
             if policy.published_at.nil?
-              # policy_draft.update_attributes(
-              #   object_changes: JSON.parse(policy_draft.object_changes).update({"status" => [nil, "draft"]}).to_json, 
-              #   object:JSON.parse(policy_draft.object).update({"status" => "draft"}).to_json
-              # )
+              policy_draft.update_attributes(
+                object_changes: JSON.parse(policy_draft.object_changes).update({"status" => [nil, "draft"]}).to_json, 
+                object:JSON.parse(policy_draft.object).update({"status" => "draft"}).to_json
+              )
               policy.update(status:"draft", is_submitted: false)
             else
               policy_draft.revert!
