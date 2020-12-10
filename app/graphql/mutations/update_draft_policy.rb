@@ -152,7 +152,12 @@ module Mutations
           object_changes: JSON.parse(policy.draft.object_changes).update(args.stringify_keys!).to_json, 
           object:JSON.parse(policy.draft.object).update(args.stringify_keys!).to_json
         )
+        if policy.published_at.nil?
+          policy.draft.reify.update(args)
+        end
         policy.update(status:"draft")
+
+
       else
         raise GraphQL::ExecutionError, "You cannot edit this draft. This Draft belongs to another User"
       end
