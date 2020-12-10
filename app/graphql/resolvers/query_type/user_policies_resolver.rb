@@ -7,12 +7,11 @@ module Resolvers
       argument :limit, Int, required: false
 
       def resolve(filter:, page: nil,limit: nil)
-        # data = context[:current_user].policies_by_categories
-        data = Policy.all
         if context[:current_user].has_role?(:user)
+          data = context[:current_user].policies_by_categories
           @q = data.released.ransack(filter.as_json)
         else
-          @q = data.ransack(filter.as_json)
+          @q = Policy.all.ransack(filter.as_json)
         end
         @q.sorts = 'title asc' if @q.sorts.empty?
         @q.result(distinct: true).page(page).per(limit)
