@@ -6,7 +6,7 @@ module Api
       if status
       	render json: { status: 200, message: "Succesfully import file Business Process", error_data: error_data.as_json}
       else
-      	render json: { status: 422, message: "Failed import file Business Process"}
+      	render json: { status: 422, message: "Failed import file Business Process"}, status: 422
       end
     end
   end
