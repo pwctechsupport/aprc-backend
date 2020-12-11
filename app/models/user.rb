@@ -41,7 +41,7 @@ class User < ApplicationRecord
   has_many :tags, dependent: :destroy
 
   def policies_by_categories
-    policies.where(policy_category_id: self.policy_category_ids)
+    Policy.where(policy_category_id: self.policy_category_ids)
   end
 
   
