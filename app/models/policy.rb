@@ -27,7 +27,7 @@ class Policy < ApplicationRecord
 
   after_save :touch_policy_category
 
-  scope :released, -> {where(status: "release")}
+  scope :released, -> {where(status: ["release", "ready_for_edit"])}
 
   def to_humanize
     "#{self.title.capitalize}"
