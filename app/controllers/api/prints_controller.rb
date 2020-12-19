@@ -1,5 +1,7 @@
 module Api
   class PrintsController < ApiController
+    # skip_before_action :authenticate_user!
+    # skip_before_action :load_user
 
     def policy
       @policy = Policy.find(params[:id])
@@ -35,7 +37,7 @@ module Api
       respond_to do |format|
         format.json
         format.pdf do
-          render pdf: 'report_risk', layout: 'layouts/pdf.haml', template: 'api/prints/report_risk.pdf.haml',orientation: "Landscape", dpi: 300, show_as_html: params.key?('debug'), javascript_delay: 3000, margin: {top: 60, bottom: 20, left: 15, right: 15 }, outline: {outline: true, outline_depth: 10 }, footer: {html: {template:'shared/_pdf_report_footer'}}, header: {html: {template:'shared/_pdf_header_report_risk'}}
+          render pdf: 'report_risk', layout: 'layouts/pdf.haml', template: 'api/prints/report_risk.pdf.haml',orientation: "Landscape", dpi: 300, show_as_html: params.key?('debug'), javascript_delay: 3000, margin: {top: 70, bottom: 20, left: 15, right: 15 }, outline: {outline: true, outline_depth: 10 }, footer: {html: {template:'shared/_pdf_report_footer'}}, header: {html: {template:'shared/_pdf_header_report_risk'}}
         end
         format.xlsx {
           response.headers[
@@ -53,7 +55,7 @@ module Api
       respond_to do |format|
         format.json
         format.pdf do
-          render pdf: 'report_risk_policy', layout: 'layouts/pdf.haml', template: 'api/prints/report_risk_policy.pdf.haml',orientation: "Landscape", dpi: 300, show_as_html: params.key?('debug'), javascript_delay: 3000, margin: {top: 60, bottom: 20, left: 15, right: 15 }, outline: {outline: true, outline_depth: 10 }, footer: {html: {template:'shared/_pdf_report_footer'}}, header: {html: {template:'shared/_pdf_header_report_risk_policy'}}
+          render pdf: 'report_risk_policy', layout: 'layouts/pdf.haml', template: 'api/prints/report_risk_policy.pdf.haml',orientation: "Landscape", dpi: 300, show_as_html: params.key?('debug'), javascript_delay: 3000, margin: {top: 70, bottom: 20, left: 15, right: 15 }, outline: {outline: true, outline_depth: 10 }, footer: {html: {template:'shared/_pdf_report_footer'}}, header: {html: {template:'shared/_pdf_header_report_risk_policy'}}
         end
         format.xlsx {
           response.headers[
@@ -84,7 +86,7 @@ module Api
       respond_to do |format|
         format.json
         format.pdf do
-          render pdf: 'report_resource_rating', layout: 'layouts/pdf.haml', template: 'api/prints/report_resource_rating.pdf.haml', orientation: "Landscape", dpi: 300, show_as_html: params.key?('debug'), javascript_delay: 3000, margin: {top: 60, bottom: 20, left: 15, right: 15 }, outline: {outline: true, outline_depth: 10 }, footer: {html: {template:'shared/_pdf_report_footer'}}, header: {html: {template:'shared/_pdf_header_report_resource_rating'}}
+          render pdf: 'report_resource_rating', layout: 'layouts/pdf.haml', template: 'api/prints/report_resource_rating.pdf.haml', orientation: "Landscape", dpi: 300, show_as_html: params.key?('debug'), javascript_delay: 3000, margin: {top: 70, bottom: 20, left: 15, right: 15 }, outline: {outline: true, outline_depth: 10 }, footer: {html: {template:'shared/_pdf_report_footer'}}, header: {html: {template:'shared/_pdf_header_report_resource_rating'}}
         end
         format.xlsx {
           response.headers[
@@ -130,7 +132,7 @@ module Api
       respond_to do |format|
         format.json
         format.pdf do
-          render pdf: 'report_control_policy', layout: 'layouts/pdf.haml', template: 'api/prints/report_control_policy.pdf.haml',orientation: "Landscape", dpi: 300, show_as_html: params.key?('debug'), javascript_delay: 3000, margin: {top: 60, bottom: 20, left: 15, right: 15 }, outline: {outline: true, outline_depth: 10 }, footer: {html: {template:'shared/_pdf_report_footer'}}, header: {html: {template:'shared/_pdf_header_report_control_policy'}}
+          render pdf: 'report_control_policy', layout: 'layouts/pdf.haml', template: 'api/prints/report_control_policy.pdf.haml',orientation: "Landscape", dpi: 300, show_as_html: params.key?('debug'), javascript_delay: 3000, margin: {top: 70, bottom: 20, left: 15, right: 15 }, outline: {outline: true, outline_depth: 10 }, footer: {html: {template:'shared/_pdf_report_footer'}}, header: {html: {template:'shared/_pdf_header_report_control_policy'}}
         end
         format.xlsx {
           response.headers[
