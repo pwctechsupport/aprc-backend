@@ -50,7 +50,7 @@ module Types
                 "#{user&.name || "someone"} imported #{object.item&.to_humanize}"
             else
                 if previous_status.present?
-                  "#{user&.name || "someone"} #{event_name} #{object.item_type}: #{object.item&.to_humanize} from #{previous_status} to #{current_status}"
+                  "#{user&.name || "someone"} #{event_name} #{object.item_type}: #{object.item&.to_humanize} from #{previous_status&.humanize} to #{current_status&.humanize}"
                 else
                   "#{user&.name || "someone"} #{event_name} #{object.item_type}: #{object.item&.to_humanize}"
                 end
