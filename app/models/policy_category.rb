@@ -71,9 +71,9 @@ class PolicyCategory < ApplicationRecord
             polcat_names.push(row["name"])
           end
 
-          if !Policy.find_by(title: row["related policy title"].to_s).present?
-            error_data.push({message: "Policy must Exist", line: k})
-          end
+          # if !Policy.find_by(title: row["related policy title"].to_s).present?
+          #   error_data.push({message: "Policy must Exist", line: k})
+          # end
 
           policy_category_id = PolicyCategory&.create(name: polcat_names[index_polcat],policy_ids: Policy.find_by(title: row["related policy title"].to_s)&.id, status: "release", is_inside: true, created_by: current_user&.name, last_updated_by: current_user&.name)
 

@@ -56,9 +56,9 @@ class Reference < ApplicationRecord
             if !Reference.find_by_name(refu).present?
               ref_names.push(refu)
             end
-            if !Policy.find_by(title: row["related policy title"].to_s).present?
-              error_data.push({message: "Policy must Exist", line: k})
-            end
+            # if !Policy.find_by(title: row["related policy title"].to_s).present?
+            #   error_data.push({message: "Policy must Exist", line: k})
+            # end
 
             reference_id = Reference&.create(name: ref_names[index_ref],policy_ids: Policy.find_by(title: row["related policy title"].to_s)&.id, is_inside: true, created_by: current_user&.name, last_updated_by: current_user&.name)
             unless reference_id.valid?
