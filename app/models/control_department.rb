@@ -13,7 +13,7 @@ class ControlDepartment < ApplicationRecord
   belongs_to :control
   belongs_to :department
 
-  before_destroy :update_control_owner
+  after_destroy :update_control_owner
 
   def update_control_owner
     con_dep = control&.departments&.map{|x| x.name}
