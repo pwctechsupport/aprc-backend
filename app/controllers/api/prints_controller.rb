@@ -127,7 +127,7 @@ module Api
     end
 
     def report_control_policy
-      @controls = Control.where(status: "release")
+      @controls = Control.where(status: "release").includes(:control_risks).where( control_risks: {risk_id:nil})
       
       respond_to do |format|
         format.json
