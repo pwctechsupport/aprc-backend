@@ -8,8 +8,8 @@ module Resolvers
 
       def resolve(filter:, page: nil, limit: nil)
         current_user = context[:current_user]
-        if filter[:title_or_originator_type_or_sender_user_name_cont].present?
-          if filter[:title_or_originator_type_or_sender_user_name_cont]&.downcase.include?("system")
+        if filter["title_or_originator_type_or_sender_user_name_cont"].present?
+          if filter["title_or_originator_type_or_sender_user_name_cont"]&.downcase.include?("sys") || filter["title_or_originator_type_or_sender_user_name_cont"]&.downcase.include?("stem")
             @q = Notification.where(user_id: current_user&.id, is_general: true).ransack(filter.as_json)
           else
             @q = Notification.where(user_id: current_user&.id, is_general: false).ransack(filter.as_json)
