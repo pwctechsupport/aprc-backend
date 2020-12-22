@@ -79,7 +79,7 @@
       -new_tag = @tags.pluck(:business_process_id).map{|x| Tag.where.not(control_id:nil).find_by(business_process_id: x)}
       -new_tag.uniq.each do |tag|
         -unmapped_control = tag.business_process.control_ids
-        -total_control = @tags.where(business_process_id: tag.business_process_id).map{|x| x.control_id}
+        -total_control = Tag.includes(:business_process).order("business_processes.name ASC").where.not(risk_id:nil).where(business_process_id: tag.business_process_id).map{|x| x.control_id}
         -unmapped_control.reject!{|x| total_control.include?(x)}
         -if unmapped_control.count != 0
           -unmapped_control.uniq.each do |unmapped|
