@@ -11,19 +11,19 @@ wb.add_worksheet(name: "Controls") do |sheet|
     if control.risks.present? || control.business_processes.present? || control.control_owner.present? || control.activity_controls.present?
       if control.risks.count >= (control.activity_controls.count && control.business_processes.count && control.control_owner.count)
         control.risks.zip(control.business_processes, control.control_owner, control.activity_controls).each do |risk, business_process, owner, activity_control|
-          Control.to_export(sheet,control,business_process,risk,owner,activity_control)
+          Control.to_export(i, sheet,control,business_process,risk,owner,activity_control)
         end
       elsif control.business_processes.count >= (control.risks.count && control.activity_controls.count && control.control_owner.count)
         control.business_processes.where(ancestry: nil).zip(control.risks, control.control_owner, control.activity_controls).each do |business_process, risk, owner, activity_control|
-          Control.to_export(sheet,control,business_process,risk,owner,activity_control)
+          Control.to_export(i, sheet,control,business_process,risk,owner,activity_control)
         end
       elsif control.activity_controls.count >= (control.risks.count && control.business_processes.count && control.control_owner.count)
         control.activity_controls.zip(control.business_processes, control.control_owner, control.risks).each do |activity_control, business_process, owner, risk|
-          Control.to_export(sheet,control,business_process,risk,owner,activity_control)
+          Control.to_export(i, sheet,control,business_process,risk,owner,activity_control)
         end
       else
         control.control_owner.zip(control.risks, control.business_processes, control.activity_controls ).each do |owner, risk, business_process, activity_control|
-          Control.to_export(sheet,control,business_process,risk,owner,activity_control)
+          Control.to_export(i, sheet,control,business_process,risk,owner,activity_control)
         end
       end
     else
