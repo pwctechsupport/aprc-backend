@@ -23,7 +23,7 @@ wb.add_worksheet(name: "Exception Report") do |sheet|
   sheet.merge_cells "A1:F1"
   sheet.merge_cells "A4:C4"
   sheet.merge_cells "A5:C5"
-  sheet.add_row ["No", "name", "level of risk", "status", "type of risk", "business process", "related policy","Created By", "Created On", "Last Update On", "Last Update By"], :style => header, :height => 25
+  sheet.add_row ["No", "name", "level of risk", "type of risk", "business process", "related policy","Created By", "Created On", "Last Update On", "Last Update By"], :style => header, :height => 25
   # Create entries for each item
   zone = ActiveSupport::TimeZone.new("Jakarta")
   a = 0
@@ -36,8 +36,7 @@ wb.add_worksheet(name: "Exception Report") do |sheet|
             sheet.add_row [
               a,
               risk&.name, 
-              risk&.level_of_risk.present? ? risk&.level_of_risk&.to_s&.gsub(/_/, ' ')&.capitalize : "", 
-              risk&.status&.capitalize, 
+              risk&.level_of_risk.present? ? risk&.level_of_risk&.to_s&.gsub(/_/, ' ')&.capitalize : "",
               risk&.type_of_risk.present? ? risk&.type_of_risk&.to_s&.gsub(/_/, ' ')&.capitalize : "",
               bis&.name,
               pol&.title ,
@@ -52,8 +51,7 @@ wb.add_worksheet(name: "Exception Report") do |sheet|
           sheet.add_row [
             a,
             risk&.name, 
-            risk&.level_of_risk.present? ? risk&.level_of_risk&.to_s&.gsub(/_/, ' ')&.capitalize : "", 
-            risk&.status&.capitalize, 
+            risk&.level_of_risk.present? ? risk&.level_of_risk&.to_s&.gsub(/_/, ' ')&.capitalize : "",
             risk&.type_of_risk.present? ? risk&.type_of_risk&.to_s&.gsub(/_/, ' ')&.capitalize : "",
             bis&.name,
             "No Related Policies",
@@ -72,8 +70,7 @@ wb.add_worksheet(name: "Exception Report") do |sheet|
           sheet.add_row [
             a,
             risk&.name, 
-            risk&.level_of_risk.present? ? risk&.level_of_risk&.to_s&.gsub(/_/, ' ')&.capitalize : "", 
-            risk&.status&.capitalize, 
+            risk&.level_of_risk.present? ? risk&.level_of_risk&.to_s&.gsub(/_/, ' ')&.capitalize : "",
             risk&.type_of_risk.present? ? risk&.type_of_risk&.to_s&.gsub(/_/, ' ')&.capitalize : "",
             "No Business Process",
             pol&.title,
@@ -89,8 +86,7 @@ wb.add_worksheet(name: "Exception Report") do |sheet|
         sheet.add_row [
           a,
           risk&.name, 
-          risk&.level_of_risk.present? ? risk&.level_of_risk&.to_s&.gsub(/_/, ' ')&.capitalize : "", 
-          risk&.status&.capitalize, 
+          risk&.level_of_risk.present? ? risk&.level_of_risk&.to_s&.gsub(/_/, ' ')&.capitalize : "",
           risk&.type_of_risk.present? ? risk&.type_of_risk&.to_s&.gsub(/_/, ' ')&.capitalize : "",
           "No Business Process",
           "No Related Policies",

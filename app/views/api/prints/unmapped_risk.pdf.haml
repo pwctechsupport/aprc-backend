@@ -78,7 +78,7 @@
       -new_tag.uniq.each do |tag|
         
         -unmapped_risk = tag.business_process.risk_ids
-        -total_risk = @tags.where(business_process_id: tag.business_process_id).map{|x| x.risk_id}
+        -total_risk = Tag.includes(:business_process).order("business_processes.name ASC").where(business_process_id: tag.business_process_id).where.not(risk_id:nil).map{|x| x.risk_id}
         -unmapped_risk.reject!{|x| total_risk.include?(x)}
         -if unmapped_risk.count != 0
           -unmapped_risk.uniq.each do |unmapped|
