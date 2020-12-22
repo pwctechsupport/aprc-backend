@@ -27,7 +27,7 @@ wb.add_worksheet(name: "Exception Report") do |sheet|
   sheet.merge_cells "A4:K4"
   sheet.merge_cells "A5:K5"
 
-  sheet.add_row ["No","Business Process", "Name of control","Type of control","Control Owner", "Frequency", "Nature", "Assertion", "Ipo", "Key control", "Last Update On", "Last Update By"], :style => header, :height => 25
+  sheet.add_row ["No","Business Process", "Name of control","Type of control","Control Owner", "Frequency", "Nature", "Assertion", "IPO", "Key control", "Last Update On", "Last Update By"], :style => header, :height => 25
   # Create entries for each item
   zone = ActiveSupport::TimeZone.new("Jakarta")
   new_tag = @tags.pluck(:business_process_id).map{|x| Tag.where.not(control_id:nil).find_by(business_process_id: x)}
