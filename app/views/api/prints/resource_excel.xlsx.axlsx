@@ -4,18 +4,18 @@ wb = xlsx_package.workbook
 
 wb.add_worksheet(name: "Resources") do |sheet|
   # Create the header row
-  sheet.add_row ["No", "name", "category", "related policy title", "related business process name"]
+  sheet.add_row ["name", "category", "related policy title", "related business process name"]
   # Create entries for each item
   a = 0
   @resources.each do |resource|
     if resource&.policies.present?
       resource&.policies.each do |policy|
         a += 1
-        sheet.add_row [a, resource&.name, resource&.category, policy&.title, resource&.business_process&.name]
+        sheet.add_row [resource&.name, resource&.category, policy&.title, resource&.business_process&.name]
       end
     else
       a += 1
-      sheet.add_row [a,resource&.name, resource&.category, "", resource&.business_process&.name]
+      sheet.add_row [resource&.name, resource&.category, "", resource&.business_process&.name]
     end
   end
 end

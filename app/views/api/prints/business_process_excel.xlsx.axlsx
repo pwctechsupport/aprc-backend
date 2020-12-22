@@ -2,7 +2,7 @@ wb = xlsx_package.workbook
 
 
 wb.add_worksheet(name: "Business Processes") do |sheet|
-  sheet.add_row ["No", "name", "sub business process 1", "sub business process 2"]
+  sheet.add_row ["name", "sub business process 1", "sub business process 2"]
   a = 0
   @business_processes.where(ancestry: nil).each do |business_process|
     if business_process.children.present?
@@ -10,16 +10,16 @@ wb.add_worksheet(name: "Business Processes") do |sheet|
         if bp_1.children.present?
           bp_1.children.each do |bp_2|
             a += 1
-            sheet.add_row [a, business_process&.name, bp_1.name, bp_2.name]
+            sheet.add_row [business_process&.name, bp_1.name, bp_2.name]
           end
         else
           a += 1
-          sheet.add_row [a, business_process&.name, bp_1.name, ""]
+          sheet.add_row [business_process&.name, bp_1.name, ""]
         end
       end
     else
       a += 1
-      sheet.add_row [a, business_process&.name, "", ""]
+      sheet.add_row [business_process&.name, "", ""]
     end
   end
 end
