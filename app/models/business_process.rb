@@ -137,11 +137,7 @@ class BusinessProcess < ApplicationRecord
         end
       end
 
-      if error_data.count != 0
-        return false, error_data.uniq
-      else
-        return true, error_data.uniq
-      end
+      return true, error_data.uniq
     else
       return false, "Import Business Process Failed"
     end
