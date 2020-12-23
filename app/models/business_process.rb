@@ -49,7 +49,7 @@ class BusinessProcess < ApplicationRecord
             error_data.push({message: "Incorrect Header, Please follow the existing template", line: 1})
           end
           if !row["name"].present?
-            error_data.push({message: "Business Process Must Exist", line: k})
+            error_data.push({message: "Business Process must exist", line: k})
           end
           bp_obj.push({name: row["name"], sub1: row["sub business process 1"], sub2: row["sub business process 2"]})
           bp_obj.each_with_index do |bp, index|
@@ -63,6 +63,8 @@ class BusinessProcess < ApplicationRecord
                   else
                     collected_bp.push(main_bp&.id)
                   end
+                else
+                  error_data.push({message: "Business Process already exist", line: k})
                 end
                 if bp[:sub1].present?
                   bispro = BusinessProcess.find_by_name(bp[:sub1].split.join(" "))

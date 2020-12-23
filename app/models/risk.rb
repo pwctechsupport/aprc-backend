@@ -134,7 +134,7 @@ class Risk < ApplicationRecord
                 end
               end
             else
-              error_data.push({message: "Business Process Must Exist", line: k})
+              error_data.push({message: "Business Process must exist", line: k})
             end
             if k == spreadsheet.last_row && Risk.find_by_name(row["name"]).present?
               if row["name"].present?

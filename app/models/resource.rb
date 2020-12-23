@@ -112,7 +112,7 @@ class Resource < ApplicationRecord
                 end
               end
             else
-              error_data.push({message: "Business Process Must Exist", line: k})
+              error_data.push({message: "Business Process Must exist", line: k})
             end
 
             if k == spreadsheet.last_row && Resource.find_by_name(row["name"]).present?

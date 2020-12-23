@@ -159,7 +159,7 @@ class Control < ApplicationRecord
           end
           index_control+=1
         elsif !row["description"].present?
-          error_data.push({message: "Control Description Must Exist", line: k})
+          error_data.push({message: "Control Description Must exist", line: k})
         end
 
         control_inside = Control.find_by(description: row["description"]) 
@@ -189,7 +189,7 @@ class Control < ApplicationRecord
                 end
               end
             else
-              error_data.push({message: "Risk Must Exist", line: k})
+              error_data.push({message: "Risk Must exist", line: k})
             end
 
             if !row["related business process name"].nil?
@@ -216,7 +216,7 @@ class Control < ApplicationRecord
                 end
               end
             else
-              error_data.push({message: "Business Process Must Exist", line: k})
+              error_data.push({message: "Business Process Must exist", line: k})
             end
 
             if !row["related control owner name"].nil?
@@ -233,7 +233,7 @@ class Control < ApplicationRecord
                 end
               end
             else
-              error_data.push({message: "Control Owner Must Exist", line: k})
+              error_data.push({message: "Control Owner Must exist", line: k})
             end
             if k == spreadsheet.last_row && Control.find_by(description: row["description"]).present?
               if row["description"].present?
