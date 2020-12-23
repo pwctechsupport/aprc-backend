@@ -14,7 +14,7 @@ wb.add_worksheet(name: "Controls") do |sheet|
           Control.to_export(i, sheet,control,business_process,risk,owner,activity_control)
         end
       elsif control.business_processes.count >= (control.risks.count && control.activity_controls.count && control.control_owner.count)
-        control.business_processes.where(ancestry: nil).zip(control.risks, control.control_owner, control.activity_controls).each do |business_process, risk, owner, activity_control|
+        control.business_processes.zip(control.risks, control.control_owner, control.activity_controls).each do |business_process, risk, owner, activity_control|
           Control.to_export(i, sheet,control,business_process,risk,owner,activity_control)
         end
       elsif control.activity_controls.count >= (control.risks.count && control.business_processes.count && control.control_owner.count)
