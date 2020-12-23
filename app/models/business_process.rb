@@ -63,8 +63,6 @@ class BusinessProcess < ApplicationRecord
                   else
                     collected_bp.push(main_bp&.id)
                   end
-                else
-                  error_data.push({message: "Business Process already Existed", line: k})
                 end
                 if bp[:sub1].present?
                   bispro = BusinessProcess.find_by_name(bp[:sub1].split.join(" "))
