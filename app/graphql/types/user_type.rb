@@ -44,6 +44,32 @@ module Types
       end 
     end
 
+    def department
+      if object&.class == Hash
+        Department.find object["department_id"]
+      else
+        object&.department
+      end
+    end
+
+    def policy_categories
+      if object&.class == Hash
+        pol_cat_name = Psych.parse(object["policy_category"]).to_ruby
+        PolicyCategory.where(name: pol_cat_name)
+      else
+        object&.policy_categories
+      end
+    end
+
+    def roles
+      if object&.class == Hash
+        main_role = Psych.parse(object["main_role"]).to_ruby
+        Role.where(name: main_role)
+      else
+        object&.roles
+      end
+    end
+
     def file_attachments
       if object&.class == Hash
         empty = []
