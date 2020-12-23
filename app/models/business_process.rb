@@ -134,8 +134,12 @@ class BusinessProcess < ApplicationRecord
           raise ActiveRecord::Rollback, "Rollback Completed"
         end
       end
-      
-      return true, error_data.uniq
+
+      if error_data.count != 0
+        return false, error_data.uniq
+      else
+        return true, error_data.uniq
+      end
     else
       return false, "Import Business Process Failed"
     end
