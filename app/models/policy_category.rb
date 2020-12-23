@@ -72,7 +72,7 @@ class PolicyCategory < ApplicationRecord
           end
 
           # if !Policy.find_by(title: row["related policy title"].to_s).present?
-          #   error_data.push({message: "Policy must Exist", line: k})
+          #   error_data.push({message: "Policy must exist", line: k})
           # end
 
           policy_category_id = PolicyCategory&.create(name: polcat_names[index_polcat],policy_ids: Policy.find_by(title: row["related policy title"].to_s)&.id, status: "release", is_inside: true, created_by: current_user&.name, last_updated_by: current_user&.name)
@@ -83,7 +83,7 @@ class PolicyCategory < ApplicationRecord
           index_polcat+=1
 
         elsif !row["name"].present?
-          error_data.push({message: "Policy Category name must Exist", line: k})
+          error_data.push({message: "Policy Category name must exist", line: k})
         end
 
         polcat_inside = PolicyCategory.find_by_name(row["name"])
@@ -101,7 +101,7 @@ class PolicyCategory < ApplicationRecord
                 if pol[:title].present?
                   main_pol = Policy.find_by(title: pol[:title])
                   if !main_pol.present?
-                    error_data.push({message: "Policy must Exist", line: k})
+                    error_data.push({message: "Policy must exist", line: k})
                   end
                   if main_pol.present?
                     pol_ids.push(main_pol&.id)
