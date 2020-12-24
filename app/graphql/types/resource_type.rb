@@ -38,6 +38,23 @@
     field :resource_rating, Types::ResourceRatingType, null: true
     
 
+    def business_process
+      if object&.class == Hash
+        BusinessProcess.find object["business_process_id"]
+      else
+        object&.business_process
+      end
+    end
+
+    def policies
+      if object&.class == Hash
+        draft_policy_ids = PolicyResource.where(resource_id: object["id"]).where.not(draft: nil)
+        Policy.where(id: draft_policy_ids)
+      else
+        object&.policies
+      end
+    end
+
     def request_edit
       object&.request_edit
     end
