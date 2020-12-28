@@ -122,9 +122,9 @@ class Risk < ApplicationRecord
               bp_obj.each do |bp|
                 if bp[:name].present?
                   main_bp = BusinessProcess.find_by_name(bp[:name])
-                  if !main_bp.present?
-                    error_data.push({message: "Business Process must exist", line: k})
-                  end
+                  # if !main_bp.present?
+                  #   error_data.push({message: "Business Process must exist", line: k})
+                  # end
                   if main_bp.present?
                     bp_ids.push(main_bp&.id)
                     if main_bp.descendant_ids.present?
@@ -133,8 +133,6 @@ class Risk < ApplicationRecord
                   end
                 end
               end
-            else
-              error_data.push({message: "Business Process must exist", line: k})
             end
             if k == spreadsheet.last_row && Risk.find_by_name(row["name"]).present?
               if row["name"].present?
