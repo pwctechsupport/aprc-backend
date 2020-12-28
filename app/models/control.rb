@@ -40,8 +40,8 @@ class Control < ApplicationRecord
     "#{self.description} : #{self.description}"
   end
 
-  def self.to_export(indexc, sheet,control, business_process,risk,owner,activity_control)
-    sheet.add_row [indexc+1, control&.description&.capitalize, control&.type_of_control&.gsub(/_/, ' ')&.capitalize, control&.frequency, control&.nature&.capitalize, control&.assertion&.join(",")&.gsub(/_/, ' ')&.capitalize, control&.ipo.join(",")&.gsub(/_/, ' ')&.capitalize, control&.key_control, business_process&.name, risk&.name,owner, activity_control&.activity, activity_control&.guidance]
+  def self.to_export(sheet,control, business_process,risk,owner,activity_control)
+    sheet.add_row [control&.description&.capitalize, control&.type_of_control&.gsub(/_/, ' ')&.capitalize, control&.frequency, control&.nature&.capitalize, control&.assertion&.join(",")&.gsub(/_/, ' ')&.capitalize, control&.ipo.join(",")&.gsub(/_/, ' ')&.capitalize, control&.key_control, business_process&.name, risk&.name,owner, activity_control&.activity, activity_control&.guidance]
   end
 
   def request_edit
