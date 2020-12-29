@@ -84,7 +84,7 @@
         -if unmapped_control.count != 0
           -unmapped_control.uniq.each do |unmapped|
             -con = Control.find(unmapped)
-            -if con.published_at.present? || (con.status == "release")
+            -if con.status == "release"
               %tr
                 %td.text-center{:scope => "row", :style => "width: 6%"} #{z}
                 %td.text-center{:scope => "row",:style => "width: 10%"} #{tag.business_process&.name&.capitalize}

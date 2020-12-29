@@ -83,7 +83,7 @@
         -if unmapped_risk.count != 0
           -unmapped_risk.uniq.each do |unmapped|
             -risk = Risk.find(unmapped)
-            -if risk.published_at.present? || (risk.status == "release")
+            -if risk.status == "release"
               %tr
                 %td.text-center{:scope => "row", :style => "width: 5%"} #{z}
                 %td.text-center{:scope => "row", :style => "width: 13%"} #{tag&.business_process&.name&.capitalize}

@@ -30,9 +30,9 @@ module Api
     end
 
     def report_risk
-      pub_risk = Risk.where.not(id:PolicyRisk.pluck(:risk_id)).where.not(published_at: nil).pluck(:id)
+      # pub_risk = Risk.where.not(id:PolicyRisk.pluck(:risk_id)).where.not(published_at: nil).pluck(:id)
       rel_risk = Risk.where.not(id:PolicyRisk.pluck(:risk_id)).where(status: "release").pluck(:id)
-      all_risk = (pub_risk + rel_risk).uniq
+      all_risk = rel_risk.uniq
       @risks = Risk.where(id: all_risk).includes(:business_processes).order("business_processes.name ASC").uniq
       respond_to do |format|
         format.json
@@ -48,9 +48,9 @@ module Api
     end
 
     def report_risk_policy
-      pub_risk = Risk.where.not(id:ControlRisk.pluck(:risk_id)).where.not(published_at: nil).pluck(:id)
+      # pub_risk = Risk.where.not(id:ControlRisk.pluck(:risk_id)).where.not(published_at: nil).pluck(:id)
       rel_risk = Risk.where.not(id:ControlRisk.pluck(:risk_id)).where(status: "release").pluck(:id)
-      all_risk = (pub_risk + rel_risk).uniq
+      all_risk = rel_risk.uniq
       @risks = Risk.where(id: all_risk).includes(:business_processes).order("business_processes.name ASC").uniq
       respond_to do |format|
         format.json
@@ -67,9 +67,9 @@ module Api
 
     def report_resource_rating
       zone = ActiveSupport::TimeZone.new("Jakarta")
-      pub_res = Resource.where.not(published_at: nil)
+      # pub_res = Resource.where.not(published_at: nil)
       rel_res = Resource.where(status: "release")
-      all_res = (pub_res + rel_res).uniq
+      all_res = rel_res.uniq
       res = all_res.select{|x| x.category != "Flowchart"}
       @resources = res.map{|x| [
         name: x&.name&.capitalize&.html_safe,
