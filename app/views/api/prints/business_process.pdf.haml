@@ -37,7 +37,7 @@
       
     
     :css
-      span {position:relative; bottom:1.7px; background:#F32013; font-size:15px; color:white; font-family: Georgia,-apple-system,BlinkMacSystemFont,"Segoe UI","Roboto","Oxygen","Ubuntu","Cantarell","Fira Sans","Droid Sans","Helvetica Neue",sans-serif!important;-webkit-font-smoothing: antialiased; padding:1px 5px 4px;}
+      span {position:relative; bottom:1px; background:#F32013; font-size:15px; color:white; font-family: Georgia,-apple-system,BlinkMacSystemFont,"Segoe UI","Roboto","Oxygen","Ubuntu","Cantarell","Fira Sans","Droid Sans","Helvetica Neue",sans-serif!important;-webkit-font-smoothing: antialiased; padding:1px 5px 4px;}
 
 
     %table.table.table-borderless.aha{style:"display:block;"}
@@ -63,7 +63,7 @@
               -if ris&.level_of_risk == "low"
                 %span{:style => "background:#6c757d;"} #{ris.level_of_risk.to_s.gsub(/_/, ' ').capitalize}
               -elsif ris&.level_of_risk == "medium"
-                %span{:style => "background:#6c757d;color:black;"} #{ris.level_of_risk.to_s.gsub(/_/, ' ').capitalize}
+                %span{:style => "background:#6c757d;"} #{ris.level_of_risk.to_s.gsub(/_/, ' ').capitalize}
               -elsif ris&.level_of_risk == "high"
                 %span{:style => "background:#6c757d;"} #{ris.level_of_risk.to_s.gsub(/_/, ' ').capitalize}
             -if ris.type_of_risk.present?
