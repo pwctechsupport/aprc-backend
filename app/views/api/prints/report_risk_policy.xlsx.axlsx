@@ -8,7 +8,7 @@ content = wb.styles.add_style(:bg_color => "FFFFFFFF",
   :font_name => 'Georgia'
 )
 
-title = wb.styles.add_style(:sz => 20, :b => true, :alignment=>{:horizontal => :center, :vertical => :center}, :font_name => 'Georgia')
+title = wb.styles.add_style(:sz => 20, :b => true, :alignment=>{:horizontal => :left, :vertical => :center}, :font_name => 'Georgia')
 
 
 header = wb.styles.add_style(:sz => 12, :bg_color => 'b10015', :fg_color => 'FF', :b => true, :border => { :style => :thin, :color => "00000000", :edges => [:top, :bottom, :left, :right] }, :alignment=>{:horizontal => :center, :vertical => :center}, :font_name => 'Georgia')
