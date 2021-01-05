@@ -206,7 +206,7 @@ class Control < ApplicationRecord
                       if risk_check.business_processes.pluck(:name).include? main_bp.name
                         bp_ids.push(main_bp&.id) if main_bp.present?
                         if main_bp.descendant_ids.present?
-                          bp_ids.push(main_bp.descendant_ids)
+                          bp_ids.concat(main_bp.descendant_ids)
                         end
                       else
                         error_data.push({message: "Business Process is not related to risk", line: k})
