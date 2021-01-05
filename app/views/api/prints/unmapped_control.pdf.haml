@@ -42,7 +42,7 @@
     -#   %tr.aha
     -#     %td.aha Printed On
     -#     %td.aha :
-    -#     %td.aha #{Time.now.strftime("%d %B %Y")}
+    -#     %td.aha #{Time.now.strftime("%d-%m-%Y")}
         
 
     -#   %tr.aha
@@ -79,12 +79,12 @@
       -new_tag = @tags.pluck(:business_process_id).map{|x| Tag.where.not(control_id:nil).find_by(business_process_id: x)}
       -new_tag.uniq.each do |tag|
         -unmapped_control = tag.business_process.control_ids
-        -total_control = @tags.where(business_process_id: tag.business_process_id).map{|x| x.control_id}
+        -total_control = Tag.includes(:business_process).order("business_processes.name ASC").where.not(control:nil).where(business_process_id: tag.business_process_id).map{|x| x.control_id}
         -unmapped_control.reject!{|x| total_control.include?(x)}
         -if unmapped_control.count != 0
           -unmapped_control.uniq.each do |unmapped|
             -con = Control.find(unmapped)
-            -if con.published_at.present? || (con.status == "release")
+            -if con.status == "release"
               %tr
                 %td.text-center{:scope => "row", :style => "width: 6%"} #{z}
                 %td.text-center{:scope => "row",:style => "width: 10%"} #{tag.business_process&.name&.capitalize}
@@ -94,14 +94,14 @@
                 %td.text-center{:scope => "row",:style => "width: 8%"} #{con.frequency.to_s.gsub("_", ' ').capitalize.html_safe}
                 %td.text-center{:scope => "row",:style => "width: 8%"} #{con.nature.to_s.gsub("_", ' ').capitalize.html_safe}
                 %td.text-center{:scope => "row",:style => "width: 9%"}= con.convert_assertion.join(",")
-                %td.text-center{:scope => "row",:style => "width: 8%"}= con.convert_ipo.join(",")
-                %td.text-center{:scope => "row",:style => "width: 6%"}
+                %td.text-center{:scope => "row",:style => "width: 6%"}= con.convert_ipo.join(",")
+                %td.text-center{:scope => "row",:style => "width: 8%"}
                   -if con&.key_control == true
                     Yes
                   -else
                     No
                 -if con&.updated_at.present?
-                  %td.text-center{:scope => "row",:style => "width: 8%"}=con&.updated_at.in_time_zone(zone).inspect.sub(" +07:00", "")
+                  %td.text-center{:scope => "row",:style => "width: 8%"}=con&.updated_at.in_time_zone(zone).strftime("%d-%m-%Y %T %Z")
                 -else
                   %td.text-center{:scope => "row",:style => "width: 8%"}
                 -if con&.versions&.last&.whodunnit.present?

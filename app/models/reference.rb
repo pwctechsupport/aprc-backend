@@ -1,5 +1,6 @@
 class Reference < ApplicationRecord
-  validates :name, uniqueness: true
+  validates :name, uniqueness: true, :on => :create
+  validates_uniqueness_of :name, :case_sensitive => false, :on => :create
   validates_presence_of :name
 
   has_paper_trail ignore: [:updated_at, :is_inside]
@@ -55,9 +56,9 @@ class Reference < ApplicationRecord
             if !Reference.find_by_name(refu).present?
               ref_names.push(refu)
             end
-            if !Policy.find_by(title: row["related policy title"].to_s).present?
-              error_data.push({message: "Policy must Exist", line: k})
-            end
+            # if !Policy.find_by(title: row["related policy title"].to_s).present?
+            #   error_data.push({message: "Policy must exist", line: k})
+            # end
 
             reference_id = Reference&.create(name: ref_names[index_ref],policy_ids: Policy.find_by(title: row["related policy title"].to_s)&.id, is_inside: true, created_by: current_user&.name, last_updated_by: current_user&.name)
             unless reference_id.valid?
@@ -66,7 +67,7 @@ class Reference < ApplicationRecord
             index_ref+=1
           end
         elsif !row["name"].present?
-          error_data.push({message: "Reference name must Exist", line: k})
+          error_data.push({message: "Reference name must exist", line: k})
         end
 
         if row["name"].present?
@@ -86,7 +87,7 @@ class Reference < ApplicationRecord
                 if pol[:title].present?
                   main_pol = Policy.find_by(title: pol[:title])
                   if !main_pol.present?
-                    error_data.push({message: "Policy must Exist", line: k})
+                    error_data.push({message: "Policy must exist", line: k})
                   end
                   if main_pol.present?
                     pol_ids.push(main_pol&.id)

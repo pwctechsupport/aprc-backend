@@ -6,7 +6,7 @@ wb.add_worksheet(name: "Controls") do |sheet|
   # Create the header row
   sheet.add_row ["description", "type of control", "frequency", "nature", "assertion", "ipo", "key control", "related business process name", "related risk name","related control owner name", "control activity title", "control activity guidance"]
   # Create entries for each item
-  @controls.each do |control|
+  @controls.each_with_index do |control, i|
     
     if control.risks.present? || control.business_processes.present? || control.control_owner.present? || control.activity_controls.present?
       if control.risks.count >= (control.activity_controls.count && control.business_processes.count && control.control_owner.count)
@@ -14,7 +14,7 @@ wb.add_worksheet(name: "Controls") do |sheet|
           Control.to_export(sheet,control,business_process,risk,owner,activity_control)
         end
       elsif control.business_processes.count >= (control.risks.count && control.activity_controls.count && control.control_owner.count)
-        control.business_processes.where(ancestry: nil).zip(control.risks, control.control_owner, control.activity_controls).each do |business_process, risk, owner, activity_control|
+        control.business_processes.zip(control.risks, control.control_owner, control.activity_controls).each do |business_process, risk, owner, activity_control|
           Control.to_export(sheet,control,business_process,risk,owner,activity_control)
         end
       elsif control.activity_controls.count >= (control.risks.count && control.business_processes.count && control.control_owner.count)

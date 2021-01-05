@@ -1,6 +1,7 @@
 class Resource < ApplicationRecord
   validates :name, uniqueness: true
-  has_paper_trail ignore: [:visit, :recent_visit, :status, :updated_at]
+  validates_uniqueness_of :name, :case_sensitive => false
+  has_paper_trail ignore: [:visit, :recent_visit, :updated_at]
   has_drafts
   # belongs_to :policy, optional: true
   belongs_to :control, optional: true
@@ -22,7 +23,7 @@ class Resource < ApplicationRecord
   belongs_to :user_reviewer, class_name: "User", foreign_key:"user_reviewer_id", optional: true
 
   def to_humanize
-    "#{self.name} : #{self.resupload_file_name}"
+    "#{self.name} : #{self.resupload_file_name || self.resupload_link}"
   end
 
   def request_edit
@@ -67,7 +68,7 @@ class Resource < ApplicationRecord
 
           index_resource+=1
         elsif !row["name"].present?
-          error_data.push({message: "Resource name must Exist", line: k})
+          error_data.push({message: "Resource name must exist", line: k})
         end
 
         resource_inside = Resource.find_by_name(row["name"])
@@ -85,7 +86,7 @@ class Resource < ApplicationRecord
                 if pol[:title].present?
                   main_pol = Policy.find_by(title: pol[:title])
                   if !main_pol.present?
-                    error_data.push({message: "Policy must Exist", line: k})
+                    error_data.push({message: "Policy must exist", line: k})
                   end
                   if main_pol.present?
                     pol_ids.push(main_pol&.id)
@@ -100,7 +101,7 @@ class Resource < ApplicationRecord
                 if bp[:name].present?
                   main_bp = BusinessProcess.find_by_name(bp[:name])
                   if !main_bp.present?
-                    error_data.push({message: "Business Process must Exist", line: k})
+                    error_data.push({message: "Business Process must exist", line: k})
                   end
                   if main_bp.present?
                     bp_ids.push(main_bp&.id)
@@ -111,7 +112,7 @@ class Resource < ApplicationRecord
                 end
               end
             else
-              error_data.push({message: "Business Process Must Exist", line: k})
+              error_data.push({message: "Business Process Must exist", line: k})
             end
 
             if k == spreadsheet.last_row && Resource.find_by_name(row["name"]).present?

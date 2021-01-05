@@ -9,7 +9,7 @@ content = wb.styles.add_style(:bg_color => "FFFFFFFF",
 )
 
 
-title = wb.styles.add_style(:sz => 20, :b => true, :alignment=>{:horizontal => :center, :vertical => :center}, :font_name => 'Georgia')
+title = wb.styles.add_style(:sz => 20, :b => true, :alignment=>{:horizontal => :left, :vertical => :center}, :font_name => 'Georgia')
 
 header = wb.styles.add_style(:sz => 12, :bg_color => 'b10015', :fg_color => 'FF', :b => true, :border => { :style => :thin, :color => "00000000", :edges => [:top, :bottom, :left, :right] }, :alignment=>{:horizontal => :center, :vertical => :center}, :font_name => 'Georgia')
 
@@ -17,16 +17,17 @@ wb.add_worksheet(name: "Exception Report") do |sheet|
   # Create the header row
   sheet.add_row ["Resource Utilisation Report"], :style => title, :height => 28
   2.times { sheet.add_row}
-  sheet.add_row ["Printed on: #{Time.now.strftime("%d %B %Y")}"],:font_name => 'Georgia', :sz => 12
+  sheet.add_row ["Printed on: #{Time.now.strftime("%d-%m-%Y")}"],:font_name => 'Georgia', :sz => 12
   sheet.add_row ["Printed by: #{current_user&.name}"],:font_name => 'Georgia', :sz => 12
   3.times { sheet.add_row}
   sheet.merge_cells "A1:I1"
   sheet.merge_cells "A4:I4"
   sheet.merge_cells "A5:I5"
-  sheet.add_row ["Name", "Category", "Number of Download", "Average rating", "Number of rating","Created By", "Created On", "Last Update On", "Last Update By"], :style => header, :height => 25
+  sheet.add_row ["No","Name", "Category", "Number of Download", "Average rating", "Number of rating","Created By", "Created On", "Last Update On", "Last Update By"], :style => header, :height => 25
   # Create entries for each item
-  @resources.each do |resource|
+  @resources.each_with_index do |resource, i|
     sheet.add_row [
+      i+1,
       resource[:name], 
       resource[:category], 
       resource[:visit], 

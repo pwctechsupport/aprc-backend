@@ -1,6 +1,7 @@
 class Policy < ApplicationRecord
   validates :title, uniqueness: true
-  has_paper_trail ignore: [:visit, :recent_visit, :status, :updated_at]
+  validates_uniqueness_of :title, :case_sensitive => false
+  has_paper_trail ignore: [:visit, :recent_visit, :updated_at]
   has_drafts
   belongs_to :policy_category, optional: true
   belongs_to :user, optional: true
@@ -24,11 +25,21 @@ class Policy < ApplicationRecord
   has_many :file_attachments, class_name: "FileAttachment", as: :originator, dependent: :destroy
   belongs_to :user_reviewer, class_name: "User", foreign_key:"user_reviewer_id", optional: true
 
+  after_save :touch_policy_category
+
+  scope :released, -> {where(status: ["release", "ready_for_edit", "waiting_for_approval"])}
+
   def to_humanize
     "#{self.title.capitalize}"
   end
 
   def request_edit
     request_edits.last
+  end
+
+  def touch_policy_category
+    if saved_change_to_policy_category_id? && policy_category.present?
+      policy_category.update_columns(policy: policy_category.policies.map(&:title))
+    end
   end
 end

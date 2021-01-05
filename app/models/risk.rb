@@ -4,7 +4,7 @@ class Risk < ApplicationRecord
   validates_uniqueness_of :name, :case_sensitive => false
 
   # validates_uniqueness_of :name, :scope => [:type_of_risk, :level_of_risk]
-  has_paper_trail ignore: [:status, :updated_at, :is_inside]
+  has_paper_trail ignore: [:updated_at, :is_inside]
   has_drafts
   serialize :business_process, Array
   has_many :control_risks, class_name: "ControlRisk", foreign_key: "risk_id", dependent: :destroy
@@ -83,20 +83,21 @@ class Risk < ApplicationRecord
           if row["level of risk"].present?
             row_level_of_risk = row["level of risk"]&.gsub(/[^\w]/, '_')&.downcase
           else
-            # error_data.push({message: "Level of Risk must Exist", line: k})
+            # error_data.push({message: "Level of Risk must exist", line: k})
             row_level_of_risk = row["level of risk"]
           end
   
           if row["type of risk"].present?
             row_type_of_risk = row["type of risk"]&.gsub(/[^\w]/, '_')&.downcase
           else
-            # error_data.push({message: "Type of Risk must Exist", line: k})
+            # error_data.push({message: "Type of Risk must exist", line: k})
             row_type_of_risk = row["type of risk"]
           end
 
-          if !BusinessProcess.find_by_name(row["related business process name"]).present?
-            error_data.push({message: "Business Process must Exist", line: k})
-          end
+          # bispro not mandatory
+          # if !BusinessProcess.find_by_name(row["related business process name"]).present?
+          #   error_data.push({message: "Business Process must exist", line: k})
+          # end
   
           risk_id = Risk.create(name: risk_names[index_risk],business_process_ids: BusinessProcess.find_by_name(row["related business process name"])&.id, level_of_risk: row_level_of_risk, type_of_risk: row_type_of_risk, status: "release", is_inside: true, created_by: current_user&.name, last_updated_by: current_user&.name)
           unless risk_id.valid?
@@ -104,7 +105,7 @@ class Risk < ApplicationRecord
           end
           index_risk+=1
         elsif !row["name"].present?
-          error_data.push({message: "Risk name must Exist", line: k})
+          error_data.push({message: "Risk name must exist", line: k})
         end
   
         risk_inside = Risk.find_by_name(row["name"]) 
@@ -121,9 +122,9 @@ class Risk < ApplicationRecord
               bp_obj.each do |bp|
                 if bp[:name].present?
                   main_bp = BusinessProcess.find_by_name(bp[:name])
-                  if !main_bp.present?
-                    error_data.push({message: "Business Process must Exist", line: k})
-                  end
+                  # if !main_bp.present?
+                  #   error_data.push({message: "Business Process must exist", line: k})
+                  # end
                   if main_bp.present?
                     bp_ids.push(main_bp&.id)
                     if main_bp.descendant_ids.present?
@@ -132,8 +133,6 @@ class Risk < ApplicationRecord
                   end
                 end
               end
-            else
-              error_data.push({message: "Business Process Must Exist", line: k})
             end
             if k == spreadsheet.last_row && Risk.find_by_name(row["name"]).present?
               if row["name"].present?

@@ -1,5 +1,5 @@
 class PolicyCategory < ApplicationRecord
-	has_paper_trail ignore: [:status, :updated_at, :is_inside]
+	has_paper_trail ignore: [:updated_at, :is_inside]
 
   # Add callbacks in the order you need.
   paper_trail.on_destroy    # add destroy callback
@@ -11,6 +11,7 @@ class PolicyCategory < ApplicationRecord
   serialize :policy, Array
 	
 	validates :name, uniqueness: true
+  validates_uniqueness_of :name, :case_sensitive => false
   has_many :policies , inverse_of: :policy_category,dependent: :nullify
   accepts_nested_attributes_for :policies, allow_destroy: true
   has_many :user_policy_categories, dependent: :destroy
@@ -70,9 +71,9 @@ class PolicyCategory < ApplicationRecord
             polcat_names.push(row["name"])
           end
 
-          if !Policy.find_by(title: row["related policy title"].to_s).present?
-            error_data.push({message: "Policy must Exist", line: k})
-          end
+          # if !Policy.find_by(title: row["related policy title"].to_s).present?
+          #   error_data.push({message: "Policy must exist", line: k})
+          # end
 
           policy_category_id = PolicyCategory&.create(name: polcat_names[index_polcat],policy_ids: Policy.find_by(title: row["related policy title"].to_s)&.id, status: "release", is_inside: true, created_by: current_user&.name, last_updated_by: current_user&.name)
 
@@ -82,7 +83,7 @@ class PolicyCategory < ApplicationRecord
           index_polcat+=1
 
         elsif !row["name"].present?
-          error_data.push({message: "Policy Category name must Exist", line: k})
+          error_data.push({message: "Policy Category name must exist", line: k})
         end
 
         polcat_inside = PolicyCategory.find_by_name(row["name"])
@@ -100,7 +101,7 @@ class PolicyCategory < ApplicationRecord
                 if pol[:title].present?
                   main_pol = Policy.find_by(title: pol[:title])
                   if !main_pol.present?
-                    error_data.push({message: "Policy must Exist", line: k})
+                    error_data.push({message: "Policy must exist", line: k})
                   end
                   if main_pol.present?
                     pol_ids.push(main_pol&.id)

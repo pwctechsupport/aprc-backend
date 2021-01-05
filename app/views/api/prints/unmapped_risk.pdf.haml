@@ -42,7 +42,7 @@
     -#   %tr.aha
     -#     %td.aha Printed On
     -#     %td.aha :
-    -#     %td.aha #{Time.now.strftime("%d %B %Y")}
+    -#     %td.aha #{Time.now.strftime("%d-%m-%Y")}
         
 
     -#   %tr.aha
@@ -78,12 +78,12 @@
       -new_tag.uniq.each do |tag|
         
         -unmapped_risk = tag.business_process.risk_ids
-        -total_risk = @tags.where(business_process_id: tag.business_process_id).map{|x| x.risk_id}
+        -total_risk = Tag.includes(:business_process).order("business_processes.name ASC").where(business_process_id: tag.business_process_id).where.not(risk_id:nil).map{|x| x.risk_id}
         -unmapped_risk.reject!{|x| total_risk.include?(x)}
         -if unmapped_risk.count != 0
           -unmapped_risk.uniq.each do |unmapped|
             -risk = Risk.find(unmapped)
-            -if risk.published_at.present? || (risk.status == "release")
+            -if risk.status == "release"
               %tr
                 %td.text-center{:scope => "row", :style => "width: 5%"} #{z}
                 %td.text-center{:scope => "row", :style => "width: 13%"} #{tag&.business_process&.name&.capitalize}
@@ -95,11 +95,11 @@
                 -else
                   %td.text-center{:scope => "row",:style => "width: 12%"}
                 -if risk&.versions&.find_by(event:"create")&.present?
-                  %td.text-center{:scope => "row",:style => "width: 10%"}=risk&.versions&.find_by(event:"create")&.created_at.in_time_zone(zone).inspect.sub(" +07:00", "")
+                  %td.text-center{:scope => "row",:style => "width: 10%"}=risk&.versions&.find_by(event:"create")&.created_at.in_time_zone(zone).strftime("%d-%m-%Y %T %Z")
                 -else
                   %td.text-center{:scope => "row",:style => "width: 10%"}
                 -if risk&.updated_at.present?
-                  %td.text-center{:scope => "row",:style => "width: 10%"}=risk&.updated_at.in_time_zone(zone).inspect.sub(" +07:00", "")
+                  %td.text-center{:scope => "row",:style => "width: 10%"}=risk&.updated_at.in_time_zone(zone).strftime("%d-%m-%Y %T %Z")
                 -else
                   %td.text-center{:scope => "row",:style => "width: 10%"}
                 -if risk&.versions&.last&.whodunnit.present?

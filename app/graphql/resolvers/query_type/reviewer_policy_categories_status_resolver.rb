@@ -33,7 +33,7 @@ module Resolvers
         if ids.count != 0
           @q = PolicyCategory.where(id: ids).order("FIELD(id, #{ids.join(',')})").all.ransack
         end
-        @q.result(distinct: true).page(page).per(limit)
+        @q.result(distinct: true).order(status: :desc, updated_at: :desc).page(page).per(limit)
         # ::context[:current_user].page(page).per(limit)
       end
 

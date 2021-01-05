@@ -43,14 +43,14 @@
       %tr.aha
         %td.aha Printed On
         %td.aha :
-        %td.aha #{Time.now.strftime("%d %B %Y")}
+        %td.aha #{Time.now.strftime("%d-%m-%Y")}
         
 
       %tr.aha
         %td.aha Printed By
         %td.aha :
         %td.aha= current_user&.name
-    
+    %br
     %table.table.table-borderless
       %thead
         %tr
@@ -62,8 +62,8 @@
           %th.text-center{:scope => "col",:style => "width: 8%"} Frequency
           %th.text-center{:scope => "col",:style => "width: 8%"} Nature
           %th.text-center{:scope => "col",:style => "width: 9%"} Assertion
-          %th.text-center{:scope => "col",:style => "width: 8%"} Ipo
-          %th.text-center{:scope => "col",:style => "width: 6%"} Key Control
+          %th.text-center{:scope => "col",:style => "width: 6%"} IPO
+          %th.text-center{:scope => "col",:style => "width: 8%"} Key Control
           %th.text-center{:scope => "col",:style => "width: 8%"} Last update on
           %th.text-center{:scope => "col",:style => "width: 9%"} Last update by
     
