@@ -40,6 +40,10 @@ class User < ApplicationRecord
   has_many :versions, class_name: "PaperTrail::Version", foreign_key: "whodunnit"
   has_many :tags, dependent: :destroy
 
+  def policies_by_categories
+    Policy.where(policy_category_id: self.policy_category_ids)
+  end
+
   
   def request_edit
     request_edits.last

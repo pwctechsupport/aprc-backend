@@ -45,7 +45,7 @@
       %tr.aha
         %td.aha Printed On
         %td.aha :
-        %td.aha #{Time.now.strftime("%d %B %Y")}
+        %td.aha #{Time.now.strftime("%d-%m-%Y")}
         
 
       %tr.aha
@@ -53,6 +53,7 @@
         %td.aha :
         %td.aha= current_user&.name
     %center
+      %br
       %table.table.table-borderless
         %thead
           %tr

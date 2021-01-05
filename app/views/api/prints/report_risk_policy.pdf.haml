@@ -27,7 +27,7 @@
     -#   %tr.aha
     -#     %td.aha Printed On
     -#     %td.aha :
-    -#     %td.aha #{Time.now.strftime("%d %B %Y")}
+    -#     %td.aha #{Time.now.strftime("%d-%m-%Y")}
         
 
     -#   %tr.aha
@@ -59,11 +59,11 @@
                       -else
                         %td.text-center.apo{:scope => "row",:style => "width: 12%"}
                       -if ris&.versions&.find_by(event:"create")&.present?
-                        %td.text-center.apo{:scope => "row",:style => "width: 10%"}=ris&.versions&.find_by(event:"create")&.created_at.in_time_zone(zone).inspect.sub(" +07:00", "")
+                        %td.text-center.apo{:scope => "row",:style => "width: 10%"}=ris&.versions&.find_by(event:"create")&.created_at.in_time_zone(zone).strftime("%d-%m-%Y %T %Z")
                       -else
                         %td.text-center.apo{:scope => "row",:style => "width: 10%"}
                       -if ris&.updated_at.present?
-                        %td.text-center.ape{:scope => "row",:style => "width: 10%"}=ris&.updated_at.in_time_zone(zone).inspect.sub(" +07:00", "")
+                        %td.text-center.ape{:scope => "row",:style => "width: 10%"}=ris&.updated_at.in_time_zone(zone).strftime("%d-%m-%Y %T %Z")
                       -else
                         %td.text-center.apo{:scope => "row",:style => "width: 10%"}
                       -if ris&.versions&.last&.whodunnit.present?
@@ -85,11 +85,11 @@
                     -else
                       %td.text-center.apo{:scope => "row",:style => "width: 12%"}
                     -if ris&.versions&.find_by(event:"create")&.present?
-                      %td.text-center.apo{:scope => "row",:style => "width: 10%"}=ris&.versions&.find_by(event:"create")&.created_at.in_time_zone(zone).inspect.sub(" +07:00", "")
+                      %td.text-center.apo{:scope => "row",:style => "width: 10%"}=ris&.versions&.find_by(event:"create")&.created_at.in_time_zone(zone).strftime("%d-%m-%Y %T %Z")
                     -else
                       %td.text-center.apo{:scope => "row",:style => "width: 10%"}
                     -if ris&.updated_at.present?
-                      %td.text-center.ape{:scope => "row",:style => "width: 10%"}=ris&.updated_at.in_time_zone(zone).inspect.sub(" +07:00", "")
+                      %td.text-center.ape{:scope => "row",:style => "width: 10%"}=ris&.updated_at.in_time_zone(zone).strftime("%d-%m-%Y %T %Z")
                     -else
                       %td.text-center.apo{:scope => "row",:style => "width: 10%"}
                     -if ris&.versions&.last&.whodunnit.present?
@@ -113,11 +113,11 @@
                     -else
                       %td.text-center.apo{:scope => "row",:style => "width: 12%"}
                     -if ris&.versions&.find_by(event:"create")&.present?
-                      %td.text-center.apo{:scope => "row",:style => "width: 10%"}=ris&.versions&.find_by(event:"create")&.created_at.in_time_zone(zone).inspect.sub(" +07:00", "")
+                      %td.text-center.apo{:scope => "row",:style => "width: 10%"}=ris&.versions&.find_by(event:"create")&.created_at.in_time_zone(zone).strftime("%d-%m-%Y %T %Z")
                     -else
                       %td.text-center.apo{:scope => "row",:style => "width: 10%"}
                     -if ris&.updated_at.present?
-                      %td.text-center.ape{:scope => "row",:style => "width: 10%"}=ris&.updated_at.in_time_zone(zone).inspect.sub(" +07:00", "")
+                      %td.text-center.ape{:scope => "row",:style => "width: 10%"}=ris&.updated_at.in_time_zone(zone).strftime("%d-%m-%Y %T %Z")
                     -else
                       %td.text-center.apo{:scope => "row",:style => "width: 10%"}
                     -if ris&.versions&.last&.whodunnit.present?
@@ -139,11 +139,11 @@
                   -else
                     %td.text-center.apo{:scope => "row",:style => "width: 12%"}
                   -if ris&.versions&.find_by(event:"create")&.present?
-                    %td.text-center.apo{:scope => "row",:style => "width: 10%"}=ris&.versions&.find_by(event:"create")&.created_at.in_time_zone(zone).inspect.sub(" +07:00", "")
+                    %td.text-center.apo{:scope => "row",:style => "width: 10%"}=ris&.versions&.find_by(event:"create")&.created_at.in_time_zone(zone).strftime("%d-%m-%Y %T %Z")
                   -else
                     %td.text-center.apo{:scope => "row",:style => "width: 10%"}
                   -if ris&.updated_at.present?
-                    %td.text-center.ape{:scope => "row",:style => "width: 10%"}=ris&.updated_at.in_time_zone(zone).inspect.sub(" +07:00", "")
+                    %td.text-center.ape{:scope => "row",:style => "width: 10%"}=ris&.updated_at.in_time_zone(zone).strftime("%d-%m-%Y %T %Z")
                   -else
                     %td.text-center.apo{:scope => "row",:style => "width: 10%"}
                   -if ris&.versions&.last&.whodunnit.present?

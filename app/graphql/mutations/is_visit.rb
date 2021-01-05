@@ -12,7 +12,7 @@ module Mutations
       when "Policy"
         policy = Policy.find(args[:originator_id])
         vieu = policy&.visit+1
-        policy&.update(visit: vieu)
+        policy&.update_columns(visit: vieu)
         MutationResult.call(
           obj: {policy: policy},
           success: policy.persisted?,

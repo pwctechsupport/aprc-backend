@@ -6,12 +6,15 @@ wb.add_worksheet(name: "References") do |sheet|
   # Create the header row
   sheet.add_row ["name", "related policy title"]
   # Create entries for each item
+  a = 0
   @references.each do |reference|
     if reference&.policies.present?
       reference&.policies&.each do |policy|
+        a += 1
         sheet.add_row [reference&.name, policy.title]
       end
     else
+      a += 1
       sheet.add_row [reference&.name, reference&.policies.pluck(:title).join(",")]
     end
   end

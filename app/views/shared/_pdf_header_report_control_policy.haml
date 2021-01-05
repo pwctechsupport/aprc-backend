@@ -25,16 +25,6 @@
       %h2.aih Report Control Without Risk
     %table.table.table-borderless.aha{style:"display:block;"}
       %tr.aha
-        %td.aha Printed On
-        %td.aha :
-        %td.aha #{Time.now.strftime("%d %B %Y")}
-        
-
-      %tr.aha
-        %td.aha Printed By
-        %td.aha :
-        %td.aha= current_user&.name
-      %tr.aha
         %td.aha No. of page
         %td.aha :
         %td.aha
@@ -51,6 +41,15 @@
             }
             document.getElementById('page').innerHTML = vars.page; 
             document.getElementById('topage').innerHTML = vars.topage;
+      %tr.aha
+        %td.aha Printed On
+        %td.aha :
+        %td.aha #{Time.now.strftime("%d-%m-%Y")}
+      %tr.aha
+        %td.aha Printed By
+        %td.aha :
+        %td.aha= current_user&.name
+    %br
     %table.table.table-borderless
       %thead
         %tr

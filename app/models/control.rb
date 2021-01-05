@@ -1,8 +1,9 @@
 class Control < ApplicationRecord
-  has_paper_trail ignore: [:status, :updated_at, :is_inside]
+  has_paper_trail ignore: [:updated_at, :is_inside]
   has_drafts
-  validates_presence_of :description, :type_of_control, :frequency, :nature, :assertion, :ipo
+  validates_presence_of :description, :type_of_control, :frequency, :nature, :assertion
   validates :description, uniqueness: true
+  validates_uniqueness_of :description, :case_sensitive => false
   serialize :assertion, Array
   serialize :ipo, Array
   serialize :control_owner, Array
@@ -12,7 +13,7 @@ class Control < ApplicationRecord
   has_many :descriptions, through: :control_descriptions
   has_many :control_risks, class_name: "ControlRisk", foreign_key: "control_id", dependent: :destroy
   
-  has_many :risks, through: :control_risks
+  has_many :risks, -> { distinct }, through: :control_risks
   has_many :resource_controls, dependent: :destroy
   has_many :resources, through: :resource_controls
   has_many :policy_controls, dependent: :destroy
@@ -108,47 +109,47 @@ class Control < ApplicationRecord
           if row["assertion"].present?
             row_assertion = row["assertion"]&.split(",").map {|x| x&.gsub(" ","_")&.downcase}
           else
-            # error_data.push({message: "Assertion must Exist", line: k})
+            # error_data.push({message: "Assertion must exist", line: k})
             row_assertion = row["assertion"]
           end
 
           if row["ipo"].present?
             row_ipo = row["ipo"]&.split(",").map {|x| x&.gsub(" ","_")&.downcase}
           else
-            # error_data.push({message: "IPO must Exist", line: k})
+            # error_data.push({message: "IPO must exist", line: k})
             row_ipo = row["ipo"]
           end
 
           if row["nature"].present?
             row_nature = row["nature"]&.gsub(/[^\w]/, '_')&.downcase
           else
-            # error_data.push({message: "Nature must Exist", line: k})
+            # error_data.push({message: "Nature must exist", line: k})
             row_nature = row["nature"]
           end
 
           if row["frequency"].present?
             row_frequency = row["frequency"]&.gsub(/[^\w]/, '_')&.downcase
           else
-            # error_data.push({message: "Frequency must Exist", line: k})
+            # error_data.push({message: "Frequency must exist", line: k})
             row_frequency = row["frequency"]
           end
 
           if row["type of control"].present?
             row_type_of_control = row["type of control"]&.gsub(/[^\w]/, '_')&.downcase
           else
-            # error_data.push({message: "Type of Control must Exist", line: k})
+            # error_data.push({message: "Type of Control must exist", line: k})
             row_type_of_control = row["type of control"]
           end
           if !BusinessProcess.find_by_name(row["related business process name"]).present?
-            error_data.push({message: "Business Process must Exist", line: k})
+            error_data.push({message: "Business Process must exist", line: k})
           end
 
           if !Risk.find_by_name(row["related risk name"]).present?
-            error_data.push({message: "Risk must Exist", line: k})
+            error_data.push({message: "Risk must exist", line: k})
           end
 
           if !Department.find_by_name(row["related control owner name"]).present?
-            error_data.push({message: "Control Owner must Exist", line: k})
+            error_data.push({message: "Control Owner must exist", line: k})
           end
           control_id = Control&.create(description: control_descriptions[index_control],status: "release", type_of_control: row_type_of_control, frequency: row_frequency, nature: row_nature, assertion: row_assertion, ipo: row_ipo, key_control: row["key control"],risk_ids: Risk.find_by_name(row["related risk nam"])&.id, business_process_ids: BusinessProcess.find_by_name(row["related business process name"])&.id, department_ids: Department.find_by_name(row["related control owner name"])&.id, is_inside: true, created_by: current_user&.name, last_updated_by: current_user&.name)
           unless control_id.valid?
@@ -158,7 +159,7 @@ class Control < ApplicationRecord
           end
           index_control+=1
         elsif !row["description"].present?
-          error_data.push({message: "Control Description Must Exist", line: k})
+          error_data.push({message: "Control Description Must exist", line: k})
         end
 
         control_inside = Control.find_by(description: row["description"]) 
@@ -180,7 +181,7 @@ class Control < ApplicationRecord
                 if ri[:name].present?
                   main_risk = Risk.find_by_name(ri[:name])
                   if !main_risk.present?
-                    error_data.push({message: "Risk must Exist", line: k})
+                    error_data.push({message: "Risk must exist", line: k})
                   end
                   if main_risk.present?
                     risk_ids.push(main_risk&.id)
@@ -188,7 +189,7 @@ class Control < ApplicationRecord
                 end
               end
             else
-              error_data.push({message: "Risk Must Exist", line: k})
+              error_data.push({message: "Risk Must exist", line: k})
             end
 
             if !row["related business process name"].nil?
@@ -197,7 +198,7 @@ class Control < ApplicationRecord
                 if bp[:name].present?
                   main_bp = BusinessProcess.find_by_name(bp[:name])
                   if !main_bp.present?
-                    error_data.push({message: "Business Process must Exist", line: k})
+                    error_data.push({message: "Business Process must exist", line: k})
                   end
                   if main_bp.present?
                     risk_check = Risk.find_by_name(spreadsheet.row(bp[:line])[header.find_index("related risk name")])
@@ -215,7 +216,7 @@ class Control < ApplicationRecord
                 end
               end
             else
-              error_data.push({message: "Business Process Must Exist", line: k})
+              error_data.push({message: "Business Process Must exist", line: k})
             end
 
             if !row["related control owner name"].nil?
@@ -224,7 +225,7 @@ class Control < ApplicationRecord
                 if co[:name].present?
                   main_co = Department.find_by_name(co[:name])
                   if !main_co.present?
-                    error_data.push({message: "Control Owner must Exist", line: k})
+                    error_data.push({message: "Control Owner must exist", line: k})
                   end
                   if main_co.present?
                     co_ids.push(main_co&.id)
@@ -232,7 +233,7 @@ class Control < ApplicationRecord
                 end
               end
             else
-              error_data.push({message: "Control Owner Must Exist", line: k})
+              error_data.push({message: "Control Owner Must exist", line: k})
             end
             if k == spreadsheet.last_row && Control.find_by(description: row["description"]).present?
               if row["description"].present?
