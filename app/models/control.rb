@@ -117,7 +117,7 @@ class Control < ApplicationRecord
             row_ipo = row["ipo"]&.split(",").map {|x| x&.gsub(" ","_")&.downcase}
           else
             # error_data.push({message: "IPO must exist", line: k})
-            row_ipo = row["ipo"]
+            row_ipo = []
           end
 
           if row["nature"].present?
@@ -204,9 +204,9 @@ class Control < ApplicationRecord
                     risk_check = Risk.find_by_name(spreadsheet.row(bp[:line])[header.find_index("related risk name")])
                     if risk_check.present?
                       if risk_check.business_processes.pluck(:name).include? main_bp.name
-                        bp_ids.push(main_bp&.id)
+                        bp_ids.push(main_bp&.id) if main_bp.present?
                         if main_bp.descendant_ids.present?
-                          bp_ids.push(main_bp.descendant_ids)
+                          bp_ids.concat(main_bp.descendant_ids)
                         end
                       else
                         error_data.push({message: "Business Process is not related to risk", line: k})
@@ -243,7 +243,8 @@ class Control < ApplicationRecord
                   if activity_obj.count != 0
                     active_control = activity_obj.uniq
                   end
-                  control_id = control_obj&.update(risk_ids: risk_ids.uniq, business_process_ids: bp_ids.uniq, department_ids:co_ids.uniq, status: "release", activity_controls_attributes:active_control)
+                  puts "bp_ids: #{bp_ids}"
+                  control_id = control_obj&.update(risk_ids: risk_ids.uniq, business_process_ids: bp_ids.compact.uniq, department_ids:co_ids.uniq, status: "release", activity_controls_attributes:active_control)
                   if control_obj&.departments.present?
                     con_dep = control_obj&.departments&.map{|x| x.name}
                     control_obj&.update(control_owner: con_dep)
