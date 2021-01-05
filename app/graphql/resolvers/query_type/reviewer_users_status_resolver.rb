@@ -8,7 +8,7 @@ module Resolvers
 
       def resolve(filter:, page: nil,limit: nil)
         User.page(page).per(limit)
-        # @q = User.ransack(filter.as_json)
+        @q = User.ransack(filter.as_json)
         
         # @q1 = @q.result.where(status:"waiting_for_review")
         # @q2 = @q.result.where(status:"waiting_for_approval")
