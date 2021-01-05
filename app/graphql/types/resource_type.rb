@@ -48,7 +48,7 @@
 
     def policies
       if object&.class == Hash
-        draft_policy_ids = PolicyResource.where(resource_id: object["id"]).where.not(draft: nil)
+        draft_policy_ids = PolicyResource.where(resource_id: object["id"]).where.not(draft: nil).pluck(:policy_id)
         Policy.where(id: draft_policy_ids)
       else
         object&.policies
