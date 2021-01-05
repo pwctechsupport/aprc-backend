@@ -12,7 +12,7 @@ title = wb.styles.add_style(:sz => 20, :b => true, :alignment=>{:horizontal => :
 
 header = wb.styles.add_style(:sz => 12, :bg_color => 'b10015', :fg_color => 'FF', :b => true, :border => { :style => :thin, :color => "00000000", :edges => [:top, :bottom, :left, :right] }, :alignment=>{:horizontal => :center, :vertical => :center}, :font_name => 'Georgia')
 
-wb.add_worksheet(name: "Report Risk without Policy") do |sheet|
+wb.add_worksheet(name: "Report Risk Without Policy") do |sheet|
   # Create the header row
   sheet.add_row ["Exception Report: Risk without Policy"], :style => title, :height => 28
   2.times { sheet.add_row}
