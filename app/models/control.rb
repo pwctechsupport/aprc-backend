@@ -204,7 +204,7 @@ class Control < ApplicationRecord
                     risk_check = Risk.find_by_name(spreadsheet.row(bp[:line])[header.find_index("related risk name")])
                     if risk_check.present?
                       if risk_check.business_processes.pluck(:name).include? main_bp.name
-                        bp_ids.push(main_bp&.id)
+                        bp_ids.push(main_bp&.id) if main_bp.present?
                         if main_bp.descendant_ids.present?
                           bp_ids.push(main_bp.descendant_ids)
                         end
