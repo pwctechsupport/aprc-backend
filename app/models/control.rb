@@ -117,7 +117,7 @@ class Control < ApplicationRecord
             row_ipo = row["ipo"]&.split(",").map {|x| x&.gsub(" ","_")&.downcase}
           else
             # error_data.push({message: "IPO must exist", line: k})
-            row_ipo = row["ipo"]
+            row_ipo = []
           end
 
           if row["nature"].present?
