@@ -243,6 +243,7 @@ class Control < ApplicationRecord
                   if activity_obj.count != 0
                     active_control = activity_obj.uniq
                   end
+                  puts "bp_ids: #{bp_ids}"
                   control_id = control_obj&.update(risk_ids: risk_ids.uniq, business_process_ids: bp_ids.compact.uniq, department_ids:co_ids.uniq, status: "release", activity_controls_attributes:active_control)
                   if control_obj&.departments.present?
                     con_dep = control_obj&.departments&.map{|x| x.name}
