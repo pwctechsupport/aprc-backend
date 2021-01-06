@@ -25,7 +25,10 @@ class Risk < ApplicationRecord
   validate :validate_type_of_risk
   validate :validate_level_of_risk
 
-
+  def last_updated_by_user_id
+    self&.draft&.whodunnit || self&.versions&.last&.whodunnit
+  end
+  
   def request_edit
     request_edits.last
   end

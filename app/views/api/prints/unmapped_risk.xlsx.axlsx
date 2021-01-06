@@ -22,7 +22,7 @@ wb.add_worksheet(name: "Exception Report") do |sheet|
   sheet.merge_cells "A1:H1"
   sheet.merge_cells "A4:H4"
   sheet.merge_cells "A5:H5"
-  sheet.add_row [ "No", "Business process","Name of risk", "Level of risk", "Type of risk","Created By", "Created On", "Last Update On", "Last Update By"], :style => header, :height => 25
+  sheet.add_row [ "No", "Main / sub Business Process","Risk title", "Type of risk", "Level of risk", "Created by", "Created on", "Last update on", "Last update by"], :style => header, :height => 25
   # Create entries for each item
   new_tag = @tags.pluck(:business_process_id).map{|x| Tag.where.not(risk_id:nil).find_by(business_process_id: x)}
   new_tag.uniq.each do |tag|
@@ -36,8 +36,8 @@ wb.add_worksheet(name: "Exception Report") do |sheet|
           i+1,
           tag&.business_process&.name&.capitalize, 
           risk.name.to_s.capitalize, 
-          risk.level_of_risk.to_s.gsub("_", ' ').capitalize,
           risk.type_of_risk.to_s.gsub("_", ' ').capitalize,
+          risk.level_of_risk.to_s.gsub("_", ' ').capitalize,
           risk&.versions&.find_by(event:"create")&.whodunnit.present? ? User&.find(risk&.versions&.find_by(event:"create")&.whodunnit).name : "",
           risk&.versions&.find_by(event:"create")&.present? ? risk&.versions&.find_by(event:"create")&.created_at.in_time_zone(ActiveSupport::TimeZone.new("Jakarta")).strftime("%d-%m-%Y %T %Z") : "",
           risk&.updated_at.present? ? risk&.updated_at.in_time_zone(ActiveSupport::TimeZone.new("Jakarta")).strftime("%d-%m-%Y %T %Z") : "",

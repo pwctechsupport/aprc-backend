@@ -36,6 +36,10 @@ class Control < ApplicationRecord
   validate :validate_assertion
   validate :validate_ipo
 
+  def last_updated_by_user_id
+    self&.draft&.whodunnit || self&.versions&.last&.whodunnit
+  end
+
   def to_humanize
     "#{self.description} : #{self.description}"
   end

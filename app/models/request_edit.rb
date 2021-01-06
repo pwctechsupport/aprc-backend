@@ -13,6 +13,10 @@ class RequestEdit < ApplicationRecord
     end
   end
 
+  def last_updated_by_user_id
+    self&.user_id
+  end
+
   def to_name
     if self.originator_type == "Policy"
       self&.originator&.title

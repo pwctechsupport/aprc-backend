@@ -29,6 +29,10 @@ class Policy < ApplicationRecord
 
   scope :released, -> {where(status: ["release", "ready_for_edit", "waiting_for_approval"])}
 
+  def last_updated_by_user_id
+    self&.draft&.whodunnit || self&.versions&.last&.whodunnit
+  end
+  
   def to_humanize
     "#{self.title.capitalize}"
   end

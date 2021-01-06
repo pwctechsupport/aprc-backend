@@ -19,6 +19,10 @@ class PolicyCategory < ApplicationRecord
   belongs_to :user_reviewer, class_name: "User", foreign_key:"user_reviewer_id", optional: true
   has_many :request_edits, class_name: "RequestEdit", as: :originator, dependent: :destroy
   
+  def last_updated_by_user_id
+    self&.draft&.whodunnit || self&.versions&.last&.whodunnit
+  end
+  
   def request_edit
     request_edits.last
   end
