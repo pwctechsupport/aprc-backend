@@ -13,7 +13,7 @@ module Mutations
 
       if current_user.present? && current_user.has_role?(:admin_reviewer)
         policy_category_draft = policy_category.draft
-        admin_prep = User.with_role(:admin_preparer).pluck(:id)
+        admin_prep = [policy_category.last_updated_by_user_id] || User.with_role(:admin_preparer).pluck(:id)
         if args[:publish] === true
 
           if policy_category_draft.event == "update"

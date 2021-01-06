@@ -27,7 +27,7 @@ module Mutations
 
             policy_draft.publish!
             policy.update_attributes(status: "release", user_reviewer_id: current_user.id, true_version: (policy&.true_version + 1.0))
-            admin_prep = User.with_role(:admin_preparer).pluck(:id)
+            admin_prep = [policy.last_updated_by_user_id] || User.with_role(:admin_preparer).pluck(:id)
             admin_rev = User.with_role(:admin_reviewer).pluck(:id)
             admin_main = User.with_role(:admin).pluck(:id)
             all_admin = admin_prep + admin_rev + admin_main
@@ -52,7 +52,7 @@ module Mutations
               policy&.request_edit&.destroy
             end
           else
-            admin_prep = User.with_role(:admin_preparer).pluck(:id)
+            admin_prep = [policy.last_updated_by_user_id] || User.with_role(:admin_preparer).pluck(:id)
             Notification.send_notification(admin_prep, "Policy Draft titled #{policy.title} Has been Rejected", policy&.title,policy, current_user&.id, "request_draft_rejected")
             if policy.published_at.nil?
               policy_draft.update_attributes(

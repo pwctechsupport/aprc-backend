@@ -8,7 +8,7 @@ module Mutations
     def resolve(id:, **args)
       current_user = context[:current_user]
       request_edit = RequestEdit.find(id)
-      admin_prep = User.with_role(:admin_preparer).pluck(:id)
+      admin_prep = [request_edit.last_updated_by_user_id] || User.with_role(:admin_preparer).pluck(:id)
       if request_edit.requested? && args[:approve]
         request_edit.approve!
         request_edit.update(approver_id: current_user&.id)

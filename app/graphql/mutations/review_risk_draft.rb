@@ -13,7 +13,7 @@ module Mutations
 
       if current_user.present? && current_user.has_role?(:admin_reviewer)
         risk_draft = risk.draft
-        admin_prep = User.with_role(:admin_preparer).pluck(:id)
+        admin_prep = [risk.last_updated_by_user_id] || User.with_role(:admin_preparer).pluck(:id)
         if args[:publish] == true
           if risk_draft.event == "update"
             serial = ["business_process"]

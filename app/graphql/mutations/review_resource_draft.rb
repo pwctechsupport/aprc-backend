@@ -15,7 +15,7 @@ module Mutations
         resource_draft = resource.draft
         rodi_res = resource.resupload
         rodi_name = resource.resupload_file_name
-        admin_prep = User.without_role(:admin_reviewer).pluck(:id)
+        admin_prep = [resource.last_updated_by_user_id] || User.without_role(:admin_reviewer).pluck(:id)
         if args[:publish] === true
           if resource&.resource_controls.where.not(draft_id: nil).present?
             if resource&.resource_controls.where(draft_id: nil).present?
