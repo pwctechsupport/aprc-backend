@@ -46,7 +46,11 @@ module Types
 
     def department
       if object&.class == Hash
-        Department.find object["department_id"]
+        if object["department_id"].present?
+          Department.find object["department_id"]
+        else
+          nil
+        end
       else
         object&.department
       end
