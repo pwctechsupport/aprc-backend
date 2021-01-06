@@ -37,7 +37,14 @@ module Types
     field :created_by, String, null: true
     field :departments, [Types::DepartmentType], null: true
 
-    
+    def business_processes
+      if object&.class == Hash
+        bispro_ids = ControlBusinessProcess.where(control_id: object["id"]).where.not(draft: nil).pluck(:business_process_id)
+        BusinessProcess.where(id: bispro_ids)
+      else
+        object&.business_processes
+      end
+    end
 
     def request_edit
       object&.request_edit

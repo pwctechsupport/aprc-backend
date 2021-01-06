@@ -23,7 +23,7 @@ wb.add_worksheet(name: "Exception Report") do |sheet|
   sheet.merge_cells "A1:I1"
   sheet.merge_cells "A4:I4"
   sheet.merge_cells "A5:I5"
-  sheet.add_row ["No","Name", "Category", "Number of Download", "Average rating", "Number of rating","Created By", "Created On", "Last Update On", "Last Update By"], :style => header, :height => 25
+  sheet.add_row ["No","Resource title", "Category", "Number of downloads", "Average Rating", "Number of ratings","Created by", "Created on", "Last update on", "Last update by"], :style => header, :height => 25
   # Create entries for each item
   @resources.each_with_index do |resource, i|
     sheet.add_row [
