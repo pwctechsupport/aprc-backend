@@ -19,7 +19,7 @@ module Resolvers
         @q3 = @q.result.where.not(status: ["waiting_for_review", "waiting_for_approval"])
         @q3 = @q3.sort_by(&:created_at)
 
-        @q_final = @q0.push(*@q3)
+        @q_final = @q0.push(@q3)
         ids = @q_final.map(&:id)
         if ids.count != 0
           @q = User.where(id: ids).order("FIELD(id, #{ids.join(',')})").all.ransack
