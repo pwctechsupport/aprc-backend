@@ -23,7 +23,7 @@ module Resolvers
         ids = @q_final.map(&:id)
         if ids.count != 0
           @q = User.where(id: ids).order("FIELD(id, #{ids.join(',')})").all.ransack
-        # end
+        end
         @q.result(distinct: true).page(page).per(limit)
         # ::context[:current_user].page(page).per(limit)
       end
