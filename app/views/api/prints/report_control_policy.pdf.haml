@@ -74,7 +74,7 @@
         -if con.business_processes.present?
           -con&.business_processes.each do |bis|
             -if con.policies.present?
-              -con.policies.each do |pol|
+              -con.policies.distinct.each do |pol|
                 %tbody
                   %tr
                     %td.text-center{:scope => "row",:style => "width: 6%"} #{z}
@@ -87,13 +87,9 @@
                     %td.text-center{:scope => "row",:style => "width: 14%"} #{bis&.name}
                     %td{:scope => "row",:style => "width: 8%"}
                       -if con&.key_control == true
-                        .risk.text-center
-                          %input#checkboxG5.css-checkbox{:checked => "checked", :name => "checkboxG5", :type => "checkbox"}/
-                          %label.css-label{:for => "checkboxG5"}
+                        Yes
                       -else
-                        .risk.text-center
-                          %input#checkboxG4.css-checkbox{:name => "checkboxG4", :type => "checkbox"}/
-                          %label.css-label{:for => "checkboxG4"}
+                        No
                     -z+=1
             -else
               %tbody
