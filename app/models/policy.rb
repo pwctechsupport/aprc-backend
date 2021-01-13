@@ -27,7 +27,7 @@ class Policy < ApplicationRecord
 
   after_save :touch_policy_category
 
-  scope :released, -> {where(status: ["release", "ready_for_edit", "waiting_for_approval"])}
+  scope :released, -> {where(status: ["release", "ready_for_edit", "waiting_for_approval", "waiting_for_review"]).where("published_at IS NOT NULL")}
 
   def last_updated_by_user_id
     self&.draft&.whodunnit || self&.versions&.last&.whodunnit
