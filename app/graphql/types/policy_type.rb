@@ -55,6 +55,9 @@ module Types
     field :true_version, Float, null: true
     field :bookmarked_by, Boolean, null: true
 
+    def references
+      object.references.distinct
+    end
 
     def bookmarked_by
       if object.bookmarks.present?
