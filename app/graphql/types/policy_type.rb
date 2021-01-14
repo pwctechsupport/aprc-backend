@@ -30,7 +30,7 @@ module Types
     field :created_at, String, null: false
     field :updated_at, String, null: false
     field :policies_bookmarked_by, [Types::BookmarkPolicyType] , null: true
-    field :published_at, String, null: false
+    field :published_at, String, null: true
     field :user, Types::UserType, null:true
     field :sub_count, Types::BaseScalar, null: true
     field :control_count, Types::BaseScalar, null: true
