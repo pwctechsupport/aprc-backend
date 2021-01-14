@@ -56,7 +56,7 @@ module Types
     field :bookmarked_by, Boolean, null: true
 
     def references
-      object.references.distinct
+       Reference.where(id: object.reference_ids)
     end
 
     def bookmarked_by
