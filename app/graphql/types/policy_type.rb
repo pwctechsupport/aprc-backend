@@ -56,7 +56,12 @@ module Types
     field :bookmarked_by, Boolean, null: true
 
     def references
-       Reference.where(id: object.reference_ids)
+      if object&.class == Hash
+        ref_ids = PolicyReference.where(policy_id: object["id"]).where.not(draft: nil).pluck(:reference_id)
+        Reference.where(id: ref_ids)
+      else
+        Reference.where(id: object.reference_ids)
+      end  
     end
 
     def bookmarked_by
