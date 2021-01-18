@@ -129,9 +129,9 @@ class Risk < ApplicationRecord
                   #   error_data.push({message: "Business Process must exist", line: k})
                   # end
                   if main_bp.present?
-                    bp_ids.push(main_bp&.id)
+                    bp_ids.push(main_bp&.id) if main_bp&.id&.present?
                     if main_bp.descendant_ids.present?
-                      bp_ids.push(main_bp.descendant_ids)
+                      bp_ids.concat(main_bp.descendant_ids)
                     end
                   end
                 end
