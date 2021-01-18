@@ -14,6 +14,7 @@ module Mutations
     argument :description, String, required: false
     argument :fte_estimate, String, required: false 
     argument :business_process_ids, [ID], required: false
+    argument :risk_business_process_ids, [ID], required: false
     argument :description_ids, [ID], required: false
     argument :status, Types::Enums::Status, required: false
     argument :risk_ids, [ID], required: false
@@ -63,8 +64,22 @@ module Mutations
             args[:control_owner] = args[:department_ids].map{|x| Department.find(x&.to_i).name}
           end
           args[:last_updated_by] = current_user.name
+          prev_riskbuspro = []
           prev_buspro = []
           prev_risk = []
+
+          if args[:risk_business_process_ids].present?
+            riskbuspro = args[:risk_business_process_ids]
+            args.delete(:risk_business_process_ids)
+            if control&.control_risk_business_processes&.present? && (control&.control_risk_business_processes.where(draft_id: nil).present? || control&.control_risk_business_processes.where.not(draft_id: nil).present?)
+              control.control_risk_business_processes.each do |pb|
+                if pb&.draft_id.present?
+                  prev_riskbuspro.push(pb&.id)
+                end
+              end
+            end
+          end
+
           if args[:business_process_ids].present?
             buspro = args[:business_process_ids]
             args.delete(:business_process_ids)
@@ -105,6 +120,16 @@ module Mutations
               pre_con = control.draft.changeset.map {|x,y| Hash[x, y[0]]}
               pre_con.map {|x| control.update(x)}
             end
+          end
+          if riskbuspro.present?
+            riskbuspro.each do |riskbus|
+              riskcon_bus = ControlRiskBusinessProcess.new(control_id: control&.id, risk_business_process_id: riskbus )
+              riskcon_bus.save_draft
+              if prev_riskbuspro.present?
+                riskcontbus = ControlRiskBusinessProcess.where(id:prev_riskbuspro)
+                riskcontbus.destroy_all
+              end
+            end 
           end
           if buspro.present?
             buspro.each do |bus|
