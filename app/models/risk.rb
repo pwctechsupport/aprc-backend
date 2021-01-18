@@ -125,11 +125,19 @@ class Risk < ApplicationRecord
               bp_obj.each do |bp|
                 if bp[:name].present?
                   main_bp = BusinessProcess.find_by_name(bp[:name])
+
                   # if !main_bp.present?
                   #   error_data.push({message: "Business Process must exist", line: k})
                   # end
+
                   if main_bp.present?
-                    bp_ids.push(main_bp&.id) if main_bp&.id&.present?
+                    # bispro relation only for sub level
+                    if main_bp.ancestry.present?
+                      bp_ids.push(main_bp&.id) if main_bp&.id&.present?
+                    else
+                      error_data.push({message: "Can't assign main business process to risk, please change relation to sub level business process", line: k})
+                    end
+
                     # if main_bp.descendant_ids.present?
                     #   bp_ids.concat(main_bp.descendant_ids)
                     # end
