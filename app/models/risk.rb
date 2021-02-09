@@ -4,7 +4,7 @@ class Risk < ApplicationRecord
   validates_uniqueness_of :name, :case_sensitive => false
 
   # validates_uniqueness_of :name, :scope => [:type_of_risk, :level_of_risk]
-  has_paper_trail ignore: [:updated_at, :is_inside]
+  has_paper_trail ignore: [:updated_at, :is_inside, :published_at, :draft_id]
   has_drafts
   serialize :business_process, Array
   has_many :control_risks, class_name: "ControlRisk", foreign_key: "risk_id", dependent: :destroy

@@ -1,5 +1,5 @@
 class Control < ApplicationRecord
-  has_paper_trail ignore: [:updated_at, :is_inside]
+  has_paper_trail ignore: [:updated_at, :is_inside, :published_at, :draft_id]
   has_drafts
   validates_presence_of :description, :type_of_control, :frequency, :nature, :assertion
   validates :description, uniqueness: true
