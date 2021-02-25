@@ -1,5 +1,5 @@
 class Control < ApplicationRecord
-  has_paper_trail ignore: [:updated_at, :is_inside]
+  has_paper_trail ignore: [:updated_at, :is_inside, :published_at, :draft_id]
   has_drafts
   validates_presence_of :description, :type_of_control, :frequency, :nature, :assertion
   validates :description, uniqueness: true
@@ -9,6 +9,8 @@ class Control < ApplicationRecord
   serialize :control_owner, Array
   has_many :control_business_processes, dependent: :destroy
   has_many :business_processes, through: :control_business_processes
+  has_many :control_risk_business_processes, class_name: "ControlRiskBusinessProcess", foreign_key: "control_id", dependent: :destroy
+  has_many :risk_business_processes, through: :control_risk_business_processes
   has_many :control_descriptions, class_name: "ControlDescription", foreign_key: "control_id", dependent: :destroy
   has_many :descriptions, through: :control_descriptions
   has_many :control_risks, class_name: "ControlRisk", foreign_key: "control_id", dependent: :destroy
@@ -44,8 +46,10 @@ class Control < ApplicationRecord
     "#{self.description} : #{self.description}"
   end
 
-  def self.to_export(sheet,control, business_process,risk,owner,activity_control)
-    sheet.add_row [control&.description&.capitalize, control&.type_of_control&.gsub(/_/, ' ')&.capitalize, control&.frequency, control&.nature&.capitalize, control&.assertion&.join(",")&.gsub(/_/, ' ')&.capitalize, control&.ipo.join(",")&.gsub(/_/, ' ')&.capitalize, control&.key_control, business_process&.name, risk&.name,owner, activity_control&.activity, activity_control&.guidance]
+  def self.to_export(sheet,control, business_process, risk, owner, activity_control, control_risk_business_processes)
+    rsk = control_risk_business_processes&.risk_business_process&.risk
+    bsn = control_risk_business_processes&.risk_business_process&.business_process
+    sheet.add_row [control&.description&.capitalize, control&.type_of_control&.gsub(/_/, ' ')&.capitalize, control&.frequency, control&.nature&.capitalize, control&.assertion&.join(",")&.gsub(/_/, ' ')&.capitalize, control&.ipo.join(",")&.gsub(/_/, ' ')&.capitalize, control&.key_control, bsn&.name || business_process&.name , rsk&.name || risk&.name ,owner, activity_control&.activity, activity_control&.guidance]
   end
 
   def request_edit

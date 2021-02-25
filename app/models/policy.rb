@@ -1,7 +1,7 @@
 class Policy < ApplicationRecord
   validates :title, uniqueness: true
   validates_uniqueness_of :title, :case_sensitive => false
-  has_paper_trail ignore: [:visit, :recent_visit, :updated_at]
+  has_paper_trail ignore: [:visit, :recent_visit, :updated_at, :published_at, :draft_id]
   has_drafts
   belongs_to :policy_category, optional: true
   belongs_to :user, optional: true
@@ -27,7 +27,7 @@ class Policy < ApplicationRecord
 
   after_save :touch_policy_category
 
-  scope :released, -> {where(status: ["release", "ready_for_edit", "waiting_for_approval"])}
+  scope :released, -> {where(status: ["release", "ready_for_edit", "waiting_for_approval", "waiting_for_review"]).where("published_at IS NOT NULL")}
 
   def last_updated_by_user_id
     self&.draft&.whodunnit || self&.versions&.last&.whodunnit

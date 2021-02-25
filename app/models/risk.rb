@@ -4,7 +4,7 @@ class Risk < ApplicationRecord
   validates_uniqueness_of :name, :case_sensitive => false
 
   # validates_uniqueness_of :name, :scope => [:type_of_risk, :level_of_risk]
-  has_paper_trail ignore: [:updated_at, :is_inside]
+  has_paper_trail ignore: [:updated_at, :is_inside, :published_at, :draft_id]
   has_drafts
   serialize :business_process, Array
   has_many :control_risks, class_name: "ControlRisk", foreign_key: "risk_id", dependent: :destroy
@@ -125,14 +125,22 @@ class Risk < ApplicationRecord
               bp_obj.each do |bp|
                 if bp[:name].present?
                   main_bp = BusinessProcess.find_by_name(bp[:name])
+
                   # if !main_bp.present?
                   #   error_data.push({message: "Business Process must exist", line: k})
                   # end
+
                   if main_bp.present?
-                    bp_ids.push(main_bp&.id)
-                    if main_bp.descendant_ids.present?
-                      bp_ids.push(main_bp.descendant_ids)
+                    # bispro relation only for sub level
+                    if main_bp.ancestry.present?
+                      bp_ids.push(main_bp&.id) if main_bp&.id&.present?
+                    else
+                      error_data.push({message: "Can't assign main business process to risk, please change relation to sub level business process", line: k})
                     end
+
+                    # if main_bp.descendant_ids.present?
+                    #   bp_ids.concat(main_bp.descendant_ids)
+                    # end
                   end
                 end
               end

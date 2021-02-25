@@ -248,6 +248,7 @@ module Types
     field :resources, resolver: Resolvers::QueryType::ResourcesResolver
     field :it_systems, resolver: Resolvers::QueryType::ItSystemsResolver
     field :business_processes, resolver: Resolvers::QueryType::BusinessProcessesResolver
+    field :risk_business_processes, resolver: Resolvers::QueryType::RiskBusinessProcessesResolver
     field :references, resolver: Resolvers::QueryType::ReferencesResolver
     field :controls, resolver: Resolvers::QueryType::ControlsResolver
     field :risks, resolver: Resolvers::QueryType::RisksResolver

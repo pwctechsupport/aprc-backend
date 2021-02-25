@@ -30,6 +30,7 @@ module Types
     field :created_at, String, null: false
     field :updated_at, String, null: false
     field :policies_bookmarked_by, [Types::BookmarkPolicyType] , null: true
+    field :published_at, String, null: true
     field :user, Types::UserType, null:true
     field :sub_count, Types::BaseScalar, null: true
     field :control_count, Types::BaseScalar, null: true
@@ -54,6 +55,14 @@ module Types
     field :true_version, Float, null: true
     field :bookmarked_by, Boolean, null: true
 
+    def references
+      if object&.class == Hash
+        ref_ids = PolicyReference.where(policy_id: object["id"]).where.not(draft: nil).pluck(:reference_id)
+        Reference.where(id: ref_ids)
+      else
+        Reference.where(id: object.reference_ids)
+      end  
+    end
 
     def bookmarked_by
       if object.bookmarks.present?

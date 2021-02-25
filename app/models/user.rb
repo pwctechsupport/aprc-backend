@@ -45,7 +45,9 @@ class User < ApplicationRecord
   end
 
   def policies_by_categories
-    Policy.where(policy_category_id: self.policy_category_ids)
+    a = Policy.where(policy_category_id: self.policy_category_ids).pluck(:id)
+    b = Policy.where(ancestry: a).pluck(:id)
+    result = Policy.where(id: a+b)
   end
 
   

@@ -1,6 +1,5 @@
 class PolicyCategory < ApplicationRecord
-	has_paper_trail ignore: [:updated_at, :is_inside]
-
+	has_paper_trail ignore: [:updated_at, :is_inside, :published_at, :draft_id]
   # Add callbacks in the order you need.
   paper_trail.on_destroy    # add destroy callback
   paper_trail.on_update     # etc.

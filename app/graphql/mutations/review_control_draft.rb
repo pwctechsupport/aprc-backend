@@ -15,6 +15,13 @@ module Mutations
         control_draft = control.draft
         admin_prep = [control.last_updated_by_user_id] || User.with_role(:admin_preparer).pluck(:id)
         if args[:publish] === true
+          if control&.control_risk_business_processes.where.not(draft_id: nil).present?
+            if control&.control_risk_business_processes.where(draft_id: nil).present?
+              control&.control_risk_business_processes.where(draft_id: nil).destroy_all
+            end
+            control&.control_risk_business_processes.where.not(draft_id: nil).each {|x| x.draft.publish!}
+          end
+
           if control&.control_business_processes.where.not(draft_id: nil).present?
             if control&.control_business_processes.where(draft_id: nil).present?
               control&.control_business_processes.where(draft_id: nil).destroy_all
@@ -59,6 +66,9 @@ module Mutations
             if control.activity_controls.where.not(draft_id: nil).present?
               control&.activity_controls.where.not(draft_id: nil).each{|x| x.draft.revert!}
             end
+          end
+          if control&.control_risk_business_processes.where.not(draft_id: nil).present?
+            control&.control_risk_business_processes.where.not(draft_id: nil).destroy_all
           end
           if control&.control_business_processes.where.not(draft_id: nil).present?
             control&.control_business_processes.where.not(draft_id: nil).destroy_all

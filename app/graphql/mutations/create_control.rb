@@ -12,6 +12,7 @@ module Mutations
     argument :assertion, [Types::Enums::Assertion], required: true
     argument :ipo, [Types::Enums::Ipo], required: true
     argument :business_process_ids, [ID], required: false
+    argument :risk_business_process_ids, [ID], required: false
     argument :description_ids, [ID], required: false
     argument :status, Types::Enums::Status, required: false
     argument :risk_ids, [ID], required: false
@@ -60,6 +61,11 @@ module Mutations
         buspro = args[:business_process_ids]
         args.delete(:business_process_ids)
       end
+
+      if args[:risk_business_process_ids].present?
+        riskbispro = args[:risk_business_process_ids]
+        args.delete(:risk_business_process_ids)
+      end
       if args[:risk_ids].present?
         risk = args[:risk_ids]
         args.delete(:risk_ids)
@@ -71,12 +77,21 @@ module Mutations
       end
       admin = User.with_role(:admin_reviewer).pluck(:id)
       if control.id.present?
+        if riskbispro.present?
+          riskbispro.each do |risbus|
+            risk_con_bus = ControlRiskBusinessProcess.new(control_id: control&.id, risk_business_process_id: risbus )
+            risk_con_bus.save_draft
+          end
+        end
+
         if buspro.present?
           buspro.each do |bus|
             con_bus = ControlBusinessProcess.new(control_id: control&.id, business_process_id: bus )
             con_bus.save_draft
           end 
         end
+
+
         if risk.present?
           risk.each do |ris|
             con_ris = ControlRisk.new(control_id: control&.id, risk_id: ris )

@@ -19,6 +19,7 @@ module Types
     field :last_updated_by, String, null: true
     field :created_by, String, null: true
     field :bookmarked_by, Boolean, null: true
+    field :risk_business_processes, [Types::RiskBusinessProcessType], null: true
 
 
     def bookmarked_by
