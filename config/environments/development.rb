@@ -50,7 +50,7 @@ Rails.application.configure do
   # This option may cause significant delays in view rendering with a large
   # number of complex assets.
   config.assets.debug = true
-  config.force_ssl = true
+  # config.force_ssl = true
 
   # make sure to log on docker with STDOUT
   config.log_formatter = ::Logger::Formatter.new
