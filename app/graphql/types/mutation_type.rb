@@ -110,19 +110,27 @@ module Types
 
     def login(email:, password:)
       user = User.find_for_authentication(email: email)
-      return nil if !user
-      
-      is_valid_for_auth = user.valid_for_authentication?{
-        user.valid_password?(password)
-      }
 
-      # return is_valid_for_auth ? user : nil
-      if user.user_reviewer_id == nil && user.main_role != []
-        return nil
+      if user.present?
+        is_valid_for_auth = user.valid_for_authentication?{user.valid_password?(password)}
+
+        # return is_valid_for_auth ? user : nil
+        if user.user_reviewer_id == nil && user.main_role != []
+          return GraphQL::ExecutionError.new("user account hasn't been approved")
+        else
+          return is_valid_for_auth ? user : GraphQL::ExecutionError.new("invalid username/password")
+        end
       else
-        return is_valid_for_auth ? user : nil
+        return GraphQL::ExecutionError.new(
+          "email did not found!"
+        )
       end
 
+      MutationResult.call(
+        obj: user,
+        success: user.present?,
+        errors: user.errors.full_messages
+      )    
     end
 
 
