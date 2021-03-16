@@ -115,7 +115,14 @@ module Types
       is_valid_for_auth = user.valid_for_authentication?{
         user.valid_password?(password)
       }
-      return is_valid_for_auth ? user : nil
+
+      # return is_valid_for_auth ? user : nil
+      if user.user_reviewer_id == nil && user.main_role != []
+        return nil
+      else
+        return is_valid_for_auth ? user : nil
+      end
+
     end
 
 
