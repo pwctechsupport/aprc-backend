@@ -11,12 +11,17 @@ module Resolvers
           data = context[:current_user].policies_by_categories
           @q = data.ransack(filter.as_json)
         else
-          if filter.as_json.first[1].present?
-            @q = Policy.all.ransack(filter.as_json)
+          if filter.present?
+            if filter.as_json.first[1].present?
+              @q = Policy.all.ransack(filter.as_json)
+            else
+              @q = Policy.where(ancestry: nil).ransack(filter.as_json)
+            end
           else
             @q = Policy.where(ancestry: nil).ransack(filter.as_json)
           end
         end
+        
         @q.result(distinct: true).page(page).per(limit)
         # ::context[:current_user].page(page).per(limit)
       end
