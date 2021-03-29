@@ -35,6 +35,7 @@ module Types
     field :sub_count, Types::BaseScalar, null: true
     field :control_count, Types::BaseScalar, null: true
     field :risk_count, Types::BaseScalar, null: true
+    field :risk_and_control_summary, Types::BaseScalar, null: true
     field :draft, Types::VersionType, null: true
     field :user_reviewer_id, ID, null: true
     field :user_reviewer, Types::UserType, null: true
@@ -78,11 +79,11 @@ module Types
     end
 
     def descendants_controls
-      object.descendants.map {|x| x.controls}.flatten
+      object.descendants.map {|x| x.controls}.flatten.uniq
     end
 
     def descendants_risks
-      object.descendants.map {|x| x.risks}.flatten
+      object.descendants.map {|x| x.risks}.flatten.uniq
     end
 
     def ancestors
@@ -162,11 +163,16 @@ module Types
       }
     end
 
+    def risk_and_control_summary
+      {
+        risks: descendants_controls.count,
+        controls: descendants_risks.count,
+      }
+    end
+
     def policy_risks_count
       policy_risks = object.risks.count
     end
-
-    
 
 
   end
