@@ -35,7 +35,6 @@ module Types
     field :sub_count, Types::BaseScalar, null: true
     field :control_count, Types::BaseScalar, null: true
     field :risk_count, Types::BaseScalar, null: true
-    field :risk_and_control_summary, Types::BaseScalar, null: true
     field :draft, Types::VersionType, null: true
     field :user_reviewer_id, ID, null: true
     field :user_reviewer, Types::UserType, null: true
@@ -79,11 +78,13 @@ module Types
     end
 
     def descendants_controls
-      object.descendants.map {|x| x.controls}.flatten.uniq
+      data = object.controls + object.descendants.map {|x| x.controls}.flatten
+      return data.uniq
     end
 
     def descendants_risks
-      object.descendants.map {|x| x.risks}.flatten.uniq
+      data = object.risks + object.descendants.map {|x| x.risks}.flatten
+      return data.uniq
     end
 
     def ancestors
@@ -126,30 +127,31 @@ module Types
     end
 
     def control_count
-      data = object.controls
+      data = object.controls + descendants_controls
+      data = data.uniq
       {
         total: data.count,
-        draft: data.where(status: "draft").count,
-        waiting_for_approval: data.where(status: "waiting_for_approval").count,
-        release: data.where(status: "release").count,
-        ready_for_edit: data.where(status: "ready_for_edit").count,
-        waiting_for_review: data.where(status: "waiting_for_review").count  
+        draft: data.select{|a| a.status == "draft" }.count,
+        waiting_for_approval: data.select{|a| a.status == "waiting_for_approval" }.count,
+        release: data.select{|a| a.status == "release" }.count,
+        ready_for_edit: data.select{|a| a.status == "ready_for_edit" }.count,
+        waiting_for_review: data.select{|a| a.status == "waiting_for_review" }.count 
       }
     end
 
 
     def risk_count
-      data = object.risks
+      data = object.risks + descendants_risks
+      data = data.uniq
       {
         total: data.count,
-        draft: data.where(status: "draft").count,
-        waiting_for_approval: data.where(status: "waiting_for_approval").count,
-        release: data.where(status: "release").count,
-        ready_for_edit: data.where(status: "ready_for_edit").count,
-        waiting_for_review: data.where(status: "waiting_for_review").count  
+        draft: data.select{|a| a.status == "draft" }.count,
+        waiting_for_approval: data.select{|a| a.status == "waiting_for_approval" }.count,
+        release: data.select{|a| a.status == "release" }.count,
+        ready_for_edit: data.select{|a| a.status == "ready_for_edit" }.count,
+        waiting_for_review: data.select{|a| a.status == "waiting_for_review" }.count 
       }
     end
-
 
     def sub_count
       data = object.descendants
@@ -160,13 +162,6 @@ module Types
         release: data.where(status: "release").count,
         ready_for_edit: data.where(status: "ready_for_edit").count,
         waiting_for_review: data.where(status: "waiting_for_review").count
-      }
-    end
-
-    def risk_and_control_summary
-      {
-        risks: descendants_risks.count,
-        controls: descendants_controls.count,
       }
     end
 
