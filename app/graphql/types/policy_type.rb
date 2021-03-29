@@ -165,8 +165,8 @@ module Types
 
     def risk_and_control_summary
       {
-        risks: descendants_controls.count,
-        controls: descendants_risks.count,
+        risks: descendants_risks.count,
+        controls: descendants_controls.count,
       }
     end
 
