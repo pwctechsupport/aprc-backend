@@ -87,7 +87,6 @@ module Types
       else
         data        = object.controls + object.descendants.map {|x| x.controls}.flatten
       end
-      byebug
       return data.uniq
     end
 
