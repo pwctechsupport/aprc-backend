@@ -78,12 +78,28 @@ module Types
     end
 
     def descendants_controls
-      data = object.controls + object.descendants.map {|x| x.controls}.flatten
+      if context[:current_user].has_role?(:admin_reviewer)
+        descendants = object.descendants.where.not(status: "draft").map {|x| x.controls}.flatten
+        data        = if !object.status == 'draft' then object.controls + descendants else descendants end
+      elsif context[:current_user].has_role?(:user)
+        descendants = object.descendants.where.not(status: [ "draft", "waiting_for_review" ]).map {|x| x.controls}.flatten
+        data        = if !object.status == 'draft' || !object.status == 'waiting_for_review' then object.controls + descendants else descendants end
+      else
+        data        = object.controls + object.descendants.map {|x| x.controls}.flatten
+      end
       return data.uniq
     end
 
     def descendants_risks
-      data = object.risks + object.descendants.map {|x| x.risks}.flatten
+      if context[:current_user].has_role?(:admin_reviewer)
+        descendants = object.descendants.where.not(status: "draft").map {|x| x.risks}.flatten
+        data        = if !object.status == 'draft' then object.risks + descendants else descendants end
+      elsif context[:current_user].has_role?(:user)
+        descendants = object.descendants.where.not(status: [ "draft", "waiting_for_review" ]).map {|x| x.risks}.flatten
+        data        = if !object.status == 'draft' || !object.status == 'waiting_for_review' then object.risks + descendants else descendants end
+      else
+        data        = object.risks + object.descendants.map {|x| x.risks}.flatten
+      end
       return data.uniq
     end
 
@@ -127,8 +143,7 @@ module Types
     end
 
     def control_count
-      data = object.controls + descendants_controls
-      data = data.uniq
+      data = descendants_controls
       {
         total: data.count,
         draft: data.select{|a| a.status == "draft" }.count,
@@ -141,8 +156,7 @@ module Types
 
 
     def risk_count
-      data = object.risks + descendants_risks
-      data = data.uniq
+      data = descendants_risks
       {
         total: data.count,
         draft: data.select{|a| a.status == "draft" }.count,
@@ -154,7 +168,13 @@ module Types
     end
 
     def sub_count
-      data = object.descendants
+      if context[:current_user].has_role?(:admin_reviewer)
+        data = object.descendants.where.not(status: "draft")
+      elsif context[:current_user].has_role?(:user)
+        data = object.descendants.where.not(status: [ "draft", "waiting_for_review" ])
+      else
+        data = object.descendants
+      end
       {
         total: data.count,
         draft: data.where(status: "draft").count,
