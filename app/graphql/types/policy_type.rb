@@ -80,23 +80,24 @@ module Types
     def descendants_controls
       if context[:current_user].has_role?(:admin_reviewer)
         descendants = object.descendants.where.not(status: "draft").map {|x| x.controls}.flatten
-        data        = if !object.status == 'draft' then object.controls + descendants else descendants end
+        data        = if object.status != 'draft' then object.controls + descendants else descendants end
       elsif context[:current_user].has_role?(:user)
         descendants = object.descendants.where.not(status: [ "draft", "waiting_for_review" ]).map {|x| x.controls}.flatten
-        data        = if !object.status == 'draft' || !object.status == 'waiting_for_review' then object.controls + descendants else descendants end
+        data        = if object.status != 'draft' || object.status != 'waiting_for_review' then object.controls + descendants else descendants end
       else
         data        = object.controls + object.descendants.map {|x| x.controls}.flatten
       end
+      byebug
       return data.uniq
     end
 
     def descendants_risks
       if context[:current_user].has_role?(:admin_reviewer)
         descendants = object.descendants.where.not(status: "draft").map {|x| x.risks}.flatten
-        data        = if !object.status == 'draft' then object.risks + descendants else descendants end
+        data        = if object.status != 'draft' then object.risks + descendants else descendants end
       elsif context[:current_user].has_role?(:user)
         descendants = object.descendants.where.not(status: [ "draft", "waiting_for_review" ]).map {|x| x.risks}.flatten
-        data        = if !object.status == 'draft' || !object.status == 'waiting_for_review' then object.risks + descendants else descendants end
+        data        = if object.status != 'draft' || object.status != 'waiting_for_review' then object.risks + descendants else descendants end
       else
         data        = object.risks + object.descendants.map {|x| x.risks}.flatten
       end
