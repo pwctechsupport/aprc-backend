@@ -12,7 +12,10 @@ module Resolvers
           @q = Risk.ransack(filter.as_json)
           @q.result(distinct: true).order(status: :desc, updated_at: :desc).page(page).per(limit)
         elsif context[:current_user].has_role?(:user)
-          data = context[:current_user].policies_by_categories
+          policies = context[:current_user].policies_by_categories
+          policies = policies.where(status: ["release", "ready_for_edit", "waiting_for_approval"])
+          risk_ids = policies.map{|policy| policy.risks.ids}
+          data = Risk.where(id: risk_ids.flatten)
           @q = data.ransack(filter.as_json)
           @q.result(distinct: true).page(page).per(limit) 
         else
