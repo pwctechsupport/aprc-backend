@@ -48,7 +48,9 @@ class User < ApplicationRecord
     # a = Policy.where(policy_category_id: self.policy_category_ids).pluck(:id)
     # b = Policy.where(ancestry: a).pluck(:id)
     # result = Policy.where(id: a+b)
-    policies    = Policy.where(policy_category_id: self.policy_category_ids)
+    
+    policy_category_ids = self.user_policy_categories.where(draft_id: nil).map{|x| x.policy_category_id}
+    policies    = Policy.where(policy_category_id: policy_category_ids)
     policy_ids  = policies.map{|policy| policy.subtree.ids}
     result      = Policy.where(id: policy_ids.flatten)
 
