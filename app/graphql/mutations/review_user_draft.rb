@@ -15,6 +15,9 @@ module Mutations
         user_draft= user.draft
         admin_prep = [user.last_updated_by_user_id] || User.with_role(:admin_preparer).pluck(:id)
         if args[:publish] === true
+          if user.user_policy_categories
+            user.user_policy_categories.where.not(draft_id: nil).each {|x| x.draft.publish!}
+          end
           if user_draft&.event == "update"
             serial = ["policy_category", "main_role"]
             serial.each do |sif|
@@ -37,6 +40,9 @@ module Mutations
           if user&.present? && user&.request_edit&.present?
             user&.request_edit&.destroy
             user.update(policy_category: policy_category_rejected, status: "release")
+          end
+          if user.user_policy_categories
+            user.user_policy_categories.where.not(draft_id: nil).each {|x| x.draft.revert!}
           end
         end 
       else
