@@ -17,7 +17,9 @@ module Mutations
         if args[:publish] === true
           if user.user_policy_categories
             user.user_policy_categories.where.not(draft_id: nil).each {|x| x.draft.publish!}
+            user.user_policy_categories.where.not(trashed_at: nil).delete_all
           end
+          
           if user_draft&.event == "update"
             serial = ["policy_category", "main_role"]
             serial.each do |sif|
@@ -26,6 +28,7 @@ module Mutations
               end
             end
           end
+          
           user_draft&.reify
           user_draft&.publish!
           user.update(user_reviewer_id: current_user.id, status: "release")
@@ -43,6 +46,14 @@ module Mutations
           end
           if user.user_policy_categories
             user.user_policy_categories.where.not(draft_id: nil).each {|x| x.draft.revert!}
+            if user.user_policy_categories.where.not(trashed_at: nil).present?
+              cats = user.user_policy_categories.where.not(trashed_at: nil)
+              cats.each do |cat|
+                cat.published_at = DateTime.now
+                cat.trashed_at = nil
+                cat.save
+              end
+            end
           end
         end 
       else
