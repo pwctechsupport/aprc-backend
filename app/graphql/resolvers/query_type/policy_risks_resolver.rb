@@ -11,7 +11,7 @@ module Resolvers
 
       def resolve(filter:, page: nil, limit: nil)
         data = \
-          current_user.is_user? ? user_policies : PolicyRisk.page(page).per(limit)
+          current_user.is_user? ? user_policies : policies
         @q = data.ransack(filter.as_json)
         @q.result(distinct: true).order(updated_at: :desc).page(page).per(limit)
       end
@@ -29,6 +29,12 @@ module Resolvers
       def user_policies
         @policies = current_user.policies_by_categories
         Risk.where(id: risk_ids.flatten)
+      end
+
+      def policies
+        data = PolicyRisk.all
+        ids = data.map(&:risk_id)
+        Risk.where(id: ids.flatten)
       end
 
       def risk_ids
