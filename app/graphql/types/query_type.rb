@@ -4,11 +4,11 @@ module Types
     # They will be entry points for queries on your schema.
 
     # TODO: remove me
-    field :me, Types::UserType, null: true do 
+    field :me, Types::UserType, null: true do
       description 'Returns the current user'
     end
 
-    field :version, [Types::VersionType], null: true do 
+    field :version, [Types::VersionType], null: true do
       description 'Returns the Version of an Object'
     end
 
@@ -20,7 +20,7 @@ module Types
     field :file_attachment, Types::FileAttachmentType, null: true do
       argument :id, ID, required: true
       description 'Returns the File Attachment of an Object'
-    end 
+    end
 
     field :activity_control, Types::ActivityControlType, null: true do
       argument :id, ID, required: true
@@ -40,11 +40,11 @@ module Types
     # field :res, [Types::ResourceType], null: true do
     #   description 'Returns Resources Attributes'
     # end
-    
+
     # field :bus, [Types::BusinessProcessType], null: true do
     #   description 'Returns Business Processes Attributes'
     # end
-    
+
     # field :it, [Types::ItSystemType], null: true do
     #   description 'Returns IT Systems Attributes'
     # end
@@ -67,7 +67,7 @@ module Types
       argument :id, ID, required: true
       description 'Returns Policy Category By ID'
     end
-    
+
     field :bookmark, Types::BookmarkType, null: true do
       argument :id, ID, required: true
       description 'Returns Bookmark Originator Based By ID'
@@ -117,8 +117,8 @@ module Types
       argument :id, ID, required: true
       description 'Returns the Current Resource Rating and Rating Calculation'
     end
-    
-    field :request_edit, Types::RequestEditType, null: true do 
+
+    field :request_edit, Types::RequestEditType, null: true do
       argument :id, ID, required: true
       description 'Returns the Current Edit Request'
     end
@@ -161,7 +161,7 @@ module Types
     end
 
     def activity_control(id:)
-      ActivityControl.find_by(id:id)  
+      ActivityControl.find_by(id:id)
     end
     # def res(demo: false)
     #   Resource.all
@@ -244,6 +244,8 @@ module Types
 
     field :users, resolver: Resolvers::QueryType::UsersResolver
     field :policies, resolver: Resolvers::QueryType::PoliciesResolver
+    field :policy_risks, resolver: Resolvers::QueryType::PolicyRisksResolver
+    field :policy_controls, resolver: Resolvers::QueryType::PolicyControlsResolver
     field :policy_categories, resolver: Resolvers::QueryType::PolicyCategoriesResolver
     field :resources, resolver: Resolvers::QueryType::ResourcesResolver
     field :it_systems, resolver: Resolvers::QueryType::ItSystemsResolver
