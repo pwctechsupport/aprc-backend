@@ -74,7 +74,7 @@ gem 'graphql-errors'
 gem 'rack-cors'
 gem 'graphql-pagination'
 gem 'kaminari-activerecord'
-gem 'ransack', github: 'activerecord-hackery/ransack'
+gem 'ransack', '~> 2.4.1'
 gem 'ancestry'
 gem 'psych'
 gem "safe_yaml"
