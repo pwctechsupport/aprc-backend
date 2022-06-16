@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_06_03_054716) do
+ActiveRecord::Schema.define(version: 2021_04_13_055654) do
 
   create_table "activity_controls", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.text "activity"
@@ -24,6 +24,9 @@ ActiveRecord::Schema.define(version: 2020_06_03_054716) do
     t.datetime "resupload_updated_at"
     t.bigint "control_id"
     t.boolean "is_attachment", default: false
+    t.integer "draft_id"
+    t.timestamp "published_at"
+    t.timestamp "trashed_at"
     t.index ["control_id"], name: "index_activity_controls_on_control_id"
   end
 
@@ -121,6 +124,16 @@ ActiveRecord::Schema.define(version: 2020_06_03_054716) do
     t.index ["description_id"], name: "index_control_descriptions_on_description_id"
   end
 
+  create_table "control_risk_business_processes", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.integer "control_id"
+    t.string "risk_business_process_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.integer "draft_id"
+    t.timestamp "published_at"
+    t.timestamp "trashed_at"
+  end
+
   create_table "control_risks", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.bigint "control_id"
     t.bigint "risk_id"
@@ -150,6 +163,9 @@ ActiveRecord::Schema.define(version: 2020_06_03_054716) do
     t.integer "user_reviewer_id"
     t.string "created_by"
     t.string "last_updated_by"
+    t.boolean "is_related", default: false
+    t.boolean "is_inside", default: false
+    t.string "description"
   end
 
   create_table "delayed_jobs", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
@@ -217,6 +233,16 @@ ActiveRecord::Schema.define(version: 2020_06_03_054716) do
     t.datetime "resupload_updated_at"
   end
 
+  create_table "imports", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.string "name"
+    t.string "file_file_name"
+    t.string "file_content_type"
+    t.bigint "file_file_size"
+    t.datetime "file_updated_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "it_systems", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.text "name"
     t.datetime "created_at", null: false
@@ -271,6 +297,7 @@ ActiveRecord::Schema.define(version: 2020_06_03_054716) do
     t.string "last_updated_by"
     t.datetime "last_updated_at"
     t.float "true_version", default: 0.0
+    t.boolean "is_related", default: false
     t.index ["ancestry"], name: "index_policies_on_ancestry"
     t.index ["policy_category_id"], name: "index_policies_on_policy_category_id"
     t.index ["resource_id"], name: "index_policies_on_resource_id"
@@ -301,6 +328,7 @@ ActiveRecord::Schema.define(version: 2020_06_03_054716) do
     t.string "created_by"
     t.string "last_updated_by"
     t.text "policy"
+    t.boolean "is_inside", default: false
   end
 
   create_table "policy_controls", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
@@ -367,6 +395,7 @@ ActiveRecord::Schema.define(version: 2020_06_03_054716) do
     t.string "status", default: "draft"
     t.string "created_by"
     t.string "last_updated_by"
+    t.boolean "is_inside", default: false
   end
 
   create_table "request_edits", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
@@ -425,6 +454,8 @@ ActiveRecord::Schema.define(version: 2020_06_03_054716) do
     t.string "created_by"
     t.datetime "last_updated_at"
     t.text "base_64_file", limit: 4294967295
+    t.boolean "is_related", default: false
+    t.boolean "is_inside", default: false
     t.index ["business_process_id"], name: "index_resources_on_business_process_id"
     t.index ["control_id"], name: "index_resources_on_control_id"
     t.index ["policy_id"], name: "index_resources_on_policy_id"
@@ -453,6 +484,7 @@ ActiveRecord::Schema.define(version: 2020_06_03_054716) do
     t.string "created_by"
     t.string "last_updated_by"
     t.text "business_process"
+    t.boolean "is_inside", default: false
   end
 
   create_table "roles", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
@@ -467,8 +499,8 @@ ActiveRecord::Schema.define(version: 2020_06_03_054716) do
   end
 
   create_table "tags", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
-    t.integer "x_coordinates"
-    t.integer "y_coordinates"
+    t.float "x_coordinates"
+    t.float "y_coordinates"
     t.text "body"
     t.bigint "resource_id"
     t.bigint "business_process_id"
@@ -549,6 +581,7 @@ ActiveRecord::Schema.define(version: 2020_06_03_054716) do
     t.text "status"
     t.integer "department_id"
     t.string "policy_category"
+    t.string "main_role"
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["jti"], name: "index_users_on_jti", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
