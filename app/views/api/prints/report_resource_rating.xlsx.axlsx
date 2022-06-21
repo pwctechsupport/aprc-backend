@@ -1,0 +1,43 @@
+
+wb = xlsx_package.workbook
+
+content = wb.styles.add_style(:bg_color => "FFFFFFFF",
+  :fg_color=>"#FF000000",
+  :border=>Axlsx::STYLE_THIN_BORDER,
+  :alignment=>{:horizontal => :center, :vertical => :center},
+  :font_name => 'Georgia'
+)
+
+
+title = wb.styles.add_style(:sz => 20, :b => true, :alignment=>{:horizontal => :left, :vertical => :center}, :font_name => 'Georgia')
+
+header = wb.styles.add_style(:sz => 12, :bg_color => 'b10015', :fg_color => 'FF', :b => true, :border => { :style => :thin, :color => "00000000", :edges => [:top, :bottom, :left, :right] }, :alignment=>{:horizontal => :center, :vertical => :center}, :font_name => 'Georgia')
+
+wb.add_worksheet(name: "Exception Report") do |sheet|
+  # Create the header row
+  sheet.add_row ["Report Resource With Rating "], :style => title, :height => 28
+  2.times { sheet.add_row}
+  sheet.add_row ["Printed on: #{Time.now.strftime("%d-%m-%Y")}"],:font_name => 'Georgia', :sz => 12
+  sheet.add_row ["Printed by: #{current_user&.name}"],:font_name => 'Georgia', :sz => 12
+  3.times { sheet.add_row}
+  sheet.merge_cells "A1:I1"
+  sheet.merge_cells "A4:I4"
+  sheet.merge_cells "A5:I5"
+  sheet.add_row ["No","Resource title", "Category", "Number of downloads", "Average Rating", "Number of ratings","Created by", "Created on", "Last update on", "Last update by"], :style => header, :height => 25
+  # Create entries for each item
+  @resources.each_with_index do |resource, i|
+    sheet.add_row [
+      i+1,
+      resource[:name], 
+      resource[:category], 
+      resource[:visit], 
+      resource[:average], 
+      resource[:total], 
+      resource[:created_by], 
+      resource[:created_on], 
+      resource[:last_updated_on], 
+      resource[:last_updated_by]
+      ], :style=>content, :height => 22
+  end
+  sheet.column_widths 28
+end

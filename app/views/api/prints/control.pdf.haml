@@ -1,0 +1,105 @@
+!!!
+%html
+  %head
+    %meta{:content => "text/html; charset=UTF-8", "http-equiv" => "Content-Type"}/
+    %meta{:charset => "utf-8"}/
+    %meta{:content => "IE=edge", "http-equiv" => "X-UA-Compatible"}/
+    %title #{@control.id}
+    :css
+      input[type=checkbox]{
+      \/* Double-sized Checkboxes */
+      \-ms-transform: scale(4); /* IE */
+      \-moz-transform: scale(4); /* FF */
+      \-webkit-transform: scale(4); /* Safari and Chrome */
+      \-o-transform: scale(4); /* Opera */
+      transform: scale(4);
+      padding: 10px;
+      display: inline;}
+
+    :css
+      .table.table-borderless {border:10px !important;}
+      .apo{max-width: 30%;}
+      .ape{max-width: 250px;}
+      .aih{font-size:20px}
+      .aha{border:none;}
+
+
+
+
+  %body
+  %table.table.table-borderless.aha{style:"display:block;"}
+    %tr.aha
+      %td.aha Printed On
+      %td.aha :
+      %td.aha #{Time.now.strftime("%d-%m-%Y")}
+      
+
+    %tr.aha
+      %td.aha Printed By
+      %td.aha :
+      %td.aha= current_user&.name
+  .row.m-t-10.text-center
+    .col-md-12
+      %h1 Control
+  %ul   
+    .row.m-t-10
+      .col-md-12
+        %li 
+          %h3 Type of Control       : #{@control.type_of_control.to_s.gsub(/[^0-9A-Za-z]/, ' ').titlecase}
+    .row.m-t-10
+      .col-md-12
+        %li  
+          %h3 Frequency           : #{@control.frequency.to_s.gsub(/[^0-9A-Za-z]/, ' ').titlecase}
+    .row.m-t-10
+      .col-md-12
+        %li
+          %h3 Nature         : #{@control.nature.to_s.gsub(/[^0-9A-Za-z]/, ' ').titlecase}
+    .row.m-t-10
+      .col-md-12
+        %li
+          %h3 Control Owner         : #{@control.control_owner.join(",").titlecase}
+    .row.m-t-10
+      .col-md-12
+        %li
+          %h3 Assertion  : 
+        -if @control.assertion.count > 1
+          %ul
+            -@control.assertion.each do |cop|
+              %li=cop.to_s.gsub(/[^0-9A-Za-z]/, ' ').titlecase
+        -else
+          %ul
+            %li=@control.assertion.to_s.gsub(/[^0-9A-Za-z]/, ' ').titlecase
+    .row.m-t-10
+      .col-md-12
+        %li
+          %h3 Ipo : 
+        -if @control.ipo.count > 1
+          %ul
+            -@control.ipo.each do |cop|
+              %li=cop.to_s.gsub(/[^0-9A-Za-z]/, ' ').titlecase
+        -else
+          %ul
+            %li=@control.ipo.to_s.gsub(/[^0-9A-Za-z]/, ' ').titlecase
+    .row.m-t-10
+      .col-md-12
+        %li
+          %h3 Status : #{@control.status.to_s.gsub(/[^0-9A-Za-z]/, ' ').titlecase}
+    .row.m-t-10
+      .col-md-12
+        %li
+          %h3 Key Control : 
+          %div
+            -if @control.key_control
+              .risk
+                %input#coding{:checked => "checked", :name => "interest", :type => "checkbox", :value => "true"}/
+                %label{:for => "true"} True
+              .risk
+                %input#false{:name => "interest", :type => "checkbox", :value => "false"}/
+                %label{:for => "false"} False
+            -else
+              .risk
+                %input#true{:name => "interest", :type => "checkbox", :value => "true"}/
+                %label{:for => "true"} True
+              .risk
+                %input#false{:checked => "checked", :name => "interest", :type => "checkbox", :value => "false"}/
+                %label{:for => "false"} False

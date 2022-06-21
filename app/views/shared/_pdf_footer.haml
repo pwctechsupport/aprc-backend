@@ -1,0 +1,38 @@
+!!!
+%html
+  %head
+    %meta{:content => "text/html; charset=UTF-8", "http-equiv" => "Content-Type"}/
+    :css
+      hr.new5 {
+      border: 1px solid black;
+      border-radius: 5px;}
+      td.abe {
+        border: none;
+        position: relative;
+        padding-left: 5px;
+        
+      }
+      ul {
+        list-style-type: none;
+        margin: 0;
+        padding: 0;
+        overflow: hidden;
+      }
+
+      li{
+        display: inline-block;
+      }
+
+      li:last-child {
+        border-right: none;
+        margin-bottom:50px;
+
+      }   
+
+  %body
+    %hr.new5
+    %ul
+      %li Accounting Policy
+      -if @is_report.present?
+        %p mantap
+      %li{style:"float:right"} Printed on #{Time.now.strftime("%C %m %G")}

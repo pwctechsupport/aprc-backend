@@ -1,0 +1,26 @@
+version: '3'
+services:
+  app:
+    build:
+      context: .
+      dockerfile: ./docker/app/Dockerfile
+    command: "bundle exec puma"
+    env_file: 
+      - .env
+    volumes: 
+      - .:/usr/src/app
+    depends_on: 
+      - db
+    ports: 
+      - 3000:3000
+  db:
+    image: mysql:5.7.23
+    command: --default-authentication-plugin=mysql_native_password
+    restart: always
+    env_file: 
+      - .env
+    ports:
+      - "3307:3306"
+volumes:
+  db-data:
+    external: false

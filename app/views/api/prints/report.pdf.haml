@@ -1,0 +1,49 @@
+!!!
+%html
+  %head
+    %meta{:content => "text/html; charset=UTF-8", "http-equiv" => "Content-Type"}/
+    %meta{:charset => "utf-8"}/
+    %meta{:content => "IE=edge", "http-equiv" => "X-UA-Compatible"}/
+    %title REPORT
+  %body
+  .row.m-t-10.text-center
+    .col-md-12
+      %h1 #{@policy.title}
+  .row.m-t-10
+    .col-md-12
+      %h3 Risk
+      %ul
+      -@policy.controls.each do |cun|
+        %li
+          -cun.risks.each do |ris|
+            %p=ris.name.html_safe
+  .row.m-t-10
+    .col-md-12
+      -@policy.controls.each do |bis|
+        -bis.business_processes.each do |bas|
+          %h3 Business Process #{bas.name}
+          %ul
+            %li
+              %p=bas.name.html_safe
+  .row.m-t-10
+    .col-md-12
+      %h3 Control Owner
+      %ul
+      -@policy.controls.each do |con|
+        %li
+          %p=con.control_owner.join(",").html_safe
+  .col-md-12
+    %h3 Control Description
+    %ul
+    -@policy.controls.each do |con|
+      %li
+        %p=con.description.html_safe
+  .row.m-t-10
+    .col-md-12
+      %h3 Control Type
+      %ul
+      -@policy.controls.each do |con|
+        %li
+          %p=con.type_of_control.html_safe
+
+    

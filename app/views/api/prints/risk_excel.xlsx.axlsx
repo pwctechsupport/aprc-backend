@@ -1,0 +1,21 @@
+
+wb = xlsx_package.workbook
+
+
+wb.add_worksheet(name: "Risks") do |sheet|
+  # Create the header row
+  sheet.add_row ["name", "level of risk", "type of risk", "related business process name"]
+  # Create entries for each item
+  a = 0
+  @risks.each do |risk|
+    if risk&.business_processes.count != 0
+      risk&.business_processes.each do |bp|
+        a += 1
+        sheet.add_row [risk&.name, risk&.level_of_risk&.gsub(/_/, ' ')&.capitalize, risk&.type_of_risk&.gsub(/_/, ' ')&.capitalize, bp&.name]
+      end
+    else
+      a += 1
+      sheet.add_row [risk&.name, risk&.level_of_risk&.gsub(/_/, ' ')&.capitalize, risk&.type_of_risk&.gsub(/_/, ' ')&.capitalize, ""]
+    end
+  end
+end

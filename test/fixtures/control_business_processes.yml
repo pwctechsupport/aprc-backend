@@ -1,0 +1,9 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  controls: one
+  business_processes: one
+
+two:
+  controls: two
+  business_processes: two

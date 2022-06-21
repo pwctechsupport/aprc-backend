@@ -1,0 +1,152 @@
+
+wb = xlsx_package.workbook
+
+content = wb.styles.add_style(:bg_color => "FFFFFFFF",
+  :fg_color=>"#FF000000",
+  :border=>Axlsx::STYLE_THIN_BORDER,
+  :alignment=>{:horizontal => :center, :vertical => :center},
+  :font_name => 'Georgia'
+)
+
+title = wb.styles.add_style(:sz => 20, :b => true, :alignment=>{:horizontal => :left, :vertical => :center}, :font_name => 'Georgia')
+
+
+header = wb.styles.add_style(:sz => 12, :bg_color => 'b10015', :fg_color => 'FF', :b => true, :border => { :style => :thin, :color => "00000000", :edges => [:top, :bottom, :left, :right] }, :alignment=>{:horizontal => :center, :vertical => :center}, :font_name => 'Georgia')
+
+wb.add_worksheet(name: "Exception Report") do |sheet|
+  sheet.add_row ["Report Control Without Risk"], :style => title, :height => 28
+  2.times { sheet.add_row}
+  sheet.add_row ["Printed on: #{Time.now.strftime("%d-%m-%Y")}"], :font_name => 'Georgia', :sz => 12
+  sheet.add_row ["Printed by: #{current_user&.name}"],:font_name => 'Georgia', :sz => 12
+  3.times { sheet.add_row}
+  sheet.merge_cells "A1:L1"
+  # Create the header row
+  sheet.add_row ["No", "Description", "Type of control", "Control owner", "Frequency", "Nature", "Related Policy", "Business process", "Key control"], :style => header, :height => 25
+  # sheet.add_row ["No", "control owner", "description", "type of control", "frequency", "nature", "assertion", "ipo", "status", "key control", "business process", "related policy"], :style => header, :height => 25
+  # Create entries for each item
+  a = 0
+  @controls.each do |control|
+    if control.assertion.count < 2
+      if control.business_processes.present?
+        control&.business_processes.each do |bis|
+          if control.policies.present?
+            control.policies.each do |pol|
+              a += 1
+              sheet.add_row [
+                a, 
+                control&.description&.capitalize, 
+                control&.type_of_control&.gsub(/_/, ' ')&.capitalize, 
+                control&.control_owner.join(",")&.capitalize, 
+                control&.frequency, 
+                control&.nature&.capitalize, 
+                control&.key_control,
+                bis&.name,
+                pol&.title], :style=>content, :height => 22
+            end
+          else
+            a += 1
+            sheet.add_row [
+            a, 
+            control&.description&.capitalize, 
+            control&.type_of_control&.gsub(/_/, ' ')&.capitalize, 
+            control&.control_owner.join(",")&.capitalize, 
+            control&.frequency, 
+            control&.nature&.capitalize, 
+            control&.key_control,
+            bis&.name, 
+            "No Related Policies"], :style=>content, :height => 22
+          end
+        end
+      else
+        if control.policies.present?
+          control.policies.each do |pol|
+            a += 1
+            sheet.add_row [
+            a, 
+            control&.description&.capitalize, 
+            control&.type_of_control&.gsub(/_/, ' ')&.capitalize, 
+            control&.control_owner.join(",")&.capitalize, 
+            control&.frequency, 
+            control&.nature&.capitalize,  
+            control&.key_control,
+            "No Business Process",
+            pol&.title], :style=>content, :height => 22
+          end
+        else
+          a += 1
+          sheet.add_row [a, 
+            control&.description&.capitalize, 
+            control&.type_of_control&.gsub(/_/, ' ')&.capitalize, 
+            control&.control_owner.join(",")&.capitalize, 
+            control&.frequency, 
+            control&.nature&.capitalize,
+            control&.key_control,
+            "No Business Process",
+            "No Related Policies"], :style=>content, :height => 22
+        end
+      end
+    else
+      if control.business_processes.present?
+        control&.business_processes.each do |bis|
+          if control.policies.present?
+            control.policies.each do |pol|
+              a += 1
+              sheet.add_row [a, 
+              control&.description&.capitalize, 
+              control&.type_of_control&.gsub(/_/, ' ')&.capitalize, 
+              control&.control_owner.join(",")&.capitalize, 
+              control&.frequency, 
+              control&.nature&.capitalize, 
+              control&.key_control,
+              bis&.name,
+              pol&.title], 
+              :style=>content, 
+              :height => 22
+            end
+          else
+            a += 1
+            sheet.add_row [a, 
+            control&.description&.capitalize, 
+            control&.type_of_control&.gsub(/_/, ' ')&.capitalize, 
+            control&.control_owner.join(",")&.capitalize, 
+            control&.frequency, 
+            control&.nature&.capitalize, 
+            control&.key_control,bis&.name,
+            "No Related Policies"], 
+            :style=>content, 
+            :height => 22
+          end
+        end
+      else
+        if control.policies.present?
+          control.policies.each do |pol|
+            a += 1
+            sheet.add_row [a, 
+            control&.description&.capitalize, 
+            control&.type_of_control&.gsub(/_/, ' ')&.capitalize,
+            control&.control_owner.join(",")&.capitalize,  
+            control&.frequency, 
+            control&.nature&.capitalize,
+            control&.key_control,
+            "No Business Process",
+            pol&.title], 
+            :style=>content, 
+            :height => 22
+          end
+        else
+          a += 1
+          sheet.add_row [a, 
+          control&.description&.capitalize, 
+          control&.type_of_control&.gsub(/_/, ' ')&.capitalize, 
+          control&.control_owner.join(",")&.capitalize, 
+          control&.frequency, 
+          control&.nature&.capitalize,
+          control&.key_control,
+          "No Business Process",
+          "No Related Policies"], :style=>content, :height => 22
+        end
+      end
+    end
+  end
+end
+

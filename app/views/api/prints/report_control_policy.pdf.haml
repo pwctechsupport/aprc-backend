@@ -1,0 +1,154 @@
+!!!
+%html
+  %head
+    %meta{:content => "text/html; charset=UTF-8", "http-equiv" => "Content-Type"}/
+    %meta{:charset => "utf-8"}/
+    %meta{:content => "IE=edge", "http-equiv" => "X-UA-Compatible"}/
+    %title Report Control Without Risk
+    :css
+      input[type=checkbox]{
+      \/* Double-sized Checkboxes */
+      \-ms-transform: scale(3.5); /* IE */
+      \-moz-transform: scale(3.5); /* FF */
+      \-webkit-transform: scale(3.5); /* Safari and Chrome */
+      \-o-transform: scale(3.5); /* Opera */
+      transform: scale(3.5);
+      padding: 1px;}
+    :css
+      .table.table-borderless {border:10px !important;}
+      .risk {margin-top:15px;}
+      hr.new5 {
+      border: 2px solid #D85604;
+      border-radius: 5px;}
+      th,td{max-width: 50%;}
+
+      
+    :css
+      .apo{font-size:13px;}
+      th{font-size:14px;}
+      td{font-size:13px;}
+      .tab{ margin-left:40px;}
+      .ape{font-size:24px; text-align:left;}
+      .aps{font-size:38px;}
+      .aha{border:none;}
+
+    :css
+      span {position:relative; bottom:1.7px; background:#F32013; border-radius:6px; font-size:15px; color:white; font-family:Arial; text-shadow: 0.5px 0.5px black; padding:1px 5px 4px;}
+    
+
+    -# %h1.text-center.aps Exception Report Control Without Risk
+    -# %h2.ape 
+    -# %table.table.table-borderless.aha{style:"display:block;"}
+    -#   %tr.aha
+    -#     %td.aha Printed On
+    -#     %td.aha :
+    -#     %td.aha #{Time.now.strftime("%d-%m-%Y")}
+        
+
+    -#   %tr.aha
+    -#     %td.aha Printed By
+    -#     %td.aha :
+    -#     %td.aha= current_user&.name
+    
+    
+    -# %table.table.table-border
+    -#   %thead
+    -#     %tr
+    -#       %th{:scope => "col"} Risk Name
+    -#       %th{:scope => "col"} Level of Risk
+    -#       %th{:scope => "col"} Type of Risk
+    -#       %th{:scope => "col"} Business Process
+    -#   %tbody
+    -#     %tr
+    -#       %td #{ris.name}
+    -#       %td #{ris.level_of_risk.to_s.gsub(/_/, ' ').capitalize}
+    -#       %td #{ris.type_of_risk.to_s.gsub(/_/, ' ').capitalize}
+    -#       %td #{ris.business_process.name.capitalize}
+    -# %br
+    
+    %table.table.table-borderless
+      %thead
+      
+      -z = 1
+      -@controls.each do |con|
+        -if con.business_processes.present?
+          -con&.business_processes.each do |bis|
+            -if con.policies.present?
+              -con.policies.distinct.each do |pol|
+                %tbody
+                  %tr
+                    %td.text-center{:scope => "row",:style => "width: 6%"} #{z}
+                    %td.text-center{:scope => "row",:style => "width: 12%"} #{con&.description&.capitalize&.html_safe}
+                    %td.text-center{:scope => "row",:style => "width: 10%"} #{con.type_of_control.to_s.gsub(/[^0-9A-Za-z]/, ' ').capitalize.html_safe}
+                    %td.text-center{:scope => "row",:style => "width: 16%"} #{con.control_owner.join(",").to_s.capitalize.html_safe}
+                    %td.text-center{:scope => "row",:style => "width: 10%"} #{con.frequency.to_s.gsub(/[^0-9A-Za-z]/, ' ').capitalize.html_safe}
+                    %td.text-center{:scope => "row",:style => "width: 10%"} #{con.nature.to_s.gsub(/[^0-9A-Za-z]/, ' ').capitalize.html_safe}
+                    %td.text-center{:scope => "row",:style => "width: 14%"} #{pol&.title&.capitalize&.html_safe}
+                    %td.text-center{:scope => "row",:style => "width: 14%"} #{bis&.name}
+                    %td{:scope => "row",:style => "width: 8%"}
+                      -if con&.key_control == true
+                        Yes
+                      -else
+                        No
+                    -z+=1
+            -else
+              %tbody
+                %tr
+                  %td.text-center{:scope => "row",:style => "width: 6%"} #{z}
+                  %td.text-center{:scope => "row",:style => "width: 12%"} #{con&.description&.capitalize&.html_safe}
+                  %td.text-center{:scope => "row",:style => "width: 10%"} #{con.type_of_control.to_s.gsub(/[^0-9A-Za-z]/, ' ').capitalize.html_safe}
+                  %td.text-center{:scope => "row",:style => "width: 16%"} #{con.control_owner.join(",").to_s.capitalize.html_safe}
+                  %td.text-center{:scope => "row",:style => "width: 10%"} #{con.frequency.to_s.gsub(/[^0-9A-Za-z]/, ' ').capitalize.html_safe}
+                  %td.text-center{:scope => "row",:style => "width: 10%"} #{con.nature.to_s.gsub(/[^0-9A-Za-z]/, ' ').capitalize.html_safe}
+                  %td.text-center{:scope => "row",:style => "width: 14%"} No Related Policies
+                  %td.text-center{:scope => "row",:style => "width: 14%"} #{bis&.name}
+                  %td{:scope => "row",:style => "width: 8%"}
+                    -if con&.key_control == true
+                      Yes
+                    -else
+                      No
+                  -z+=1
+        -else
+          -if con.policies.present?
+            -con.policies.each do |pol|
+              %tbody
+                %tr
+                  %td.text-center{:scope => "row",:style => "width: 6%"} #{z}
+                  %td.text-center{:scope => "row",:style => "width: 12%"} #{con&.description&.capitalize&.html_safe}
+                  %td.text-center{:scope => "row",:style => "width: 10%"} #{con.type_of_control.to_s.gsub(/[^0-9A-Za-z]/, ' ').capitalize.html_safe}
+                  %td.text-center{:scope => "row",:style => "width: 16%"} #{con.control_owner.join(",").to_s.capitalize.html_safe}
+                  %td.text-center{:scope => "row",:style => "width: 10%"} #{con.frequency.to_s.gsub(/[^0-9A-Za-z]/, ' ').capitalize.html_safe}
+                  %td.text-center{:scope => "row",:style => "width: 10%"} #{con.nature.to_s.gsub(/[^0-9A-Za-z]/, ' ').capitalize.html_safe}
+                  %td.text-center{:scope => "row",:style => "width: 14%"} #{pol&.title&.capitalize&.html_safe}
+                  %td.text-center{:scope => "row",:style => "width: 14%"} No Business Process
+                  %td{:scope => "row",:style => "width: 8%"}
+                    -if con&.key_control == true
+                      Yes
+                    -else
+                      No
+                  -z+=1
+          -else
+            %tbody
+              %tr
+                %td.text-center{:scope => "row",:style => "width: 6%"} #{z}
+                %td.text-center{:scope => "row",:style => "width: 12%"} #{con&.description&.capitalize&.html_safe}
+                %td.text-center{:scope => "row",:style => "width: 10%"} #{con.type_of_control.to_s.gsub(/[^0-9A-Za-z]/, ' ').capitalize.html_safe}
+                %td.text-center{:scope => "row",:style => "width: 16%"} #{con.control_owner.join(",").to_s.capitalize.html_safe}
+                %td.text-center{:scope => "row",:style => "width: 10%"} #{con.frequency.to_s.gsub(/[^0-9A-Za-z]/, ' ').capitalize.html_safe}
+                %td.text-center{:scope => "row",:style => "width: 10%"} #{con.nature.to_s.gsub(/[^0-9A-Za-z]/, ' ').capitalize.html_safe}
+                %td.text-center{:scope => "row",:style => "width: 14%"} No Related Policies
+                %td.text-center{:scope => "row",:style => "width: 14%"} No Business Process
+                %td{:scope => "row",:style => "width: 8%"} 
+                  -if con&.key_control == true
+                    Yes
+                  -else
+                    No
+                -z+=1
+    %br
+    %br
+
+
+
+
+    -# %p{:style => "page-break-after:always;"}
+    -# %p{:style => "page-break-after:auto;"}

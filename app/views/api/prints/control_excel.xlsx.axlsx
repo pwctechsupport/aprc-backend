@@ -1,0 +1,32 @@
+
+wb = xlsx_package.workbook
+
+
+wb.add_worksheet(name: "Controls") do |sheet|
+  # Create the header row
+  sheet.add_row ["description", "type of control", "frequency", "nature", "assertion", "ipo", "key control", "related business process name", "related risk name","related control owner name", "control activity title", "control activity guidance"]
+  # Create entries for each item
+  @controls.each_with_index do |control, i|
+    if control.risks.present? || control.business_processes.present? || control.control_owner.present? || control.activity_controls.present? || control.control_risk_business_processes.present?
+      if control.risks.count >= control.activity_controls.count && control.risks.count >= control.business_processes.count && control.risks.count >= control.control_owner.count
+        control.risks.zip(control.business_processes, control.control_owner, control.activity_controls, control.control_risk_business_processes).each do |risk, business_process, owner, activity_control, control_risk_business_processes|
+          Control.to_export(sheet,control,business_process,risk,owner,activity_control, control_risk_business_processes)
+        end
+      elsif control.business_processes.count >= control.risks.count && control.business_processes.count >= control.activity_controls.count && control.business_processes.count >= control.control_owner.count
+        control.business_processes.zip(control.risks, control.control_owner, control.activity_controls, control.control_risk_business_processes).each do |business_process, risk, owner, activity_control, control_risk_business_processes|
+          Control.to_export(sheet,control,business_process,risk,owner,activity_control, control_risk_business_processes)
+        end
+      elsif control.activity_controls.count >= control.risks.count && control.activity_controls.count >= control.business_processes.count && control.activity_controls.count >= control.control_owner.count
+        control.activity_controls.zip(control.business_processes, control.control_owner, control.risks, control.control_risk_business_processes).each do |activity_control, business_process, owner, risk, control_risk_business_processes|
+          Control.to_export(sheet,control,business_process,risk,owner,activity_control, control_risk_business_processes)
+        end
+      else
+        control.control_owner.zip(control.risks, control.business_processes, control.activity_controls, control.control_risk_business_processes ).each do |owner, risk, business_process, activity_control, control_risk_business_processes|
+          Control.to_export(sheet,control,business_process,risk,owner,activity_control, control_risk_business_processes)
+        end
+      end
+    else
+      sheet.add_row [control&.description&.capitalize, control&.type_of_control&.gsub(/_/, ' ')&.capitalize, control&.frequency, control&.nature&.capitalize, control&.assertion&.join&.gsub(/_/, ',')&.capitalize, control&.ipo.join&.gsub(/_/, ',')&.capitalize, control&.key_control, "",  "", "", "", "","",""]
+    end
+  end
+end

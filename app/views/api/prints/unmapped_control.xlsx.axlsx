@@ -1,0 +1,60 @@
+
+wb = xlsx_package.workbook
+
+
+content = wb.styles.add_style(:bg_color => "FFFFFFFF",
+  :fg_color=>"#FF000000",
+  :border=>Axlsx::STYLE_THIN_BORDER,
+  :alignment=>{:horizontal => :center, :vertical => :center},
+  :font_name => 'Georgia'
+)
+
+
+title = wb.styles.add_style(:sz => 20, :b => true, :alignment=>{:horizontal => :left, :vertical => :center}, :font_name => 'Georgia')
+
+header = wb.styles.add_style(:sz => 12, :bg_color => 'b10015', :fg_color => 'FF', :b => true, :border => { :style => :thin, :color => "00000000", :edges => [:top, :bottom, :left, :right] }, :alignment=>{:horizontal => :center, :vertical => :center}, :font_name => 'Georgia')
+
+
+
+wb.add_worksheet(name: "Exception Report") do |sheet|
+  # Create the header row
+  sheet.add_row ["Untagged Control in Flowchart Report"], :style => title, :height => 28
+  2.times { sheet.add_row}
+  sheet.add_row ["Printed on: #{Time.now.strftime("%d-%m-%Y")}"],:font_name => 'Georgia', :sz => 12
+  sheet.add_row ["Printed by: #{current_user&.name}"],:font_name => 'Georgia', :sz => 12
+  3.times { sheet.add_row}
+  sheet.merge_cells "A1:K1"
+  sheet.merge_cells "A4:K4"
+  sheet.merge_cells "A5:K5"
+
+  sheet.add_row ["No","Main / sub Business Process", "Name of Control","Type of Control","Control Owner", "Frequency", "Nature", "Assertion", "IPO", "Key control", "Last update on", "Last update by"], :style => header, :height => 25
+  # Create entries for each item
+  zone = ActiveSupport::TimeZone.new("Jakarta")
+  new_tag = @tags.pluck(:business_process_id).map{|x| Tag.where.not(control_id:nil).find_by(business_process_id: x)}
+  new_tag.uniq.each do |tag|
+    unmapped_control = tag.business_process.control_ids
+    total_control = Tag.includes(:business_process).order("business_processes.name ASC").where.not(risk_id:nil).where(business_process_id: tag.business_process_id).map{|x| x.control_id}
+    unmapped_control.reject!{|x| total_control.include?(x)}
+    if unmapped_control.count != 0
+      unmapped_control.uniq.each_with_index do |unmapped, i|
+        con = Control.find(unmapped)
+        sheet.add_row [
+          i+1,
+          tag.business_process&.name&.capitalize, 
+          con&.description.capitalize, 
+          con.type_of_control.present? ? con.type_of_control.to_s.gsub("_", ' ').capitalize : "", 
+          con.control_owner.present? ? con.control_owner.join(", ").to_s.gsub("_", ' ').titlecase : "", 
+          con&.frequency&.to_s&.gsub("_", ' ').capitalize.html_safe, 
+          con&.nature&.to_s&.gsub("_", ' ').capitalize, 
+          con.convert_assertion.join(","), 
+          con.convert_ipo.join(","),
+          con&.key_control,
+          con&.updated_at.present? ? con&.updated_at.in_time_zone(zone).strftime("%d-%m-%Y %T %Z") : "",
+          con&.versions&.last&.whodunnit.present? ? User&.find(con&.versions&.last&.whodunnit)&.name : ""
+        ], :style=>content, :height => 22
+      end
+    end
+  end
+  sheet.column_widths 28,nil,nil,30
+end
+

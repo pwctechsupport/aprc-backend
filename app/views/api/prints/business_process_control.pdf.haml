@@ -1,0 +1,262 @@
+
+!!!
+%html
+  %head
+    %meta{:content => "text/html; charset=UTF-8", "http-equiv" => "Content-Type"}/
+    %meta{:charset => "utf-8"}/
+    %meta{:content => "IE=edge", "http-equiv" => "X-UA-Compatible"}/
+    %title Business Process Controls
+    :css
+      input[type=checkbox]{
+      \/* Double-sized Checkboxes */
+      \-ms-transform: scale(3.5); /* IE */
+      \-moz-transform: scale(3.5); /* FF */
+      \-webkit-transform: scale(3.5); /* Safari and Chrome */
+      \-o-transform: scale(3.5); /* Opera */
+      transform: scale(3.5);
+      padding: 1px;}
+    :css
+      .table.table-borderless {border:10px !important;}
+      .risk {margin-top:15px;}
+      hr.new5 {
+      border: 2px solid #D85604;
+      border-radius: 5px;}
+      th,td{max-width: 50%;}
+
+      
+    :css
+      th{font-size:12px;}
+      td{font-size:12px;}
+      .tab{ margin-left:40px;}
+      .ape{font-size:24px; text-align:center;}
+      .aps{font-size:20px;}
+      .mege{text-shadow: 0.5px 0.5px black;}
+      .aha{border:none;}
+
+      
+
+    :css
+      span {position:relative; bottom:1.7px; background:#F32013; border-radius:6px; font-size:12px; color:white; font-family:Arial; text-shadow: 0.5px 0.5px black; padding:1px 5px 4px;}
+
+
+    %table.table.table-borderless.aha{style:"display:inline-block;"}
+      %tr.aha
+        %td.aha Printed On
+        %td.aha :
+        %td.aha #{Time.now.strftime("%d-%m-%Y")}
+        
+
+      %tr.aha
+        %td.aha Printed By
+        %td.aha :
+        %td.aha= current_user&.name
+    %h1.ape Risk & Controls
+    %table.table.table-borderless
+      %thead
+        %tr
+          %th.mege.text-center{:scope => "col"} No
+          %th.mege.text-center{:scope => "col"} Control Description
+          %th.mege.text-center{:scope => "col"} Type of Control
+          %th.mege.text-center{:scope => "col"} Control Owner
+          %th.mege.text-center{:scope => "col"} Frequency
+          %th.mege.text-center{:scope => "col"} Nature
+          %th.mege.text-center{:scope => "col"} Assertion
+          %th.mege.text-center{:scope => "col"} IPO
+          %th.mege.text-center{:scope => "col"} Status
+          %th.mege.text-center{:scope => "col"} Key Control
+      -z = 1
+      -@business_process.controls.each_with_index do |con,i|
+        -if con.control_owner.present?
+          -con.control_owner.each do |own|
+            -if con.assertion.present?
+              -con.assertion.each do |as|
+                -if con.ipo.present?
+                  -con.ipo.each do |ip|
+                    %tbody
+                      %tr
+                        %td.text-center{:scope => "row"} #{z}
+                        %td.text-center #{con.description.to_s.gsub(/[^0-9A-Za-z]/, ' ').capitalize.html_safe}
+                        %td.text-center #{con.type_of_control.to_s.gsub(/[^0-9A-Za-z]/, ' ').capitalize.html_safe}
+                        %td.text-center #{own.capitalize.html_safe}
+                        %td.text-center #{con.frequency.to_s.gsub(/[^0-9A-Za-z]/, ' ').capitalize.html_safe}
+                        %td.text-center #{con.nature.to_s.gsub(/[^0-9A-Za-z]/, ' ').capitalize.html_safe}
+                        %td.text-center #{as.capitalize.html_safe}
+                        %td.text-center #{ip.capitalize.html_safe}
+                        %td.text-center #{con.status.to_s.gsub(/[^0-9A-Za-z]/, ' ').capitalize}
+                        %td 
+                          -if con.key_control == true
+                            .risk.text-center
+                              %input#checkboxG5.css-checkbox{:checked => "checked", :name => "checkboxG5", :type => "checkbox"}/
+                              %label.css-label{:for => "checkboxG5"}
+                          -else
+                            .risk.text-center
+                              %input#checkboxG4.css-checkbox{:name => "checkboxG4", :type => "checkbox"}/
+                              %label.css-label{:for => "checkboxG4"}
+                        -z+=1      
+                -else
+                  %tbody
+                    %tr
+                      %td.text-center{:scope => "row"} #{z}
+                      %td.text-center #{con.description.to_s.gsub(/[^0-9A-Za-z]/, ' ').capitalize.html_safe}
+                      %td.text-center #{con.type_of_control.to_s.gsub(/[^0-9A-Za-z]/, ' ').capitalize.html_safe}
+                      %td.text-center #{own.capitalize.html_safe}
+                      %td.text-center #{con.frequency.to_s.gsub(/[^0-9A-Za-z]/, ' ').capitalize.html_safe}
+                      %td.text-center #{con.nature.to_s.gsub(/[^0-9A-Za-z]/, ' ').capitalize.html_safe}
+                      %td.text-center #{as.capitalize.html_safe}
+                      %td.text-center No IPO
+                      %td.text-center #{con.status.to_s.gsub(/[^0-9A-Za-z]/, ' ').capitalize}
+                      %td 
+                        -if con.key_control == true
+                          .risk.text-center
+                            %input#checkboxG5.css-checkbox{:checked => "checked", :name => "checkboxG5", :type => "checkbox"}/
+                            %label.css-label{:for => "checkboxG5"}
+                        -else
+                          .risk.text-center
+                            %input#checkboxG4.css-checkbox{:name => "checkboxG4", :type => "checkbox"}/
+                            %label.css-label{:for => "checkboxG4"}
+                      -z+=1      
+
+            -else
+              -if con.ipo.present?
+                -con.ipo.each do |ip|
+                  %tbody
+                    %tr
+                      %td.text-center{:scope => "row"} #{z}
+                      %td.text-center #{con.description.to_s.gsub(/[^0-9A-Za-z]/, ' ').capitalize.html_safe}
+                      %td.text-center #{con.type_of_control.to_s.gsub(/[^0-9A-Za-z]/, ' ').capitalize.html_safe}
+                      %td.text-center #{own.capitalize.html_safe}
+                      %td.text-center #{con.frequency.to_s.gsub(/[^0-9A-Za-z]/, ' ').capitalize.html_safe}
+                      %td.text-center #{con.nature.to_s.gsub(/[^0-9A-Za-z]/, ' ').capitalize.html_safe}
+                      %td.text-center No Assertion
+                      %td.text-center #{ip.capitalize.html_safe}
+                      %td.text-center #{con.status.to_s.gsub(/[^0-9A-Za-z]/, ' ').capitalize}
+                      %td 
+                        -if con.key_control == true
+                          .risk.text-center
+                            %input#checkboxG5.css-checkbox{:checked => "checked", :name => "checkboxG5", :type => "checkbox"}/
+                            %label.css-label{:for => "checkboxG5"}
+                        -else
+                          .risk.text-center
+                            %input#checkboxG4.css-checkbox{:name => "checkboxG4", :type => "checkbox"}/
+                            %label.css-label{:for => "checkboxG4"}
+                      -z+=1      
+              -else
+                %tbody
+                  %tr
+                    %td.text-center{:scope => "row"} #{z}
+                    %td.text-center #{con.description.to_s.gsub(/[^0-9A-Za-z]/, ' ').capitalize.html_safe}
+                    %td.text-center #{con.type_of_control.to_s.gsub(/[^0-9A-Za-z]/, ' ').capitalize.html_safe}
+                    %td.text-center #{own.capitalize.html_safe}
+                    %td.text-center #{con.frequency.to_s.gsub(/[^0-9A-Za-z]/, ' ').capitalize.html_safe}
+                    %td.text-center #{con.nature.to_s.gsub(/[^0-9A-Za-z]/, ' ').capitalize.html_safe}
+                    %td.text-center No Assertion
+                    %td.text-center No IPO
+                    %td.text-center #{con.status.to_s.gsub(/[^0-9A-Za-z]/, ' ').capitalize}
+                    %td 
+                      -if con.key_control == true
+                        .risk.text-center
+                          %input#checkboxG5.css-checkbox{:checked => "checked", :name => "checkboxG5", :type => "checkbox"}/
+                          %label.css-label{:for => "checkboxG5"}
+                      -else
+                        .risk.text-center
+                          %input#checkboxG4.css-checkbox{:name => "checkboxG4", :type => "checkbox"}/
+                          %label.css-label{:for => "checkboxG4"}
+                    -z+=1      
+        -else
+          -if con.assertion.present?
+            -con.assertion.each do |as|
+              -if con.ipo.present?
+                -con.ipo.each do |ip|
+                  %tbody
+                    %tr
+                      %td.text-center{:scope => "row"} #{z}
+                      %td.text-center #{con.description.to_s.gsub(/[^0-9A-Za-z]/, ' ').capitalize.html_safe}
+                      %td.text-center #{con.type_of_control.to_s.gsub(/[^0-9A-Za-z]/, ' ').capitalize.html_safe}
+                      %td.text-center No Control Owner
+                      %td.text-center #{con.frequency.to_s.gsub(/[^0-9A-Za-z]/, ' ').capitalize.html_safe}
+                      %td.text-center #{con.nature.to_s.gsub(/[^0-9A-Za-z]/, ' ').capitalize.html_safe}
+                      %td.text-center #{as.capitalize.html_safe}
+                      %td.text-center #{ip.capitalize.html_safe}
+                      %td.text-center #{con.status.to_s.gsub(/[^0-9A-Za-z]/, ' ').capitalize}
+                      %td 
+                        -if con.key_control == true
+                          .risk.text-center
+                            %input#checkboxG5.css-checkbox{:checked => "checked", :name => "checkboxG5", :type => "checkbox"}/
+                            %label.css-label{:for => "checkboxG5"}
+                        -else
+                          .risk.text-center
+                            %input#checkboxG4.css-checkbox{:name => "checkboxG4", :type => "checkbox"}/
+                            %label.css-label{:for => "checkboxG4"}
+                      -z+=1      
+              -else
+                %tbody
+                  %tr
+                    %td.text-center{:scope => "row"} #{z}
+                    %td.text-center #{con.description.to_s.gsub(/[^0-9A-Za-z]/, ' ').capitalize.html_safe}
+                    %td.text-center #{con.type_of_control.to_s.gsub(/[^0-9A-Za-z]/, ' ').capitalize.html_safe}
+                    %td.text-center No Control Owner
+                    %td.text-center #{con.frequency.to_s.gsub(/[^0-9A-Za-z]/, ' ').capitalize.html_safe}
+                    %td.text-center #{con.nature.to_s.gsub(/[^0-9A-Za-z]/, ' ').capitalize.html_safe}
+                    %td.text-center #{as.capitalize.html_safe}
+                    %td.text-center No IPO
+                    %td.text-center #{con.status.to_s.gsub(/[^0-9A-Za-z]/, ' ').capitalize}
+                    %td 
+                      -if con.key_control == true
+                        .risk.text-center
+                          %input#checkboxG5.css-checkbox{:checked => "checked", :name => "checkboxG5", :type => "checkbox"}/
+                          %label.css-label{:for => "checkboxG5"}
+                      -else
+                        .risk.text-center
+                          %input#checkboxG4.css-checkbox{:name => "checkboxG4", :type => "checkbox"}/
+                          %label.css-label{:for => "checkboxG4"}
+                    -z+=1      
+
+          -else
+            -if con.ipo.present?
+              -con.ipo.each do |ip|
+                %tbody
+                  %tr
+                    %td.text-center{:scope => "row"} #{z}
+                    %td.text-center #{con.description.to_s.gsub(/[^0-9A-Za-z]/, ' ').capitalize.html_safe}
+                    %td.text-center #{con.type_of_control.to_s.gsub(/[^0-9A-Za-z]/, ' ').capitalize.html_safe}
+                    %td.text-center No Control Owner
+                    %td.text-center #{con.frequency.to_s.gsub(/[^0-9A-Za-z]/, ' ').capitalize.html_safe}
+                    %td.text-center #{con.nature.to_s.gsub(/[^0-9A-Za-z]/, ' ').capitalize.html_safe}
+                    %td.text-center No Assertion
+                    %td.text-center #{ip.capitalize.html_safe}
+                    %td.text-center #{con.status.to_s.gsub(/[^0-9A-Za-z]/, ' ').capitalize}
+                    %td 
+                      -if con.key_control == true
+                        .risk.text-center
+                          %input#checkboxG5.css-checkbox{:checked => "checked", :name => "checkboxG5", :type => "checkbox"}/
+                          %label.css-label{:for => "checkboxG5"}
+                      -else
+                        .risk.text-center
+                          %input#checkboxG4.css-checkbox{:name => "checkboxG4", :type => "checkbox"}/
+                          %label.css-label{:for => "checkboxG4"}
+                    -z+=1      
+            -else
+              %tbody
+                %tr
+                  %td.text-center{:scope => "row"} #{z}
+                  %td.text-center #{con.description.to_s.gsub(/[^0-9A-Za-z]/, ' ').capitalize.html_safe}
+                  %td.text-center #{con.type_of_control.to_s.gsub(/[^0-9A-Za-z]/, ' ').capitalize.html_safe}
+                  %td.text-center No Control Owner
+                  %td.text-center #{con.frequency.to_s.gsub(/[^0-9A-Za-z]/, ' ').capitalize.html_safe}
+                  %td.text-center #{con.nature.to_s.gsub(/[^0-9A-Za-z]/, ' ').capitalize.html_safe}
+                  %td.text-center No Assertion
+                  %td.text-center No IPO
+                  %td.text-center #{con.status.to_s.gsub(/[^0-9A-Za-z]/, ' ').capitalize}
+                  %td 
+                    -if con.key_control == true
+                      .risk.text-center
+                        %input#checkboxG5.css-checkbox{:checked => "checked", :name => "checkboxG5", :type => "checkbox"}/
+                        %label.css-label{:for => "checkboxG5"}
+                    -else
+                      .risk.text-center
+                        %input#checkboxG4.css-checkbox{:name => "checkboxG4", :type => "checkbox"}/
+                        %label.css-label{:for => "checkboxG4"}
+                  -z+=1      
+      %br
+      -# %p{:style => "page-break-after:always;"}
+      %p{:style => "page-break-after:auto;"}
