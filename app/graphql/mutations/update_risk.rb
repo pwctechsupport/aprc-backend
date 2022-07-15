@@ -23,6 +23,7 @@ module Mutations
     def resolve(id:, **args)
       current_user = context[:current_user]
       risk = Risk.find(id)
+
       if risk&.request_edits&.last&.approved?
         if risk.draft?
           raise GraphQL::ExecutionError, "Draft Cannot be created until another Draft is Approved/Rejected by an Admin"
@@ -30,14 +31,18 @@ module Mutations
           if args[:control_ids].present?
             args[:is_related] = true
           end
+
           args[:created_by] = current_user&.name || "User with ID#{current_user&.id}"
           args[:last_updated_by] = current_user&.name || "User with ID#{current_user&.id}"
+
           if args[:business_process_ids].present?
             args[:business_process] = args[:business_process_ids].map{|x| BusinessProcess.find(x&.to_i).name}
           end
-          risk.attributes = args
+
+          risk.update(args.to_h)
+=begin
           risk.save_draft
-          if risk&.draft_id.present?
+          if risk.draft_id.present?
             if risk.draft.event == "update"
               if args[:business_process].present? 
                 serial = ["business_process"]
@@ -51,8 +56,9 @@ module Mutations
               pre_ris.map {|x| risk.update(x)}
             end
           end
-
+=end
           admin = User.with_role(:admin_reviewer).pluck(:id)
+          
           if risk.draft.present?
             Notification.send_notification(admin, risk&.name, risk&.type_of_risk,risk, current_user&.id, "request draft")
             risk.update(status:"waiting_for_review")
