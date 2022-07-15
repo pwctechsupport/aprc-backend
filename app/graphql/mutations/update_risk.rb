@@ -40,23 +40,6 @@ module Mutations
           end
 
           risk.update(args.to_h)
-=begin
-          risk.save_draft
-          if risk.draft_id.present?
-            if risk.draft.event == "update"
-              if args[:business_process].present? 
-                serial = ["business_process"]
-                serial.each do |sif|
-                  if risk.draft.changeset[sif].present?
-                    risk.draft.changeset[sif].map!{|x| JSON.parse(x)}
-                  end
-                end
-              end
-              pre_ris = risk.draft.changeset.map {|x,y| Hash[x, y[0]]}
-              pre_ris.map {|x| risk.update(x)}
-            end
-          end
-=end
           admin = User.with_role(:admin_reviewer).pluck(:id)
 
           if risk.present?
@@ -68,7 +51,6 @@ module Mutations
         raise GraphQL::ExecutionError, "Request not granted. Please Check Your Request Status"
       end
       
-
       MutationResult.call(
         obj: { risk: risk },
         success: risk.persisted?,
