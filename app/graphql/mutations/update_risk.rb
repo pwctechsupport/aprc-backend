@@ -17,7 +17,6 @@ module Mutations
 
 
 
-
     field :risk, Types::RiskType, null: false
 
     def resolve(id:, **args)
@@ -32,14 +31,15 @@ module Mutations
             args[:is_related] = true
           end
 
-          args[:created_by] = current_user&.name || "User with ID#{current_user&.id}"
+          #args[:created_by] = current_user&.name || "User with ID#{current_user&.id}"
           args[:last_updated_by] = current_user&.name || "User with ID#{current_user&.id}"
 
           if args[:business_process_ids].present?
             args[:business_process] = args[:business_process_ids].map{|x| BusinessProcess.find(x&.to_i).name}
           end
 
-          risk.update(args.to_h)
+          risk.attributes = args
+          risk.save_draft
           admin = User.with_role(:admin_reviewer).pluck(:id)
 
           if risk.draft.present?
