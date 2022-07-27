@@ -16,12 +16,10 @@ module Mutations
         admin_prep = [risk.last_updated_by_user_id] || User.with_role(:admin_preparer).pluck(:id)
         if args[:publish] == true
           if risk_draft.event == "update"
-            serial = args[:business_process]
-            Rails.logger.info "args.inspect >>> #{args.inspect}"
-            Rails.logger.info "serial.inspect >>> #{serial.inspect}"
+            serial = ["business_process"]
             serial.each do |sif|
               if risk_draft.changeset[sif].present?
-                risk_draft.changeset[sif].map!{|x| JSON.parse(x)}
+                risk_draft.changeset[sif].map!{|x| JSON.parse(x) unless x.kind_of? Array}
               end
             end
           end
