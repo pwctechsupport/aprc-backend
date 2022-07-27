@@ -34,8 +34,14 @@ module Mutations
           #args[:created_by] = current_user&.name || "User with ID#{current_user&.id}"
           args[:last_updated_by] = current_user&.name || "User with ID#{current_user&.id}"
 
+          relation_safe_array = []
+
           if args[:business_process_ids].present?
-            args[:business_process] = args[:business_process_ids].map{|x| BusinessProcess.find(x&.to_i).name}
+            args[:business_process_ids].map do |business_process|
+              business_process_name = BusinessProcess.find(business_process).name
+              relation_safe_array.push(business_process_name.html_safe)
+            end
+            args[:business_process] = relation_safe_array
           end
 
           risk.attributes = args
