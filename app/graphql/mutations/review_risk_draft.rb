@@ -17,6 +17,7 @@ module Mutations
         if args[:publish] == true
           if risk_draft.event == "update"
             serial = ["business_process"]
+            Rails.logger.info "serial.inspect >>> #{serial.inspect}"
             serial.each do |sif|
               if risk_draft.changeset[sif].present?
                 risk_draft.changeset[sif].map!{|x| JSON.parse(x)}
