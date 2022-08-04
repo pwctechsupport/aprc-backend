@@ -8,8 +8,9 @@ default: &default
   adapter: mysql2
   pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
   timeout: 5000
-  username: root
-  password: <%= ENV['MYSQL_PASSWORD'] %>
+  username: deploy
+  #password: <%= ENV['MYSQL_PASSWORD'] %>
+  password: jakarta2022
   host: <%= ENV['DB_HOST'] %>
 
 development:
@@ -25,4 +26,4 @@ test:
 
 production:
   <<: *default
-  database: own_dockerize_prod
+  database: aprc_production
